@@ -1,0 +1,81 @@
+<section class="detail">
+  <a routerLink="/" class="back">← Înapoi la catalog</a>
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  } @else if (item(); as row) {
+    <div class="overview">
+      <div class="art">
+        <sd-fastener [category]="row.product.category" /><small>Ilustrație demonstrativă</small>
+      </div>
+      <div>
+        <span class="eyebrow">{{ row.product.category }}</span>
+        <h1>{{ row.product.name }}</h1>
+        <p>{{ row.product.description }}</p>
+        <div class="notice">
+          Catalog în pregătire. Produsele și prețurile sunt demonstrative; comenzile nu sunt active.
+        </div>
+      </div>
+    </div>
+    <h2>Variante și ambalaje</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variantă / SKU</th>
+            <th>Material / finisaj</th>
+            <th>Ambalaj</th>
+            <th>Preț cu TVA</th>
+            <th>Disponibilitate</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (v of row.product.variants; track v.id) {
+            @for (o of v.offers; track o.id) {
+              <tr>
+                <td>
+                  <strong>{{ v.label }}</strong
+                  ><small>{{ v.sku }}</small>
+                  @for (attribute of v.attributes; track attribute.attributeId) {
+                    @if (attribute.source === 'Custom') {
+                      <small
+                        >{{ attribute.name }}:
+                        {{ attribute.textValue ?? (attribute.numberValue | number: '1.0-6')
+                        }}{{ attribute.unit ? ' ' + attribute.unit : '' }}</small
+                      >
+                    }
+                  }
+                </td>
+                <td>
+                  {{ v.material }}<small>{{ v.finish }}</small>
+                </td>
+                <td>
+                  {{ o.label }}<small>Minim {{ o.minPacks }} · pas {{ o.packStep }}</small>
+                </td>
+                <td>
+                  @if (price(o.id); as p) {
+                    <strong>{{ p.grossAmount | number: '1.2-2' }} lei</strong
+                    ><small>{{ p.netAmount | number: '1.2-6' }} lei fără TVA</small
+                    ><small
+                      >≈ {{ p.grossAmount / o.unitsPerPack | number: '1.2-4' }} lei / buc.</small
+                    >
+                  } @else {
+                    Preț indisponibil
+                  }
+                </td>
+                <td>
+                  @if (available(v.id) >= o.unitsPerPack * o.minPacks) {
+                    <span class="stock">{{ packs(available(v.id), o.unitsPerPack) }} ambalaje</span>
+                  } @else {
+                    <span>Fără stoc</span>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p>Se încarcă produsul…</p>
+  }
+</section>

@@ -1,0 +1,23 @@
+@use '../../styles/forms';
+.validation {
+  color: #a93f28;
+  font-size: 13px;
+}
+.review-notice {
+  padding: 16px;
+  margin: 0 0 20px;
+  background: #fff4de;
+  border: 1px solid #e4c895;
+  border-radius: 5px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.review-notice label {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+.review-notice input {
+  flex-shrink: 0;
+  margin-top: 5px;
+}

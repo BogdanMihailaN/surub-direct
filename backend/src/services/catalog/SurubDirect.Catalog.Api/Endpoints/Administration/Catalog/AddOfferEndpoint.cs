@@ -1,0 +1,10 @@
+using SurubDirect.Catalog.Application;
+
+namespace SurubDirect.Catalog.Api.Endpoints;
+public static class AddOfferEndpoint
+{
+    public static void Map(IEndpointRouteBuilder routes)
+    {
+        routes.MapPost("/products/{id:guid}/variants/{variantId:guid}/offers", async (Guid id, Guid variantId, AddOffer command, AddOfferHandler handler, CancellationToken ct) => Results.Ok(new { id = await handler.Handle(id, variantId, command, ct) }));
+    }
+}

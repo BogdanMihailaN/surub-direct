@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType></PropertyGroup>
+<ItemGroup><ProjectReference Include="../SurubDirect.Catalog.Infrastructure/SurubDirect.Catalog.Infrastructure.csproj" /><PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.13" /></ItemGroup>
+</Project>

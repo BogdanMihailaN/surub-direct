@@ -1,0 +1,49 @@
+@let row = item();
+<form class="panel" #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="busy()">
+    <span class="eyebrow">04 / STOC</span>
+    <h2>Recepționează marfa</h2>
+    <label class="select-label"
+      >Varianta<select
+        name="receiptVariant"
+        [(ngModel)]="receiptVariant"
+        (change)="receiptRequestId = null"
+        required
+      >
+        <option value="">Alege SKU</option>
+        @for (v of row.product.variants; track v.id) {
+          <option [value]="v.id">{{ v.sku }}</option>
+        }
+      </select></label
+    >
+    <div class="form-grid">
+      <mat-form-field appearance="outline"
+        ><mat-label>Cantitate în bucăți</mat-label
+        ><input
+          matInput
+          type="number"
+          min="1"
+          max="10000000"
+          step="1"
+          name="quantity"
+          [(ngModel)]="quantity"
+          (ngModelChange)="receiptRequestId = null"
+          required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Referință document</mat-label
+        ><input
+          matInput
+          name="reference"
+          [(ngModel)]="reference"
+          (ngModelChange)="receiptRequestId = null"
+          required
+      /></mat-form-field>
+    </div>
+    <p class="muted">
+      Introdu numărul de bucăți, nu numărul de cutii. Recepția adaugă o mișcare de stoc.
+    </p>
+    <button mat-flat-button type="submit" [disabled]="form.invalid || busy() || !receiptVariant">
+      Înregistrează recepția
+    </button>
+  </fieldset>
+</form>

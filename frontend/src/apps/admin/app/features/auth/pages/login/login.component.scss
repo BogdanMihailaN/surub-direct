@@ -1,0 +1,30 @@
+.login {
+  max-width: 430px;
+  margin: 85px auto;
+  padding: 0 20px;
+}
+.login form {
+  display: grid;
+  gap: 6px;
+  margin-top: 30px;
+}
+.login p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #7d8973;
+}
+h1 {
+  font-size: 30px;
+  letter-spacing: -1px;
+  font-weight: 600;
+}
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #819271;
+}
+.error {
+  background: #ffebe6;
+  color: #a93f28;
+  padding: 12px;
+}

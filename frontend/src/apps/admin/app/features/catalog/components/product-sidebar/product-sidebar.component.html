@@ -1,0 +1,62 @@
+<aside>
+  <div class="sidebar-title">
+    <span>CATALOG</span
+    ><button mat-button (click)="create.emit()" [disabled]="busy()">+ Produs</button>
+  </div>
+  <form class="filters" (ngSubmit)="filtered.emit({ search, status })">
+    <label for="admin-search">Caută produs sau SKU</label>
+    <input
+      id="admin-search"
+      name="search"
+      [(ngModel)]="search"
+      maxlength="100"
+      [disabled]="busy()"
+    />
+    <label for="admin-status">Stare produs</label>
+    <select id="admin-status" name="status" [(ngModel)]="status" [disabled]="busy()">
+      <option value="">Toate stările</option>
+      <option value="Draft">Ciorne</option>
+      <option value="Published">Publicate</option>
+      <option value="Archived">Arhivate</option>
+    </select>
+    <button mat-stroked-button type="submit" [disabled]="busy()">Aplică filtrele</button>
+  </form>
+  <p class="count" aria-live="polite">
+    {{ total() }} produse · pagina {{ page() }} / {{ pageCount() }}
+  </p>
+  <div class="product-list">
+    @for (row of products(); track row.product.id) {
+      <button
+        [class.selected]="selectedId() === row.product.id"
+        (click)="selected.emit(row.product.id)"
+        [disabled]="busy()"
+      >
+        <strong>{{ row.product.name }}</strong
+        ><small
+          >{{ row.product.category }} ·
+          {{
+            row.product.status === 'Published'
+              ? 'Publicat'
+              : row.product.status === 'Archived'
+                ? 'Arhivat'
+                : 'Ciornă'
+          }}</small
+        >
+      </button>
+    } @empty {
+      <p class="count">Niciun produs pentru filtrele selectate.</p>
+    }
+  </div>
+  <nav aria-label="Paginare produse">
+    <button mat-button [disabled]="busy() || page() <= 1" (click)="pageChanged.emit(page() - 1)">
+      Înapoi
+    </button>
+    <button
+      mat-button
+      [disabled]="busy() || page() >= pageCount()"
+      (click)="pageChanged.emit(page() + 1)"
+    >
+      Înainte
+    </button>
+  </nav>
+</aside>

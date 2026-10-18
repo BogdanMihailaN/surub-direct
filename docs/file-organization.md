@@ -1,0 +1,75 @@
+# Organizarea proiectului
+
+```text
+surub-direct/
+├── backend/
+│   ├── SurubDirect.sln
+│   ├── Directory.Build.props
+│   ├── src/
+│   │   ├── services/
+│   │   │   ├── catalog/
+│   │   │   │   ├── SurubDirect.Catalog.{Api,Application,Domain,Infrastructure,Contracts}/
+│   │   │   │   ├── SurubDirect.Pricing.{Application,Domain,Infrastructure,Contracts}/
+│   │   │   │   ├── SurubDirect.Store.Application/
+│   │   │   │   └── SurubDirect.Catalog.Worker/
+│   │   │   ├── inventory/SurubDirect.Inventory.{Api,Application,Domain,Infrastructure,Contracts}/
+│   │   │   ├── identity/SurubDirect.Identity.{Api,Infrastructure}/
+│   │   │   └── ordering/SurubDirect.Ordering.Api/
+│   │   ├── gateway/SurubDirect.Gateway/
+│   │   └── shared/
+│   │       ├── SurubDirect.BuildingBlocks/
+│   │       └── SurubDirect.ServiceDefaults/
+│   └── tests/SurubDirect.Tests/
+│       ├── Unit/
+│       ├── Integration/
+│       └── Architecture/
+├── frontend/
+│   ├── src/
+│   │   ├── apps/
+│   │   │   ├── storefront/
+│   │   │   └── admin/
+│   │   └── shared/
+│   ├── tests/e2e/
+│   ├── angular.json
+│   ├── package.json
+│   └── tsconfig.json
+├── scripts/                          # pornire și operații locale pentru întregul proiect
+├── docs/                             # arhitectură, convenții și verificări
+├── compose.yaml                      # infrastructura locală comună
+├── global.json                       # SDK .NET, descoperit și din rădăcină
+└── README.md
+```
+
+Notația `{...}` abreviază directoarele reale, nu reprezintă un director literal.
+
+Codul de producție se află exclusiv în `backend/src` și `frontend/src`; testele sunt în directoarele `tests` corespunzătoare. Serviciile nu au încă un nivel `src` interior. Configurațiile build-ului rămân la rădăcina backend-ului sau frontend-ului, iar cele comune întregului proiect rămân în rădăcina repository-ului.
+
+## Reguli backend
+
+O clasă, înregistrare, enumerare sau interfață principală per fișier. Domain conține regulile comerciale, fără framework-uri de persistență sau HTTP. Application organizează operațiile în `Features/<resursă>/<operație>`, cu handler și cerere proprii, plus porturi în `Abstractions`.
+
+Infrastructure conține `Persistence/Configurations`, repository-uri și migrații. Păstrăm migrațiile existente și namespace-urile lor pentru continuitatea bazei. API conține endpoint-uri separate, clienți pentru servicii externe, middleware, configurare și bootstrap; Program.cs doar le compune.
+
+Contracts sunt contracte interne serviciului proprietar, nu un proiect comun tuturor serviciilor. Integrarea externă utilizează un port și un DTO al consumatorului. Nu introducem acces direct la contextul EF al altui serviciu sau o bibliotecă comună cu toate entitățile.
+
+Testele comune pot referi mai multe servicii pentru verificări și adaptoare de test; această excepție nu se aplică proiectelor de producție. Testele PostgreSQL folosesc baze distincte pentru Catalog și Inventory. Testele Playwright verifică și comunicarea reală HTTP prin gateway.
+
+## Reguli Angular
+
+Fiecare componentă are TypeScript, HTML și SCSS alăturate. `pages` compune ecranul, `components` conține formularele și elementele vizuale, `data-access` face apelurile API, `state` coordonează operațiile, iar `models` definește cererile.
+
+`core/auth` rămâne specific aplicației; `frontend/src/shared` conține doar cod folosit de ambele aplicații. Rutele sunt încărcate la cerere. TypeScript și șabloanele Angular au verificarea strictă activă. Browserul și SSR trimit cererile comerciale prin gateway, nu direct spre API-urile serviciilor.
+
+Nu creăm straturi goale pentru funcționalități neimplementate și nu împărțim artificial expresii simple în servicii. Nu comitem `.tools`, `work`, secrete, artefacte de compilare sau cache-uri.
+
+## Administrarea ciclului de viață al produsului
+
+Operațiile sunt separate în `Catalog.Application/Features/Products/{UpdateProduct,ArchiveProduct,RestoreProduct}`, fiecare cu handler propriu și endpoint în `Catalog.Api/Endpoints/Administration/Catalog`. Regulile de editare și tranzițiile de stare sunt în `Catalog.Domain/Products/Product.cs`. Citirea administrativă după ID este compusă în `Store.Application/Features/GetAdminProduct`.
+
+În Angular, formularul de editare și confirmarea arhivării/restaurării sunt componente distincte (`product-edit-form`, `product-lifecycle`); pagina le compune, iar `CatalogAdminStore` păstrează starea operațiilor, filtrarea, paginarea și selecția. Testele de domeniu și PostgreSQL sunt în `Unit/ProductLifecycleTests.cs` și `Integration/ProductAdministrationTests.cs`.
+
+## Editarea variantelor și ambalajelor
+
+`Catalog.Application/Features/Variants/UpdateVariant` și `Features/Offers/UpdateOffer` au comenzi și handler-e proprii. `Product` verifică apartenența și starea arhivată și coordonează trecerea în ciornă la schimbarea bucăților/ambalaj; `Variant` și `SalesOffer` validează câmpurile înainte de mutare. Persistența rămâne o singură salvare în Catalog, fără operații asupra bazei Inventory.
+
+Angular are `variant-edit-form` și `offer-edit-form` distincte, cu TypeScript/HTML/SCSS alăturate. Tabelul emite intențiile de editare, `CatalogAdminStore` păstrează editorul activ, iar `data-access` trimite cererile. Modelele editării nu includ SKU sau cod ofertă. Testele au fișiere dedicate în `Unit`, `Integration` și `frontend/tests/e2e/variant-offer-edit.spec.ts`; `tests/e2e/support` conține funcțiile comune de autentificare pentru teste.

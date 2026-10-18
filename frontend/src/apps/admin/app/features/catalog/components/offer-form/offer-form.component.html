@@ -1,0 +1,57 @@
+@let row = item();
+<form class="panel" #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="busy()">
+    <span class="eyebrow">02 / UNITATE DE VÂNZARE</span>
+    <h2>Adaugă ambalaj</h2>
+    <label class="select-label"
+      >Varianta<select name="offerVariant" [(ngModel)]="offerVariant" required>
+        <option value="">Alege SKU</option>
+        @for (v of row.product.variants; track v.id) {
+          <option [value]="v.id">{{ v.sku }}</option>
+        }
+      </select></label
+    >
+    <div class="form-grid">
+      <mat-form-field appearance="outline"
+        ><mat-label>Cod ofertă</mat-label
+        ><input matInput name="code" [(ngModel)]="offer.code" required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Denumire ambalaj</mat-label
+        ><input matInput name="packLabel" [(ngModel)]="offer.label" required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Bucăți / ambalaj</mat-label
+        ><input
+          matInput
+          type="number"
+          min="1"
+          step="1"
+          name="units"
+          [(ngModel)]="offer.unitsPerPack"
+          required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Minim ambalaje</mat-label
+        ><input
+          matInput
+          type="number"
+          min="1"
+          step="1"
+          name="min"
+          [(ngModel)]="offer.minPacks"
+          required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Pas cantitate</mat-label
+        ><input
+          matInput
+          type="number"
+          min="1"
+          step="1"
+          name="step"
+          [(ngModel)]="offer.packStep"
+          required
+      /></mat-form-field>
+    </div>
+    <button mat-stroked-button type="submit" [disabled]="form.invalid || busy() || !offerVariant">
+      Adaugă ambalajul
+    </button>
+  </fieldset>
+</form>

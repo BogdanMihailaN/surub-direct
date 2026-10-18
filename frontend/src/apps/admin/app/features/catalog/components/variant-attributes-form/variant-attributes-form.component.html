@@ -1,0 +1,33 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <h2>Atribute tehnice · {{ variant().sku }}</h2>
+  <p>
+    Câmpurile provin din categoria produsului și din părinții ei. Un câmp gol elimină valoarea
+    suplimentară. Dimensiunile, materialul și finisajul se modifică în „Editează varianta”.
+  </p>
+  <fieldset [disabled]="busy()">
+    @for (attribute of custom(); track attribute.id) {
+      <label
+        >{{ attribute.name }}{{ attribute.unit ? ' (' + attribute.unit + ')' : '' }}
+        @if (attribute.kind === 'Text') {
+          <input [name]="attribute.id" [(ngModel)]="values[attribute.id].text" maxlength="120" />
+        } @else {
+          <input
+            [name]="attribute.id"
+            type="number"
+            step="0.000001"
+            [(ngModel)]="values[attribute.id].number"
+          />
+        }
+      </label>
+    } @empty {
+      <p>Categoria nu are atribute suplimentare. Configurează-le în „Categorii și atribute”.</p>
+    }
+    @if (!valid()) {
+      <p role="alert">Valorile numerice acceptă maximum 6 zecimale și 12 cifre întregi.</p>
+    }
+    <button type="submit" [disabled]="busy() || form.invalid || !valid() || custom().length === 0">
+      Salvează atributele
+    </button>
+    <button type="button" [disabled]="busy()" (click)="cancelled.emit()">Renunță la editare</button>
+  </fieldset>
+</form>

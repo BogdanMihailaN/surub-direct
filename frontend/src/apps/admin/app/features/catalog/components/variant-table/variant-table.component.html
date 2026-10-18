@@ -1,0 +1,98 @@
+@let row = item();
+<section class="panel">
+  <h2>Variante, prețuri și disponibilitate</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU / Variantă</th>
+          <th>Ambalaj</th>
+          <th>Preț net</th>
+          <th>Stoc disponibil</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (v of row.product.variants; track v.id) {
+          @if (v.offers.length === 0) {
+            <tr>
+              <td>
+                {{ v.sku }}<small>{{ v.label }}</small>
+                @if (row.product.status !== 'Archived') {
+                  <button
+                    mat-button
+                    [disabled]="disabled()"
+                    [attr.aria-label]="'Editează varianta ' + v.sku"
+                    (click)="variantEdited.emit(v.id)"
+                  >
+                    Editează varianta</button
+                  ><button
+                    mat-button
+                    [disabled]="disabled()"
+                    [attr.aria-label]="'Atribute tehnice ' + v.sku"
+                    (click)="attributesEdited.emit(v.id)"
+                  >
+                    Atribute tehnice
+                  </button>
+                }
+              </td>
+              <td colspan="2">Fără ambalaj configurat</td>
+              <td>{{ stock(v.id) }} buc.</td>
+            </tr>
+          }
+          @for (o of v.offers; track o.id) {
+            <tr>
+              <td>
+                {{ v.sku }}<small>{{ v.label }}</small>
+                @if (row.product.status !== 'Archived') {
+                  <button
+                    mat-button
+                    [disabled]="disabled()"
+                    [attr.aria-label]="'Editează varianta ' + v.sku"
+                    (click)="variantEdited.emit(v.id)"
+                  >
+                    Editează varianta</button
+                  ><button
+                    mat-button
+                    [disabled]="disabled()"
+                    [attr.aria-label]="'Atribute tehnice ' + v.sku"
+                    (click)="attributesEdited.emit(v.id)"
+                  >
+                    Atribute tehnice
+                  </button>
+                }
+              </td>
+              <td>
+                {{ o.label }}<small>{{ o.code }}</small>
+                <small
+                  >{{ o.unitsPerPack }} buc. / ambalaj · minim {{ o.minPacks }} · pas
+                  {{ o.packStep }}</small
+                >
+                @if (row.product.status !== 'Archived') {
+                  <button
+                    mat-button
+                    [disabled]="disabled()"
+                    [attr.aria-label]="'Editează ambalajul ' + o.code"
+                    (click)="offerEdited.emit({ variantId: v.id, offerId: o.id })"
+                  >
+                    Editează ambalajul
+                  </button>
+                }
+              </td>
+              <td>
+                @if (price(o.id); as p) {
+                  {{ p.netAmount | number: '1.2-6' }} lei
+                } @else {
+                  Lipsește prețul
+                }
+              </td>
+              <td>{{ stock(v.id) }} buc.</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+    @if (row.product.variants.length === 0) {
+      <p class="muted">Adaugă prima variantă fizică a produsului.</p>
+    }
+  </div>
+</section>

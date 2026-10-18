@@ -1,0 +1,47 @@
+<form class="panel" #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="busy()">
+    <span class="eyebrow">01 / VARIANTĂ FIZICĂ</span>
+    <h2>Adaugă SKU</h2>
+    <div class="form-grid">
+      <mat-form-field appearance="outline"
+        ><mat-label>SKU</mat-label
+        ><input matInput name="sku" [(ngModel)]="variant.sku" required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Denumire variantă</mat-label
+        ><input
+          matInput
+          name="label"
+          [(ngModel)]="variant.label"
+          required
+          placeholder="M8 × 40 mm" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Diametru (mm)</mat-label
+        ><input
+          matInput
+          name="diameter"
+          type="number"
+          min="0.001"
+          step="0.001"
+          [(ngModel)]="variant.diameterMm" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Lungime (mm)</mat-label
+        ><input
+          matInput
+          name="length"
+          type="number"
+          min="0.001"
+          step="0.001"
+          [(ngModel)]="variant.lengthMm" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Material</mat-label
+        ><input matInput name="material" [(ngModel)]="variant.material" required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Finisaj</mat-label
+        ><input matInput name="finish" [(ngModel)]="variant.finish" required
+      /></mat-form-field>
+    </div>
+    <button mat-stroked-button type="submit" [disabled]="form.invalid || busy()">
+      Adaugă varianta
+    </button>
+  </fieldset>
+</form>

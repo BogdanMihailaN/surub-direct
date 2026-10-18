@@ -1,0 +1,81 @@
+<sd-catalog-hero />
+<section id="catalog" class="catalog">
+  <div class="section-top">
+    <div>
+      <span class="eyebrow">ALEGE CE ȚINE LUCRURILE ÎMPREUNĂ</span>
+      <h2>Catalog produse<span class="orange-dot">.</span></h2>
+    </div>
+    <p>Produse și prețuri demonstrative</p>
+  </div>
+  <form class="search" (ngSubmit)="store.apply()">
+    <span aria-hidden="true">⌕</span
+    ><input
+      name="search"
+      [(ngModel)]="store.search"
+      placeholder="Caută după produs, cod SKU sau dimensiune..."
+      aria-label="Caută produse"
+    /><button type="submit">Caută <span>→</span></button>
+  </form>
+  <div class="catalog-layout">
+    <sd-catalog-filters
+      [categories]="store.taxonomy().categories"
+      [categoryId]="store.activeCategoryId()"
+      [definitions]="store.definitions()"
+      [attributes]="store.attributes"
+      [diameter]="store.diameter"
+      [length]="store.length"
+      (changed)="store.filter($event)"
+      (cleared)="store.reset()"
+    />
+    <div class="results" aria-live="polite">
+      @if (store.loading()) {
+        <div class="state">Se încarcă produsele…</div>
+      } @else if (store.error()) {
+        <div class="state error" role="alert">
+          {{ store.error() }}<button class="secondary" (click)="store.apply()">Reîncearcă</button>
+        </div>
+      } @else if (store.data(); as result) {
+        <div class="result-summary">
+          <span
+            >{{ result.total }} produse{{
+              store.categoryName() ? ' · ' + store.categoryName() : ''
+            }}</span
+          ><span>Ordonate alfabetic</span>
+        </div>
+        <div class="grid">
+          @for (item of result.items; track item.product.id) {
+            <sd-product-card [product]="item" />
+          }
+        </div>
+        @if (result.total === 0) {
+          <div class="state">
+            Nu am găsit produse pentru aceste filtre.<button
+              class="secondary"
+              (click)="store.reset()"
+            >
+              Vezi toate produsele
+            </button>
+          </div>
+        }
+        @if (result.total > result.pageSize) {
+          <nav class="pagination" aria-label="Paginare">
+            <button
+              class="secondary"
+              [disabled]="store.page === 1"
+              (click)="store.apply(store.page - 1)"
+            >
+              ← Anterior</button
+            ><span>Pagina {{ store.page }}</span
+            ><button
+              class="secondary"
+              [disabled]="store.page * result.pageSize >= result.total"
+              (click)="store.apply(store.page + 1)"
+            >
+              Următor →
+            </button>
+          </nav>
+        }
+      }
+    </div>
+  </div>
+</section>

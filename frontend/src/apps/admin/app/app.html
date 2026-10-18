@@ -1,0 +1,15 @@
+<header>
+  <a class="brand" href="http://localhost:4200">⬢ șurub<span>direct</span></a
+  ><span class="admin-label">ADMINISTRARE</span>
+  @if (session.authenticated()) {
+    <nav aria-label="Administrare">
+      <a routerLink="/catalog" routerLinkActive="active">Produse</a
+      ><a routerLink="/categorii" routerLinkActive="active">Categorii și atribute</a>
+    </nav>
+    <button mat-stroked-button (click)="logout()">Deconectare</button>
+  }
+</header>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+<router-outlet />

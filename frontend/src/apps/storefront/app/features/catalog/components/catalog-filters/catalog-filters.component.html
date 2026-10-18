@@ -1,0 +1,80 @@
+<aside aria-label="Filtre catalog">
+  <div class="filter-head">
+    <strong>Filtrează</strong><button (click)="cleared.emit()">Resetează</button>
+  </div>
+  <h3>CATEGORII</h3>
+  <button class="category" [class.active]="!categoryId" (click)="choose('')">
+    Toate produsele <span>↗</span>
+  </button>
+  @for (option of options(); track option.category.id) {
+    <button
+      class="category"
+      [class.active]="categoryId === option.category.id"
+      [style.padding-left.px]="10 + option.depth * 12"
+      (click)="choose(option.category.id)"
+    >
+      {{ option.category.name }}
+    </button>
+  }
+  <form class="dimensions" #form="ngForm" (ngSubmit)="apply()">
+    <h3>CARACTERISTICI TEHNICE</h3>
+    @if (has('Diameter')) {
+      <label
+        >Diametru (mm)<input
+          name="diameter"
+          type="number"
+          min="0.001"
+          step="0.001"
+          [(ngModel)]="diameter"
+          placeholder="Ex. 8"
+      /></label>
+    }
+    @if (has('Length')) {
+      <label
+        >Lungime (mm)<input
+          name="length"
+          type="number"
+          min="0.001"
+          step="0.001"
+          [(ngModel)]="length"
+          placeholder="Ex. 40"
+      /></label>
+    }
+    @for (attribute of extra(); track attribute.id) {
+      @if (attribute.kind === 'Text') {
+        <label
+          >{{ attribute.name
+          }}<input [name]="attribute.id" [(ngModel)]="values[attribute.id].text" maxlength="120"
+        /></label>
+      } @else {
+        <fieldset>
+          <legend>
+            {{ attribute.name }}{{ attribute.unit ? ' (' + attribute.unit + ')' : '' }}
+          </legend>
+          <label
+            >De la<input
+              [name]="attribute.id + '-min'"
+              [attr.aria-label]="attribute.name + ' minim'"
+              type="number"
+              step="any"
+              [(ngModel)]="values[attribute.id].min"
+          /></label>
+          <label
+            >Până la<input
+              [name]="attribute.id + '-max'"
+              [attr.aria-label]="attribute.name + ' maxim'"
+              type="number"
+              step="any"
+              [(ngModel)]="values[attribute.id].max"
+          /></label>
+        </fieldset>
+      }
+    }
+    @if (!valid()) {
+      <p role="alert">Limita minimă nu poate depăși limita maximă.</p>
+    }
+    <button class="secondary" type="submit" [disabled]="form.invalid || !valid()">
+      Aplică filtrele
+    </button>
+  </form>
+</aside>

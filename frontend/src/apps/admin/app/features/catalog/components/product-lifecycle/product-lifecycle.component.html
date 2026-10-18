@@ -1,0 +1,26 @@
+<section class="lifecycle" aria-label="Vizibilitatea produsului">
+  @if (product().status === 'Archived') {
+    <h2>Produs arhivat</h2>
+    <p>
+      Produsul este ascuns din magazin. Variantele, prețurile și stocul sunt păstrate. Restaurarea
+      îl readuce ca ciornă.
+    </p>
+    <button mat-stroked-button [disabled]="busy()" (click)="restored.emit()">
+      Restaurează ca ciornă
+    </button>
+  } @else if (confirming()) {
+    <h2>Arhivezi „{{ product().name }}”?</h2>
+    <p>
+      Produsul va dispărea din magazin. Datele și stocul se păstrează, iar produsul poate fi
+      restaurat ulterior.
+    </p>
+    <button mat-stroked-button [disabled]="busy()" (click)="archived.emit()">
+      Confirmă arhivarea
+    </button>
+    <button mat-button [disabled]="busy()" (click)="confirming.set(false)">Renunță</button>
+  } @else {
+    <button mat-button [disabled]="busy()" (click)="confirming.set(true)">
+      Arhivează produsul
+    </button>
+  }
+</section>

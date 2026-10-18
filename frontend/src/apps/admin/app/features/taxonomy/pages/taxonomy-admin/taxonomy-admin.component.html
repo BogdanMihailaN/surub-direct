@@ -1,0 +1,62 @@
+<main>
+  <h1>Categorii și atribute tehnice</h1>
+  <p>
+    Organizează catalogul și stabilește caracteristicile disponibile pentru fiecare familie de
+    produse.
+  </p>
+  <div aria-live="polite">
+    @if (store.message()) {
+      <p class="success">{{ store.message() }}</p>
+    }
+    @if (store.error()) {
+      <p role="alert">{{ store.error() }}</p>
+    }
+  </div>
+  <section class="workspace" aria-label="Administrare categorii">
+    <aside>
+      <h2>Categorii</h2>
+      <button (click)="store.chooseCategory('')" [disabled]="store.busy()">+ Categorie</button>
+      @for (option of store.options(); track option.category.id) {
+        <button
+          class="item"
+          [class.selected]="store.categoryId() === option.category.id"
+          [disabled]="store.busy()"
+          (click)="store.chooseCategory(option.category.id)"
+        >
+          {{ option.path }}
+        </button>
+      }
+    </aside>
+    <sd-category-form
+      [category]="store.category()"
+      [taxonomy]="store.data()"
+      [busy]="store.busy()"
+      (submitted)="store.saveCategory($event)"
+    />
+  </section>
+  <section class="workspace" aria-label="Administrare atribute">
+    <aside>
+      <h2>Atribute</h2>
+      <button (click)="store.chooseAttribute('')" [disabled]="store.busy()">+ Atribut</button>
+      @for (attribute of store.data().attributes; track attribute.id) {
+        <button
+          class="item"
+          [class.selected]="store.attributeId() === attribute.id"
+          [disabled]="store.busy()"
+          (click)="store.chooseAttribute(attribute.id)"
+        >
+          {{ attribute.name }}
+          <small
+            >{{ attribute.kind === 'Number' ? 'Număr' : 'Text'
+            }}{{ attribute.unit ? ' · ' + attribute.unit : '' }}</small
+          >
+        </button>
+      }
+    </aside>
+    <sd-attribute-form
+      [attribute]="store.attribute()"
+      [busy]="store.busy()"
+      (submitted)="store.saveAttribute($event)"
+    />
+  </section>
+</main>

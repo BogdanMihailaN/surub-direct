@@ -1,0 +1,31 @@
+@let item = product();
+<a class="product-card" [routerLink]="['/produse', item.product.slug]"
+  ><div class="product-art">
+    <span class="category-tag">{{ item.product.category }}</span
+    ><sd-fastener [category]="item.product.category" /><span class="illustration-note"
+      >ILUSTRAȚIE</span
+    >
+  </div>
+  <div class="card-content">
+    <span class="sku">{{ item.product.variants[0]?.sku }}</span>
+    <h3>{{ item.product.name }}</h3>
+    <p class="variant-label">
+      {{ item.product.variants[0]?.label }} · {{ item.product.variants[0]?.material }}
+    </p>
+    <div class="availability" [class.out]="!available(item)">
+      <i></i>{{ available(item) ? 'Stoc demonstrativ disponibil' : 'Fără stoc' }}
+    </div>
+    <div class="price-row">
+      <div>
+        <small>De la / ambalaj</small>
+        @if (price(item) !== null) {
+          <strong>{{ price(item) | number: '1.2-2' }} <span>lei</span></strong
+          ><small>TVA inclus · exemplu</small>
+        } @else {
+          <strong>Preț indisponibil</strong>
+        }
+      </div>
+      <span class="card-arrow">↗</span>
+    </div>
+  </div></a
+>

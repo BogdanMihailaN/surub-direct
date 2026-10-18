@@ -1,0 +1,59 @@
+<form class="panel" #form="ngForm" (ngSubmit)="submit(form)">
+  <h2>Editează varianta</h2>
+  <p class="muted">
+    SKU: <strong>{{ variant().sku }}</strong
+    >. Corectează datele aceleiași variante; pentru alt produs fizic creează un SKU nou. Stocul și
+    recepțiile se păstrează.
+  </p>
+  <fieldset [disabled]="busy()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Denumire variantă</mat-label>
+        <input matInput name="label" [(ngModel)]="details.label" required maxlength="160" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Diametru (mm)</mat-label>
+        <input
+          matInput
+          name="diameter"
+          type="number"
+          min="0.001"
+          max="999999999.999"
+          step="0.001"
+          [(ngModel)]="details.diameterMm"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Lungime (mm)</mat-label>
+        <input
+          matInput
+          name="length"
+          type="number"
+          min="0.001"
+          max="999999999.999"
+          step="0.001"
+          [(ngModel)]="details.lengthMm"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Material</mat-label>
+        <input matInput name="material" [(ngModel)]="details.material" required maxlength="80" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Finisaj</mat-label>
+        <input matInput name="finish" [(ngModel)]="details.finish" required maxlength="80" />
+      </mat-form-field>
+    </div>
+    @if (!dimensionsValid()) {
+      <p class="validation" role="alert">
+        Dimensiunile acceptă valori pozitive cu maximum 3 zecimale, până la 999999999,999 mm.
+      </p>
+    }
+    <button mat-flat-button type="submit" [disabled]="form.invalid || busy() || !dimensionsValid()">
+      Salvează varianta
+    </button>
+    <button mat-button type="button" [disabled]="busy()" (click)="cancelled.emit()">
+      Renunță la editare
+    </button>
+  </fieldset>
+</form>

@@ -1,0 +1,50 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <h2>{{ attribute() ? 'Editează atributul' : 'Atribut nou' }}</h2>
+  <fieldset [disabled]="busy()">
+    <label
+      >Denumire atribut<input name="name" [(ngModel)]="details.name" required maxlength="80"
+    /></label>
+    <label
+      >Cod atribut<input
+        name="code"
+        [(ngModel)]="details.code"
+        required
+        maxlength="60"
+        pattern="[a-z][a-z0-9-]*"
+        [readonly]="!!attribute()"
+    /></label>
+    <label
+      >Tip atribut<select name="kind" [(ngModel)]="details.kind" [disabled]="!!attribute()">
+        <option value="Text">Text (ex. DIN 933, metric, 8.8)</option>
+        <option value="Number">Număr (ex. pas filet)</option>
+      </select></label
+    >
+    @if (details.kind === 'Number') {
+      <label
+        >Unitate de măsură<input
+          name="unit"
+          [(ngModel)]="details.unit"
+          maxlength="20"
+          [readonly]="!!attribute()"
+      /></label>
+    }
+    <label
+      >Ordine atribut<input
+        name="sortOrder"
+        type="number"
+        min="0"
+        max="10000"
+        step="1"
+        [(ngModel)]="details.sortOrder"
+        required
+    /></label>
+    <p>
+      Codul, tipul și unitatea rămân stabile după creare. Pentru alte unități creează un atribut
+      nou.
+    </p>
+    @if (attribute()?.source && attribute()?.source !== 'Custom') {
+      <p>Acest atribut utilizează câmpul existent al variantei, fără duplicarea valorilor.</p>
+    }
+    <button type="submit" [disabled]="busy() || form.invalid">Salvează atributul</button>
+  </fieldset>
+</form>

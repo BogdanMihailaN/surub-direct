@@ -1,0 +1,93 @@
+<form class="panel" #form="ngForm" (ngSubmit)="submit(form)">
+  <h2>Editează ambalajul</h2>
+  <p class="muted">
+    Cod: <strong>{{ offer().code }}</strong> · SKU: <strong>{{ sku() }}</strong
+    >. Codurile și legătura cu prețul rămân aceleași.
+  </p>
+  @if (price(); as currentPrice) {
+    <p class="muted">
+      Preț curent:
+      <strong>{{ currentPrice.netAmount | number: '1.2-6' }} lei net / ambalaj</strong>. Prețul nu
+      se recalculează automat.
+    </p>
+  } @else {
+    <p class="muted">Acest ambalaj nu are încă un preț.</p>
+  }
+  <fieldset [disabled]="busy()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Denumire ambalaj</mat-label>
+        <input matInput name="label" [(ngModel)]="details.label" required maxlength="100" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Bucăți / ambalaj</mat-label>
+        <input
+          matInput
+          name="units"
+          type="number"
+          min="1"
+          max="2147483647"
+          step="1"
+          [(ngModel)]="details.unitsPerPack"
+          (ngModelChange)="confirmed = false"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Minim ambalaje</mat-label>
+        <input
+          matInput
+          name="min"
+          type="number"
+          min="1"
+          max="2147483647"
+          step="1"
+          [(ngModel)]="details.minPacks"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Pas cantitate</mat-label>
+        <input
+          matInput
+          name="step"
+          type="number"
+          min="1"
+          max="2147483647"
+          step="1"
+          [(ngModel)]="details.packStep"
+          required
+        />
+      </mat-form-field>
+    </div>
+    @if (!quantitiesValid()) {
+      <p class="validation" role="alert">
+        Cantitățile trebuie să fie numere întregi pozitive. Valorile și minimul total în bucăți nu
+        pot depăși 2147483647.
+      </p>
+    }
+    @if (packSizeChanged()) {
+      <div class="review-notice">
+        <p>
+          Schimbi ambalajul de la {{ offer().unitsPerPack }} la {{ details.unitsPerPack }} bucăți.
+          Produsul va deveni ciornă și va fi ascuns din magazin până la republicare. Stocul în
+          bucăți și prețul pe ambalaj se păstrează.
+        </p>
+        <label
+          ><input type="checkbox" name="confirmed" [(ngModel)]="confirmed" required /> Am înțeles;
+          voi verifica prețul înainte de republicare.</label
+        >
+      </div>
+    }
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="form.invalid || busy() || !quantitiesValid() || (packSizeChanged() && !confirmed)"
+    >
+      Salvează ambalajul
+    </button>
+    <button mat-button type="button" [disabled]="busy()" (click)="cancelled.emit()">
+      Renunță la editare
+    </button>
+  </fieldset>
+</form>

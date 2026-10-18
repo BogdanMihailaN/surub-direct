@@ -1,0 +1,12 @@
+export type { Offer } from './offer.model';
+export type { Variant } from './variant.model';
+export type { Product } from './product.model';
+export type { Price } from './price.model';
+export type { Stock } from './stock.model';
+export type { StoreProduct } from './store-product.model';
+export type { StorePage } from './store-page.model';
+export type { Category } from './category.model';
+export type { TechnicalAttribute } from './technical-attribute.model';
+export type { TechnicalValue } from './technical-value.model';
+export type { AttributeFilter } from './attribute-filter.model';
+export type { Taxonomy } from './taxonomy.model';

@@ -1,0 +1,44 @@
+@let row = item();
+<form class="panel" #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="busy()">
+    <span class="eyebrow">03 / PREȚ</span>
+    <h2>Stabilește prețul</h2>
+    <label class="select-label"
+      >Oferta<select name="priceOffer" [(ngModel)]="priceOffer" (change)="fillPrice()" required>
+        <option value="">Alege ambalajul</option>
+        @for (v of row.product.variants; track v.id) {
+          @for (o of v.offers; track o.id) {
+            <option [value]="o.id">{{ v.sku }} · {{ o.label }}</option>
+          }
+        }
+      </select></label
+    >
+    <div class="form-grid">
+      <mat-form-field appearance="outline"
+        ><mat-label>Preț net / ambalaj (lei)</mat-label
+        ><input
+          matInput
+          type="number"
+          min="0.000001"
+          step="0.000001"
+          name="net"
+          [(ngModel)]="netAmount"
+          required /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>TVA (%)</mat-label
+        ><input
+          matInput
+          type="number"
+          min="0"
+          max="100"
+          step="0.01"
+          name="tax"
+          [(ngModel)]="taxPercent"
+          required
+      /></mat-form-field>
+    </div>
+    <button mat-stroked-button type="submit" [disabled]="form.invalid || busy() || !priceOffer">
+      Salvează prețul
+    </button>
+  </fieldset>
+</form>

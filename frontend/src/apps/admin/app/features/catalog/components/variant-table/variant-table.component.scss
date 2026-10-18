@@ -1,0 +1,32 @@
+@use '../../styles/forms';
+.table-wrap {
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+th {
+  font-size: 9px;
+  color: #899878;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+td,
+th {
+  padding: 12px 10px;
+  border-bottom: 1px solid #edf0e8;
+}
+td small {
+  display: block;
+  font-size: 9px;
+  color: #8e9b7e;
+  margin-top: 5px;
+}
+
+td button {
+  margin-top: 8px;
+  font-size: 11px;
+}

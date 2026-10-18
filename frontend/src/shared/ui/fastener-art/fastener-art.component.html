@@ -1,0 +1,57 @@
+<svg
+  viewBox="0 0 300 180"
+  role="img"
+  [attr.aria-label]="category()"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id="steel" x1="0" x2="0.8" y1="0" y2="1">
+      <stop stop-color="#e4e7e8" />
+      <stop offset=".46" stop-color="#9da6ac" />
+      <stop offset=".5" stop-color="#d8dde0" />
+      <stop offset="1" stop-color="#6d787f" />
+    </linearGradient>
+  </defs>
+  @if (category().includes('Piuli') || category().includes('Șaibe')) {
+    <g transform="translate(150 90) rotate(-12)">
+      <path d="M-64 -36 L0 -66 L64 -36 L64 32 L0 66 L-64 32Z" fill="#758188" />
+      <path
+        d="M-64 -46 L0 -76 L64 -46 L64 22 L0 56 L-64 22Z"
+        fill="url(#steel)"
+        stroke="#66747c"
+        stroke-width="2"
+      />
+      <ellipse cy="-9" rx="30" ry="34" fill="#59656c" />
+      <ellipse cy="-13" rx="26" ry="29" fill="#f1f1ed" />
+      <path
+        d="M-24 -6 Q0 5 24 -6 M-24 -13 Q0 -2 24 -13 M-24 -20 Q0 -9 24 -20"
+        fill="none"
+        stroke="#818d94"
+        stroke-width="3"
+      />
+    </g>
+  } @else {
+    <g transform="translate(147 91) rotate(-30)">
+      <path
+        d="M-78 -16 H91 L115 0 L91 16 H-78Z"
+        fill="url(#steel)"
+        stroke="#6d787f"
+        stroke-width="1.5"
+      />
+      @for (x of threads; track x) {
+        <path [attr.d]="'M' + x + ' -16 l-9 32'" stroke="#6b777f" stroke-width="2" />
+      }
+      <path
+        d="M-98 -32 L-75 -24 L-75 24 L-98 32 L-112 20 L-112 -20Z"
+        fill="url(#steel)"
+        stroke="#69757d"
+        stroke-width="2"
+      />
+      <path
+        d="M-98 -32 V32 M-111 -20 L-98 -12 L-76 -16 M-98 -12 V15 L-76 22"
+        stroke="#89949b"
+        fill="none"
+      />
+    </g>
+  }
+</svg>

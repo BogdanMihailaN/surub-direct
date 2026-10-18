@@ -1,0 +1,153 @@
+<div class="workspace">
+  <sd-product-sidebar
+    [products]="store.products()"
+    [selectedId]="store.selectedId()"
+    [busy]="store.busy()"
+    [page]="store.page()"
+    [pageCount]="store.pageCount()"
+    [total]="store.total()"
+    (filtered)="store.filter($event.search, $event.status)"
+    (pageChanged)="store.changePage($event)"
+    (selected)="store.choose($event)"
+    (create)="store.newProduct()"
+  />
+  <main class="editor">
+    <div class="status" aria-live="polite">
+      @if (store.message()) {
+        <p class="success">{{ store.message() }}</p>
+      }
+      @if (store.error()) {
+        <p class="error" role="alert">{{ store.error() }}</p>
+      }
+    </div>
+    @if (store.creating()) {
+      <span class="eyebrow">PASUL 1 / CATALOG</span>
+      <h1>Adaugă un produs</h1>
+      <p class="muted">Produsul grupează variantele. Va fi creat ca ciornă.</p>
+      <sd-product-create-form
+        [categories]="store.taxonomy().categories"
+        [busy]="store.busy()"
+        (submitted)="store.create($event)"
+      />
+    } @else if (store.selected(); as row) {
+      <div class="editor-heading">
+        <div>
+          <span class="eyebrow">{{ row.product.category }}</span>
+          <h1>{{ row.product.name }}</h1>
+          <span class="badge">{{
+            row.product.status === 'Published'
+              ? 'Publicat'
+              : row.product.status === 'Archived'
+                ? 'Arhivat'
+                : 'Ciornă'
+          }}</span>
+        </div>
+        <div class="actions">
+          @if (row.product.status !== 'Archived' && !store.editing()) {
+            <button mat-stroked-button [disabled]="store.busy()" (click)="store.edit()">
+              Editează produsul
+            </button>
+          }
+          @if (row.product.status === 'Published') {
+            <a
+              mat-stroked-button
+              [href]="'http://localhost:4200/produse/' + row.product.slug"
+              target="_blank"
+              rel="noopener"
+              >Vezi în magazin ↗</a
+            >
+          } @else if (row.product.status === 'Draft') {
+            <button
+              mat-flat-button
+              [disabled]="store.busy() || store.editing()"
+              (click)="store.publish()"
+            >
+              Publică produsul
+            </button>
+          }
+        </div>
+      </div>
+      <sd-variant-table
+        [item]="row"
+        [disabled]="store.busy() || store.editing()"
+        (variantEdited)="store.editVariant($event)"
+        (attributesEdited)="store.editAttributes($event)"
+        (offerEdited)="store.editOffer($event)"
+      />
+      @if (store.editor()?.kind === 'product') {
+        <sd-product-edit-form
+          [product]="row.product"
+          [categories]="store.taxonomy().categories"
+          [busy]="store.busy()"
+          (submitted)="store.update($event)"
+          (cancelled)="store.cancelEdit()"
+        />
+      } @else if (store.editingOffer(); as offer) {
+        <sd-offer-edit-form
+          [offer]="offer"
+          [sku]="store.editingVariant()!.sku"
+          [price]="store.editingPrice()"
+          [busy]="store.busy()"
+          (submitted)="store.updateOffer($event)"
+          (cancelled)="store.cancelEdit()"
+        />
+      } @else if (store.editor()?.kind === 'attributes') {
+        <sd-variant-attributes-form
+          [variant]="store.editingVariant()!"
+          [definitions]="store.attributeDefinitions()"
+          [busy]="store.busy()"
+          (submitted)="store.setAttributes($event)"
+          (cancelled)="store.cancelEdit()"
+        />
+      } @else if (store.editingVariant(); as variant) {
+        <sd-variant-edit-form
+          [variant]="variant"
+          [busy]="store.busy()"
+          (submitted)="store.updateVariant($event)"
+          (cancelled)="store.cancelEdit()"
+        />
+      } @else {
+        <sd-product-lifecycle
+          [product]="row.product"
+          [busy]="store.busy()"
+          (archived)="store.archive()"
+          (restored)="store.restore()"
+        />
+      }
+      @if (row.product.status !== 'Archived' && !store.editing()) {
+        @for (identity of [row.product.id]; track identity) {
+          <div class="forms">
+            <sd-variant-form
+              [item]="row"
+              [busy]="store.busy()"
+              (submitted)="store.addVariant($event)"
+            /><sd-offer-form
+              [item]="row"
+              [preferred]="store.preferredVariant()"
+              [busy]="store.busy()"
+              (submitted)="store.addOffer($event)"
+            /><sd-price-form
+              [item]="row"
+              [preferred]="store.preferredOffer()"
+              [busy]="store.busy()"
+              (submitted)="store.setPrice($event)"
+            /><sd-receipt-form
+              [item]="row"
+              [busy]="store.busy()"
+              (submitted)="store.receive($event)"
+            />
+          </div>
+        }
+      }
+    } @else {
+      <div class="welcome">
+        <span class="eyebrow">ȘURUB DIRECT / BACK OFFICE</span>
+        <h1>Catalogul începe aici.</h1>
+        <p>Alege un produs din stânga sau creează unul nou.</p>
+        <button mat-flat-button [disabled]="store.busy()" (click)="store.newProduct()">
+          Adaugă primul tău produs
+        </button>
+      </div>
+    }
+  </main>
+</div>
