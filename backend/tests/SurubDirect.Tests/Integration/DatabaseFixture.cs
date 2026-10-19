@@ -7,6 +7,7 @@ using SurubDirect.Catalog.Infrastructure;
 using SurubDirect.Pricing.Infrastructure;
 using SurubDirect.Inventory.Infrastructure;
 using SurubDirect.Store.Application;
+using SurubDirect.Store.Infrastructure;
 
 namespace SurubDirect.Tests;
 public sealed class DatabaseFixture : IAsyncLifetime
@@ -31,6 +32,7 @@ public sealed class DatabaseFixture : IAsyncLifetime
             Database = "inventory_tests"
         }.ConnectionString;
         s.AddLogging();
+        s.AddCatalogImports(container.GetConnectionString());
         s.AddCatalogMedia(mediaRoot);
         s.AddCatalog(container.GetConnectionString()).AddPricing(container.GetConnectionString()).AddInventory(inventoryConnection);
         s.AddScoped<IVariantLookup, TestVariantLookup>();

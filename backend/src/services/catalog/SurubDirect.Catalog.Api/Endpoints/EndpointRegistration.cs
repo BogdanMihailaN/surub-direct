@@ -10,6 +10,9 @@ public static class EndpointRegistration
         GetProductEndpoint.Map(app);
         VariantExistsEndpoint.Map(app, app.Configuration);
         var admin = app.MapGroup("/api/v1/admin").RequireAuthorization("Admin");
+        PreviewImportEndpoint.Map(admin);
+        CommitImportEndpoint.Map(admin);
+        GetImportTemplateEndpoint.Map(admin);
         UploadImageEndpoint.Map(admin);
         UpdateImageEndpoint.Map(admin);
         ArrangeImagesEndpoint.Map(admin);

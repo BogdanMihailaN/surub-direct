@@ -22,6 +22,14 @@ export const routes: Routes = [
         (m) => m.TaxonomyAdmin,
       ),
   },
+  {
+    path: 'import-produse',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/product-import/pages/product-import/product-import.component').then(
+        (m) => m.ProductImportPage,
+      ),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'catalog' },
   { path: '**', redirectTo: 'catalog' },
 ];

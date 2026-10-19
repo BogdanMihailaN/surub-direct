@@ -19,6 +19,7 @@ Actualizat la 19 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 - Produsele arhivate nu pot fi editate, extinse cu variante/ambalaje sau publicate înainte de restaurare. Arhivarea nu anulează recepțiile; Inventory păstrează istoricul și soldul. Prețurile și recepțiile au în continuare propriile operații administrative în serviciile lor.
 - Imagini produse: încărcare JPEG/PNG/WebP, text alternativ, asociere SKU, ordonare, alegerea imaginii principale și eliminare cu confirmare. Catalog procesează fișierele în WebP (1600 px) și miniaturi (400 px); galeria și cardurile magazinului folosesc imaginile încărcate, cu ilustrație de rezervă când lipsesc.
 - Imaginile ciornelor și produselor arhivate sunt accesibile doar în administrare. Citirea publică verifică starea produsului la fiecare cerere; fără cache public persistent. Fișierele locale sunt în directorul privat `work/media/catalog`, în afara Git.
+- Import CSV administrativ pentru produse noi, variante, ambalaje și prețuri: model, previzualizare, validări pe linii și confirmare înainte de salvare. Maximum 500 de rânduri/1 MB; categoriile existente sunt identificate prin slug. Salvare atomică Catalog + Pricing, protecție împotriva duplicatelor, ciorne fără modificarea stocului. [Ghid și limite](product-import.md).
 - Inventory: recepții imuabile/idempotente și incrementare atomică a stocului. Verificarea existenței SKU se face prin API-ul Catalog.
 - Catalog citește stocul prin API-ul Inventory. Timeout și erorile de dependență sunt raportate explicit, fără a afișa fals stoc zero.
 - Identity deține conturile, cookie-ul HttpOnly și tokenurile CSRF. Catalog și Inventory validează sesiunea și modificările prin Identity, apoi aplică rolul Administrator. Accesul direct la servicii are aceleași verificări.
@@ -32,7 +33,7 @@ Actualizat la 19 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul, comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul, facturarea, importurile și furnizorii nu sunt implementați. Coloana Reserved nu implică existența operațiilor de rezervare.
+- Coșul, comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul, facturarea și furnizorii nu sunt implementați. Coloana Reserved nu implică existența operațiilor de rezervare.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.

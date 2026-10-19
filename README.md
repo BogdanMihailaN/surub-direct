@@ -97,3 +97,7 @@ Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, se
 ### Imagini locale
 
 Administrarea fiecărui produs include panoul „Imaginile produsului”. Sunt acceptate JPEG, PNG și WebP statice, maximum 8 MB, 6000 px/latură și 24 MP; maximum 12 imagini/produs. Textul alternativ este obligatoriu. Fișierele sunt convertite în WebP și miniaturi, în `work/media/catalog` (neversionat). La pornirea manuală a Catalog API configurează `Media__Root` cu un director privat persistent; scripturile locale îl configurează automat. Backup-ul bazei trebuie însoțit de backup-ul fișierelor.
+
+## Import produse
+
+Pagina **Import CSV** din administrare permite încărcarea de produse noi cu variante, ambalaje și prețuri. Include model descărcabil, previzualizare și validări; salvarea creează numai ciorne și nu modifică stocul. Vezi [formatul CSV și limitele](docs/product-import.md).

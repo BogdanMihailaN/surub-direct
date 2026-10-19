@@ -10,7 +10,7 @@ surub-direct/
 │   │   │   ├── catalog/
 │   │   │   │   ├── SurubDirect.Catalog.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   │   ├── SurubDirect.Pricing.{Application,Domain,Infrastructure,Contracts}/
-│   │   │   │   ├── SurubDirect.Store.Application/
+│   │   │   │   ├── SurubDirect.Store.{Application,Infrastructure}/
 │   │   │   │   └── SurubDirect.Catalog.Worker/
 │   │   │   ├── inventory/SurubDirect.Inventory.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   ├── identity/SurubDirect.Identity.{Api,Infrastructure}/
@@ -85,3 +85,9 @@ Angular admin are feature-ul `taxonomy` cu `pages`, `components`, `data-access`,
 `Catalog.Domain/Images/ProductImage` și agregatul Product dețin regulile galeriei. Application are porturi distincte (`IImageProcessor`, `IImageStorage`, `IProductImageRepository`) în `Abstractions/Media` și câte un handler pentru upload, metadate, ordine, eliminare și citire în `Features/Images`. Infrastructure conține procesorul SkiaSharp și stocarea locală în `Media`, plus configurația EF și repository-ul separat. API expune un fișier per endpoint în `Administration/Images` și citirea publică în `Endpoints/Catalog`.
 
 Admin are feature-ul `product-images`: `image-upload-form`, `image-editor` și `product-images-panel`, fiecare cu TS/HTML/SCSS alăturate; API și stare în directoarele proprii. Pagina catalogului compune panoul. Storefront folosește `product-gallery`; helper-ul pentru URL și modelul comun sunt reutilizate de cele două aplicații. Testele de procesare și persistență sunt în `Integration/Images`, regulile comerciale în `Unit/ProductImageTests.cs`, iar fluxul complet în `frontend/tests/e2e/images.spec.ts`.
+
+## Importul CSV
+
+`Store.Application/Features/Imports` compune operațiile Catalog și Pricing din același serviciu: parser CSV, citire de rânduri, construire de lot, handler de previzualizare și handler de salvare. Regulile comerciale reutilizează domeniile Catalog/Pricing. Portul `IProductImportRepository` este în `Abstractions/Imports`. `Store.Infrastructure/Imports` implementează citirea conflictelor și tranzacția comună celor două contexte EF, cu înregistrare DI separată; worker-ul nu primește aceste dependențe. Nicio referință spre alt serviciu.
+
+API are câte un endpoint în `Administration/Imports`. Angular are feature-ul `product-import`, cu pagină de compoziție, componente `import-upload` și `import-preview`, API, stare și modele în directoare separate. Testele sunt în `Unit/Imports`, `Integration/Imports` și `frontend/tests/e2e/product-import.spec.ts`.

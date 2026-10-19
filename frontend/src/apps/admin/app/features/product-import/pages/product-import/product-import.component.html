@@ -1,0 +1,80 @@
+<main>
+  <div class="heading">
+    <div>
+      <p class="eyebrow">CATALOG / IMPORT</p>
+      <h1>Import produse din CSV</h1>
+    </div>
+    <a mat-stroked-button routerLink="/catalog">Înapoi la produse</a>
+  </div>
+  <p class="intro">
+    Adaugă produse noi, cu variante, ambalaje și prețuri, într-o singură operație. Verifică
+    previzualizarea înainte de salvare.
+  </p>
+  <section class="instructions" aria-label="Instrucțiuni CSV">
+    <h2>1. Pregătește fișierul</h2>
+    <p>
+      Un rând reprezintă un ambalaj. Repetă aceleași date de produs și SKU pentru ambalaje diferite.
+      Slug-urile, SKU-urile și codurile deja existente sunt respinse.
+    </p>
+    <p>
+      Folosește punct pentru zecimale; prețul net este în RON per ambalaj, iar TVA este o fracție
+      (exemplu ilustrativ: 0.21). Diametrul și lungimea pot fi goale. Pune câmpurile cu separator
+      sau rând nou între ghilimele duble.
+    </p>
+    <a mat-stroked-button [href]="store.templateUrl" download>Descarcă fișierul-model</a>
+    <details>
+      <summary>Slug-urile categoriilor disponibile</summary>
+      @if (store.categoryError()) {
+        <p role="alert">{{ store.categoryError() }}</p>
+        <button mat-button (click)="store.loadCategories()">
+          Reîncearcă încărcarea categoriilor
+        </button>
+      }
+      <ul>
+        @for (category of store.categories(); track category.id) {
+          <li>
+            {{ category.name }} — <code>{{ category.slug }}</code>
+          </li>
+        }
+      </ul>
+      <a routerLink="/categorii">Administrează categoriile</a>
+    </details>
+    <p class="note">
+      Modelul conține date demonstrative: înlocuiește-le înainte de import. Imaginile și atributele
+      suplimentare se completează ulterior; publicarea rămâne o acțiune separată.
+    </p>
+  </section>
+  <section class="upload">
+    <h2>2. Validează fișierul</h2>
+    <sd-import-upload [busy]="store.busy()" (selected)="store.select($event)" />
+    @if (store.filename()) {
+      <p>
+        Fișier: <strong>{{ store.filename() }}</strong>
+      </p>
+    }
+  </section>
+  @if (store.busy()) {
+    <p role="status">Se procesează fișierul…</p>
+  }
+  @if (store.error()) {
+    <p class="error" role="alert">
+      {{ store.error() }} Selectează din nou fișierul pentru o validare nouă.
+    </p>
+  }
+  @if (store.preview(); as preview) {
+    <section>
+      <sd-import-preview [preview]="preview" [busy]="store.busy()" (save)="store.commit()" />
+    </section>
+  }
+  @if (store.result(); as result) {
+    <section class="success" role="status">
+      <h2>Import finalizat</h2>
+      <p>
+        Produse create ca ciorne: {{ result.productIds.length }}. Variante SKU:
+        {{ result.variantCount }}. Ambalaje cu preț: {{ result.offerCount }}. Stocul nu a fost
+        modificat.
+      </p>
+      <a mat-flat-button routerLink="/catalog">Verifică produsele în catalog</a>
+    </section>
+  }
+</main>

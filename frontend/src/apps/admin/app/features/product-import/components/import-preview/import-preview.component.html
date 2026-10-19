@@ -1,0 +1,91 @@
+@let data = preview();
+<h2>Previzualizare import</h2>
+@if (data.errors.length) {
+  <div class="errors" role="alert">
+    <strong>Import blocat: {{ data.errors.length }} erori. Nu s-a salvat nimic.</strong>
+    <ul>
+      @for (error of data.errors; track $index) {
+        <li>Linia {{ error.line }}: {{ error.message }}</li>
+      }
+    </ul>
+    <p>Corectează fișierul și selectează-l din nou pentru validare.</p>
+  </div>
+} @else {
+  <p class="summary">
+    Produse: {{ data.productCount }} · Variante SKU: {{ data.variantCount }} · Ambalaje cu preț:
+    {{ data.offerCount }}
+  </p>
+}
+@if (data.rows.length) {
+  <p class="scroll-hint">Derulează tabelul spre dreapta pentru ambalaje și prețuri.</p>
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Rânduri CSV validate">
+    <table>
+      <thead>
+        <tr>
+          <th>Linie</th>
+          <th>Produs și categorie</th>
+          <th>Variantă SKU</th>
+          <th>Caracteristici</th>
+          <th>Ambalaj</th>
+          <th>Cantități</th>
+          <th>Preț net / ambalaj</th>
+          <th>TVA</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of data.rows; track row.line) {
+          <tr>
+            <td>{{ row.line }}</td>
+            <td>
+              <strong>{{ row.productName }}</strong
+              ><small>{{ row.slug }}</small
+              ><small>Categorie: {{ row.categorySlug }}</small>
+              <details>
+                <summary>Descriere</summary>
+                {{ row.description }}
+              </details>
+            </td>
+            <td>
+              <strong>{{ row.sku }}</strong
+              ><small>{{ row.variantLabel }}</small>
+            </td>
+            <td>
+              {{ row.material }} · {{ row.finish
+              }}<small>Ø {{ row.diameterMm ?? '—' }} / L {{ row.lengthMm ?? '—' }} mm</small>
+            </td>
+            <td>
+              {{ row.offerLabel }}<small>{{ row.offerCode }}</small>
+            </td>
+            <td>
+              {{ row.unitsPerPack }} buc.<small
+                >Min. {{ row.minPacks }} · pas {{ row.packStep }}</small
+              >
+            </td>
+            <td>{{ row.netAmount | number: '1.2-6' }} RON</td>
+            <td>{{ row.taxRate * 100 | number: '1.0-2' }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+@if (data.canImport) {
+  <div class="confirmation">
+    <label
+      ><input
+        type="checkbox"
+        [checked]="confirmed()"
+        [disabled]="busy()"
+        (change)="confirm($event)"
+      />
+      Am verificat produsele, ambalajele și prețurile.</label
+    >
+    <p>
+      Toate produsele se salvează ca ciorne. Stocul se introduce separat prin recepții. Datele sunt
+      revalidate la salvare.
+    </p>
+    <button mat-flat-button [disabled]="busy() || !confirmed()" (click)="save.emit()">
+      Importă produsele ca ciorne
+    </button>
+  </div>
+}

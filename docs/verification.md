@@ -80,3 +80,12 @@ Produsele create de noile scenarii sunt arhivate la final; definițiile și cate
 - Verificarea fișierelor versionabile nu a găsit valorile secretelor locale. Fișierele media, backup-urile și logurile rămân ignorate de Git. Scenariul nou își elimină imaginile și arhivează produsul la final.
 
 Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor orfane; nu s-au verificat upload-uri sub încărcare de producție. Nu se păstrează originalele. Limitele și procedura de backup pentru fișiere sunt documentate în architecture.md și README.md.
+
+## Import CSV — 19 octombrie 2026
+
+- `python3 scripts/dev.py test`: **87 teste trecute**, fără teste omise. Parserul verifică BOM, ghilimele/escape, separatori, linii multiple, numere și limite. Testele PostgreSQL verifică previzualizarea fără scrieri, ciorne cu mai multe ambalaje per SKU, conflicte în fișier și cu date existente, rollback la eșecul Pricing și două importuri prevalidate concurente. Limitele de dependențe includ și Store.Application.
+- Build .NET reușit; build-uri Angular de producție pentru storefront/admin și `format:check` reușite.
+- `python3 scripts/dev.py e2e`: **17 scenarii trecute**, inclusiv import cu previzualizare, erori pe linii, confirmare, prețuri, lipsa modificărilor de stoc, reimport respins și protecție autentificare/CSRF prin gateway și Catalog direct. Produsele testului de import sunt arhivate la final.
+- Pagina de import inspectată vizual pe desktop și mobil, fără depășirea viewport-ului; tabelul are derulare proprie. Capturile sunt private în `work/import-desktop.png` și `work/import-mobile.png`.
+- `git diff --check` fără probleme și nicio valoare de secret local găsită în fișierele versionabile. Nu s-au adăugat migrații sau modificat schemele pentru import.
+- După întreruperea sesiunii, prima reluare Playwright a întâlnit serviciile oprite. Docker, PostgreSQL, API-urile și aplicațiile Angular au fost repornite; rezultatul de 17/17 este al rulării complete ulterioare.

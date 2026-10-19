@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup><TargetFramework>net10.0</TargetFramework></PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../SurubDirect.Store.Infrastructure/SurubDirect.Store.Infrastructure.csproj" />
     <ProjectReference Include="../../../shared/SurubDirect.ServiceDefaults/SurubDirect.ServiceDefaults.csproj" />
     <ProjectReference Include="../SurubDirect.Catalog.Infrastructure/SurubDirect.Catalog.Infrastructure.csproj" />
     <ProjectReference Include="../SurubDirect.Pricing.Infrastructure/SurubDirect.Pricing.Infrastructure.csproj" />

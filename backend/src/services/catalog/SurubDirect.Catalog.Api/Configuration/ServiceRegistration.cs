@@ -1,4 +1,5 @@
 using SurubDirect.Catalog.Infrastructure;
+using SurubDirect.Store.Infrastructure;
 using SurubDirect.Pricing.Infrastructure;
 using SurubDirect.Store.Application;
 using SurubDirect.Catalog.Api.Clients;
@@ -14,6 +15,7 @@ public static class ServiceRegistration
         builder.Services.AddCatalog(connection).AddPricing(connection);
         var mediaRoot = builder.Configuration["Media:Root"] ?? throw new InvalidOperationException("Configure Media__Root to a private persistent directory.");
         builder.Services.AddCatalogMedia(mediaRoot);
+        builder.Services.AddCatalogImports(connection);
         builder.Services.AddScoped<ProductEnricher>();
         builder.Services.AddScoped<GetCatalogHandler>();
         builder.Services.AddScoped<GetProductHandler>();

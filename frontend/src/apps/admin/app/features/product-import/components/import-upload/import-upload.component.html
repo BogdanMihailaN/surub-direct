@@ -1,0 +1,13 @@
+<label for="import-file">Alege fișierul CSV</label>
+<input
+  id="import-file"
+  type="file"
+  accept=".csv,text/csv"
+  [disabled]="busy()"
+  (click)="reset($event)"
+  (change)="choose($event)"
+  aria-describedby="file-help"
+/>
+<p id="file-help">
+  UTF-8 · separator ; · maximum 1 MB și 500 de rânduri. Alegerea fișierului pornește doar validarea.
+</p>
