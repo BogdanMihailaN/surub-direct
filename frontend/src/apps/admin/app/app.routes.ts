@@ -30,6 +30,14 @@ export const routes: Routes = [
         (m) => m.ProductImportPage,
       ),
   },
+  {
+    path: 'furnizori',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/purchasing/pages/purchasing/purchasing.component').then(
+        (m) => m.PurchasingPage,
+      ),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'catalog' },
   { path: '**', redirectTo: 'catalog' },
 ];

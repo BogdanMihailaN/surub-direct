@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from config import ROOT, environment, settings
 
-OWNERS = {'catalog': ('catalog', 'pricing'), 'inventory': ('inventory',), 'identity': ('identity',), 'ordering': ()}
+OWNERS = {'catalog': ('catalog', 'pricing'), 'inventory': ('inventory',), 'identity': ('identity',), 'ordering': (), 'purchasing': ()}
 
 
 def run(args, **kwargs):
@@ -48,7 +48,7 @@ def provision():
         psql('surub_direct', f'REVOKE ALL ON DATABASE {name} FROM PUBLIC; GRANT CONNECT ON DATABASE {name} TO {name};')
     # The original database remains a recoverable legacy copy, not a shared runtime store.
     psql('surub_direct', 'REVOKE CONNECT ON DATABASE surub_direct FROM PUBLIC;')
-    print('Four databases provisioned with separate owners and connection permissions.')
+    print(f'{len(OWNERS)} databases provisioned with separate owners and connection permissions.')
 
 
 def migrate_legacy():

@@ -1,0 +1,66 @@
+<section>
+  <h2>{{ supplier() ? 'Date furnizor' : 'Furnizor nou' }}</h2>
+  <form #form="ngForm" (ngSubmit)="submit(form)">
+    <fieldset [disabled]="busy()">
+      <div class="fields">
+        <label
+          >Denumire firmă<input name="name" [(ngModel)]="details.name" required maxlength="200"
+        /></label>
+        <label
+          >Țară (cod din două litere)<input
+            name="country"
+            [(ngModel)]="details.countryCode"
+            required
+            minlength="2"
+            maxlength="2"
+            pattern="[A-Za-z]{2}"
+        /></label>
+        <label
+          >Cod fiscal (CUI pentru România)<input
+            name="taxId"
+            [(ngModel)]="details.taxId"
+            required
+            maxlength="40"
+        /></label>
+        <label
+          >Persoană de contact<input
+            name="contactName"
+            [(ngModel)]="details.contactName"
+            maxlength="160"
+        /></label>
+        <label
+          >Email<input type="email" email name="email" [(ngModel)]="details.email" maxlength="254"
+        /></label>
+        <label
+          >Telefon<input type="tel" name="phone" [(ngModel)]="details.phone" maxlength="40"
+        /></label>
+        <label class="wide"
+          >Adresă<textarea
+            name="address"
+            [(ngModel)]="details.address"
+            maxlength="500"
+            rows="2"
+          ></textarea>
+        </label>
+        <label class="wide"
+          >Observații<textarea
+            name="notes"
+            [(ngModel)]="details.notes"
+            maxlength="2000"
+            rows="3"
+          ></textarea>
+        </label>
+      </div>
+      @if (supplier()) {
+        <label class="check"
+          ><input type="checkbox" name="isActive" [(ngModel)]="details.isActive" /> Furnizor
+          activ</label
+        >
+        <p class="help">
+          Dezactivarea păstrează asocierile și blochează modificarea lor până la reactivare.
+        </p>
+      }
+      <button [disabled]="form.invalid || busy()">Salvează furnizorul</button>
+    </fieldset>
+  </form>
+</section>

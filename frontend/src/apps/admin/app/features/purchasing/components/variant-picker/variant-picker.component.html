@@ -1,0 +1,28 @@
+<section>
+  <h3>Asociază un SKU din Catalog</h3>
+  <form #form="ngForm" (ngSubmit)="search.emit(query)">
+    <label
+      >Caută SKU sau denumire<input
+        name="query"
+        [(ngModel)]="query"
+        required
+        minlength="2"
+        maxlength="100" /></label
+    ><button [disabled]="busy() || form.invalid">Caută în Catalog</button>
+  </form>
+  <p class="help">
+    Sunt afișate maximum 25 de variante, inclusiv ciorne. Produsele arhivate nu se pot asocia.
+  </p>
+  <ul>
+    @for (variant of results(); track variant.id) {
+      <li>
+        <button type="button" [disabled]="busy()" (click)="selected.emit(variant)">
+          <strong>{{ variant.sku }}</strong> · {{ variant.productName }} · {{ variant.label }}
+        </button>
+      </li>
+    }
+  </ul>
+  @if (searched() && !results().length) {
+    <p>Niciun SKU găsit. Verifică termenul sau creează varianta în Catalog.</p>
+  }
+</section>

@@ -7,6 +7,7 @@ Magazin de șuruburi și elemente de fixare, reorganizat în servicii independen
 - `backend/src/services/catalog`: produse, categorii, atribute, imagini, variante, ambalaje, prețuri, publicare și worker Outbox.
 - `backend/src/services/inventory`: stoc și recepții idempotente, în bază separată.
 - `backend/src/services/identity`: conturi, autentificare, roluri și CSRF, în bază separată.
+- `backend/src/services/purchasing`: furnizori, asocieri SKU și condiții curente de achiziție, în bază proprie.
 - `backend/src/services/ordering`: host separat, pregătit pentru etapa comenzilor; fără checkout implementat.
 - `backend/src/gateway`: YARP, singura adresă API folosită de frontend.
 - `frontend/src/apps`: aplicațiile Angular storefront și admin; codul comun este în `frontend/src/shared`.
@@ -58,6 +59,7 @@ python3 scripts/dev.py admin
 | Inventory | http://127.0.0.1:5102 |
 | Identity | http://127.0.0.1:5103 |
 | Ordering | http://127.0.0.1:5104 |
+| Purchasing | http://127.0.0.1:5105 |
 
 API-urile interne sunt listate pentru depanare. Frontend-ul apelează gateway-ul. Documentația OpenAPI este disponibilă în Development la `/openapi/catalog/v1.json`, `/openapi/inventory/v1.json` și `/openapi/identity/v1.json` prin gateway.
 
@@ -67,7 +69,7 @@ Pentru o bază Catalog goală, poți rula `python3 scripts/dev.py seed-demo` dup
 
 ## Datele vechi
 
-Migrarea existentă a păstrat baza `surub_direct` și backup-uri private în `work/backups`. Bazele active sunt `surub_catalog`, `surub_inventory`, `surub_identity`, `surub_ordering`, fiecare cu utilizator propriu.
+Migrarea existentă a păstrat baza `surub_direct` și backup-uri private în `work/backups`. Bazele active sunt `surub_catalog`, `surub_inventory`, `surub_identity`, `surub_ordering`, `surub_purchasing`, fiecare cu utilizator propriu.
 
 Pentru un alt checkout cu vechea bază, oprește vechiul API și rulează `python3 scripts/dev.py migrate-legacy` înainte de `init`. Copiază numai în ținte goale, verifică numărul rândurilor și nu șterge sursa. Nu utiliza migrarea ca mecanism de sincronizare sau rollback după apariția de scrieri noi.
 
@@ -84,7 +86,7 @@ python3 scripts/dev.py e2e
 
 Testele backend folosesc un container PostgreSQL temporar și baze distincte. Testele browser adaugă un produs în baza locală; categoria „Verificare automată” îl identifică. La prima utilizare: `cd frontend && npx playwright install chromium`.
 
-Poți porni independent un proces: `python3 scripts/dev.py catalog`, `inventory`, `identity`, `ordering`, `backend/src/gateway` sau `worker`. `api` este un alias pentru gateway; nu mai pornește monolitul. Fiecare API se poate publica separat cu `dotnet publish <calea-proiectului>`.
+Poți porni independent un proces: `python3 scripts/dev.py catalog`, `inventory`, `identity`, `ordering`, `purchasing`, `gateway` sau `worker`. `api` este un alias pentru gateway; nu mai pornește monolitul. Fiecare API se poate publica separat cu `dotnet publish <calea-proiectului>`.
 
 Ctrl+C în terminalul `up` închide procesele backend ale acelui grup. Oprește separat Angular; `docker compose stop postgres` păstrează datele PostgreSQL.
 
@@ -101,3 +103,7 @@ Administrarea fiecărui produs include panoul „Imaginile produsului”. Sunt a
 ## Import produse
 
 Pagina **Import CSV** din administrare permite încărcarea de produse noi cu variante, ambalaje și prețuri. Include model descărcabil, previzualizare și validări; salvarea creează numai ciorne și nu modifică stocul. Vezi [formatul CSV și limitele](docs/product-import.md).
+
+## Furnizori
+
+Pagina **Furnizori** gestionează datele firmelor și articolele cumpărate: cod furnizor, SKU, ambalaj, cost net și monedă. Purchasing verifică variantele prin HTTP, fără acces la baza Catalog. Vezi [fluxul și limitele actuale](docs/purchasing.md).

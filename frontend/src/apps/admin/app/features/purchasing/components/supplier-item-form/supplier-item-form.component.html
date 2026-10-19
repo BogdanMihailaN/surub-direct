@@ -1,0 +1,67 @@
+<section>
+  <h3>
+    {{ item() ? 'Editează asocierea' : 'Articol nou la furnizor' }} —
+    {{ item()?.sku ?? variant()?.sku }}
+  </h3>
+  <form #form="ngForm" (ngSubmit)="submit(form)">
+    <fieldset [disabled]="busy()">
+      <div class="fields">
+        <label
+          >Cod articol la furnizor<input
+            name="supplierCode"
+            [(ngModel)]="details.supplierCode"
+            required
+            maxlength="80"
+        /></label>
+        <label
+          >Denumire ambalaj achiziție<input
+            name="packLabel"
+            [(ngModel)]="details.packLabel"
+            required
+            maxlength="100"
+        /></label>
+        <label
+          >Bucăți per ambalaj achiziție<input
+            type="number"
+            name="units"
+            [(ngModel)]="details.unitsPerPack"
+            required
+            min="1"
+            max="2147483647"
+            step="1"
+        /></label>
+        <label
+          >Cost net per ambalaj<input
+            type="number"
+            name="cost"
+            [(ngModel)]="details.netCostPerPack"
+            required
+            min="0.000001"
+            max="1000000"
+            step="0.000001"
+        /></label>
+        <label
+          >Monedă<select name="currency" [(ngModel)]="details.currency">
+            @for (currency of ['RON', 'EUR', 'USD', 'GBP', 'CHF']; track currency) {
+              <option [value]="currency">{{ currency }}</option>
+            }
+          </select></label
+        >
+      </div>
+      @if (item()) {
+        <label class="check"
+          ><input type="checkbox" name="active" [(ngModel)]="details.isActive" /> Asociere
+          activă</label
+        >
+      }
+      <p class="help">
+        Costul este fără TVA, pentru întregul ambalaj de achiziție. Nu modifică prețul de vânzare
+        sau stocul. SKU-ul unei asocieri existente rămâne stabil.
+      </p>
+      <div class="actions">
+        <button [disabled]="form.invalid || busy()">Salvează asocierea</button
+        ><button type="button" [disabled]="busy()" (click)="cancelled.emit()">Renunță</button>
+      </div>
+    </fieldset>
+  </form>
+</section>

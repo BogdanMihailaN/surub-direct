@@ -14,6 +14,7 @@ surub-direct/
 │   │   │   │   └── SurubDirect.Catalog.Worker/
 │   │   │   ├── inventory/SurubDirect.Inventory.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   ├── identity/SurubDirect.Identity.{Api,Infrastructure}/
+│   │   │   ├── purchasing/SurubDirect.Purchasing.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   └── ordering/SurubDirect.Ordering.Api/
 │   │   ├── gateway/SurubDirect.Gateway/
 │   │   └── shared/
@@ -91,3 +92,9 @@ Admin are feature-ul `product-images`: `image-upload-form`, `image-editor` și `
 `Store.Application/Features/Imports` compune operațiile Catalog și Pricing din același serviciu: parser CSV, citire de rânduri, construire de lot, handler de previzualizare și handler de salvare. Regulile comerciale reutilizează domeniile Catalog/Pricing. Portul `IProductImportRepository` este în `Abstractions/Imports`. `Store.Infrastructure/Imports` implementează citirea conflictelor și tranzacția comună celor două contexte EF, cu înregistrare DI separată; worker-ul nu primește aceste dependențe. Nicio referință spre alt serviciu.
 
 API are câte un endpoint în `Administration/Imports`. Angular are feature-ul `product-import`, cu pagină de compoziție, componente `import-upload` și `import-preview`, API, stare și modele în directoare separate. Testele sunt în `Unit/Imports`, `Integration/Imports` și `frontend/tests/e2e/product-import.spec.ts`.
+
+## Furnizori și condiții de achiziție
+
+`backend/src/services/purchasing` conține serviciul complet. Domain are agregatul `Supplier` și entitatea `SupplierItem` în fișiere separate. Application are câte un handler pentru creare/editare/listă/detaliu/asociere/căutare, porturi de persistență și Catalog. Infrastructure conține configurații EF separate, proiecția DTO, repository-ul tranzacțional și migrarea inițială. API are un endpoint per fișier și clientul HTTP Catalog, fără referințe la proiectele Catalog.
+
+Frontend-ul admin are feature-ul `purchasing`: pagină de compoziție, listă de furnizori, formular de furnizor, selector SKU, listă de articole și formular de asociere; fiecare componentă are TS/HTML/SCSS alăturate. Accesul API, starea, modelele și stilurile sunt separate. Testele sunt în Unit/Purchasing, Integration/Purchasing, Integration/Http și `frontend/tests/e2e/purchasing.spec.ts`.

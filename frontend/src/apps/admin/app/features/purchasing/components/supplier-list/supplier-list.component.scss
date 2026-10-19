@@ -1,0 +1,38 @@
+@use '../../styles/forms';
+:host {
+  display: block;
+  padding: 24px;
+  background: #eef2e9;
+  height: 100%;
+  box-sizing: border-box;
+}
+h2 {
+  margin-top: 0;
+}
+form {
+  margin-top: 24px;
+}
+ul {
+  padding: 0;
+  list-style: none;
+}
+li button {
+  width: 100%;
+  text-align: left;
+  margin: 5px 0;
+}
+small {
+  display: block;
+  margin-top: 6px;
+  color: #627258;
+}
+.selected {
+  border-color: #7b983f;
+  background: #e1ecd8;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}

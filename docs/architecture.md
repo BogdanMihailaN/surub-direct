@@ -8,6 +8,10 @@ flowchart LR
   G --> C[Catalog · 5101]
   G --> I[Inventory · 5102]
   G --> A[Identity · 5103]
+  G --> P[Purchasing · 5105]
+  P -->|verificare SKU HTTP| C
+  P -->|sesiune și CSRF| A
+  P --> PD[(surub_purchasing)]
   G --> O[Ordering · 5104 · scaffold]
   C -->|interogare stoc HTTP| I
   I -->|verificare SKU HTTP| C
@@ -27,6 +31,7 @@ flowchart LR
 | Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
 | Inventory | Recepții idempotente, sold și interogare stoc; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
+| Purchasing | Furnizori și condiții de achiziție per SKU; fără comenzi de aprovizionare încă | `surub_purchasing`: furnizori și articole asociate |
 | Ordering | Proces independent cu health checks și capabilități; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
 
@@ -62,7 +67,7 @@ Baza `surub_direct` rămâne o copie de recuperare. După apariția de scrieri n
 
 ## Deployment
 
-Fiecare API și worker se compilează/publică separat cu `dotnet publish <proiect>`. Gateway-ul nu depinde de DLL-urile serviciilor. Local, `scripts/dev.py up` orchestrează procesele; nu este orchestrator de producție. Configurează `ConnectionStrings__Catalog/Inventory/Identity/Ordering`, adresele `Services__*`, cheile `ServiceKeys__*` și destinațiile YARP separat pentru fiecare proces. Nu trimite configurația completă `.env` către toate serviciile.
+Fiecare API și worker se compilează/publică separat cu `dotnet publish <proiect>`. Gateway-ul nu depinde de DLL-urile serviciilor. Local, `scripts/dev.py up` orchestrează procesele; nu este orchestrator de producție. Configurează `ConnectionStrings__Catalog/Inventory/Identity/Ordering/Purchasing`, adresele `Services__*`, cheile `ServiceKeys__*` și destinațiile YARP separat pentru fiecare proces. Nu trimite configurația completă `.env` către toate serviciile.
 
 YARP este configurat prin [mecanismul oficial de rute și clustere](https://learn.microsoft.com/aspnet/core/fundamentals/servers/yarp/config-files).
 
@@ -89,3 +94,9 @@ Citirea publică este permisă numai produselor publicate; citirea administrativ
 Importul este o operație a serviciului Catalog, care deține și Pricing. `Store.Application` coordonează validarea prin entitățile de domeniu, iar `Store.Infrastructure` implementează portul de persistență. Adaptorul deschide o conexiune și o tranzacție PostgreSQL partajate de CatalogDbContext și PricingDbContext; commit-ul se face numai după ambele salvări. Contextele sunt private operației de import și sunt eliberate la final, inclusiv după rollback. Nu există acces la baza Inventory sau tranzacție distribuită.
 
 Previzualizarea nu persistă nimic și nu rezervă coduri. Salvarea reconstruiește și revalidează lotul; constrângerile unice din bază protejează și intervalul dintre validare și commit. O reîncercare după un import reușit este respinsă, fără dublarea înregistrărilor. Nu există încă jurnal/idempotency key persistent al importului. Limitele de 1 MB/500 de rânduri păstrează procesarea sincronă; un flux asincron pentru fișiere mari rămâne în afara acestei etape. [Format și comportament](product-import.md).
+
+## Purchasing — 19 octombrie 2026
+
+Purchasing este un serviciu separat, cu Domain, Application, Infrastructure, Contracts și API în propriul director, fără referințe la proiectele altor servicii. Deține furnizorii, identitatea fiscală locală și condițiile curente per furnizor–SKU. Refolosește doar primitivele tehnice și autentificarea/HTTP din shared. `ICatalogVariants` este portul consumatorului; Catalog expune separat citirea internă a variantelor ne-arhivate, protejată cu cheia serviciului. Gateway-ul nu rutează `/internal`.
+
+Mutările unui furnizor și ale articolelor sale folosesc tranzacție cu blocarea rândului furnizorului. Astfel, două asocieri concurente sau o dezactivare concurentă nu ocolesc regulile agregatului; indexurile unice sunt protecția suplimentară. Legătura cu Catalog este ID extern plus snapshot SKU/denumire, fără cheie externă către altă bază. Verificarea HTTP inițială nu reprezintă o tranzacție distribuită cu Catalog. [Comportament și limite](purchasing.md).

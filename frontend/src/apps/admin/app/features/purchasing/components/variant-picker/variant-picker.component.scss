@@ -1,0 +1,10 @@
+@use '../../styles/forms';
+ul {
+  list-style: none;
+  padding: 0;
+}
+li button {
+  text-align: left;
+  margin: 5px 0;
+  width: 100%;
+}

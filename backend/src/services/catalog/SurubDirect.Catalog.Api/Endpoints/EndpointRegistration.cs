@@ -9,6 +9,8 @@ public static class EndpointRegistration
         ListProductsEndpoint.Map(app);
         GetProductEndpoint.Map(app);
         VariantExistsEndpoint.Map(app, app.Configuration);
+        FindPurchasingVariantEndpoint.Map(app, app.Configuration);
+        SearchPurchasingVariantsEndpoint.Map(app, app.Configuration);
         var admin = app.MapGroup("/api/v1/admin").RequireAuthorization("Admin");
         PreviewImportEndpoint.Map(admin);
         CommitImportEndpoint.Map(admin);

@@ -89,3 +89,14 @@ Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor o
 - Pagina de import inspectată vizual pe desktop și mobil, fără depășirea viewport-ului; tabelul are derulare proprie. Capturile sunt private în `work/import-desktop.png` și `work/import-mobile.png`.
 - `git diff --check` fără probleme și nicio valoare de secret local găsită în fișierele versionabile. Nu s-au adăugat migrații sau modificat schemele pentru import.
 - După întreruperea sesiunii, prima reluare Playwright a întâlnit serviciile oprite. Docker, PostgreSQL, API-urile și aplicațiile Angular au fost repornite; rezultatul de 17/17 este al rulării complete ulterioare.
+
+## Purchasing: furnizori și articole — 19 octombrie 2026
+
+- Build .NET reușit, fără avertismente; `python3 scripts/dev.py test`: **106 teste trecute**, fără teste omise. Acoperă validările furnizorului și costurilor, normalizarea identității fiscale, unicitatea, editarea/dezactivarea, apartenența articolelor și asocieri concurente. Testele HTTP disting un SKU lipsă de indisponibilitatea/răspunsul invalid al Catalogului; testul PostgreSQL pentru directorul SKU verifică includerea ciornelor și excluderea produselor arhivate.
+- Migrarea inițială Purchasing a fost generată și aplicată în baza nouă `surub_purchasing`. `python3 scripts/dev.py check-migrations`: fără diferențe pentru Catalog, Pricing, Inventory, Identity și Purchasing. Nu au fost modificate schemele comerciale existente sau baza legacy.
+- `python3 scripts/dev.py verify-isolation`: fiecare dintre cele cinci roluri are acces numai la propria bază, fără acces la celelalte baze comerciale sau legacy.
+- Publicare Release independentă Purchasing reușită în `work/publish/purchasing`, fără DLL-uri Catalog, Inventory, Identity sau Ordering.
+- Build-uri de producție Angular storefront/admin și `format:check` reușite. `python3 scripts/dev.py e2e`: **19 scenarii trecute**, inclusiv fluxul furnizor–SKU, două surse pentru același SKU, editarea ambalajului/costului, inactivare/reactivare, lipsa schimbărilor în Catalog/Inventory și protecțiile autentificare/CSRF direct/prin gateway. Rutele interne de căutare nu sunt expuse de gateway.
+- Aspect verificat pe desktop și mobil; tabelul articolelor are derulare proprie, fără depășirea viewport-ului. Capturi private: `work/purchasing-desktop.png`, `work/purchasing-mobile.png`. Datele demonstrative ale testelor sunt dezactivate/arhivate, fără ștergere fizică.
+- Un test PostgreSQL a identificat o proiecție LINQ netraductibilă; interogarea a fost corectată și suita completă a trecut ulterior. Prima încercare a noului test browser a folosit un selector nepotrivit pentru lista de monede; selectorul a fost corectat și datele acelui test au fost dezactivate/arhivate.
+- `git diff --check` fără probleme; scanarea fișierelor versionabile nu a găsit valorile secretelor locale. `.env`, datele runtime și artefactele publicării rămân excluse din Git.

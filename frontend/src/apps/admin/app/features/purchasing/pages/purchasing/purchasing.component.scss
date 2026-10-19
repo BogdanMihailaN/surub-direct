@@ -1,0 +1,49 @@
+main {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: calc(100vh - 75px);
+}
+.editor {
+  padding: 28px 32px 60px;
+  min-width: 0;
+  max-width: 1250px;
+}
+h1 {
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #6d805f;
+}
+.intro {
+  line-height: 1.6;
+  color: #64735b;
+}
+.error,
+.success,
+.inactive {
+  padding: 16px;
+  line-height: 1.5;
+  border-radius: 6px;
+}
+.error {
+  background: #ffebe6;
+  color: #a13c26;
+}
+.success {
+  background: #edf5e6;
+  color: #42762e;
+}
+.inactive {
+  background: #f2eee1;
+}
+@media (max-width: 850px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+  .editor {
+    padding: 20px 16px 50px;
+  }
+}

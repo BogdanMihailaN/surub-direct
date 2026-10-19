@@ -21,7 +21,7 @@ def command_for(service):
 def serve_all():
     children = []
     try:
-        for service in ('identity', 'inventory', 'catalog', 'ordering', 'gateway', 'worker'):
+        for service in ('identity', 'inventory', 'catalog', 'ordering', 'purchasing', 'gateway', 'worker'):
             children.append(subprocess.Popen(command_for(service), cwd=ROOT, env=environment(service), start_new_session=True))
         while all(p.poll() is None for p in children):
             time.sleep(1)
@@ -51,7 +51,7 @@ def main():
     elif command == 'up':
         serve_all()
     elif command in ('init', 'seed-demo'):
-        for service in ('identity', 'inventory', 'catalog'):
+        for service in ('identity', 'inventory', 'catalog', 'purchasing'):
             extra = ['--', '--initialize']
             if command == 'seed-demo' and service == 'catalog':
                 extra += ['--seed-demo']
@@ -68,7 +68,7 @@ def main():
     elif command == 'e2e':
         run(['npm', 'exec', '--', 'playwright', 'test'], cwd=ROOT / 'frontend')
     elif command == 'check-migrations':
-        for module, owner, context in [('Catalog', 'catalog', 'CatalogDbContext'), ('Pricing', 'catalog', 'PricingDbContext'), ('Inventory', 'inventory', 'InventoryDbContext'), ('Identity', 'identity', 'StoreIdentityDbContext')]:
+        for module, owner, context in [('Catalog', 'catalog', 'CatalogDbContext'), ('Pricing', 'catalog', 'PricingDbContext'), ('Inventory', 'inventory', 'InventoryDbContext'), ('Identity', 'identity', 'StoreIdentityDbContext'), ('Purchasing', 'purchasing', 'PurchasingDbContext')]:
             project = f'backend/src/services/{owner}/SurubDirect.{module}.Infrastructure'
             run(['dotnet', 'ef', 'migrations', 'has-pending-model-changes', '--context', context, '--project', project, '--startup-project', SERVICES[owner][0]], owner)
 

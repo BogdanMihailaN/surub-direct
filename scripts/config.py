@@ -8,6 +8,7 @@ SERVICES = {
     'inventory': ('backend/src/services/inventory/SurubDirect.Inventory.Api', 5102),
     'identity': ('backend/src/services/identity/SurubDirect.Identity.Api', 5103),
     'ordering': ('backend/src/services/ordering/SurubDirect.Ordering.Api', 5104),
+    'purchasing': ('backend/src/services/purchasing/SurubDirect.Purchasing.Api', 5105),
     'gateway': ('backend/src/gateway/SurubDirect.Gateway', 5099),
     'worker': ('backend/src/services/catalog/SurubDirect.Catalog.Worker', None),
 }
@@ -39,7 +40,7 @@ def environment(service=None):
     if socket.exists():
         env.setdefault('DOCKER_HOST', 'unix://' + str(socket))
     owner = 'catalog' if service == 'worker' else service
-    if owner in ('catalog', 'inventory', 'identity', 'ordering'):
+    if owner in ('catalog', 'inventory', 'identity', 'ordering', 'purchasing'):
         password = config.get(owner.upper() + '_DB_PASSWORD', '')
         env['ConnectionStrings__' + owner.title()] = (
             f'Host=127.0.0.1;Port=55432;Database=surub_{owner};Username=surub_{owner};Password={password}')
@@ -47,6 +48,7 @@ def environment(service=None):
         'catalog': ('CATALOG', 'INVENTORY', 'IDENTITY'),
         'inventory': ('CATALOG', 'INVENTORY', 'IDENTITY'),
         'identity': ('IDENTITY',),
+        'purchasing': ('CATALOG', 'IDENTITY'),
     }
     for key in keys.get(service, ()):
         env['ServiceKeys__' + key.title()] = config.get(key + '_SERVICE_KEY', '')

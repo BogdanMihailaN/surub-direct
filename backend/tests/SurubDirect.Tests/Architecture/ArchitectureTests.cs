@@ -43,9 +43,10 @@ public class ArchitectureTests
     [InlineData("Catalog")]
     [InlineData("Pricing")]
     [InlineData("Inventory")]
+    [InlineData("Purchasing")]
     public void Domain_is_independent_of_application_and_infrastructure(string module)
     {
-        var file = Path.Combine(BackendRoot(), $"src/services/{(module == "Inventory" ? "inventory" : "catalog")}/SurubDirect.{module}.Domain/SurubDirect.{module}.Domain.csproj");
+        var file = Path.Combine(BackendRoot(), $"src/services/{(module is "Inventory" or "Purchasing" ? module.ToLowerInvariant() : "catalog")}/SurubDirect.{module}.Domain/SurubDirect.{module}.Domain.csproj");
         var xml = XDocument.Load(file);
         Assert.Empty(xml.Descendants("PackageReference"));
         Assert.All(xml.Descendants("ProjectReference"), r => Assert.EndsWith("SurubDirect.BuildingBlocks.csproj", r.Attribute("Include")!.Value));
@@ -55,9 +56,10 @@ public class ArchitectureTests
     [InlineData("Catalog")]
     [InlineData("Pricing")]
     [InlineData("Inventory")]
+    [InlineData("Purchasing")]
     public void Application_depends_only_on_own_domain_and_module_contracts(string module)
     {
-        var file = Path.Combine(BackendRoot(), $"src/services/{(module == "Inventory" ? "inventory" : "catalog")}/SurubDirect.{module}.Application/SurubDirect.{module}.Application.csproj");
+        var file = Path.Combine(BackendRoot(), $"src/services/{(module is "Inventory" or "Purchasing" ? module.ToLowerInvariant() : "catalog")}/SurubDirect.{module}.Application/SurubDirect.{module}.Application.csproj");
         var xml = XDocument.Load(file);
         Assert.Empty(xml.Descendants("PackageReference"));
         Assert.All(xml.Descendants("ProjectReference"), r =>

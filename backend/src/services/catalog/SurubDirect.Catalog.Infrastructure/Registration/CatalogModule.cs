@@ -15,6 +15,7 @@ public static class CatalogModule
         s.AddScoped<CatalogRepository>();
         s.AddScoped<ICatalogRepository>(p => p.GetRequiredService<CatalogRepository>());
         s.AddScoped<ICatalogReader, CatalogReader>();
+        s.AddScoped<IPurchasingVariantReader, PurchasingVariantReader>();
         s.AddScoped<UpdateProductHandler>();
         s.AddScoped<ArchiveProductHandler>();
         s.AddScoped<RestoreProductHandler>();

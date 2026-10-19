@@ -1,0 +1,48 @@
+<h2>Furnizori</h2>
+<button type="button" [disabled]="busy()" (click)="create.emit()">Furnizor nou</button>
+<form (ngSubmit)="apply()">
+  <label
+    >Caută furnizor, CUI sau SKU<input name="search" [(ngModel)]="search" maxlength="200"
+  /></label>
+  <label
+    >Stare furnizor<select name="active" [(ngModel)]="active">
+      <option value="">Toate</option>
+      <option value="true">Activi</option>
+      <option value="false">Inactivi</option>
+    </select></label
+  >
+  <button [disabled]="busy()">Aplică filtrele</button>
+</form>
+<p>Furnizori: {{ data().total }}</p>
+<ul>
+  @for (supplier of data().items; track supplier.id) {
+    <li>
+      <button
+        type="button"
+        [disabled]="busy()"
+        [class.selected]="supplier.id === selectedId()"
+        (click)="selected.emit(supplier.id)"
+      >
+        <strong>{{ supplier.name }}</strong
+        ><small
+          >{{ supplier.countryCode }} · {{ supplier.taxId }} ·
+          {{ supplier.isActive ? 'Activ' : 'Inactiv' }}</small
+        >
+      </button>
+    </li>
+  }
+</ul>
+@if (!data().items.length && !busy()) {
+  <p>Niciun furnizor pentru filtrele alese.</p>
+}
+<div class="pagination">
+  <button [disabled]="busy() || data().page <= 1" (click)="paged.emit(data().page - 1)">
+    Înapoi</button
+  ><span>Pagina {{ data().page }}</span
+  ><button
+    [disabled]="busy() || data().page * data().pageSize >= data().total"
+    (click)="paged.emit(data().page + 1)"
+  >
+    Înainte
+  </button>
+</div>

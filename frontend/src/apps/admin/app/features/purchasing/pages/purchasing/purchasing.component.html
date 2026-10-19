@@ -1,0 +1,64 @@
+<main>
+  <aside>
+    <sd-supplier-list
+      [data]="store.page()"
+      [busy]="store.busy()"
+      [selectedId]="store.supplier()?.id ?? ''"
+      (selected)="store.select($event)"
+      (create)="store.newSupplier()"
+      (filtered)="store.filter($event)"
+      (paged)="store.load($event)"
+    />
+  </aside>
+  <div class="editor">
+    <p class="eyebrow">APROVIZIONARE</p>
+    <h1>Furnizori și articole</h1>
+    <p class="intro">
+      Organizează sursele de aprovizionare și costurile de achiziție pentru SKU-urile tale.
+    </p>
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    @if (store.message()) {
+      <p class="success" role="status">{{ store.message() }}</p>
+    }
+    @if (store.busy()) {
+      <p role="status">Se încarcă…</p>
+    }
+    <sd-supplier-form
+      [supplier]="store.supplier()"
+      [busy]="store.busy()"
+      (saved)="store.save($event)"
+    />
+    @if (store.supplier(); as supplier) {
+      <sd-supplier-items
+        [items]="supplier.items"
+        [disabled]="store.busy() || !supplier.isActive"
+        (edited)="store.editItem($event)"
+      />
+      @if (supplier.isActive) {
+        @if (store.variant() || store.editingItem()) {
+          <sd-supplier-item-form
+            [item]="store.editingItem()"
+            [variant]="store.variant()"
+            [busy]="store.busy()"
+            (saved)="store.saveItem($event)"
+            (cancelled)="store.cancelItem()"
+          />
+        } @else {
+          <sd-purchasing-variant-picker
+            [results]="store.variants()"
+            [searched]="store.searched()"
+            [busy]="store.busy()"
+            (search)="store.findVariants($event)"
+            (selected)="store.chooseVariant($event)"
+          />
+        }
+      } @else {
+        <p class="inactive">
+          Furnizor inactiv. Asocierile sunt păstrate; reactivează furnizorul pentru a le modifica.
+        </p>
+      }
+    }
+  </div>
+</main>

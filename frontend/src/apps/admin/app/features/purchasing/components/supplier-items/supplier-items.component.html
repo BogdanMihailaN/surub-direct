@@ -1,0 +1,46 @@
+<section>
+  <h2>Articole asociate</h2>
+  @if (items().length) {
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Articole furnizor">
+      <table>
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Cod furnizor</th>
+            <th>Ambalaj achiziție</th>
+            <th>Cost net / ambalaj</th>
+            <th>Stare</th>
+            <th>Acțiune</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items(); track item.id) {
+            <tr>
+              <td>
+                <strong>{{ item.sku }}</strong
+                ><small>{{ item.variantLabel }}</small>
+              </td>
+              <td>{{ item.supplierCode }}</td>
+              <td>
+                {{ item.packLabel }}<small>{{ item.unitsPerPack }} bucăți</small>
+              </td>
+              <td>{{ item.netCostPerPack | number: '1.2-6' }} {{ item.currency }}</td>
+              <td>{{ item.isActive ? 'Activă' : 'Inactivă' }}</td>
+              <td>
+                <button
+                  [disabled]="disabled()"
+                  (click)="edited.emit(item)"
+                  [attr.aria-label]="'Editează ' + item.sku"
+                >
+                  Editează
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p>Nu există încă articole asociate acestui furnizor.</p>
+  }
+</section>
