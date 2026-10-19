@@ -1,7 +1,7 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { catchError, combineLatest, of, startWith, Subject, switchMap, tap } from 'rxjs';
 import { CatalogApiService } from '@shared/catalog/catalog-api.service';
 import { effectiveAttributes } from '@shared/catalog/taxonomy-helpers';
 import { errorMessage } from '@shared/http/error-message';
@@ -11,6 +11,7 @@ import { CatalogFilterValues } from '../components/catalog-filters/catalog-filte
 export class CatalogStore {
   private readonly api = inject(CatalogApiService);
   private readonly router = inject(Router);
+  private readonly refresh = new Subject<void>();
   readonly data = signal<StorePage | null>(null);
   readonly taxonomy = signal<Taxonomy>({ categories: [], attributes: [] });
   readonly loading = signal(true);
@@ -30,13 +31,13 @@ export class CatalogStore {
   page = 1;
   attributes: AttributeFilter[] = [];
   constructor() {
-    inject(ActivatedRoute)
-      .queryParamMap.pipe(
+    combineLatest([inject(ActivatedRoute).queryParamMap, this.refresh.pipe(startWith(undefined))])
+      .pipe(
         tap(() => {
           this.loading.set(true);
           this.error.set('');
         }),
-        switchMap((params) =>
+        switchMap(([params]) =>
           this.api.taxonomy().pipe(
             switchMap((taxonomy) => {
               this.taxonomy.set(taxonomy);
@@ -73,6 +74,9 @@ export class CatalogStore {
         this.data.set(data);
         this.loading.set(false);
       });
+  }
+  retry() {
+    this.refresh.next();
   }
   apply(page = 1) {
     void this.router.navigate([], {

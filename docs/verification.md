@@ -51,3 +51,17 @@ Modificarea folosește starea `Archived` deja existentă și nu schimbă schema 
 - Formularele au fost inspectate la 1440 px și 390 px, fără depășire orizontală; capturile sunt locale în `work/variant-edit-*.png` și `work/offer-edit-*.png`.
 
 Nu s-a modificat schema DB și nu s-au introdus apeluri de scriere în Inventory. Schimbarea bucăților/ambalaj și trecerea în ciornă se salvează împreună în Catalog. Verificarea prețului înainte de republicare este o acțiune a administratorului; nu există recalculare automată sau audit complet al editărilor.
+
+## Categorii și atribute tehnice — 19 octombrie 2026
+
+- Build complet .NET: 0 erori și 0 avertismente. Ambele build-uri Angular de producție au trecut; storefront a fost recompilat după corectarea reîncercării cererilor eșuate.
+- `python3 scripts/dev.py test`: 50 de teste trecute. Acoperire nouă: cicluri, părinți inexistenți, adâncime, limita atributelor moștenite, tipuri și precizie numerică, filtrare pe aceeași variantă, moștenire, redenumire, păstrarea valorilor inactive, apartenența SKU și produse arhivate. Două mutări concurente care ar forma un ciclu nu se pot salva împreună.
+- Migrarea a fost verificată pe o bază temporară cu schema veche și produse/variante/ambalaje deja existente. Identificatorii, SKU, dimensiunile, starea și ambalajele sunt păstrate; nu sunt inventate valori pentru atributele noi.
+- Baza locală Catalog a fost salvată în `work/backups` înainte de migrare. Imediat după aplicare s-au verificat aceleași 23 de produse, 24 de variante și 25 de oferte, fără produse cu categorie lipsă. Testele de browser ulterioare creează date demonstrative suplimentare. Baza legacy nu a fost modificată.
+- `python3 scripts/dev.py check-migrations`: Catalog, Pricing, Inventory și Identity fără diferențe între model și migrații.
+- `python3 scripts/dev.py e2e`: rularea finală completă, 13 scenarii trecute. Include categorii/subcategorii, atribut numeric moștenit, editarea valorii pe SKU, intervale în storefront, păstrarea filtrelor la reîncărcare, afișarea în detaliul produsului și reîncercarea unei cereri 503 cu același URL.
+- Noile mutații administrative refuză accesul anonim și lipsa CSRF atât prin gateway, cât și direct la serviciu. Listele cu elemente `null` și valorile de tip greșit primesc 400.
+- Prima rulare de browser a identificat doi pași de test de adaptat: selectorul pentru lista de categorii și așteptarea resetării formularului înainte de completarea subcategoriei. După corectare, toate scenariile au trecut împreună.
+- Administrarea a fost inspectată vizual la 1440 px și 390 px, fără depășire orizontală. Capturile locale sunt `work/taxonomy-admin-desktop.png`, `work/taxonomy-admin-mobile.png` și `work/taxonomy-storefront.png`.
+
+Produsele create de noile scenarii sunt arhivate la final; definițiile și categoriile de test rămân vizibile în administrare. Categorii fără produse publicate nu apar în magazin. Limitele comerciale (date demonstrative, noindex, checkout dezactivat) rămân valabile.

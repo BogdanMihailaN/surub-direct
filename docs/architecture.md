@@ -24,7 +24,7 @@ flowchart LR
 
 | Serviciu | Responsabilitate implementată | Bază / scheme |
 |---|---|---|
-| Catalog | Produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
+| Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
 | Inventory | Recepții idempotente, sold și interogare stoc; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Ordering | Proces independent cu health checks și capabilități; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
@@ -65,3 +65,11 @@ Baza `surub_direct` rămâne o copie de recuperare. După apariția de scrieri n
 Fiecare API și worker se compilează/publică separat cu `dotnet publish <proiect>`. Gateway-ul nu depinde de DLL-urile serviciilor. Local, `scripts/dev.py up` orchestrează procesele; nu este orchestrator de producție. Configurează `ConnectionStrings__Catalog/Inventory/Identity/Ordering`, adresele `Services__*`, cheile `ServiceKeys__*` și destinațiile YARP separat pentru fiecare proces. Nu trimite configurația completă `.env` către toate serviciile.
 
 YARP este configurat prin [mecanismul oficial de rute și clustere](https://learn.microsoft.com/aspnet/core/fundamentals/servers/yarp/config-files).
+
+## Taxonomia Catalogului — 19 octombrie 2026
+
+Categoriile, legăturile categorie–atribut și valorile SKU aparțin exclusiv Catalogului. Produsul referă categoria prin ID; câmpul text vechi rămâne snapshot pentru compatibilitate. Citirile folosesc numele categoriei actuale. Clienții vechi pot încă trimite un nume de categorie, care este rezolvat sau creează o rădăcină; interfețele noi transmit ID-ul.
+
+Moștenirea reunește atributele strămoșilor fără duplicate. Categoriile fără produse publicate sunt ascunse public, cu excepția strămoșilor necesari arborelui. Filtrele categoriei includ produsele descendenților; toate condițiile tehnice trebuie îndeplinite de aceeași variantă. Fără categorie, API-ul acceptă filtrele caracteristicilor de bază. Valorile atributelor inactive se păstrează și redevin vizibile la reatribuire; nu sunt fabricate valori comerciale în migrare.
+
+Modificarea taxonomiei și salvarea valorilor se fac într-o tranzacție Catalog cu blocare PostgreSQL a tabelului Categories, împiedicând cicluri și schimbări simultane ale definițiilor aplicabile în timpul salvării. Aceasta este o soluție inițială conservatoare pentru volumul redus al administrării; nu reprezintă control optimist al tuturor editărilor de produse.

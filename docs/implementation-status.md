@@ -1,6 +1,6 @@
 # Starea implementării
 
-Actualizat la 18 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 19 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
 
@@ -8,6 +8,9 @@ Actualizat la 18 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 - Catalog API, Inventory API și Identity API rulează independent. Clean Architecture este păstrată în logica comercială; niciun serviciu nu referă proiectele altuia.
 - PostgreSQL: câte o bază și un utilizator distinct pentru fiecare serviciu. Conectarea la bazele celorlalte servicii și la baza legacy este revocată.
 - Catalog de produse, variante SKU, ambalaje, prețuri curente net/brut, publicare, căutare, filtre pe aceeași variantă, paginare și pagină de produs.
+- Categorii și subcategorii administrabile, cu ordonare și atribute tehnice moștenite. Formulare separate pentru categorii, definiții și valorile fiecărui SKU; selectarea categoriei la creare/editare produs.
+- Filtre publice dinamice pentru categoria selectată, inclusiv subcategoriile: text exact fără diferențiere majuscule/minuscule și intervale numerice, combinate pe aceeași variantă. Filtrele sunt păstrate în URL. Detaliul produsului afișează valorile tehnice suplimentare.
+- Migrarea taxonomiei păstrează produsele și câmpurile existente; dimensiunile, materialul și finisajul folosesc sursele originale. Debifarea unui atribut îl ascunde fără ștergerea valorilor. Editările ierarhiei sunt serializate în PostgreSQL pentru a împiedica ciclurile concurente.
 - Admin: editarea denumirii, categoriei și descrierii, cu URL stabil; arhivare fără ștergerea variantelor, ofertelor, prețurilor sau stocului; restaurare ca ciornă și republicare explicită. Arhivarea elimină produsul din lista, detaliul și categoriile publice.
 - Editarea variantelor existente (denumire, dimensiuni, material și finisaj) și a ambalajelor (denumire, bucăți/ambalaj, minim și pas), cu identificatori, SKU și cod ofertă stabili. Căutarea variantei este recalculată la editare. Formularele sunt separate de cele de creare.
 - Schimbarea bucăților/ambalaj readuce întregul produs ca ciornă în aceeași salvare cu ambalajul; administratorul verifică prețul și republică explicit. Prețul pe ambalaj nu se recalculează, iar Inventory păstrează soldul și recepțiile în bucăți. Editarea altor câmpuri nu schimbă starea publicării.
@@ -31,8 +34,8 @@ Actualizat la 18 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.
-- Categoriile sunt etichete, nu ierarhii cu atribute dinamice. Se vând doar bucăți și ambalaje convertibile; fără kituri sau cantități fracționare.
-- Administrarea imaginilor, ierarhiile de categorii, istoricul prețurilor, auditul complet și discounturile cantitative rămân de implementat. Slug-ul, SKU-ul și codul ofertei sunt stabile. Corectarea caracteristicilor unei variante este destinată aceluiași articol fizic; pentru alt articol se creează un SKU nou. În afara schimbării bucăților/ambalaj, modificările produselor publicate apar imediat, fără un flux separat de aprobare.
+- Categoriile au nume unice în întregul catalog, maximum 5 niveluri și maximum 50 de atribute efective (proprii și moștenite). Atributele sunt opționale, Text sau Number; nu există încă liste de valori, atribute obligatorii, conversii de unități sau ștergere de categorii/definiții. Codul, tipul și unitatea atributului rămân stabile. Se vând doar bucăți și ambalaje convertibile; fără kituri sau cantități fracționare.
+- Administrarea imaginilor, istoricul prețurilor, auditul complet și discounturile cantitative rămân de implementat. Slug-ul, SKU-ul și codul ofertei sunt stabile. Corectarea caracteristicilor unei variante este destinată aceluiași articol fizic; pentru alt articol se creează un SKU nou. În afara schimbării bucăților/ambalaj, modificările produselor publicate apar imediat, fără un flux separat de aprobare.
 - DTO-urile frontend sunt întreținute manual. Generarea automată din OpenAPI rămâne în backlog.
 - Datele, prețurile, TVA-ul și ilustrațiile sunt demonstrative. `noindex` rămâne activ. Baza locală poate include produse create de testele de browser în categoria „Verificare automată”.
 

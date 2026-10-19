@@ -32,7 +32,7 @@
         <div class="state">Se încarcă produsele…</div>
       } @else if (store.error()) {
         <div class="state error" role="alert">
-          {{ store.error() }}<button class="secondary" (click)="store.apply()">Reîncearcă</button>
+          {{ store.error() }}<button class="secondary" (click)="store.retry()">Reîncearcă</button>
         </div>
       } @else if (store.data(); as result) {
         <div class="result-summary">

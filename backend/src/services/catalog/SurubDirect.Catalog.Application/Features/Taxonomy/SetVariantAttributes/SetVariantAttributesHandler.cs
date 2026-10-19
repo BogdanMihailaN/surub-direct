@@ -6,7 +6,7 @@ public sealed class SetVariantAttributesHandler(ICatalogRepository products, ITa
 {
     public Task<Guid> Handle(Guid productId, Guid variantId, IReadOnlyList<SetVariantAttributeValue> command, CancellationToken ct) => taxonomy.Change(async () =>
     {
-        if (command is null || command.Count > 50) throw new BusinessException("Maximum 50 de atribute per variantă.");
+        if (command is null || command.Count > 50 || command.Any(x => x is null)) throw new BusinessException("Maximum 50 de atribute per variantă.");
         var product = await products.Get(productId, ct) ?? throw new BusinessException("Produsul nu există.", 404);
         product.EnsureEditable();
         var variant = product.Variants.SingleOrDefault(x => x.Id == variantId) ?? throw new BusinessException("Varianta nu există în acest produs.", 404);

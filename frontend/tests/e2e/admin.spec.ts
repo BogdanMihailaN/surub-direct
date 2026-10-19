@@ -16,7 +16,9 @@ test('administrator can create, edit, archive, restore and republish without los
   await page.getByRole('button', { name: '+ Produs', exact: true }).click();
   await page.getByLabel('Denumire produs').fill(name);
   await page.getByLabel('Adresă URL (slug)').fill('browser-' + token);
-  await page.getByLabel('Categorie', { exact: true }).fill('Verificare automată');
+  await page
+    .getByRole('combobox', { name: 'Categorie', exact: true })
+    .selectOption({ label: 'Șuruburi / Șuruburi metrice' });
   await page
     .getByLabel('Descriere', { exact: true })
     .fill('Produs creat prin testul automat al fluxului complet.');

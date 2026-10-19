@@ -8,7 +8,7 @@ internal static class VariantAttributeFilters
     public static IQueryable<Variant> Apply(IQueryable<Variant> query, IReadOnlyList<AttributeFilter>? filters, IReadOnlyList<TechnicalAttribute> allowed)
     {
         if (filters is null) return query;
-        if (filters.Count > 20 || filters.Select(x => x.AttributeId).Distinct().Count() != filters.Count)
+        if (filters.Count > 20 || filters.Any(x => x is null) || filters.Select(x => x.AttributeId).Distinct().Count() != filters.Count)
             throw new BusinessException("Maximum 20 de filtre distincte.");
         foreach (var filter in filters)
         {

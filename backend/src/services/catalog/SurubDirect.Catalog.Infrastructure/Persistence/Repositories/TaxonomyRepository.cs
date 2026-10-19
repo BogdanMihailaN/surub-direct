@@ -28,11 +28,19 @@ internal sealed class TaxonomyRepository(CatalogDbContext db) : ITaxonomyReposit
     public async Task<T> Change<T>(Func<Task<T>> operation, CancellationToken ct)
     {
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
-        // Serialize hierarchy and assignment changes so concurrent moves cannot introduce a cycle.
-        await db.Database.ExecuteSqlRawAsync("LOCK TABLE catalog.\"Categories\" IN SHARE ROW EXCLUSIVE MODE", ct);
-        var result = await operation();
-        await db.SaveChangesAsync(ct);
-        await transaction.CommitAsync(ct);
-        return result;
+        try
+        {
+            // Serialize hierarchy and assignment changes so concurrent moves cannot introduce a cycle.
+            await db.Database.ExecuteSqlRawAsync("LOCK TABLE catalog.\"Categories\" IN SHARE ROW EXCLUSIVE MODE", ct);
+            var result = await operation();
+            await db.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+            return result;
+        }
+        catch
+        {
+            db.ChangeTracker.Clear();
+            throw;
+        }
     }
 }

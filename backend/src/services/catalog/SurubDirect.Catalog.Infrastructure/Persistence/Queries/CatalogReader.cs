@@ -19,7 +19,7 @@ internal sealed class CatalogReader(CatalogDbContext db) : ICatalogReader
             categoryId = taxonomy.Categories.SingleOrDefault(x => x.Name == f.Category)?.Id ?? Guid.Empty;
         if (categoryId is { } id) { var ids = taxonomy.Descendants(id); q = q.Where(x => ids.Contains(x.CategoryId)); }
         var allowed = categoryId.HasValue && taxonomy.Categories.Any(x => x.Id == categoryId)
-            ? taxonomy.Effective(categoryId.Value) : taxonomy.Attributes;
+            ? taxonomy.Effective(categoryId.Value) : taxonomy.Attributes.Where(x => x.Source != AttributeSource.Custom).ToArray();
         var variants = VariantAttributeFilters.Apply(db.Variants.AsQueryable(), f.Attributes, allowed);
         variants = variants.Where(v => (f.Diameter == null || v.DiameterMm == f.Diameter) && (f.Length == null || v.LengthMm == f.Length));
         var search = string.IsNullOrWhiteSpace(f.Search) ? null : Product.Normalize(f.Search);
