@@ -10,3 +10,4 @@ export type { TechnicalAttribute } from './technical-attribute.model';
 export type { TechnicalValue } from './technical-value.model';
 export type { AttributeFilter } from './attribute-filter.model';
 export type { Taxonomy } from './taxonomy.model';
+export type { ProductImage } from './product-image.model';

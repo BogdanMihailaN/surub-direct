@@ -36,7 +36,7 @@ internal sealed class TaxonomyProjection(IReadOnlyList<Category> categories, IRe
     public ProductDto Map(Product p) => new(p.Id, p.Name, p.Slug, p.Classification!.Name, p.Description, p.Status.ToString(),
         p.Variants.OrderBy(v => v.Sku).Select(v => new VariantDto(v.Id, v.Sku, v.Label, v.DiameterMm, v.LengthMm, v.Material, v.Finish,
             v.Offers.OrderBy(o => o.UnitsPerPack).Select(o => new OfferDto(o.Id, o.Code, o.Label, o.UnitsPerPack, o.MinPacks, o.PackStep)).ToArray(),
-            Effective(p.CategoryId).Select(a => Value(v, a)).Where(x => x.TextValue is not null || x.NumberValue is not null).ToArray())).ToArray(), p.CategoryId);
+            Effective(p.CategoryId).Select(a => Value(v, a)).Where(x => x.TextValue is not null || x.NumberValue is not null).ToArray())).ToArray(), p.CategoryId, p.Images.OrderBy(x => x.SortOrder).ThenBy(x => x.Id).Select(x => new ProductImageDto(x.Id, x.AltText, x.VariantId, x.Width, x.Height, x.SortOrder, x.IsPrimary)).ToArray());
     private static TechnicalValueDto Value(Variant v, TechnicalAttribute a)
     {
         var stored = v.AttributeValues.SingleOrDefault(x => x.AttributeId == a.Id);

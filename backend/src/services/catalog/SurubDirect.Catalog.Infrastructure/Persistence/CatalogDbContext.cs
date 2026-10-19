@@ -4,6 +4,7 @@ using SurubDirect.Catalog.Domain;
 namespace SurubDirect.Catalog.Infrastructure;
 public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options) : DbContext(options)
 {
+    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<TechnicalAttribute> TechnicalAttributes => Set<TechnicalAttribute>();
     public DbSet<CategoryAttribute> CategoryAttributes => Set<CategoryAttribute>();

@@ -1,3 +1,4 @@
+import { ProductImagesPanel } from '../../../product-images/components/product-images-panel/product-images-panel.component';
 import { VariantAttributesForm } from '../../components/variant-attributes-form/variant-attributes-form.component';
 import { VariantEditForm } from '../../components/variant-edit-form/variant-edit-form.component';
 import { OfferEditForm } from '../../components/offer-edit-form/offer-edit-form.component';
@@ -17,6 +18,7 @@ import { ReceiptForm } from '../../components/receipt-form/receipt-form.componen
   selector: 'sd-catalog-admin',
   imports: [
     MatButtonModule,
+    ProductImagesPanel,
     ProductSidebarComponent,
     VariantTableComponent,
     ProductCreateForm,

@@ -9,6 +9,7 @@ public static class CatalogModule
     public static IServiceCollection AddCatalog(this IServiceCollection s, string connection)
     {
         s.AddDbContext<CatalogDbContext>(o => o.UseNpgsql(connection, n => n.MigrationsHistoryTable("__EFMigrationsHistory", "catalog")));
+        s.AddScoped<IProductImageRepository, ProductImageRepository>();
         s.AddScoped<ITaxonomyRepository, TaxonomyRepository>();
         s.AddScoped<ITaxonomyReader, TaxonomyReader>();
         s.AddScoped<CatalogRepository>();

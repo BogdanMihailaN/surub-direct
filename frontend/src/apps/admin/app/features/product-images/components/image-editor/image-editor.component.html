@@ -1,0 +1,61 @@
+<article>
+  <img
+    [src]="url(productId(), image().id, true, true)"
+    [alt]="image().altText"
+    width="400"
+    height="300"
+    loading="lazy"
+  />
+  <div class="image-meta">
+    {{ image().width }} × {{ image().height }} px
+    @if (image().isPrimary) {
+      <strong>Principală</strong>
+    }
+  </div>
+  <form #form="ngForm" (ngSubmit)="submit(form)">
+    <fieldset [disabled]="disabled()">
+      <label
+        >Text alternativ<input
+          name="altText"
+          [(ngModel)]="details.altText"
+          required
+          maxlength="200"
+      /></label>
+      <label
+        >Varianta imaginii<select name="variantId" [(ngModel)]="details.variantId">
+          <option [ngValue]="null">Produsul în general</option>
+          @for (variant of variants(); track variant.id) {
+            <option [value]="variant.id">{{ variant.sku }}</option>
+          }
+        </select></label
+      >
+      <button type="submit" [disabled]="disabled() || form.invalid">Salvează detaliile</button>
+    </fieldset>
+  </form>
+  <div class="actions">
+    <button [disabled]="disabled() || image().isPrimary" (click)="primary.emit()">
+      Setează principală
+    </button>
+    <button
+      [disabled]="disabled() || first()"
+      (click)="moved.emit(-1)"
+      aria-label="Mută imaginea înainte"
+    >
+      ←
+    </button>
+    <button
+      [disabled]="disabled() || last()"
+      (click)="moved.emit(1)"
+      aria-label="Mută imaginea după"
+    >
+      →
+    </button>
+    @if (confirming()) {
+      <p>Elimini această imagine din produs?</p>
+      <button [disabled]="disabled()" (click)="removed.emit()">Confirmă eliminarea</button>
+      <button [disabled]="disabled()" (click)="confirming.set(false)">Renunță</button>
+    } @else {
+      <button [disabled]="disabled()" (click)="confirming.set(true)">Elimină imaginea</button>
+    }
+  </div>
+</article>

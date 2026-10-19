@@ -4,7 +4,7 @@ Magazin de șuruburi și elemente de fixare, reorganizat în servicii independen
 
 ## Structura actuală
 
-- `backend/src/services/catalog`: produse, variante, ambalaje, prețuri, publicare și worker Outbox.
+- `backend/src/services/catalog`: produse, categorii, atribute, imagini, variante, ambalaje, prețuri, publicare și worker Outbox.
 - `backend/src/services/inventory`: stoc și recepții idempotente, în bază separată.
 - `backend/src/services/identity`: conturi, autentificare, roluri și CSRF, în bază separată.
 - `backend/src/services/ordering`: host separat, pregătit pentru etapa comenzilor; fără checkout implementat.
@@ -93,3 +93,7 @@ Ctrl+C în terminalul `up` închide procesele backend ale acelui grup. Oprește 
 Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul, comenzile, rezervările, plățile, curierul, facturarea și furnizorii nu sunt implementați. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
 
 Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, secrete gestionate, backup, monitorizare, chei Identity persistente, MFA, migrații controlate și domenii permise pentru SSR. `STORE_API_URL` indică gateway-ul pentru SSR, iar `SSR_ALLOWED_HOSTS` lista hosturilor permise. `scripts/dev.py` este exclusiv pentru Development.
+
+### Imagini locale
+
+Administrarea fiecărui produs include panoul „Imaginile produsului”. Sunt acceptate JPEG, PNG și WebP statice, maximum 8 MB, 6000 px/latură și 24 MP; maximum 12 imagini/produs. Textul alternativ este obligatoriu. Fișierele sunt convertite în WebP și miniaturi, în `work/media/catalog` (neversionat). La pornirea manuală a Catalog API configurează `Media__Root` cu un director privat persistent; scripturile locale îl configurează automat. Backup-ul bazei trebuie însoțit de backup-ul fișierelor.

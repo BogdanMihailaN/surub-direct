@@ -7,10 +7,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CatalogApiService as Api } from '@shared/catalog/catalog-api.service';
 import { errorMessage } from '@shared/http/error-message';
 import { StoreProduct } from '@shared/models';
-import { FastenerArt } from '@shared/ui/fastener-art/fastener-art.component';
+import { ProductGallery } from '../../components/product-gallery/product-gallery.component';
 @Component({
   selector: 'sd-product',
-  imports: [RouterLink, DecimalPipe, FastenerArt],
+  imports: [RouterLink, DecimalPipe, ProductGallery],
   templateUrl: './product-page.component.html',
   styleUrl: './product-page.component.scss',
 })

@@ -65,3 +65,18 @@ Nu s-a modificat schema DB și nu s-au introdus apeluri de scriere în Inventory
 - Administrarea a fost inspectată vizual la 1440 px și 390 px, fără depășire orizontală. Capturile locale sunt `work/taxonomy-admin-desktop.png`, `work/taxonomy-admin-mobile.png` și `work/taxonomy-storefront.png`.
 
 Produsele create de noile scenarii sunt arhivate la final; definițiile și categoriile de test rămân vizibile în administrare. Categorii fără produse publicate nu apar în magazin. Limitele comerciale (date demonstrative, noindex, checkout dezactivat) rămân valabile.
+
+## Imagini produse — 19 octombrie 2026
+
+- Build complet .NET: 0 erori și 0 avertismente; build-uri Angular de producție storefront și admin reușite, fără avertismente de șablon la verificarea finală.
+- `python3 scripts/dev.py test`: 67 teste trecute. Testele noi acoperă ordinea și imaginea principală, limita de 12 imagini, textul alternativ, asocierea SKU, produse arhivate, redimensionarea celor trei formate acceptate, cele opt orientări EXIF, respingerea fișierelor deteriorate/SVG/prea mari și a dimensiunilor excesive.
+- Integrarea PostgreSQL și filesystem confirmă păstrarea metadatelor, citirea privată a ciornelor, accesul public doar după publicare, ascunderea după arhivare, ștergerea fișierului și promovarea altei imagini principale. Două încărcări simultane păstrează o singură imagine principală și poziții distincte.
+- Pornirea completă a identificat inițial înregistrarea handler-elor media și în worker-ul Outbox, care nu are nevoie de storage. Înregistrarea lor a fost mutată în `AddCatalogMedia`; un test separat validează configurația worker-ului fără dependențe media. După corecție toate procesele au pornit.
+- Backup privat Catalog creat înainte de migrare. Cele 27 produse, 28 variante și 29 oferte au rămas identice imediat după aplicare; migrarea adaugă doar tabelul ProductImages, indexurile și relațiile. Testele de browser ulterioare adaugă date demonstrative. Baza legacy a fost păstrată.
+- `python3 scripts/dev.py check-migrations`: Catalog, Pricing, Inventory și Identity fără diferențe de model.
+- `python3 scripts/dev.py e2e`: 15 scenarii trecute în rularea finală completă. Upload real prin browser, miniatură WebP, ordine, principală, text alternativ, SKU, refuz de SVG cu MIME fals, galerie și card public, eliminare/anulare și blocarea imaginii după arhivare.
+- Endpoint-urile de imagini cer autentificare și CSRF pentru mutații atât prin gateway, cât și direct la Catalog. Imaginile administrative nu sunt accesibile anonim. Răspunsurile media sunt no-store și nu servesc fișiere fără metadate.
+- Panoul admin și galeria au fost inspectate pe desktop și la 390 px, fără depășire a viewport-ului. Capturile `work/images-admin-*.png` și `work/images-storefront-*.png` folosesc o imagine geometrică generată exclusiv ca fixture de test, fără a o prezenta ca fotografie comercială.
+- Verificarea fișierelor versionabile nu a găsit valorile secretelor locale. Fișierele media, backup-urile și logurile rămân ignorate de Git. Scenariul nou își elimină imaginile și arhivează produsul la final.
+
+Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor orfane; nu s-au verificat upload-uri sub încărcare de producție. Nu se păstrează originalele. Limitele și procedura de backup pentru fișiere sunt documentate în architecture.md și README.md.

@@ -114,6 +114,11 @@
           (restored)="store.restore()"
         />
       }
+      <sd-product-images-panel
+        [product]="row.product"
+        [disabled]="store.busy() || store.editing()"
+        (updated)="store.refreshImages($event)"
+      />
       @if (row.product.status !== 'Archived' && !store.editing()) {
         @for (identity of [row.product.id]; track identity) {
           <div class="forms">

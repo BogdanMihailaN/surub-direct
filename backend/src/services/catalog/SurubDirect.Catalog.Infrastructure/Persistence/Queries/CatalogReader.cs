@@ -5,7 +5,7 @@ using SurubDirect.Catalog.Domain;
 namespace SurubDirect.Catalog.Infrastructure;
 internal sealed class CatalogReader(CatalogDbContext db) : ICatalogReader
 {
-    private IQueryable<Product> Query => db.Products.Include(x => x.Classification)
+    private IQueryable<Product> Query => db.Products.Include(x => x.Images).Include(x => x.Classification)
         .Include(x => x.Variants).ThenInclude(x => x.Offers)
         .Include(x => x.Variants).ThenInclude(x => x.AttributeValues).AsSplitQuery().AsNoTracking();
 

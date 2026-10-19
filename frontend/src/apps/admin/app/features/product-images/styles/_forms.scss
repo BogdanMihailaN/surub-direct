@@ -1,0 +1,48 @@
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+label {
+  display: block;
+  font-size: 13px;
+  margin: 12px 0;
+}
+input,
+select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #b8c4ae;
+  border-radius: 4px;
+  font: inherit;
+}
+p {
+  color: #64715c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+button {
+  border: 1px solid #c9d4bf;
+  border-radius: 5px;
+  background: white;
+  color: #344b2c;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+button[type='submit'] {
+  background: #925000;
+  color: white;
+  border-color: #925000;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+[role='alert'] {
+  color: #a93f28;
+}

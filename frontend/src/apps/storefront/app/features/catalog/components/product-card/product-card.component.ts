@@ -1,3 +1,4 @@
+import { productImageUrl } from '@shared/catalog/product-image-url';
 import { Component, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -10,6 +11,11 @@ import { FastenerArt } from '@shared/ui/fastener-art/fastener-art.component';
   styleUrl: './product-card.component.scss',
 })
 export class ProductCardComponent {
+  readonly imageUrl = productImageUrl;
+  mainImage() {
+    const images = this.product().product.images ?? [];
+    return images.find((x) => x.isPrimary) ?? images[0];
+  }
   readonly product = input.required<StoreProduct>();
   price(p: StoreProduct) {
     return p.prices.length ? Math.min(...p.prices.map((x) => x.grossAmount)) : null;

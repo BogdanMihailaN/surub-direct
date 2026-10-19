@@ -19,6 +19,7 @@ public sealed class Product
     public string Description { get; private set; } = "";
     public ProductStatus Status { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
+    public List<ProductImage> Images { get; private set; } = [];
     public List<Variant> Variants { get; private set; } = [];
 
     public static Product Create(string name, string slug, string category, string description)
@@ -99,6 +100,44 @@ public sealed class Product
         if (packSizeChanged)
             Status = ProductStatus.Draft;
         return packSizeChanged;
+    }
+
+    public ProductImage AddImage(Guid id, string altText, Guid? variantId, int width, int height)
+    {
+        EnsureEditable();
+        EnsureImageVariant(variantId);
+        if (Images.Count >= 12) throw new BusinessException("Maximum 12 imagini per produs.");
+        var image = ProductImage.Create(id, Id, altText, variantId, width, height, Images.Count, Images.Count == 0);
+        Images.Add(image);
+        return image;
+    }
+    public void UpdateImage(Guid imageId, string altText, Guid? variantId)
+    {
+        EnsureEditable();
+        EnsureImageVariant(variantId);
+        Image(imageId).Update(altText, variantId);
+    }
+    public void ArrangeImages(IReadOnlyList<Guid> ids, Guid primaryId)
+    {
+        EnsureEditable();
+        if (ids is null || ids.Count != Images.Count || ids.Distinct().Count() != ids.Count ||
+            ids.Any(id => Images.All(x => x.Id != id)) || !ids.Contains(primaryId))
+            throw new BusinessException("Ordinea trebuie să includă toate imaginile, o singură dată, și imaginea principală.");
+        for (var i = 0; i < ids.Count; i++) Image(ids[i]).Arrange(i, ids[i] == primaryId);
+    }
+    public void RemoveImage(Guid imageId)
+    {
+        EnsureEditable();
+        Images.Remove(Image(imageId));
+        var ordered = Images.OrderBy(x => x.SortOrder).ToArray();
+        var primary = ordered.FirstOrDefault(x => x.IsPrimary) ?? ordered.FirstOrDefault();
+        for (var i = 0; i < ordered.Length; i++) ordered[i].Arrange(i, ordered[i] == primary);
+    }
+    private ProductImage Image(Guid id) => Images.SingleOrDefault(x => x.Id == id)
+        ?? throw new BusinessException("Imaginea nu există în acest produs.", 404);
+    private void EnsureImageVariant(Guid? id)
+    {
+        if (id.HasValue && Variants.All(x => x.Id != id.Value)) throw new BusinessException("Varianta nu există în acest produs.", 404);
     }
 
     public void Publish()

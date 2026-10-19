@@ -114,6 +114,43 @@ namespace SurubDirect.Catalog.Infrastructure.Migrations
                     b.ToTable("Products", "catalog");
                 });
 
+            modelBuilder.Entity("SurubDirect.Catalog.Domain.ProductImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AltText")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VariantId");
+
+                    b.HasIndex("ProductId", "SortOrder");
+
+                    b.ToTable("ProductImages", "catalog");
+                });
+
             modelBuilder.Entity("SurubDirect.Catalog.Domain.SalesOffer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -338,6 +375,20 @@ namespace SurubDirect.Catalog.Infrastructure.Migrations
                     b.Navigation("Classification");
                 });
 
+            modelBuilder.Entity("SurubDirect.Catalog.Domain.ProductImage", b =>
+                {
+                    b.HasOne("SurubDirect.Catalog.Domain.Product", null)
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SurubDirect.Catalog.Domain.Variant", null)
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("SurubDirect.Catalog.Domain.SalesOffer", b =>
                 {
                     b.HasOne("SurubDirect.Catalog.Domain.Variant", null)
@@ -378,6 +429,8 @@ namespace SurubDirect.Catalog.Infrastructure.Migrations
 
             modelBuilder.Entity("SurubDirect.Catalog.Domain.Product", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("Variants");
                 });
 

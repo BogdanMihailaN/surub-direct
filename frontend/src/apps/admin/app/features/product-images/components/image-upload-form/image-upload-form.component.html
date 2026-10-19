@@ -1,0 +1,37 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <h3>Încarcă o imagine</h3>
+  <p>
+    JPEG, PNG sau WebP · maximum 8 MB, 6000 px pe latură și 24 megapixeli. Maximum 12 imagini per
+    produs.
+  </p>
+  <fieldset [disabled]="disabled()">
+    <label
+      >Fișier imagine<input
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="choose($event)"
+    /></label>
+    <label
+      >Text alternativ pentru imaginea nouă<input
+        name="altText"
+        [(ngModel)]="altText"
+        required
+        maxlength="200"
+        placeholder="Ex. Șurub M8 zincat, vedere laterală"
+    /></label>
+    <label
+      >Varianta pentru imaginea nouă<select name="variantId" [(ngModel)]="variantId">
+        <option value="">Produsul în general</option>
+        @for (variant of variants(); track variant.id) {
+          <option [value]="variant.id">{{ variant.sku }}</option>
+        }
+      </select></label
+    >
+    @if (error()) {
+      <p role="alert">{{ error() }}</p>
+    }
+    <button type="submit" [disabled]="disabled() || form.invalid || !file()">
+      Încarcă imaginea
+    </button>
+  </fieldset>
+</form>

@@ -1,0 +1,42 @@
+<section class="panel" aria-label="Imaginile produsului">
+  <h2>Imaginile produsului</h2>
+  <p>
+    Prima imagine încărcată devine principală. Poți schimba ordinea și asocia imaginile unei
+    variante SKU.
+  </p>
+  <div aria-live="polite">
+    @if (store.error()) {
+      <p role="alert">{{ store.error() }}</p>
+    }
+    @if (store.message()) {
+      <p class="success">{{ store.message() }}</p>
+    }
+  </div>
+  <div class="images">
+    @for (image of store.images(); track image.id; let first = $first; let last = $last) {
+      <sd-image-editor
+        [image]="image"
+        [productId]="product().id"
+        [variants]="product().variants"
+        [disabled]="disabled() || store.busy() || product().status === 'Archived'"
+        [first]="first"
+        [last]="last"
+        (saved)="done(store.update(image.id, $event))"
+        (primary)="done(store.primary(image.id))"
+        (moved)="done(store.move(image.id, $event))"
+        (removed)="done(store.remove(image.id))"
+      />
+    } @empty {
+      <p>Nu ai încărcat imagini. Magazinul afișează ilustrația demonstrativă.</p>
+    }
+  </div>
+  @if (product().status !== 'Archived') {
+    @for (id of [product().id + '-' + store.images().length]; track id) {
+      <sd-image-upload-form
+        [variants]="product().variants"
+        [disabled]="disabled() || store.busy() || store.images().length >= 12"
+        (submitted)="done(store.upload($event))"
+      />
+    }
+  }
+</section>

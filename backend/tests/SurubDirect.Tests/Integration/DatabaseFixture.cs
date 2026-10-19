@@ -12,6 +12,7 @@ namespace SurubDirect.Tests;
 public sealed class DatabaseFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:17").Build();
+    private readonly string mediaRoot = Path.Combine(Path.GetTempPath(), "surub-images-" + Guid.NewGuid().ToString("N"));
     public ServiceProvider Services { get; private set; } = null!;
 
     public async Task InitializeAsync()
@@ -29,6 +30,8 @@ public sealed class DatabaseFixture : IAsyncLifetime
         {
             Database = "inventory_tests"
         }.ConnectionString;
+        s.AddLogging();
+        s.AddCatalogMedia(mediaRoot);
         s.AddCatalog(container.GetConnectionString()).AddPricing(container.GetConnectionString()).AddInventory(inventoryConnection);
         s.AddScoped<IVariantLookup, TestVariantLookup>();
         s.AddScoped<IStockReader, TestStockReader>();
@@ -47,5 +50,6 @@ public sealed class DatabaseFixture : IAsyncLifetime
     {
         await Services.DisposeAsync();
         await container.DisposeAsync();
+        if (Directory.Exists(mediaRoot)) Directory.Delete(mediaRoot, true);
     }
 }

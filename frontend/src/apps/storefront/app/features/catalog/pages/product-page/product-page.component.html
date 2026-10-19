@@ -4,9 +4,7 @@
     <p role="alert">{{ error() }}</p>
   } @else if (item(); as row) {
     <div class="overview">
-      <div class="art">
-        <sd-fastener [category]="row.product.category" /><small>Ilustrație demonstrativă</small>
-      </div>
+      <sd-product-gallery [product]="row.product" />
       <div>
         <span class="eyebrow">{{ row.product.category }}</span>
         <h1>{{ row.product.name }}</h1>

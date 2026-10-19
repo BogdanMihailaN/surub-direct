@@ -50,6 +50,8 @@ def environment(service=None):
     }
     for key in keys.get(service, ()):
         env['ServiceKeys__' + key.title()] = config.get(key + '_SERVICE_KEY', '')
+    if service == 'catalog':
+        env['Media__Root'] = str(ROOT / 'work/media/catalog')
     if service == 'identity':
         env['Admin__Email'] = config.get('ADMIN_EMAIL', '')
         env['Admin__Password'] = config.get('ADMIN_PASSWORD', '')

@@ -1,0 +1,45 @@
+<section aria-label="Galerie produs">
+  @if (product().images.length) {
+    <label
+      >Imagini pentru varianta<select (change)="changeVariant($event)">
+        <option value="">Toate imaginile</option>
+        @for (variant of product().variants; track variant.id) {
+          <option [value]="variant.id">{{ variant.sku }}</option>
+        }
+      </select></label
+    >
+  }
+  <div class="main-image">
+    @if (selected(); as image) {
+      <img
+        [src]="url(product().id, image.id)"
+        [alt]="image.altText"
+        [width]="image.width"
+        [height]="image.height"
+        fetchpriority="high"
+      />
+    } @else {
+      <sd-fastener [category]="product().category" /><small>Ilustrație demonstrativă</small>
+    }
+  </div>
+  @if (images().length) {
+    <div class="thumbnails">
+      @for (image of images(); track image.id; let i = $index) {
+        <button
+          [class.selected]="selected()?.id === image.id"
+          [attr.aria-pressed]="selected()?.id === image.id"
+          [attr.aria-label]="'Vezi imaginea ' + (i + 1) + ': ' + image.altText"
+          (click)="selectedId.set(image.id)"
+        >
+          <img
+            [src]="url(product().id, image.id, true)"
+            [alt]="image.altText"
+            width="80"
+            height="80"
+            loading="lazy"
+          />
+        </button>
+      }
+    </div>
+  }
+</section>

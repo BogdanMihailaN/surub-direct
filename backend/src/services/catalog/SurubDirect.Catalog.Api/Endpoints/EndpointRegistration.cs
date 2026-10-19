@@ -3,12 +3,18 @@ public static class EndpointRegistration
 {
     public static void MapCatalogEndpoints(this WebApplication app)
     {
+        GetPublicImageEndpoint.Map(app);
         ListCategoriesEndpoint.Map(app);
         GetTaxonomyEndpoint.Map(app);
         ListProductsEndpoint.Map(app);
         GetProductEndpoint.Map(app);
         VariantExistsEndpoint.Map(app, app.Configuration);
         var admin = app.MapGroup("/api/v1/admin").RequireAuthorization("Admin");
+        UploadImageEndpoint.Map(admin);
+        UpdateImageEndpoint.Map(admin);
+        ArrangeImagesEndpoint.Map(admin);
+        DeleteImageEndpoint.Map(admin);
+        GetAdminImageEndpoint.Map(admin);
         ListAdminProductsEndpoint.Map(admin);
         GetAdminProductEndpoint.Map(admin);
         UpdateProductEndpoint.Map(admin);

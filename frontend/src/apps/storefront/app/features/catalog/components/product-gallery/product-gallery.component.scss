@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+label {
+  display: block;
+  font-size: 12px;
+  color: #64715c;
+  margin-bottom: 12px;
+}
+select {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ccd4c5;
+  border-radius: 4px;
+  background: white;
+}
+.main-image {
+  height: 330px;
+  background: #eef0e8;
+  border-radius: 6px;
+  position: relative;
+}
+.main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+small {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  font-size: 10px;
+  color: #64715c;
+}
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+button {
+  padding: 3px;
+  border: 1px solid #dce3d4;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+button.selected {
+  border: 2px solid #a25a12;
+  padding: 2px;
+}
+button img {
+  display: block;
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  .main-image {
+    height: 240px;
+  }
+  button img {
+    width: 60px;
+    height: 60px;
+  }
+}

@@ -12,6 +12,8 @@ public static class ServiceRegistration
     {
         var connection = builder.Configuration.GetConnectionString("Catalog") ?? throw new InvalidOperationException("Configure ConnectionStrings__Catalog.");
         builder.Services.AddCatalog(connection).AddPricing(connection);
+        var mediaRoot = builder.Configuration["Media:Root"] ?? throw new InvalidOperationException("Configure Media__Root to a private persistent directory.");
+        builder.Services.AddCatalogMedia(mediaRoot);
         builder.Services.AddScoped<ProductEnricher>();
         builder.Services.AddScoped<GetCatalogHandler>();
         builder.Services.AddScoped<GetProductHandler>();
