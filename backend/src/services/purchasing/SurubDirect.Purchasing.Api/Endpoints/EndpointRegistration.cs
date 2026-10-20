@@ -11,6 +11,15 @@ public static class EndpointRegistration
         AddSupplierItemEndpoint.Map(admin);
         UpdateSupplierItemEndpoint.Map(admin);
         SearchVariantsEndpoint.Map(admin);
+        CreatePurchaseOrderEndpoint.Map(admin);
+        GetPurchaseOrderEndpoint.Map(admin);
+        ListPurchaseOrdersEndpoint.Map(admin);
+        UpdatePurchaseOrderEndpoint.Map(admin);
+        AddPurchaseOrderLineEndpoint.Map(admin);
+        UpdatePurchaseOrderLineEndpoint.Map(admin);
+        RemovePurchaseOrderLineEndpoint.Map(admin);
+        MarkPurchaseOrderSentEndpoint.Map(admin);
+        CancelPurchaseOrderEndpoint.Map(admin);
         LivenessEndpoint.Map(app); ReadinessEndpoint.Map(app);
     }
 }

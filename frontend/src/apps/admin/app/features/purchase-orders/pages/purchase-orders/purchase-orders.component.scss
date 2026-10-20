@@ -1,0 +1,51 @@
+@use '../../styles/forms';
+main {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: calc(100vh - 75px);
+}
+.editor {
+  padding: 28px 32px 60px;
+  min-width: 0;
+  max-width: 1350px;
+}
+h1 {
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #6d805f;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.error,
+.success {
+  padding: 16px;
+  border-radius: 6px;
+  line-height: 1.6;
+}
+.error {
+  background: #ffebe6;
+  color: #a13c26;
+}
+.success {
+  background: #edf5e6;
+  color: #42762e;
+}
+@media (max-width: 850px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+  .editor {
+    padding: 20px 16px 50px;
+  }
+  .heading {
+    display: block;
+  }
+}

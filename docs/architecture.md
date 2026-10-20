@@ -31,7 +31,7 @@ flowchart LR
 | Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
 | Inventory | Recepții idempotente, sold și interogare stoc; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
-| Purchasing | Furnizori și condiții de achiziție per SKU; fără comenzi de aprovizionare încă | `surub_purchasing`: furnizori și articole asociate |
+| Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
 | Ordering | Proces independent cu health checks și capabilități; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
 
@@ -100,3 +100,5 @@ Previzualizarea nu persistă nimic și nu rezervă coduri. Salvarea reconstruie�
 Purchasing este un serviciu separat, cu Domain, Application, Infrastructure, Contracts și API în propriul director, fără referințe la proiectele altor servicii. Deține furnizorii, identitatea fiscală locală și condițiile curente per furnizor–SKU. Refolosește doar primitivele tehnice și autentificarea/HTTP din shared. `ICatalogVariants` este portul consumatorului; Catalog expune separat citirea internă a variantelor ne-arhivate, protejată cu cheia serviciului. Gateway-ul nu rutează `/internal`.
 
 Mutările unui furnizor și ale articolelor sale folosesc tranzacție cu blocarea rândului furnizorului. Astfel, două asocieri concurente sau o dezactivare concurentă nu ocolesc regulile agregatului; indexurile unice sunt protecția suplimentară. Legătura cu Catalog este ID extern plus snapshot SKU/denumire, fără cheie externă către altă bază. Verificarea HTTP inițială nu reprezintă o tranzacție distribuită cu Catalog. [Comportament și limite](purchasing.md).
+
+Comenzile Purchasing păstrează snapshot-uri locale și o versiune de concurență. Modificările blochează furnizorul înaintea comenzii; verificarea Catalog poate refuza salvarea, fără scrieri în alt serviciu. Stările sunt Draft, Sent și Cancelled; nu există încă recepții legate de comenzi. [Detalii](purchase-orders.md).

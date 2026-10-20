@@ -1,0 +1,75 @@
+<main>
+  <aside>
+    <sd-order-list
+      [data]="store.data()"
+      [busy]="store.busy()"
+      [selectedId]="store.order()?.id ?? ''"
+      (selected)="store.select($event)"
+      (create)="store.newOrder()"
+      (filtered)="store.filter($event)"
+      (paged)="store.load($event)"
+    />
+  </aside>
+  <div class="editor">
+    <p class="eyebrow">APROVIZIONARE</p>
+    <h1>Comenzi de aprovizionare</h1>
+    <p>Pregătește comenzile către furnizori și păstrează condițiile de achiziție convenite.</p>
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    @if (store.message()) {
+      <p class="success" role="status">{{ store.message() }}</p>
+    }
+    @if (store.busy()) {
+      <p role="status">Se procesează…</p>
+    }
+    @if (store.order(); as order) {
+      <div class="heading">
+        <h2>CA-{{ order.number }} · {{ order.supplierName }}</h2>
+        <button [disabled]="store.busy()" (click)="store.select(order.id)">
+          Reîncarcă comanda
+        </button>
+      </div>
+      @if (store.stale()) {
+        <p class="error">
+          Reîncarcă comanda pentru a verifica rezultatul și a continua. Modificările nesalvate vor
+          fi înlocuite cu datele serverului.
+        </p>
+      }
+      <sd-order-notes
+        [order]="order"
+        [disabled]="store.busy() || store.stale()"
+        (saved)="store.notes($event)"
+      />
+      <sd-order-lines
+        [order]="order"
+        [disabled]="store.busy() || store.stale()"
+        (updated)="store.update($event.id, $event.change)"
+        (removed)="store.remove($event)"
+      />
+      @if (order.status === 'Draft') {
+        @if (store.supplier(); as supplier) {
+          <sd-order-line-add
+            [supplier]="supplier"
+            [order]="order"
+            [disabled]="store.busy() || store.stale()"
+            (added)="store.add($event)"
+          />
+        }
+      }
+      <sd-order-actions
+        [order]="order"
+        [disabled]="store.busy() || store.stale()"
+        (sent)="store.sent()"
+        (cancelled)="store.cancel($event)"
+      />
+    } @else {
+      <sd-order-create
+        [suppliers]="store.suppliers()"
+        [busy]="store.busy()"
+        (search)="store.findSuppliers($event)"
+        (created)="store.create($event)"
+      />
+    }
+  </div>
+</main>

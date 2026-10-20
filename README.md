@@ -92,7 +92,7 @@ Ctrl+C în terminalul `up` închide procesele backend ale acelui grup. Oprește 
 
 ## Stadiu comercial
 
-Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul, comenzile, rezervările, plățile, curierul, facturarea și furnizorii nu sunt implementați. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
+Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul, comenzile clienților, rezervările, plățile, curierul, facturarea nu sunt implementate. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
 
 Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, secrete gestionate, backup, monitorizare, chei Identity persistente, MFA, migrații controlate și domenii permise pentru SSR. `STORE_API_URL` indică gateway-ul pentru SSR, iar `SSR_ALLOWED_HOSTS` lista hosturilor permise. `scripts/dev.py` este exclusiv pentru Development.
 
@@ -107,3 +107,5 @@ Pagina **Import CSV** din administrare permite încărcarea de produse noi cu va
 ## Furnizori
 
 Pagina **Furnizori** gestionează datele firmelor și articolele cumpărate: cod furnizor, SKU, ambalaj, cost net și monedă. Purchasing verifică variantele prin HTTP, fără acces la baza Catalog. Vezi [fluxul și limitele actuale](docs/purchasing.md).
+
+Pagina **Aprovizionare** permite pregătirea comenzilor către furnizori, costuri negociate, marcarea manuală a trimiterii și anulare. Vezi [comenzile de aprovizionare](docs/purchase-orders.md). Recepțiile legate de comenzi urmează separat.

@@ -1,0 +1,26 @@
+<section>
+  <h2>Datele comenzii</h2>
+  <p>
+    <strong>{{ order().supplierName }}</strong> · {{ order().supplierCountry }} ·
+    {{ order().supplierTaxId }}
+  </p>
+  <p>{{ order().supplierEmail }} {{ order().supplierAddress }}</p>
+  <p class="help">
+    Datele furnizorului sunt păstrate de la crearea comenzii. Monedă: {{ order().currency }}.
+  </p>
+  @if (order().status === 'Draft') {
+    <form (ngSubmit)="saved.emit(notes)">
+      <label
+        >Observații comandă<textarea
+          name="notes"
+          [(ngModel)]="notes"
+          maxlength="2000"
+          rows="3"
+          [disabled]="disabled()"
+        ></textarea></label
+      ><button [disabled]="disabled()">Salvează observațiile</button>
+    </form>
+  } @else {
+    <p>{{ order().notes || 'Fără observații.' }}</p>
+  }
+</section>

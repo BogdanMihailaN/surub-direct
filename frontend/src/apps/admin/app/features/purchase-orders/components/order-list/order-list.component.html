@@ -1,0 +1,49 @@
+<h2>Comenzi</h2>
+<button [disabled]="busy()" (click)="create.emit()">Comandă nouă</button>
+<form (ngSubmit)="filtered.emit({ search, status })">
+  <label
+    >Caută număr, furnizor sau SKU<input
+      name="search"
+      [(ngModel)]="search"
+      maxlength="200" /></label
+  ><label
+    >Stare comandă<select name="status" [(ngModel)]="status">
+      <option value="">Toate</option>
+      <option value="Draft">Ciorne</option>
+      <option value="Sent">Trimise</option>
+      <option value="Cancelled">Anulate</option>
+    </select></label
+  ><button [disabled]="busy()">Aplică filtrele</button>
+</form>
+<p>Comenzi: {{ data().total }}</p>
+<ul>
+  @for (o of data().items; track o.id) {
+    <li>
+      <button
+        [class.selected]="o.id === selectedId()"
+        [disabled]="busy()"
+        (click)="selected.emit(o.id)"
+      >
+        <strong>CA-{{ o.number }} · {{ o.supplierName }}</strong
+        ><small
+          >{{ o.status === 'Draft' ? 'Ciornă' : o.status === 'Sent' ? 'Trimisă' : 'Anulată' }} ·
+          {{ o.currency }}</small
+        >
+      </button>
+    </li>
+  }
+</ul>
+@if (!data().items.length && !busy()) {
+  <p>Nu există comenzi pentru filtrele alese.</p>
+}
+<div class="pagination">
+  <button [disabled]="busy() || data().page <= 1" (click)="paged.emit(data().page - 1)">
+    Înapoi</button
+  ><span>{{ data().page }}</span
+  ><button
+    [disabled]="busy() || data().page * data().pageSize >= data().total"
+    (click)="paged.emit(data().page + 1)"
+  >
+    Înainte
+  </button>
+</div>

@@ -100,3 +100,13 @@ Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor o
 - Aspect verificat pe desktop și mobil; tabelul articolelor are derulare proprie, fără depășirea viewport-ului. Capturi private: `work/purchasing-desktop.png`, `work/purchasing-mobile.png`. Datele demonstrative ale testelor sunt dezactivate/arhivate, fără ștergere fizică.
 - Un test PostgreSQL a identificat o proiecție LINQ netraductibilă; interogarea a fost corectată și suita completă a trecut ulterior. Prima încercare a noului test browser a folosit un selector nepotrivit pentru lista de monede; selectorul a fost corectat și datele acelui test au fost dezactivate/arhivate.
 - `git diff --check` fără probleme; scanarea fișierelor versionabile nu a găsit valorile secretelor locale. `.env`, datele runtime și artefactele publicării rămân excluse din Git.
+
+## Comenzi de aprovizionare — 20 octombrie 2026
+
+- `python3 scripts/dev.py test`: **111 teste trecute**, fără teste omise. Noile teste verifică snapshot-urile, costurile și cantitățile, stările documentului, blocarea editării după trimitere, persistența/ștergerea liniilor, numărul generat și conflictele între editări concurente. Lipsa sau indisponibilitatea Catalog produce rollback la adăugare și păstrează ciorna la încercarea de trimitere.
+- Migrarea `PurchaseOrders` adaugă două tabele în Purchasing. Aplicată local după un backup privat PostgreSQL; furnizorii existenți și baza legacy sunt păstrați.
+- Buildurile Angular de producție storefront/admin și verificarea Prettier au trecut.
+- `python3 scripts/dev.py e2e`: **21 scenarii trecute**. Fluxul nou creează ciorna, adaugă linia, negociază costul, modifică ulterior asocierea furnizorului, provoacă un conflict de versiune, reîncarcă, marchează trimiterea și anulează. Verifică snapshot-urile, blocarea editării, lipsa modificărilor de stoc/preț și autentificarea/CSRF pe toate mutările noi, direct și prin gateway.
+- Aspect desktop și mobil inspectat; tabelul are derulare proprie fără depășirea paginii. Capturi private în `work/orders-desktop.png` și `work/orders-mobile.png`. Comenzile de test sunt anulate, furnizorii dezactivați și produsele arhivate.
+- Prima încercare backend a găsit Docker oprit; după pornire și provisionarea PostgreSQL, suita completă a trecut. Artefactele runtime, backupurile și secretele nu sunt versionate.
+- Verificarea modelelor EF: fără diferențe față de migrări pentru Catalog, Pricing, Inventory, Identity și Purchasing. Scanarea secretelor în fișierele versionabile a trecut.

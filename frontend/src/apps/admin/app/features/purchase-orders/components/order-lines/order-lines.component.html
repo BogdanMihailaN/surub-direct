@@ -1,0 +1,89 @@
+<section>
+  <h2>Articole comandate</h2>
+  @if (!order().lines.length) {
+    <p>Comanda nu conține încă articole.</p>
+  } @else {
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Linii comandă">
+      <table>
+        <thead>
+          <tr>
+            <th>SKU / cod furnizor</th>
+            <th>Ambalaj păstrat</th>
+            <th>Cantitate</th>
+            <th>Cost net / ambalaj</th>
+            <th>Total net</th>
+            <th>Acțiuni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of order().lines; track l.id) {
+            <tr>
+              <td>
+                <strong>{{ l.sku }}</strong
+                ><small>{{ l.label }} · {{ l.supplierCode }}</small>
+              </td>
+              <td>
+                {{ l.packLabel }}<small>{{ l.unitsPerPack }} buc./ambalaj</small>
+              </td>
+              <td>
+                {{ l.packs }} ambalaje<small>{{ l.baseUnits }} bucăți</small>
+              </td>
+              <td>{{ l.netCostPerPack | number: '1.2-6' }} {{ order().currency }}</td>
+              <td>{{ l.netTotal | number: '1.2-2' }} {{ order().currency }}</td>
+              <td>
+                @if (order().status === 'Draft') {
+                  <div class="actions">
+                    <button
+                      [disabled]="disabled()"
+                      (click)="editing.set(l.id)"
+                      [attr.aria-label]="'Editează linia ' + l.sku"
+                    >
+                      Editează</button
+                    ><button
+                      [disabled]="disabled()"
+                      (click)="removing.set(l.id)"
+                      [attr.aria-label]="'Elimină linia ' + l.sku"
+                    >
+                      Elimină
+                    </button>
+                  </div>
+                } @else {
+                  —
+                }
+              </td>
+            </tr>
+            @if (editing() === l.id && order().status === 'Draft') {
+              <tr>
+                <td colspan="6">
+                  <sd-order-line-editor
+                    [line]="l"
+                    [disabled]="disabled()"
+                    (saved)="updated.emit({ id: l.id, change: $event })"
+                    (cancelled)="editing.set('')"
+                  />
+                </td>
+              </tr>
+            }
+            @if (removing() === l.id && order().status === 'Draft') {
+              <tr>
+                <td colspan="6">
+                  Elimini {{ l.sku }} din ciornă?
+                  <button [disabled]="disabled()" (click)="removed.emit(l.id)">
+                    Confirmă eliminarea
+                  </button>
+                  <button [disabled]="disabled()" (click)="removing.set('')">
+                    Păstrează linia
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  <p class="total">Total net: {{ order().netTotal | number: '1.2-2' }} {{ order().currency }}</p>
+  <p class="help">
+    Totalul însumează liniile rotunjite la două zecimale. Nu include TVA, transport sau alte taxe.
+  </p>
+</section>

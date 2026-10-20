@@ -1,0 +1,36 @@
+<section>
+  <h2>Comandă nouă</h2>
+  <form (ngSubmit)="search.emit(query)">
+    <label>Caută furnizor activ<input name="search" [(ngModel)]="query" maxlength="200" /></label
+    ><button [disabled]="busy()">Caută furnizor</button>
+  </form>
+  <p class="help">Maximum 25 de rezultate. Restrânge căutarea pentru a găsi furnizorul.</p>
+  <form #form="ngForm" (ngSubmit)="submit(form)">
+    <fieldset [disabled]="busy()">
+      <label
+        >Furnizor<select name="supplier" [(ngModel)]="details.supplierId" required>
+          <option value="">Alege furnizorul</option>
+          @for (s of suppliers(); track s.id) {
+            <option [value]="s.id">{{ s.name }} · {{ s.taxId }}</option>
+          }
+        </select></label
+      ><label
+        >Moneda comenzii<select name="currency" [(ngModel)]="details.currency">
+          @for (c of ['RON', 'EUR', 'USD', 'GBP', 'CHF']; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select></label
+      ><label
+        >Observații comandă<textarea
+          name="notes"
+          [(ngModel)]="details.notes"
+          maxlength="2000"
+          rows="3"
+        ></textarea></label
+      ><button [disabled]="form.invalid || busy()">Creează ciorna</button>
+    </fieldset>
+  </form>
+  <p class="help">
+    O comandă are un singur furnizor și o singură monedă. Articolele se adaugă după creare.
+  </p>
+</section>

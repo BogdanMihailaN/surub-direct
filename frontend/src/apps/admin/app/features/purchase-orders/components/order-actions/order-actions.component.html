@@ -1,0 +1,51 @@
+<section>
+  <h2>Starea comenzii</h2>
+  <p>
+    Creată: {{ order().createdAt | date: 'dd.MM.yyyy HH:mm' }}. Stare:
+    <strong>{{
+      order().status === 'Draft' ? 'Ciornă' : order().status === 'Sent' ? 'Trimisă' : 'Anulată'
+    }}</strong>
+  </p>
+  @if (order().sentAt) {
+    <p>Marcată ca trimisă: {{ order().sentAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+  }
+  @if (order().status === 'Draft') {
+    <label class="check"
+      ><input type="checkbox" [(ngModel)]="confirmSent" [disabled]="disabled()" /> Confirm că am
+      trimis comanda furnizorului printr-un canal extern.</label
+    ><button [disabled]="disabled() || !confirmSent || !order().lines.length" (click)="sent.emit()">
+      Marchează ca trimisă
+    </button>
+    <p class="help">
+      Această acțiune doar înregistrează trimiterea și blochează editarea. Aplicația nu trimite
+      email și nu contactează furnizorul.
+    </p>
+  }
+  @if (order().status !== 'Cancelled') {
+    <button [disabled]="disabled()" (click)="showCancel = true">Înregistrează anularea</button>
+    @if (showCancel) {
+      <label
+        >Motivul anulării<textarea
+          [(ngModel)]="reason"
+          maxlength="500"
+          rows="2"
+          [disabled]="disabled()"
+        ></textarea>
+      </label>
+      <p class="help">
+        Furnizorul nu este notificat automat. Anularea păstrează articolele și costurile, fără
+        modificarea stocului.
+      </p>
+      <div class="actions">
+        <button [disabled]="disabled() || !reason.trim()" (click)="cancelled.emit(reason)">
+          Confirmă anularea</button
+        ><button [disabled]="disabled()" (click)="showCancel = false">Renunță</button>
+      </div>
+    }
+  } @else {
+    <p>
+      Anulată: {{ order().cancelledAt | date: 'dd.MM.yyyy HH:mm' }}. Motiv:
+      {{ order().cancellationReason }}
+    </p>
+  }
+</section>

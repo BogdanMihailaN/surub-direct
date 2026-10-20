@@ -38,6 +38,14 @@ export const routes: Routes = [
         (m) => m.PurchasingPage,
       ),
   },
+  {
+    path: 'aprovizionare',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/purchase-orders/pages/purchase-orders/purchase-orders.component').then(
+        (m) => m.PurchaseOrdersPage,
+      ),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'catalog' },
   { path: '**', redirectTo: 'catalog' },
 ];

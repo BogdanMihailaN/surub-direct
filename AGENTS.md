@@ -2,7 +2,7 @@
 
 - Keep all backend source in `backend/src` and tests in `backend/tests`; frontend source in `frontend/src` and tests in `frontend/tests`. Services, gateway and backend shared libraries belong under `backend/src`. Angular apps belong under `frontend/src/apps`; do not add redundant per-service/per-app src layers.
 
-- Use independently runnable services behind YARP: Catalog (including Pricing), Inventory, Identity, Purchasing (suppliers and SKU purchasing terms), and the Ordering host scaffold. The user's microservices decision supersedes the former modular-monolith design.
+- Use independently runnable services behind YARP: Catalog (including Pricing), Inventory, Identity, Purchasing (suppliers, SKU purchasing terms and purchase orders), and the Ordering host scaffold. The user's microservices decision supersedes the former modular-monolith design.
 - Keep Clean Architecture inside each business service. Domain must not reference EF Core, ASP.NET Core or Infrastructure. Application must not reference Infrastructure.
 - A service must never reference another service's projects or access another service's database. Consumer-owned ports and HTTP DTOs define integration boundaries. Contracts projects are local to their owning service.
 - Shared libraries contain only technical primitives and authentication/HTTP plumbing, never shared business entities or persistence.

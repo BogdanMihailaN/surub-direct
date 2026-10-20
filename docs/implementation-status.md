@@ -1,8 +1,10 @@
 # Starea implementării
 
-Actualizat la 19 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
+
+- Comenzi de aprovizionare în Purchasing: ciornă, linii cu cantități și costuri negociate, snapshot-uri, total net, marcarea manuală ca trimisă și anulare cu motiv. Versiune pentru conflicte concurente, autentificare/CSRF și verificare Catalog; fără modificarea stocului. Vezi [fluxul complet](purchase-orders.md).
 
 - API Gateway YARP pe portul 5099, cu rute explicite spre Catalog, Inventory, Identity, Purchasing și hostul Ordering. Gateway fără bază, fără referințe la proiectele comerciale și fără expunerea endpoint-urilor interne.
 - Catalog API, Inventory API, Identity API și Purchasing API rulează independent. Clean Architecture este păstrată în logica comercială; niciun serviciu nu referă proiectele altuia.
@@ -34,7 +36,7 @@ Actualizat la 19 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul, comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul, facturarea, comenzile de aprovizionare și recepțiile legate de acestea nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
+- Coșul, comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul, facturarea și recepțiile legate de comenzile de aprovizionare nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.

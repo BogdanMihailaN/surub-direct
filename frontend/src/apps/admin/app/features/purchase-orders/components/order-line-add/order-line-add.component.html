@@ -1,0 +1,35 @@
+<section>
+  <h3>Adaugă articol</h3>
+  @if (!supplier().isActive) {
+    <p>Furnizorul este inactiv. Reactivează-l înainte de a adăuga articole.</p>
+  } @else {
+    <form #form="ngForm" (ngSubmit)="submit(form)">
+      <fieldset [disabled]="disabled()">
+        <label
+          >Articol furnizor<select name="item" [(ngModel)]="itemId" required>
+            <option value="">Alege articolul</option>
+            @for (i of items(); track i.id) {
+              <option [value]="i.id">
+                {{ i.sku }} · {{ i.packLabel }} ({{ i.unitsPerPack }} buc.) ·
+                {{ i.netCostPerPack | number: '1.2-6' }} {{ i.currency }}
+              </option>
+            }
+          </select></label
+        ><label
+          >Număr de ambalaje<input
+            type="number"
+            name="packs"
+            [(ngModel)]="packs"
+            required
+            min="1"
+            max="2147483647"
+            step="1" /></label
+        ><button [disabled]="disabled() || form.invalid">Adaugă în comandă</button>
+      </fieldset>
+    </form>
+    <p class="help">
+      Sunt disponibile asocierile active în {{ order().currency }}, care nu sunt deja în comandă.
+      Ambalajul și costul se copiază la adăugare; costul poate fi negociat în ciornă.
+    </p>
+  }
+</section>
