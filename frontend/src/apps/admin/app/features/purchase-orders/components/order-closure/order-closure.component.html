@@ -1,0 +1,51 @@
+<section aria-label="Închiderea comenzii">
+  <h2>{{ order().status === 'Closed' ? 'Comandă închisă' : 'Închiderea comenzii' }}</h2>
+  @if (order().status === 'Closed') {
+    <p>Închisă la {{ order().closedAt | date: 'dd.MM.yyyy HH:mm' }} de {{ order().closedBy }}.</p>
+    @if (order().closureReason) {
+      <p>Motiv: {{ order().closureReason }}</p>
+    }
+    <p>
+      Recepțiile și corecțiile sunt blocate. Istoricul și cantitățile comandate au fost păstrate.
+    </p>
+  }
+  <p>
+    Rest nelivrat: <strong>{{ totalRemaining() }} buc.</strong>
+  </p>
+  @for (line of order().lines; track line.id) {
+    @if (remaining(line.id) > 0) {
+      <p>{{ line.sku }}: {{ remaining(line.id) }} buc. nelivrate</p>
+    }
+  }
+  @if (order().status === 'Sent') {
+    @if (pending()) {
+      <p role="status">
+        Confirmă recepțiile și corecțiile în așteptare înainte de închidere. Restul afișat se poate
+        modifica după confirmare.
+      </p>
+    }
+    <form #form="ngForm" (ngSubmit)="submit(form)">
+      <fieldset [disabled]="disabled() || pending()">
+        <label
+          >Motivul închiderii<textarea
+            name="reason"
+            maxlength="500"
+            rows="3"
+            [required]="totalRemaining() > 0"
+            [(ngModel)]="reason"
+          ></textarea>
+        </label>
+        <p>
+          Motivul este obligatoriu dacă rămân cantități nelivrate. Închiderea nu modifică stocul și
+          nu notifică furnizorul.
+        </p>
+        <label class="check"
+          ><input type="checkbox" name="confirmed" required [(ngModel)]="confirmed" />Confirm
+          închiderea definitivă. Nu voi mai putea înregistra recepții sau corecții pe această
+          comandă.</label
+        >
+        <button type="submit" [disabled]="form.invalid || !confirmed">Închide comanda</button>
+      </fieldset>
+    </form>
+  }
+</section>

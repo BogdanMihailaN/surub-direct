@@ -3,7 +3,13 @@
   <p>
     Creată: {{ order().createdAt | date: 'dd.MM.yyyy HH:mm' }}. Stare:
     <strong>{{
-      order().status === 'Draft' ? 'Ciornă' : order().status === 'Sent' ? 'Trimisă' : 'Anulată'
+      order().status === 'Draft'
+        ? 'Ciornă'
+        : order().status === 'Sent'
+          ? 'Trimisă'
+          : order().status === 'Closed'
+            ? 'Închisă'
+            : 'Anulată'
     }}</strong>
   </p>
   @if (order().sentAt) {
@@ -21,7 +27,7 @@
       email și nu contactează furnizorul.
     </p>
   }
-  @if (order().status !== 'Cancelled' && !order().receipts.length) {
+  @if ((order().status === 'Draft' || order().status === 'Sent') && !order().receipts.length) {
     <button [disabled]="disabled()" (click)="showCancel = true">Înregistrează anularea</button>
     @if (showCancel) {
       <label
@@ -48,7 +54,7 @@
       {{ order().cancellationReason }}
     </p>
   }
-  @if (order().receipts.length) {
+  @if (order().status === 'Sent' && order().receipts.length) {
     <p>
       Comanda are recepții și nu poate fi anulată. Corecțiile se înregistrează separat; retururile
       către furnizor nu sunt încă disponibile.

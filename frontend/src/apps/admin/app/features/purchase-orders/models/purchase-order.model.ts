@@ -14,10 +14,13 @@ export interface PurchaseOrder {
   supplierAddress: string;
   currency: string;
   notes: string;
-  status: 'Draft' | 'Sent' | 'Cancelled';
+  status: 'Draft' | 'Sent' | 'Cancelled' | 'Closed';
   version: number;
   createdAt: string;
   sentAt: string | null;
+  closedAt: string | null;
+  closedBy: string;
+  closureReason: string;
   cancelledAt: string | null;
   cancellationReason: string;
   netTotal: number;

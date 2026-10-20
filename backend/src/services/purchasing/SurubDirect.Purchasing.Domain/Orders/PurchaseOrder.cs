@@ -19,6 +19,9 @@ public sealed class PurchaseOrder
     public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? SentAt { get; private set; }
     public DateTimeOffset? CancelledAt { get; private set; }
+    public DateTimeOffset? ClosedAt { get; private set; }
+    public string ClosedBy { get; private set; } = "";
+    public string ClosureReason { get; private set; } = "";
     public string CancellationReason { get; private set; } = "";
     public List<PurchaseOrderLine> Lines { get; private set; } = [];
     public List<PurchaseReceipt> Receipts { get; private set; } = [];
@@ -67,6 +70,7 @@ public sealed class PurchaseOrder
     public void MarkSent(Supplier supplier) { EnsureCanSend(supplier); Status = PurchaseOrderStatus.Sent; SentAt = DateTimeOffset.UtcNow; Version++; }
     public void Cancel(string reason)
     {
+        if (Status == PurchaseOrderStatus.Closed) throw new BusinessException("Comanda este închisă și nu poate fi anulată.", 409);
         if (Receipts.Count > 0) throw new BusinessException("Comanda are recepții și nu poate fi anulată.", 409);
         if (Status == PurchaseOrderStatus.Cancelled) throw new BusinessException("Comanda este deja anulată.", 409);
         CancellationReason = Guard.Text(reason, "Motiv anulare", 500); Status = PurchaseOrderStatus.Cancelled; CancelledAt = DateTimeOffset.UtcNow; Version++;
@@ -100,6 +104,19 @@ public sealed class PurchaseOrder
     public void CompleteCorrection(Guid id)
     {
         var c = Corrections.Single(c => c.Id == id); if (c.AppliedAt is null) { c.MarkApplied(); Version++; }
+    }
+    public void Close(string? reason, string actor)
+    {
+        if (Status != PurchaseOrderStatus.Sent) throw new BusinessException("Se pot închide doar comenzi trimise.", 409);
+        if (Receipts.Any(r => r.AppliedAt is null) || Corrections.Any(c => c.AppliedAt is null))
+            throw new BusinessException("Confirmă toate recepțiile și corecțiile în așteptare înainte de închidere.", 409);
+        var remaining = Lines.Sum(l => (long)l.BaseUnits) - Receipts.Sum(r => (long)r.Quantity) + Corrections.Sum(c => (long)c.Quantity);
+        reason = reason?.Trim() ?? "";
+        if (remaining > 0) reason = Guard.Text(reason, "Motiv pentru restul nelivrat", 500);
+        else if (reason.Length > 500) throw new BusinessException("Motiv închidere: maximum 500 caractere.");
+        var operatorName = Guard.Text(actor, "Operator");
+        ClosureReason = reason; ClosedBy = operatorName; ClosedAt = DateTimeOffset.UtcNow;
+        Status = PurchaseOrderStatus.Closed; Version++;
     }
     private void EnsureDraft() { if (Status != PurchaseOrderStatus.Draft) throw new BusinessException("Doar comenzile în ciornă pot fi editate.", 409); }
     private void EnsureSupplier(Supplier supplier) { if (supplier.Id != SupplierId || !supplier.IsActive) throw new BusinessException("Furnizorul comenzii este inactiv sau invalid.", 409); }

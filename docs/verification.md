@@ -141,3 +141,14 @@ Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor o
 - Verificarea fișierelor versionabile nu a găsit valorile secretelor locale. Automatizarea rămâne **PAUSED**, conform cererii utilizatorului; această etapă a fost continuată manual.
 
 Limite: reluarea corecțiilor este manuală; nu există anulare a unei intenții în așteptare sau flux de retur către furnizor. Nu au fost activate checkout-ul sau integrarea comercială și nu s-a făcut deployment în producție.
+
+## Închiderea comenzilor de aprovizionare — 20 octombrie 2026
+
+- `python3 scripts/dev.py test`: **146/146** teste trecute. Închidere cu rest motivat, livrare integrală, operații în așteptare, restricții după închidere, audit persistent și filtrare Closed. Concurența închidere/recepție permite o singură operație pe versiunea inițială. Sumele multi-linie peste limita Int32 folosesc Int64.
+- Build .NET: 0 erori și 0 avertismente. Ambele build-uri Angular de producție reușite, cu verificări TypeScript/template stricte.
+- **11/11 scenarii Playwright afectate** trecute: închidere, comenzi, recepții, corecții și ajustări de stoc. Noile scenarii acoperă închiderea parțială după corecție, motivul obligatoriu, pierderea răspunsului și reîncărcarea, filtrarea comenzilor închise, blocarea documentelor noi, stocul păstrat, închiderea integrală fără motiv și autentificare/CSRF direct și prin gateway.
+- Capturi desktop și mobil în `work/closure-*.png`; verificare de overflow și inspecție vizuală mobilă efectuate.
+- Cinci modele EF fără diferențe față de migrații. Migrația Purchasing adaugă trei coloane, după backup privat al bazei, fără modificări ale recepțiilor sau bazei legacy.
+- Fișierele modificate au trecut verificarea secretelor locale și `git diff --check`. Automatizarea rămâne oprită.
+
+Închiderea este operațională, fără integrare contabilă sau notificare a furnizorului. Redeschiderea și corecțiile noi post-închidere nu sunt implementate; interfața comunică această restricție înainte de confirmare.

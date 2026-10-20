@@ -63,6 +63,12 @@ export class PurchaseOrdersApi {
   retryCorrection(o: PurchaseOrder, id: string) {
     return this.api.write('POST', this.root + '/' + o.id + '/corrections/' + id + '/retry', {});
   }
+  close(o: PurchaseOrder, reason: string) {
+    return this.api.write('POST', this.root + '/' + o.id + '/close', {
+      version: o.version,
+      reason,
+    });
+  }
   cancel(o: PurchaseOrder, reason: string) {
     return this.api.write('POST', this.root + '/' + o.id + '/cancel', {
       version: o.version,

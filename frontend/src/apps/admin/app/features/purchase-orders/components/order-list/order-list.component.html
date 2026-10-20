@@ -11,6 +11,7 @@
       <option value="">Toate</option>
       <option value="Draft">Ciorne</option>
       <option value="Sent">Trimise</option>
+      <option value="Closed">Închise</option>
       <option value="Cancelled">Anulate</option>
     </select></label
   ><button [disabled]="busy()">Aplică filtrele</button>
@@ -26,8 +27,16 @@
       >
         <strong>CA-{{ o.number }} · {{ o.supplierName }}</strong
         ><small
-          >{{ o.status === 'Draft' ? 'Ciornă' : o.status === 'Sent' ? 'Trimisă' : 'Anulată' }} ·
-          {{ o.currency }}</small
+          >{{
+            o.status === 'Draft'
+              ? 'Ciornă'
+              : o.status === 'Sent'
+                ? 'Trimisă'
+                : o.status === 'Closed'
+                  ? 'Închisă'
+                  : 'Anulată'
+          }}
+          · {{ o.currency }}</small
         >
       </button>
     </li>

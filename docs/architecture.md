@@ -111,3 +111,5 @@ Ajustările aparțin exclusiv Inventory. Jurnalul și soldul sunt scrise atomic;
 ## Corecții de recepție — 20 octombrie 2026
 
 Purchasing coordonează intenția persistentă prin portul propriu `IInventoryCorrections`. Inventory deține jurnalul și scăderea atomică a soldului, legate de recepția originală. Confirmarea eliberează capacitatea de recepție în Purchasing; intențiile neconfirmate rămân reluabile manual. Endpoint-ul intern Inventory cere cheia serviciului și sesiune Administrator cu CSRF, prin opt-in explicit în metadatele de autentificare. Nu există rută internă în gateway sau acces la baza altui serviciu. [Contracte și recuperare](receipt-corrections.md).
+
+Închiderea comenzilor Purchasing este o tranziție locală `Sent → Closed`, serializată cu recepțiile/corecțiile prin blocarea furnizor → comandă și verificarea versiunii. Nu produce apeluri Inventory sau modificări de stoc; păstrează auditul și documentele din care se calculează restul nelivrat. [Reguli](purchase-order-closure.md).

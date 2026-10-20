@@ -1,3 +1,4 @@
+import { OrderClosure } from '../../components/order-closure/order-closure.component';
 import { OrderCorrections } from '../../components/order-corrections/order-corrections.component';
 import { OrderReceipts } from '../../components/order-receipts/order-receipts.component';
 import { Component, inject } from '@angular/core';
@@ -13,6 +14,7 @@ import { OrderActions } from '../../components/order-actions/order-actions.compo
   imports: [
     OrderReceipts,
     OrderCorrections,
+    OrderClosure,
     OrderList,
     OrderCreate,
     OrderNotes,

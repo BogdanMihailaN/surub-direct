@@ -26,3 +26,5 @@ Purchasing primește `ServiceKeys:Inventory` prin configurația sa separată. Cl
 Jurnalul Inventory include tipul `Correction`, cantitate negativă și `originalReceiptId`. Soldul și istoricul sunt citite consistent în aceeași tranzacție. Corecțiile se inițiază din Purchasing; ajustările generale nu modifică situația comenzilor.
 
 Migrațiile additive `ReceiptCorrections` creează câte un jurnal local în Inventory și Purchasing, cu chei externe doar în baza proprietară. Nu modifică recepțiile existente. Backupurile locale sunt păstrate privat în `work/backups`; baza legacy rămâne intactă. Reluarea este manuală, cu sesiune validă; RabbitMQ și worker-ul de recuperare rămân în backlog.
+
+Corecțiile noi se înregistrează înainte de [închiderea comenzii](purchase-order-closure.md). Închiderea este blocată cât există intenții în așteptare și nu permite documente noi ulterior; retry-ul operațiilor deja confirmate rămâne fără efect.

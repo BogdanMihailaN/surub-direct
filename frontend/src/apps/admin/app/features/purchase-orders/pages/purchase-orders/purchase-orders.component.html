@@ -73,6 +73,13 @@
           (retried)="store.retryCorrection($event)"
         />
       }
+      @if (order.status === 'Sent' || order.status === 'Closed') {
+        <sd-order-closure
+          [order]="order"
+          [disabled]="store.busy() || store.stale()"
+          (closed)="store.close($event)"
+        />
+      }
       <sd-order-actions
         [order]="order"
         [disabled]="store.busy() || store.stale()"

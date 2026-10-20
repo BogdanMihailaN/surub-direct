@@ -16,7 +16,7 @@ Dacă apare o eroare, reîncarcă documentul. O recepție **În așteptare** poa
 2. După commit, Purchasing apelează endpoint-ul administrativ existent din Inventory cu aceeași cheie UUID, varianta, bucățile și referința. Inventory deduplică cheia și actualizează jurnalul și soldul într-o singură tranzacție. Nu există acces la baza altui serviciu.
 3. După confirmarea răspunsului, Purchasing salvează momentul confirmării. Dacă cererea sau răspunsul se pierde ori acest ultim commit eșuează, înregistrarea rămâne în așteptare și se poate relua. Retry-ul confirmă și un răspuns Inventory `created: false` pentru o recepție deja aplicată.
 
-Nu există tranzacție distribuită. Recepțiile paralele nu pot depăși comanda deoarece verificarea și rezervarea cantității sunt serializate în PostgreSQL; sunt incluse atât recepțiile confirmate, cât și cele în așteptare. O recepție rezervată nu este eliminată automat după timeout. Comanda rămâne Trimisă, iar situația cantităților indică recepția parțială sau completă; nu există încă închidere contabilă.
+Nu există tranzacție distribuită. Recepțiile paralele nu pot depăși comanda deoarece verificarea și rezervarea cantității sunt serializate în PostgreSQL; sunt incluse atât recepțiile confirmate, cât și cele în așteptare. O recepție rezervată nu este eliminată automat după timeout. Comanda rămâne Trimisă până la [închiderea explicită](purchase-order-closure.md); situația cantităților indică recepția parțială sau completă. Închiderea operațională nu reprezintă închidere contabilă.
 
 ## Autorizare și API
 

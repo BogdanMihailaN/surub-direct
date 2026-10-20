@@ -25,6 +25,7 @@ public static class EndpointRegistration
         RemovePurchaseOrderLineEndpoint.Map(admin);
         MarkPurchaseOrderSentEndpoint.Map(admin);
         CancelPurchaseOrderEndpoint.Map(admin);
+        ClosePurchaseOrderEndpoint.Map(admin);
         LivenessEndpoint.Map(app); ReadinessEndpoint.Map(app);
     }
 }

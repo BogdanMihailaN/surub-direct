@@ -6,6 +6,8 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 - Ajustări de stoc plus/minus în Inventory, cu motiv, document, operator, cheie idempotentă și sold așteptat. Jurnal paginat al recepțiilor și ajustărilor în administrarea produsului; stocul negativ și scăderea sub rezervări sunt respinse. [Detalii](stock-adjustments.md).
 
+- Închiderea comenzilor de aprovizionare: rest nelivrat pe SKU, motiv obligatoriu la livrare incompletă, audit și blocarea recepțiilor/corecțiilor noi. Operațiile în așteptare trebuie confirmate înainte de închidere. [Reguli și recuperare](purchase-order-closure.md).
+
 - Corecții parțiale ale recepțiilor: jurnal legat de original, scădere idempotentă în Inventory și cantități nete în Purchasing. Intențiile neconfirmate rămân reluabile manual. [Flux și recuperare](receipt-corrections.md).
 
 - Recepții parțiale pe liniile comenzilor trimise: jurnal persistent în Purchasing, actualizare idempotentă în Inventory, reluare manuală după eroare și protecție împotriva suprarecepției inclusiv pentru cantitățile în așteptare. Comenzile cu recepții nu mai pot fi anulate. [Flux și limite](purchase-receipts.md).

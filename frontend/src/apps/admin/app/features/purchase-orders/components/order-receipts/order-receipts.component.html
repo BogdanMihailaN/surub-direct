@@ -12,7 +12,7 @@
           <th>Comandat</th>
           <th>Confirmat net în stoc</th>
           <th>În așteptare</th>
-          <th>Rămas disponibil</th>
+          <th>{{ order().status === 'Closed' ? 'Rest nelivrat' : 'Rămas disponibil' }}</th>
         </tr>
       </thead>
       <tbody>

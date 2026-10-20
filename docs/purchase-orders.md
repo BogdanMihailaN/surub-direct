@@ -40,3 +40,7 @@ Modificările blochează rândul furnizorului, apoi comanda, în aceeași tranza
 ## Limite și etapa următoare
 
 Pregătirea și trimiterea comenzilor nu schimbă stocul sau prețurile de vânzare. [Recepțiile parțiale](purchase-receipts.md) actualizează idempotent Inventory și împiedică suprarecepția. Exportul PDF, emailurile, corecțiile și auditul complet urmează separat. Migrarea `PurchaseOrders` adaugă doar tabelele comenzilor și liniilor în baza Purchasing; datele furnizorilor sunt păstrate.
+
+## Închidere
+
+Comenzile trimise se pot închide explicit, inclusiv cu rest nelivrat motivat. Recepțiile și corecțiile în așteptare blochează operația. Vezi [închiderea comenzilor](purchase-order-closure.md) pentru audit, restricții și recuperare.

@@ -98,6 +98,12 @@ export class PurchaseOrdersStore {
       'Corecția a fost confirmată în stoc.',
     );
   }
+  close(reason: string) {
+    return this.mutate(
+      (o) => this.api.close(o, reason),
+      'Comanda de aprovizionare a fost închisă.',
+    );
+  }
   cancel(reason: string) {
     return this.mutate(
       (o) => this.api.cancel(o, reason),

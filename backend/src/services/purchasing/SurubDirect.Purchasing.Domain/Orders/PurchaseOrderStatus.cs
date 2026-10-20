@@ -1,2 +1,3 @@
 namespace SurubDirect.Purchasing.Domain;
-public enum PurchaseOrderStatus { Draft, Sent, Cancelled }
+
+public enum PurchaseOrderStatus { Draft, Sent, Cancelled, Closed }

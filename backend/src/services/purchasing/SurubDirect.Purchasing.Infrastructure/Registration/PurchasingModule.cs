@@ -30,6 +30,7 @@ public static class PurchasingModule
         services.AddScoped<RemovePurchaseOrderLineHandler>();
         services.AddScoped<MarkPurchaseOrderSentHandler>();
         services.AddScoped<CancelPurchaseOrderHandler>();
+        services.AddScoped<ClosePurchaseOrderHandler>();
         services.AddScoped<GetPurchaseOrderHandler>();
         services.AddScoped<ListPurchaseOrdersHandler>();
         return services;
