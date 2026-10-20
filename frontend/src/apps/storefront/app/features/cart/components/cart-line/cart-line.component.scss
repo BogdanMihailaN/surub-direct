@@ -1,0 +1,43 @@
+article {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 1px solid #dde5d8;
+  padding: 1.5rem 0;
+  overflow-wrap: anywhere;
+}
+a {
+  color: #28422d;
+  font-weight: 600;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: end;
+  max-width: 330px;
+}
+label {
+  font-size: 0.85rem;
+}
+input {
+  display: block;
+  width: 100px;
+  padding: 0.6rem;
+}
+button {
+  padding: 0.65rem;
+  border: 1px solid #85917c;
+  border-radius: 4px;
+  background: white;
+  color: #28422d;
+  cursor: pointer;
+}
+.issue {
+  color: #a33122;
+}
+@media (max-width: 650px) {
+  article {
+    flex-direction: column;
+  }
+}

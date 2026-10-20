@@ -152,3 +152,14 @@ Limite: reluarea corecțiilor este manuală; nu există anulare a unei intenții
 - Fișierele modificate au trecut verificarea secretelor locale și `git diff --check`. Automatizarea rămâne oprită.
 
 Închiderea este operațională, fără integrare contabilă sau notificare a furnizorului. Redeschiderea și corecțiile noi post-închidere nu sunt implementate; interfața comunică această restricție înainte de confirmare.
+
+## Coș demonstrativ și recalculare Ordering — 20 octombrie 2026
+
+- `python3 scripts/dev.py test`: **162/162** teste trecute, inclusiv arhitectura Ordering, cantități minime/pași, limite, lipsă produs/preț, monede diferite, stoc agregat pe SKU și răspunsuri Catalog nevalide. Prima rulare a fost blocată de Docker oprit; după pornirea Docker Desktop și PostgreSQL, suita a trecut.
+- Build .NET reușit, fără erori sau avertismente; storefront SSR și admin compilate în producție cu verificări stricte.
+- **12/12 scenarii Playwright afectate** trecute: coș, catalog, administrarea produselor și protecțiile gateway/API. Selecția persistă după reload fără prețuri salvate, prețul se recalculează după modificarea administrativă, stocul aceluiași SKU este cumulat, arhivarea invalidează linia, 503 elimină totalul precedent și permite reluarea. Coșul corupt local este recuperabil. Checkout-ul rămâne fals, ruta de creare comandă nu există și soldul/rezervările nu se modifică.
+- Capturi desktop/mobil în `work/cart-*.png`, cu inspecție vizuală și verificare de overflow. Legătura către coș este accesibilă și pe mobil.
+- Nu sunt introduse tabele sau migrații; bazele și credentialele rămân separate. Nu se salvează prețuri sau date personale în localStorage.
+- Prettier, `git diff --check` și verificarea secretelor locale trecute. Automatizarea rămâne oprită.
+
+Limite: selecție locală în browser, fără persistență server sau cont; totaluri demonstrative, fără rezervare, date PF/PJ, comandă, plăți, transport sau facturare. Verificarea stocului nu este atomică între produse și nu garantează disponibilitatea la un checkout viitor.

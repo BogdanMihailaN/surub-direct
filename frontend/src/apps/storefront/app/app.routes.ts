@@ -14,5 +14,10 @@ export const routes: Routes = [
         (m) => m.ProductPage,
       ),
   },
+  {
+    path: 'cos',
+    loadComponent: () =>
+      import('./features/cart/pages/cart/cart.component').then((m) => m.CartPage),
+  },
   { path: '**', redirectTo: '' },
 ];

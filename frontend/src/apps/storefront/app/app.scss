@@ -95,7 +95,12 @@ footer small {
   nav a {
     display: none;
   }
+  nav a.cart-link {
+    display: block;
+    white-space: nowrap;
+  }
   .demo-pill {
+    display: none;
     font-size: 8px;
   }
 }

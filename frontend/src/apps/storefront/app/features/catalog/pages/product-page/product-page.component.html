@@ -24,6 +24,7 @@
             <th>Ambalaj</th>
             <th>Preț cu TVA</th>
             <th>Disponibilitate</th>
+            <th>Coș demonstrativ</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +67,14 @@
                   } @else {
                     <span>Fără stoc</span>
                   }
+                </td>
+                <td>
+                  <sd-add-to-cart
+                    [slug]="row.product.slug"
+                    [offer]="o"
+                    [available]="available(v.id)"
+                    [priced]="!!price(o.id)"
+                  />
                 </td>
               </tr>
             }

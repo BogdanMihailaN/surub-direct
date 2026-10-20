@@ -1,0 +1,37 @@
+<article>
+  <div>
+    <a [routerLink]="['/produse', selection().productSlug]">{{
+      detail()?.productName ?? selection().productSlug
+    }}</a>
+    @if (detail(); as d) {
+      <p>
+        {{ d.sku }} · {{ d.offerLabel }}
+        @if (d.unitsPerPack) {
+          · {{ d.unitsPerPack }} buc./ambalaj
+        }
+      </p>
+      @if (d.unitGross !== null) {
+        <p>{{ d.unitGross | number: '1.2-2' }} {{ d.currency }} / ambalaj cu TVA</p>
+      }
+      @if (d.issue) {
+        <p class="issue" role="alert">{{ d.issue }}</p>
+      }
+      @if (d.grossTotal !== null) {
+        <strong>{{ d.grossTotal | number: '1.2-2' }} {{ d.currency }} cu TVA</strong>
+      }
+    }
+  </div>
+  <form #form="ngForm" (ngSubmit)="submit(form)">
+    <label
+      >Număr ambalaje<input
+        type="number"
+        name="packs"
+        required
+        min="1"
+        max="2147483647"
+        step="1"
+        [(ngModel)]="packs" /></label
+    ><button [disabled]="form.invalid">Actualizează</button
+    ><button type="button" (click)="removed.emit(selection().offerId)">Elimină</button>
+  </form>
+</article>

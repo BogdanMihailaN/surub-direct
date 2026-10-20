@@ -15,7 +15,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Ajustări de stoc și jurnal al mișcărilor — implementate și verificate.
 - [x] Corecții legate de recepțiile originale, coerente între Purchasing și Inventory.
 - [x] Închiderea comenzilor de aprovizionare, inclusiv cantitatea rămasă nelivrată.
-- [ ] Coș și flux de comandă pentru clienți persoane fizice și firme.
+- [x] Coș demonstrativ local, cu recalculare server a prețurilor, ambalajelor și stocului.
+- [ ] Persistența și identitatea coșului; flux de comandă pentru clienți persoane fizice și firme.
 - [ ] Rezervări atomice, expirări, anulări și compensări.
 - [ ] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru fluxurile distribuite.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.

@@ -35,7 +35,7 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 - Catalog citește stocul prin API-ul Inventory. Timeout și erorile de dependență sunt raportate explicit, fără a afișa fals stoc zero.
 - Identity deține conturile, cookie-ul HttpOnly și tokenurile CSRF. Catalog și Inventory validează sesiunea și modificările prin Identity, apoi aplică rolul Administrator. Accesul direct la servicii are aceleași verificări.
 - Prețurile și Outbox rămân în serviciul Catalog. Worker-ul actualizează jurnalul local de publicare, cu tranzacție și SKIP LOCKED; nu publică mesaje RabbitMQ.
-- Ordering este doar un host separat cu verificare DB și endpoint de capabilități care declară checkout dezactivat. Nu conține fluxuri comerciale simulate.
+- Ordering recalculează coșul demonstrativ din datele publice Catalog, cu validarea cantităților și stocului agregat pe SKU. Selecția rămâne locală în browser; fără rezervări sau creare de comenzi. [Coș și limite](cart-preview.md).
 - Angular storefront SSR și admin Material în `frontend/src/apps/`, cu fișiere granulare și verificări stricte. Contractele publice și URL-urile existente sunt păstrate prin gateway.
 - Transferul datelor existente a copiat schemele și a verificat numărul de rânduri pentru fiecare tabel. Baza veche și backup-urile private sunt păstrate.
 - Scripturi pentru pornire independentă sau grupată, migrare legacy, verificarea izolării și a diferențelor de model EF; CI adaptat noilor directoare.
@@ -44,7 +44,7 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul, comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul, facturarea nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
+- Coșul demonstrativ este local, fără cont sau persistență server. Comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul și facturarea nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.

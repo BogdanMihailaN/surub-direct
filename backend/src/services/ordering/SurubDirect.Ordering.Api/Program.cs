@@ -1,10 +1,10 @@
-using Npgsql;
+using SurubDirect.Ordering.Api.Configuration;
 using SurubDirect.Ordering.Api.Endpoints;
-
+using SurubDirect.Ordering.Api.Middleware;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton(NpgsqlDataSource.Create(builder.Configuration.GetConnectionString("Ordering") ?? throw new InvalidOperationException("Configure ConnectionStrings__Ordering.")));
+builder.AddOrdering();
 var app = builder.Build();
-CapabilitiesEndpoint.Map(app);
-LivenessEndpoint.Map(app);
-ReadinessEndpoint.Map(app);
+app.UseMiddleware<ApiExceptionMiddleware>();
+app.UseRateLimiter();
+CapabilitiesEndpoint.Map(app); QuoteCartEndpoint.Map(app); LivenessEndpoint.Map(app); ReadinessEndpoint.Map(app);
 app.Run();

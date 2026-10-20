@@ -1,3 +1,4 @@
+import { AddToCart } from '../../../cart/components/add-to-cart/add-to-cart.component';
 import { Component, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -10,7 +11,7 @@ import { StoreProduct } from '@shared/models';
 import { ProductGallery } from '../../components/product-gallery/product-gallery.component';
 @Component({
   selector: 'sd-product',
-  imports: [RouterLink, DecimalPipe, ProductGallery],
+  imports: [RouterLink, DecimalPipe, ProductGallery, AddToCart],
   templateUrl: './product-page.component.html',
   styleUrl: './product-page.component.scss',
 })

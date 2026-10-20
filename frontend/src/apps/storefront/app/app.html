@@ -7,7 +7,9 @@
     ><span>șurub<span class="brand-accent">direct</span><small>ELEMENTE DE FIXARE</small></span></a
   >
   <nav aria-label="Navigație principală">
-    <a routerLink="/">Catalog produse</a><span class="demo-pill">PREVIZUALIZARE</span>
+    <a routerLink="/">Catalog produse</a
+    ><a routerLink="/cos" class="cart-link">Coș ({{ cart.count() }})</a
+    ><span class="demo-pill">PREVIZUALIZARE</span>
   </nav>
 </header>
 <main><router-outlet /></main>

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { CartStore } from './features/cart/state/cart.store';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 @Component({
   selector: 'app-root',
@@ -6,4 +7,6 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {}
+export class App {
+  readonly cart = inject(CartStore);
+}

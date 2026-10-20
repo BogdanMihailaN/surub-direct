@@ -1,0 +1,36 @@
+form {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 145px;
+}
+label {
+  font-size: 0.8rem;
+}
+input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid #85917c;
+  border-radius: 4px;
+}
+button {
+  background: #28422d;
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  padding: 0.65rem;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+a {
+  display: block;
+  margin-top: 0.6rem;
+  color: #28422d;
+}
+p {
+  font-size: 0.8rem;
+}

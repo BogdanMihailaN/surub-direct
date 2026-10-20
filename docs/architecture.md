@@ -13,7 +13,8 @@ flowchart LR
   P -->|sesiune și CSRF| A
   P -->|recepții și corecții HTTP| I
   P --> PD[(surub_purchasing)]
-  G --> O[Ordering · 5104 · scaffold]
+  G --> O[Ordering · 5104 · coș demonstrativ]
+  O -->|catalog public HTTP| C
   C -->|interogare stoc HTTP| I
   I -->|verificare SKU HTTP| C
   C -->|sesiune și CSRF| A
@@ -33,12 +34,12 @@ flowchart LR
 | Inventory | Recepții, corecții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
-| Ordering | Proces independent cu health checks și capabilități; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
+| Ordering | Recalcularea coșului din Catalog prin HTTP; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
 
 Fiecare bază are utilizator propriu, fără drept de conectare la bazele celorlalte servicii. Instanța PostgreSQL locală este comună pentru economie de resurse; separarea este la nivel de baze și permisiuni. Se pot muta pe instanțe separate fără schimbări în domeniu.
 
-Pricing rămâne parte a serviciului Catalog. Proiectele Pricing separate reprezintă organizarea internă și păstrează migrațiile existente, nu un serviciu suplimentar. Store.Application este compoziția internă a Catalogului: nu mai încarcă infrastructura Inventory. Ordering nu conține încă Domain/Application/Infrastructure goale; straturile vor fi introduse odată cu regulile comerciale reale.
+Pricing rămâne parte a serviciului Catalog. Proiectele Pricing separate reprezintă organizarea internă și păstrează migrațiile existente, nu un serviciu suplimentar. Store.Application este compoziția internă a Catalogului: nu mai încarcă infrastructura Inventory. Ordering conține Domain/Application/Infrastructure/Contracts pentru validarea și recalcularea coșului, fără persistență comercială încă.
 
 ## Comunicarea și erorile
 
@@ -113,3 +114,7 @@ Ajustările aparțin exclusiv Inventory. Jurnalul și soldul sunt scrise atomic;
 Purchasing coordonează intenția persistentă prin portul propriu `IInventoryCorrections`. Inventory deține jurnalul și scăderea atomică a soldului, legate de recepția originală. Confirmarea eliberează capacitatea de recepție în Purchasing; intențiile neconfirmate rămân reluabile manual. Endpoint-ul intern Inventory cere cheia serviciului și sesiune Administrator cu CSRF, prin opt-in explicit în metadatele de autentificare. Nu există rută internă în gateway sau acces la baza altui serviciu. [Contracte și recuperare](receipt-corrections.md).
 
 Închiderea comenzilor Purchasing este o tranziție locală `Sent → Closed`, serializată cu recepțiile/corecțiile prin blocarea furnizor → comandă și verificarea versiunii. Nu produce apeluri Inventory sau modificări de stoc; păstrează auditul și documentele din care se calculează restul nelivrat. [Reguli](purchase-order-closure.md).
+
+## Coș demonstrativ — 20 octombrie 2026
+
+Ordering expune o recalculare publică fără efecte persistente, prin portul propriu `ICartCatalog` și adaptor HTTP către Catalog. Selecția este locală în browser; prețurile și stocul sunt recitite de server. Nu există referințe între proiectele serviciilor sau acces la bazele vecine. Checkout-ul rămâne dezactivat. [Reguli și limite](cart-preview.md).

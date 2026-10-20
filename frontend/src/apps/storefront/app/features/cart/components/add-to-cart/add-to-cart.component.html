@@ -1,0 +1,26 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <label
+    >Număr ambalaje<input
+      type="number"
+      name="packs"
+      [(ngModel)]="packs"
+      [min]="offer().minPacks"
+      [step]="offer().packStep"
+      [max]="available() / offer().unitsPerPack"
+      required
+      [disabled]="!cart.ready() || !priced()" /></label
+  ><button
+    [disabled]="
+      form.invalid ||
+      !cart.ready() ||
+      !priced() ||
+      available() < offer().minPacks * offer().unitsPerPack
+    "
+  >
+    {{ existing() ? 'Actualizează coșul' : 'Adaugă în coș' }}
+  </button>
+</form>
+@if (message()) {
+  <p role="status">{{ message() }}</p>
+}
+<a routerLink="/cos">Vezi coșul</a>
