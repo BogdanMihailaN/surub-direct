@@ -57,6 +57,14 @@
           />
         }
       }
+      @if (order.status === 'Sent' || order.receipts.length) {
+        <sd-order-receipts
+          [order]="order"
+          [disabled]="store.busy() || store.stale()"
+          (received)="store.receive($event)"
+          (retried)="store.retry($event)"
+        />
+      }
       <sd-order-actions
         [order]="order"
         [disabled]="store.busy() || store.stale()"

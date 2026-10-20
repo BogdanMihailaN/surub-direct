@@ -11,6 +11,8 @@ public static class EndpointRegistration
         AddSupplierItemEndpoint.Map(admin);
         UpdateSupplierItemEndpoint.Map(admin);
         SearchVariantsEndpoint.Map(admin);
+        ReceivePurchaseOrderEndpoint.Map(admin);
+        RetryPurchaseReceiptEndpoint.Map(admin);
         CreatePurchaseOrderEndpoint.Map(admin);
         GetPurchaseOrderEndpoint.Map(admin);
         ListPurchaseOrdersEndpoint.Map(admin);

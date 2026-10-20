@@ -110,3 +110,14 @@ Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor o
 - Aspect desktop și mobil inspectat; tabelul are derulare proprie fără depășirea paginii. Capturi private în `work/orders-desktop.png` și `work/orders-mobile.png`. Comenzile de test sunt anulate, furnizorii dezactivați și produsele arhivate.
 - Prima încercare backend a găsit Docker oprit; după pornire și provisionarea PostgreSQL, suita completă a trecut. Artefactele runtime, backupurile și secretele nu sunt versionate.
 - Verificarea modelelor EF: fără diferențe față de migrări pentru Catalog, Pricing, Inventory, Identity și Purchasing. Scanarea secretelor în fișierele versionabile a trecut.
+
+## Recepții parțiale Purchasing → Inventory — 20 octombrie 2026
+
+- `python3 scripts/dev.py test`: **122 teste trecute**, fără teste omise. Acoperă rezervarea persistentă a cantității, pierderea răspunsului după aplicarea stocului, reluarea cu aceeași cheie, refuzul unui payload diferit, unicitatea documentului pe linie, concurența între recepții și refuzul anulării după recepție. Clientul HTTP are teste pentru transmiterea sesiunii/CSRF, confirmarea unei scrieri originale sau duplicate și răspunsuri neconfirmate.
+- Migrarea `PurchaseReceipts` a fost inspectată și aplicată după backup privat al bazei Purchasing. Adaugă jurnalul cu relații locale, index unic linie/document și limită de cantitate; nu modifică schema Inventory sau baza legacy.
+- Builduri Angular de producție storefront/admin și Prettier trecute. Modelele EF ale celor cinci contexte nu au diferențe față de migrări.
+- Fluxul browser pentru recepții verifică două livrări de 40 și 160 bucăți, pierderea intenționată a răspunsului către browser, reluarea identică, respingerea dublării/suprarecepției/anulării și soldul real final de 200 bucăți. Autentificarea și CSRF sunt verificate direct și prin gateway pentru creare și retry.
+- Aspectul desktop/mobil a fost inspectat; tabelele au derulare proprie. La recepția integrală, formularul este înlocuit cu confirmarea cantității. Capturile sunt private în `work/receipts-desktop.png` și `work/receipts-mobile.png`.
+- Două scenarii din prima rulare completă au fost întrerupte de reload-ul Angular în timpul ultimei ajustări vizuale; suita a fost reluată după terminarea editărilor. Furnizorii demonstrativi sunt dezactivați și produsele arhivate; documentele și recepțiile rămân în istoric, fără ștergerea stocului.
+- Rularea finală izolată `python3 scripts/dev.py e2e`: **23 scenarii trecute**. O reluare intermediară a primit 429 la taxonomia publică, confirmat în trace: rulările succesive au consumat limita de 600 cereri/minut a gateway-ului. După resetarea ferestrei, suita completă a trecut fără modificarea politicii de limitare.
+- Scanarea secretelor în fișierele versionabile și `git diff --check` au trecut; backupurile, logurile și capturile rămân excluse din Git.

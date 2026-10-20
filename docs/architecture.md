@@ -11,6 +11,7 @@ flowchart LR
   G --> P[Purchasing · 5105]
   P -->|verificare SKU HTTP| C
   P -->|sesiune și CSRF| A
+  P -->|recepții administrative HTTP| I
   P --> PD[(surub_purchasing)]
   G --> O[Ordering · 5104 · scaffold]
   C -->|interogare stoc HTTP| I
@@ -101,4 +102,6 @@ Purchasing este un serviciu separat, cu Domain, Application, Infrastructure, Con
 
 Mutările unui furnizor și ale articolelor sale folosesc tranzacție cu blocarea rândului furnizorului. Astfel, două asocieri concurente sau o dezactivare concurentă nu ocolesc regulile agregatului; indexurile unice sunt protecția suplimentară. Legătura cu Catalog este ID extern plus snapshot SKU/denumire, fără cheie externă către altă bază. Verificarea HTTP inițială nu reprezintă o tranzacție distribuită cu Catalog. [Comportament și limite](purchasing.md).
 
-Comenzile Purchasing păstrează snapshot-uri locale și o versiune de concurență. Modificările blochează furnizorul înaintea comenzii; verificarea Catalog poate refuza salvarea, fără scrieri în alt serviciu. Stările sunt Draft, Sent și Cancelled; nu există încă recepții legate de comenzi. [Detalii](purchase-orders.md).
+Comenzile Purchasing păstrează snapshot-uri locale și o versiune de concurență. Modificările blochează furnizorul înaintea comenzii; verificarea Catalog poate refuza salvarea, fără scrieri în alt serviciu. Stările sunt Draft, Sent și Cancelled; recepțiile păstrează separat cantitățile în așteptare și confirmate. [Detalii](purchase-orders.md).
+
+Recepțiile comenzilor se salvează mai întâi în Purchasing, apoi se aplică idempotent prin API-ul administrativ Inventory și se confirmă local. Timeout-ul nu eliberează cantitatea rezervată pentru recepție. Sesiunea și CSRF sunt validate de fiecare serviciu; reluarea manuală folosește aceeași cheie și datele persistate. Nu există încă worker de retry sau mesaje RabbitMQ pentru acest flux. [Protocol și limite](purchase-receipts.md).

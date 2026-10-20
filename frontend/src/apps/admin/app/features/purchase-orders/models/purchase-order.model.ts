@@ -1,5 +1,7 @@
+import { PurchaseReceipt } from './purchase-receipt.model';
 import { PurchaseOrderLine } from './purchase-order-line.model';
 export interface PurchaseOrder {
+  receipts: PurchaseReceipt[];
   id: string;
   number: number;
   supplierId: string;

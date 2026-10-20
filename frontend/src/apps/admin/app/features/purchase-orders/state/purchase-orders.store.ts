@@ -1,3 +1,4 @@
+import { ReceivePurchaseOrderRequest } from '../models/receive-purchase-order.request';
 import { inject, Injectable, signal } from '@angular/core';
 import { errorMessage } from '@shared/http/error-message';
 import { PurchasingApi } from '../../purchasing/data-access/purchasing-api.service';
@@ -80,6 +81,12 @@ export class PurchaseOrdersStore {
   }
   sent() {
     return this.mutate((o) => this.api.sent(o), 'Comanda a fost marcată manual ca trimisă.');
+  }
+  receive(c: ReceivePurchaseOrderRequest) {
+    return this.mutate((o) => this.api.receive(o, c), 'Recepția a fost confirmată în stoc.');
+  }
+  retry(receiptId: string) {
+    return this.mutate((o) => this.api.retry(o, receiptId), 'Recepția a fost confirmată în stoc.');
   }
   cancel(reason: string) {
     return this.mutate(

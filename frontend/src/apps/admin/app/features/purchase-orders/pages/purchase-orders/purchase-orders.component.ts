@@ -1,3 +1,4 @@
+import { OrderReceipts } from '../../components/order-receipts/order-receipts.component';
 import { Component, inject } from '@angular/core';
 import { PurchaseOrdersStore } from '../../state/purchase-orders.store';
 import { OrderList } from '../../components/order-list/order-list.component';
@@ -8,7 +9,15 @@ import { OrderLines } from '../../components/order-lines/order-lines.component';
 import { OrderActions } from '../../components/order-actions/order-actions.component';
 @Component({
   selector: 'sd-purchase-orders',
-  imports: [OrderList, OrderCreate, OrderNotes, OrderLineAdd, OrderLines, OrderActions],
+  imports: [
+    OrderReceipts,
+    OrderList,
+    OrderCreate,
+    OrderNotes,
+    OrderLineAdd,
+    OrderLines,
+    OrderActions,
+  ],
   providers: [PurchaseOrdersStore],
   templateUrl: './purchase-orders.component.html',
   styleUrl: './purchase-orders.component.scss',

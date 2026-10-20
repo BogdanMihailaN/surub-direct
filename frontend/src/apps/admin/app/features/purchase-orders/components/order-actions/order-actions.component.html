@@ -21,7 +21,7 @@
       email și nu contactează furnizorul.
     </p>
   }
-  @if (order().status !== 'Cancelled') {
+  @if (order().status !== 'Cancelled' && !order().receipts.length) {
     <button [disabled]="disabled()" (click)="showCancel = true">Înregistrează anularea</button>
     @if (showCancel) {
       <label
@@ -42,10 +42,16 @@
         ><button [disabled]="disabled()" (click)="showCancel = false">Renunță</button>
       </div>
     }
-  } @else {
+  } @else if (order().status === 'Cancelled') {
     <p>
       Anulată: {{ order().cancelledAt | date: 'dd.MM.yyyy HH:mm' }}. Motiv:
       {{ order().cancellationReason }}
+    </p>
+  }
+  @if (order().receipts.length) {
+    <p>
+      Comanda are recepții și nu poate fi anulată. Corecțiile și retururile nu sunt încă
+      disponibile.
     </p>
   }
 </section>

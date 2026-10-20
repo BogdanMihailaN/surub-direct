@@ -7,7 +7,7 @@ Pagina **Aprovizionare** (`/aprovizionare`) pregătește comenzile către furniz
 1. Caută un furnizor activ, alege moneda și creează ciorna.
 2. Adaugă asocieri SKU active în moneda comenzii și cantitatea de ambalaje. Poți edita cantitatea și costul net negociat ori elimina linia cu confirmare.
 3. După ce ai trimis comanda printr-un canal extern, confirmă acest lucru și marcheaz-o manual ca **Trimisă**. Aplicația nu trimite email și nu contactează furnizorul.
-4. O comandă Ciornă sau Trimisă poate fi marcată **Anulată**, cu motiv obligatoriu. Articolele și costurile se păstrează. Furnizorul trebuie notificat separat dacă este cazul.
+4. O comandă Ciornă sau Trimisă fără recepții poate fi marcată **Anulată**, cu motiv obligatoriu. Articolele și costurile se păstrează. Furnizorul trebuie notificat separat dacă este cazul.
 
 Doar ciornele sunt editabile. Nu există redeschidere, ștergere a comenzilor sau schimbare de furnizor/monedă după creare. Lista are căutare după număr, furnizor, cod fiscal sau SKU, filtrare de stare și paginare cu 25 de comenzi.
 
@@ -39,4 +39,4 @@ Modificările blochează rândul furnizorului, apoi comanda, în aceeași tranza
 
 ## Limite și etapa următoare
 
-Comenzile nu schimbă stocul, rezervările sau prețurile de vânzare. Recepțiile parțiale legate de aceste comenzi, protecția împotriva suprarecepției, actualizarea idempotentă în Inventory, exportul PDF, emailurile și auditul complet urmează separat. Migrarea `PurchaseOrders` adaugă doar tabelele comenzilor și liniilor în baza Purchasing; datele furnizorilor sunt păstrate.
+Pregătirea și trimiterea comenzilor nu schimbă stocul sau prețurile de vânzare. [Recepțiile parțiale](purchase-receipts.md) actualizează idempotent Inventory și împiedică suprarecepția. Exportul PDF, emailurile, corecțiile și auditul complet urmează separat. Migrarea `PurchaseOrders` adaugă doar tabelele comenzilor și liniilor în baza Purchasing; datele furnizorilor sunt păstrate.

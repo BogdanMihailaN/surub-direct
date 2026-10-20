@@ -1,0 +1,101 @@
+<section>
+  <h2>Recepții de marfă</h2>
+  <p class="help">
+    Înregistrează cantitatea fizic primită în bucăți. Recepțiile sunt definitive. Un document poate
+    fi folosit o singură dată pentru aceeași linie.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Situația recepțiilor">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Comandat</th>
+          <th>Confirmat în stoc</th>
+          <th>În așteptare</th>
+          <th>Rămas disponibil</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (line of order().lines; track line.id) {
+          <tr>
+            <td>{{ line.sku }}</td>
+            <td>{{ line.baseUnits }} buc.</td>
+            <td>{{ confirmed(line.id) }} buc.</td>
+            <td>{{ pending(line.id) }} buc.</td>
+            <td>{{ remaining(line.id) }} buc.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (order().status === 'Sent' && hasRemaining()) {
+    <form #form="ngForm" (ngSubmit)="submit(form)">
+      <fieldset [disabled]="disabled()">
+        <label
+          >Linie recepționată<select name="line" [(ngModel)]="lineId" required>
+            <option value="">Alege articolul</option>
+            @for (line of order().lines; track line.id) {
+              @if (remaining(line.id) > 0) {
+                <option [value]="line.id">
+                  {{ line.sku }} · rămas {{ remaining(line.id) }} buc.
+                </option>
+              }
+            }
+          </select></label
+        >
+        <label
+          >Cantitate primită în bucăți<input
+            type="number"
+            name="quantity"
+            [(ngModel)]="quantity"
+            required
+            min="1"
+            [max]="limit()"
+            step="1"
+        /></label>
+        <label
+          >Document de recepție<input
+            name="reference"
+            [(ngModel)]="reference"
+            required
+            maxlength="100"
+        /></label>
+        <button [disabled]="disabled() || form.invalid || !reference.trim() || !lineId">
+          Înregistrează recepția
+        </button>
+      </fieldset>
+    </form>
+  }
+  @if (order().status === 'Sent' && !hasRemaining()) {
+    <p>
+      {{
+        hasPending()
+          ? 'Toată cantitatea comandată este înregistrată. Reia recepțiile în așteptare pentru confirmarea stocului.'
+          : 'Toată cantitatea comandată este confirmată în stoc.'
+      }}
+    </p>
+  }
+  @if (order().receipts.length) {
+    <h3>Istoric recepții</h3>
+    <p class="help">
+      „În așteptare” înseamnă că rezultatul actualizării stocului nu este confirmat. Reia aceeași
+      recepție; nu crea alta pentru aceeași livrare.
+    </p>
+    <ul>
+      @for (r of order().receipts; track r.id) {
+        <li>
+          <strong>{{ r.reference }} · {{ sku(r.lineId) }} · {{ r.quantity }} buc.</strong>
+          <span>{{ r.createdAt | date: 'dd.MM.yyyy HH:mm' }} · {{ r.actor }}</span>
+          @if (r.appliedAt) {
+            <span>Confirmată în stoc: {{ r.appliedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+          } @else {
+            <span>În așteptare</span
+            ><button [disabled]="disabled()" (click)="retried.emit(r.id)">
+              Reia recepția {{ r.reference }}
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

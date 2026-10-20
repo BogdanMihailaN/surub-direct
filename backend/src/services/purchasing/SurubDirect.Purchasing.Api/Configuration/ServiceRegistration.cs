@@ -12,6 +12,10 @@ public static class ServiceRegistration
         builder.Services.AddScoped<ICatalogVariants, CatalogVariantsClient>();
         builder.Services.AddRemoteSession(builder.Configuration);
         builder.Services.AddServiceHttp("catalog", builder.Configuration["Services:Catalog"] ?? "http://127.0.0.1:5101", ServiceKey.Required(builder.Configuration, "ServiceKeys:Catalog"));
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IInventoryReceipts, InventoryReceiptsClient>();
+        builder.Services.AddHttpClient("inventory-receipts", c => { c.BaseAddress = new Uri(builder.Configuration["Services:Inventory"] ?? "http://127.0.0.1:5102"); c.Timeout = TimeSpan.FromSeconds(5); })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false, AllowAutoRedirect = false });
         builder.Services.AddProblemDetails(); builder.Services.AddOpenApi();
     }
 }

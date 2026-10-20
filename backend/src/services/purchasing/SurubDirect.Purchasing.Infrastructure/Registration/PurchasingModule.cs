@@ -15,6 +15,9 @@ public static class PurchasingModule
         services.AddScoped<GetSupplierHandler>();
         services.AddScoped<ListSuppliersHandler>();
         services.AddScoped<SearchVariantsHandler>();
+        services.AddScoped<IPurchaseReceiptRepository, PurchaseReceiptRepository>();
+        services.AddScoped<ReceivePurchaseOrderHandler>();
+        services.AddScoped<RetryPurchaseReceiptHandler>();
         services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
         services.AddScoped<CreatePurchaseOrderHandler>();
         services.AddScoped<UpdatePurchaseOrderHandler>();

@@ -6,6 +6,20 @@ public sealed class PurchaseOrderTests
 {
     private static Supplier Supplier() => SurubDirect.Purchasing.Domain.Supplier.Create("Original", "RO", "123", "", "", "", "Address", "");
     [Fact]
+    public void Receipt_validation_rejects_drafts_invalid_amounts_and_foreign_lines()
+    {
+        var supplier = Supplier(); var item = supplier.AddItem(Guid.NewGuid(), "SKU", "M6", "CODE", "Cutie", 100, 10, "RON");
+        var order = PurchaseOrder.Create(supplier, "RON", ""); var line = order.AddLine(supplier, item.Id, 1);
+        Assert.Throws<BusinessException>(() => order.Receive(Guid.NewGuid(), line.Id, 10, "Aviz", "admin"));
+        order.MarkSent(supplier);
+        Assert.Throws<BusinessException>(() => order.Receive(Guid.Empty, line.Id, 10, "Aviz", "admin"));
+        Assert.Throws<BusinessException>(() => order.Receive(Guid.NewGuid(), line.Id, 0, "Aviz", "admin"));
+        Assert.Throws<BusinessException>(() => order.Receive(Guid.NewGuid(), line.Id, 10000001, "Aviz", "admin"));
+        Assert.Throws<BusinessException>(() => order.Receive(Guid.NewGuid(), Guid.NewGuid(), 10, "Aviz", "admin"));
+        Assert.Throws<BusinessException>(() => order.Receive(Guid.NewGuid(), line.Id, 10, " ", "admin"));
+        Assert.Empty(order.Receipts);
+    }
+    [Fact]
     public void Snapshots_survive_supplier_changes_and_sent_orders_are_immutable()
     {
         var supplier = Supplier(); var item = supplier.AddItem(Guid.NewGuid(), "SKU", "M6", "CODE", "Cutie", 100, 12.345m, "RON");

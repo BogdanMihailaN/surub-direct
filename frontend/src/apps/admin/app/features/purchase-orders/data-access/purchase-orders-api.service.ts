@@ -1,3 +1,4 @@
+import { ReceivePurchaseOrderRequest } from '../models/receive-purchase-order.request';
 import { inject, Injectable } from '@angular/core';
 import { ApiClient } from '@shared/http/api-client.service';
 import { PurchaseOrder } from '../models/purchase-order.model';
@@ -42,6 +43,15 @@ export class PurchaseOrdersApi {
   }
   sent(o: PurchaseOrder) {
     return this.api.write('POST', this.root + '/' + o.id + '/sent', { version: o.version });
+  }
+  receive(o: PurchaseOrder, c: ReceivePurchaseOrderRequest) {
+    return this.api.write('POST', this.root + '/' + o.id + '/receipts', {
+      ...c,
+      version: o.version,
+    });
+  }
+  retry(o: PurchaseOrder, receiptId: string) {
+    return this.api.write('POST', this.root + '/' + o.id + '/receipts/' + receiptId + '/retry', {});
   }
   cancel(o: PurchaseOrder, reason: string) {
     return this.api.write('POST', this.root + '/' + o.id + '/cancel', {
