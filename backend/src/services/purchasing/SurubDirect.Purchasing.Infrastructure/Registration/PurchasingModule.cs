@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurubDirect.Purchasing.Application;
 namespace SurubDirect.Purchasing.Infrastructure;
+
 public static class PurchasingModule
 {
     public static IServiceCollection AddPurchasing(this IServiceCollection services, string connection)
@@ -15,6 +16,9 @@ public static class PurchasingModule
         services.AddScoped<GetSupplierHandler>();
         services.AddScoped<ListSuppliersHandler>();
         services.AddScoped<SearchVariantsHandler>();
+        services.AddScoped<IPurchaseCorrectionRepository, PurchaseCorrectionRepository>();
+        services.AddScoped<CorrectPurchaseReceiptHandler>();
+        services.AddScoped<RetryPurchaseCorrectionHandler>();
         services.AddScoped<IPurchaseReceiptRepository, PurchaseReceiptRepository>();
         services.AddScoped<ReceivePurchaseOrderHandler>();
         services.AddScoped<RetryPurchaseReceiptHandler>();

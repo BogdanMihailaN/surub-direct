@@ -1,0 +1,76 @@
+<section aria-label="Corecții de recepție">
+  <h3>Corecții de recepție</h3>
+  <p>
+    Scade o cantitate recepționată greșit. Documentul inițial rămâne în istoric. Pentru cantități
+    lipsă, înregistrează o recepție nouă.
+  </p>
+  @if (order().status === 'Sent' && receipts().length) {
+    <form #form="ngForm" (ngSubmit)="submit(form)">
+      <fieldset [disabled]="disabled()">
+        <label
+          >Recepția de corectat<select name="receipt" required [(ngModel)]="receiptId">
+            <option value="">Alege recepția</option>
+            @for (r of receipts(); track r.id) {
+              <option [value]="r.id">
+                {{ r.reference }} · {{ sku(r.lineId) }} · {{ available(r.id) }} buc. corectabile
+              </option>
+            }
+          </select></label
+        >
+        <label
+          >Cantitate de scăzut (buc.)<input
+            name="quantity"
+            type="number"
+            min="1"
+            [max]="available(receiptId)"
+            step="1"
+            required
+            [(ngModel)]="quantity"
+        /></label>
+        <label
+          >Document corecție<input
+            name="reference"
+            maxlength="100"
+            required
+            [(ngModel)]="reference"
+        /></label>
+        <label
+          >Motivul corecției<textarea
+            name="reason"
+            maxlength="500"
+            required
+            [(ngModel)]="reason"
+          ></textarea>
+        </label>
+        <label class="confirmation"
+          ><input name="confirmed" type="checkbox" required [(ngModel)]="confirmed" />Confirm
+          scăderea acestei cantități din stoc.</label
+        >
+        <button type="submit" [disabled]="form.invalid || !confirmed">
+          Înregistrează corecția
+        </button>
+      </fieldset>
+    </form>
+  }
+  @for (c of order().corrections; track c.id) {
+    <article>
+      <strong>{{ c.reference }} · −{{ c.quantity }} buc. · {{ sku(c.lineId) }}</strong>
+      <p>
+        Recepție inițială: {{ document(c.receiptId) }} ·
+        {{ c.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+      </p>
+      <p>{{ c.reason }}</p>
+      @if (c.appliedAt) {
+        <span>Confirmată în stoc</span>
+      } @else {
+        <p class="pending">
+          În așteptare. Cantitatea nu poate fi recepționată din nou până la confirmare. Verifică
+          stocul disponibil înainte de reluare.
+        </p>
+        <button [disabled]="disabled()" (click)="retried.emit(c.id)">Reîncearcă corecția</button>
+      }
+    </article>
+  } @empty {
+    <p>Nu există corecții înregistrate.</p>
+  }
+</section>

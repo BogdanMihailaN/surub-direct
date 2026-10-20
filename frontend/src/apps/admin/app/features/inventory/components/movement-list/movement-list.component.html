@@ -15,7 +15,15 @@
       @for (m of ledger().items; track m.kind + m.id) {
         <tr>
           <td>{{ m.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
-          <td>{{ m.kind === 'Receipt' ? 'Recepție' : 'Ajustare' }}</td>
+          <td>
+            {{
+              m.kind === 'Receipt'
+                ? 'Recepție'
+                : m.kind === 'Correction'
+                  ? 'Corecție recepție'
+                  : 'Ajustare'
+            }}
+          </td>
           <td>{{ m.quantity > 0 ? '+' : '' }}{{ m.quantity }}</td>
           <td>
             {{ m.reference }}<small>{{ m.reason }}</small>

@@ -4,6 +4,7 @@ using SurubDirect.Purchasing.Application;
 using SurubDirect.Purchasing.Contracts;
 using SurubDirect.Purchasing.Domain;
 namespace SurubDirect.Purchasing.Infrastructure;
+
 internal sealed class PurchaseOrderRepository(PurchasingDbContext db) : IPurchaseOrderRepository
 {
     private async Task<Supplier> LockSupplier(Guid id, CancellationToken ct)
@@ -34,6 +35,7 @@ internal sealed class PurchaseOrderRepository(PurchasingDbContext db) : IPurchas
             var order = await db.PurchaseOrders.FromSqlInterpolated($"SELECT * FROM purchasing.\"PurchaseOrders\" WHERE \"Id\" = {id} FOR UPDATE").SingleAsync(ct);
             await db.Entry(order).Collection(x => x.Lines).LoadAsync(ct);
             await db.Entry(order).Collection(x => x.Receipts).LoadAsync(ct);
+            await db.Entry(order).Collection(x => x.Corrections).LoadAsync(ct);
             order.EnsureVersion(version); await change(order, supplier);
             await db.SaveChangesAsync(ct); await transaction.CommitAsync(ct);
         }
@@ -41,7 +43,7 @@ internal sealed class PurchaseOrderRepository(PurchasingDbContext db) : IPurchas
     }
     public async Task<PurchaseOrderDto?> Get(Guid id, CancellationToken ct)
     {
-        var order = await db.PurchaseOrders.AsNoTracking().Include(x => x.Lines).Include(x => x.Receipts).AsSplitQuery().SingleOrDefaultAsync(x => x.Id == id, ct);
+        var order = await db.PurchaseOrders.AsNoTracking().Include(x => x.Lines).Include(x => x.Receipts).Include(x => x.Corrections).AsSplitQuery().SingleOrDefaultAsync(x => x.Id == id, ct);
         return order is null ? null : PurchaseOrderProjection.Map(order);
     }
     public async Task<PurchaseOrderPage> List(string? search, PurchaseOrderStatus? status, int page, CancellationToken ct)
@@ -54,7 +56,7 @@ internal sealed class PurchaseOrderRepository(PurchasingDbContext db) : IPurchas
             query = query.Where(x => x.Number == number || x.SupplierName.ToUpper().Contains(term) || x.SupplierTaxId.Contains(term) || x.Lines.Any(l => l.Sku.ToUpper().Contains(term)));
         }
         var total = await query.CountAsync(ct);
-        var orders = await query.OrderByDescending(x => x.CreatedAt).ThenByDescending(x => x.Id).Skip((page - 1) * 25).Take(25).Include(x => x.Lines).Include(x => x.Receipts).AsSplitQuery().ToListAsync(ct);
+        var orders = await query.OrderByDescending(x => x.CreatedAt).ThenByDescending(x => x.Id).Skip((page - 1) * 25).Take(25).Include(x => x.Lines).Include(x => x.Receipts).Include(x => x.Corrections).AsSplitQuery().ToListAsync(ct);
         return new(orders.Select(PurchaseOrderProjection.Map).ToArray(), total, page, 25);
     }
 }

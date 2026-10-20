@@ -1,6 +1,6 @@
 # Plan de implementare și automatizare
 
-Automatizarea din acest chat rulează la fiecare 30 de minute și continuă etapele de mai jos. Utilizatorul a autorizat explicit implementarea întregului backlog, cu teste, documentație, commit și push după fiecare etapă. Automatizarea nu se oprește la finalul unei etape; se dezactivează numai când întregul proiect convenit este implementat și verificat. Activarea comercială și publicarea în producție necesită acord separat.
+Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului. Lucrul continuă manual, prin mesaje în chat. Configurația de reluare la 30 de minute este păstrată, dar nu rulează. Utilizatorul a autorizat explicit implementarea întregului backlog, cu teste, documentație, commit și push după fiecare etapă. Dacă utilizatorul o reactivează, condiția de finalizare convenită este implementarea și verificarea întregului proiect; nu se reactivează implicit la continuarea manuală. Activarea comercială și publicarea în producție necesită acord separat.
 
 ## Funcționalități finalizate
 
@@ -13,7 +13,7 @@ Automatizarea din acest chat rulează la fiecare 30 de minute și continuă etap
 ## Etape restante
 
 - [x] Ajustări de stoc și jurnal al mișcărilor — implementate și verificate.
-- [ ] Corecții legate de recepțiile originale, coerente între Purchasing și Inventory.
+- [x] Corecții legate de recepțiile originale, coerente între Purchasing și Inventory.
 - [ ] Închiderea comenzilor de aprovizionare, inclusiv cantitatea rămasă nelivrată.
 - [ ] Coș și flux de comandă pentru clienți persoane fizice și firme.
 - [ ] Rezervări atomice, expirări, anulări și compensări.

@@ -1,12 +1,12 @@
 # Recepții parțiale ale comenzilor
 
-În pagina **Aprovizionare**, o comandă Trimisă afișează situația pe fiecare SKU: bucăți comandate, confirmate în stoc, în așteptare și rămase disponibile pentru recepție. Cantitatea se introduce în **bucăți**, inclusiv când livrarea conține o parte dintr-un ambalaj. Conversia cantității comandate folosește ambalajul păstrat în comandă, fără a reciti condițiile curente ale furnizorului.
+În pagina **Aprovizionare**, o comandă Trimisă afișează situația pe fiecare SKU: bucăți comandate, confirmate net în stoc (după corecțiile confirmate), în așteptare și rămase disponibile pentru recepție. Cantitatea se introduce în **bucăți**, inclusiv când livrarea conține o parte dintr-un ambalaj. Conversia cantității comandate folosește ambalajul păstrat în comandă, fără a reciti condițiile curente ale furnizorului.
 
 ## Înregistrare și reluare
 
 Alege linia, cantitatea fizic primită și documentul de recepție. Limita unei recepții este 10.000.000 bucăți și nu poate depăși cantitatea rămasă. Referința documentului este obligatorie, maximum 100 de caractere, normalizată la majuscule. Același document poate acoperi mai multe linii, dar se înregistrează o singură dată pe aceeași linie; pentru o livrare ulterioară se folosește documentul ei distinct.
 
-Recepțiile sunt definitive: nu se editează, șterg sau anulează. O comandă cu orice recepție, inclusiv în așteptare, nu mai poate fi anulată. Corecțiile și retururile necesită un flux ulterior de ajustare; nu înregistra o cantitate fictivă pentru a le compensa. Furnizorul poate deveni inactiv după trimitere fără a împiedica recepția mărfii deja comandate.
+Recepțiile sunt definitive: nu se editează, șterg sau anulează. O comandă cu orice recepție, inclusiv în așteptare, nu mai poate fi anulată. Scăderile se fac prin [corecții legate de recepția originală](receipt-corrections.md); retururile rămân în backlog. Nu înregistra cantități fictive. Furnizorul poate deveni inactiv după trimitere fără a împiedica recepția mărfii deja comandate.
 
 Dacă apare o eroare, reîncarcă documentul. O recepție **În așteptare** poate fi deja aplicată în Inventory, dar fără confirmare în Purchasing. Folosește **Reia recepția**; nu înregistra din nou livrarea. Reluarea folosește datele persistate, fără a cere reintroducerea cantității. Cantitățile în așteptare ocupă deja restul de recepționat.
 
@@ -27,8 +27,8 @@ Ambele operații cer Administrator și CSRF, inclusiv direct pe portul Purchasin
 
 Detaliul comenzii include `receipts` cu cantitatea, referința, operatorul inițial, data înregistrării și `appliedAt` (null până la confirmare). Confirmarea crește versiunea comenzii; reluarea unei recepții deja confirmate nu o schimbă.
 
-Purchasing transmite cookie-ul sesiunii curente și tokenul CSRF către endpoint-ul administrativ Inventory, care le validează din nou prin Identity. Clientul HTTP nu stochează cookie-uri și nu urmărește redirectări; timeout de 5 secunde. Nu există endpoint intern nou sau rută gateway nouă. `Services:Inventory` configurează adresa de destinație; în producție aceasta trebuie să fie o adresă internă de încredere, cu TLS. Operatorul Purchasing rămâne cel inițial; Inventory înregistrează utilizatorul care a efectuat prima aplicare, inclusiv dacă aplicarea are loc la reluare.
+Purchasing transmite cookie-ul sesiunii curente și tokenul CSRF către endpoint-ul administrativ Inventory, care le validează din nou prin Identity. Clientul HTTP nu stochează cookie-uri și nu urmărește redirectări; timeout de 5 secunde. Recepția nu necesită endpoint intern; corecțiile au propriul endpoint intern protejat. `Services:Inventory` configurează adresa de destinație; în producție aceasta trebuie să fie o adresă internă de încredere, cu TLS. Operatorul Purchasing rămâne cel inițial; Inventory înregistrează utilizatorul care a efectuat prima aplicare, inclusiv dacă aplicarea are loc la reluare.
 
 ## Limite
 
-Reluarea este manuală și cere sesiune validă. Nu există încă worker, retry automat, RabbitMQ sau compensări pentru acest flux. Toate răspunsurile Inventory neconfirmate păstrează starea în așteptare; un conflict de cheie sau o limită permanentă a soldului necesită investigarea jurnalelor, nu o recepție nouă. Costul mediu al stocului, TVA-ul, facturile de achiziție, retururile și ajustările nu sunt implementate. Recepțiile manuale existente în Inventory rămân disponibile și nu sunt retroactiv asociate comenzilor.
+Reluarea este manuală și cere sesiune validă. Nu există încă worker, retry automat, RabbitMQ sau compensări pentru acest flux. Toate răspunsurile Inventory neconfirmate păstrează starea în așteptare; un conflict de cheie sau o limită permanentă a soldului necesită investigarea jurnalelor, nu o recepție nouă. Costul mediu al stocului, TVA-ul, facturile de achiziție și retururile nu sunt implementate. Ajustările generale sunt documentate separat și nu schimbă cantitățile comenzii. Recepțiile manuale existente în Inventory rămân disponibile și nu sunt retroactiv asociate comenzilor.

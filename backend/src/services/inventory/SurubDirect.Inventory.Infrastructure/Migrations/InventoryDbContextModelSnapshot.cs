@@ -23,6 +23,51 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.ReceiptCorrection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiptId", "Reference")
+                        .IsUnique();
+
+                    b.HasIndex("VariantId", "CreatedAt");
+
+                    b.ToTable("ReceiptCorrections", "inventory", t =>
+                        {
+                            t.HasCheckConstraint("CK_ReceiptCorrection_Quantity", "\"Quantity\" BETWEEN 1 AND 10000000");
+                        });
+                });
+
             modelBuilder.Entity("SurubDirect.Inventory.Domain.StockAdjustment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -119,6 +164,15 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Receipt_Quantity", "\"Quantity\" > 0");
                         });
+                });
+
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.ReceiptCorrection", b =>
+                {
+                    b.HasOne("SurubDirect.Inventory.Domain.StockReceipt", null)
+                        .WithMany()
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

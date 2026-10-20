@@ -1,3 +1,4 @@
+import { CorrectPurchaseReceiptRequest } from '../models/correct-purchase-receipt.request';
 import { ReceivePurchaseOrderRequest } from '../models/receive-purchase-order.request';
 import { inject, Injectable, signal } from '@angular/core';
 import { errorMessage } from '@shared/http/error-message';
@@ -87,6 +88,15 @@ export class PurchaseOrdersStore {
   }
   retry(receiptId: string) {
     return this.mutate((o) => this.api.retry(o, receiptId), 'Recepția a fost confirmată în stoc.');
+  }
+  correct(c: CorrectPurchaseReceiptRequest) {
+    return this.mutate((o) => this.api.correct(o, c), 'Corecția a fost confirmată în stoc.');
+  }
+  retryCorrection(id: string) {
+    return this.mutate(
+      (o) => this.api.retryCorrection(o, id),
+      'Corecția a fost confirmată în stoc.',
+    );
   }
   cancel(reason: string) {
     return this.mutate(

@@ -11,7 +11,7 @@ flowchart LR
   G --> P[Purchasing · 5105]
   P -->|verificare SKU HTTP| C
   P -->|sesiune și CSRF| A
-  P -->|recepții administrative HTTP| I
+  P -->|recepții și corecții HTTP| I
   P --> PD[(surub_purchasing)]
   G --> O[Ordering · 5104 · scaffold]
   C -->|interogare stoc HTTP| I
@@ -30,7 +30,7 @@ flowchart LR
 | Serviciu | Responsabilitate implementată | Bază / scheme |
 |---|---|---|
 | Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
-| Inventory | Recepții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
+| Inventory | Recepții, corecții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
 | Ordering | Proces independent cu health checks și capabilități; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
@@ -107,3 +107,7 @@ Comenzile Purchasing păstrează snapshot-uri locale și o versiune de concuren�
 Recepțiile comenzilor se salvează mai întâi în Purchasing, apoi se aplică idempotent prin API-ul administrativ Inventory și se confirmă local. Timeout-ul nu eliberează cantitatea rezervată pentru recepție. Sesiunea și CSRF sunt validate de fiecare serviciu; reluarea manuală folosește aceeași cheie și datele persistate. Nu există încă worker de retry sau mesaje RabbitMQ pentru acest flux. [Protocol și limite](purchase-receipts.md).
 
 Ajustările aparțin exclusiv Inventory. Jurnalul și soldul sunt scrise atomic; verificarea soldului așteptat și blocarea rândului serializează ajustările cu recepțiile. Citirea jurnalului folosește Repeatable Read pentru consistența soldului și paginii. [Ajustări și limite](stock-adjustments.md).
+
+## Corecții de recepție — 20 octombrie 2026
+
+Purchasing coordonează intenția persistentă prin portul propriu `IInventoryCorrections`. Inventory deține jurnalul și scăderea atomică a soldului, legate de recepția originală. Confirmarea eliberează capacitatea de recepție în Purchasing; intențiile neconfirmate rămân reluabile manual. Endpoint-ul intern Inventory cere cheia serviciului și sesiune Administrator cu CSRF, prin opt-in explicit în metadatele de autentificare. Nu există rută internă în gateway sau acces la baza altui serviciu. [Contracte și recuperare](receipt-corrections.md).

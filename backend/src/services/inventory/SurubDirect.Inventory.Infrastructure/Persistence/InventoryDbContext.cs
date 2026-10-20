@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using SurubDirect.Inventory.Domain;
 
 namespace SurubDirect.Inventory.Infrastructure;
+
 public sealed class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : DbContext(options)
 {
+    public DbSet<ReceiptCorrection> ReceiptCorrections => Set<ReceiptCorrection>();
     public DbSet<StockAdjustment> Adjustments => Set<StockAdjustment>();
     public DbSet<StockBalance> Balances => Set<StockBalance>();
     public DbSet<StockReceipt> Receipts => Set<StockReceipt>();

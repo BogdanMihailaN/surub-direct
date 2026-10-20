@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -8,11 +9,12 @@ using Microsoft.Extensions.Options;
 using SurubDirect.BuildingBlocks;
 
 namespace SurubDirect.ServiceDefaults.Security;
+
 public sealed class RemoteSessionHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IHttpClientFactory clients) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (!Request.Path.StartsWithSegments("/api/v1/admin") || !Request.Headers.ContainsKey("Cookie"))
+        if ((!Request.Path.StartsWithSegments("/api/v1/admin") && Context.GetEndpoint()?.Metadata.GetMetadata<RemoteSessionRequired>() is null) || !Request.Headers.ContainsKey("Cookie"))
             return AuthenticateResult.NoResult();
         using var message = new HttpRequestMessage(HttpMethod.Post, "/internal/session");
         message.Headers.TryAddWithoutValidation("Cookie", Request.Headers.Cookie.ToString());
@@ -40,7 +42,7 @@ public sealed class RemoteSessionHandler(IOptionsMonitor<AuthenticationSchemeOpt
         {
             throw new BusinessException("Serviciul de autentificare nu răspunde.", 503);
         }
-        catch (OperationCanceledException)when (!Context.RequestAborted.IsCancellationRequested)
+        catch (OperationCanceledException) when (!Context.RequestAborted.IsCancellationRequested)
         {
             throw new BusinessException("Serviciul de autentificare nu răspunde.", 503);
         }

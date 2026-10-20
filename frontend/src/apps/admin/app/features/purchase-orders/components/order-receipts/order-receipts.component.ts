@@ -28,9 +28,14 @@ export class OrderReceipts {
     });
   }
   confirmed(id: string) {
-    return this.order()
-      .receipts.filter((r) => r.lineId === id && r.appliedAt)
-      .reduce((n, r) => n + r.quantity, 0);
+    return (
+      this.order()
+        .receipts.filter((r) => r.lineId === id && r.appliedAt)
+        .reduce((n, r) => n + r.quantity, 0) -
+      this.order()
+        .corrections.filter((c) => c.lineId === id && c.appliedAt)
+        .reduce((n, c) => n + c.quantity, 0)
+    );
   }
   pending(id: string) {
     return this.order()
@@ -46,6 +51,9 @@ export class OrderReceipts {
   }
   hasRemaining() {
     return this.order().lines.some((line) => this.remaining(line.id) > 0);
+  }
+  hasPendingCorrections() {
+    return this.order().corrections.some((c) => !c.appliedAt);
   }
   hasPending() {
     return this.order().receipts.some((receipt) => !receipt.appliedAt);

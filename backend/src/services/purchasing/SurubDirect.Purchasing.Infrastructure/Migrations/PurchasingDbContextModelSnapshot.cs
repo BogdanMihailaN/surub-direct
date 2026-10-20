@@ -208,6 +208,60 @@ namespace SurubDirect.Purchasing.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SurubDirect.Purchasing.Domain.PurchaseReceiptCorrection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTimeOffset?>("AppliedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ReceiptId", "Reference")
+                        .IsUnique();
+
+                    b.ToTable("ReceiptCorrections", "purchasing", t =>
+                        {
+                            t.HasCheckConstraint("CK_Correction_Quantity", "\"Quantity\" BETWEEN 1 AND 10000000");
+                        });
+                });
+
             modelBuilder.Entity("SurubDirect.Purchasing.Domain.Supplier", b =>
                 {
                     b.Property<Guid>("Id")
@@ -366,6 +420,21 @@ namespace SurubDirect.Purchasing.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SurubDirect.Purchasing.Domain.PurchaseReceiptCorrection", b =>
+                {
+                    b.HasOne("SurubDirect.Purchasing.Domain.PurchaseOrder", null)
+                        .WithMany("Corrections")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SurubDirect.Purchasing.Domain.PurchaseReceipt", null)
+                        .WithMany()
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SurubDirect.Purchasing.Domain.SupplierItem", b =>
                 {
                     b.HasOne("SurubDirect.Purchasing.Domain.Supplier", null)
@@ -377,6 +446,8 @@ namespace SurubDirect.Purchasing.Infrastructure.Migrations
 
             modelBuilder.Entity("SurubDirect.Purchasing.Domain.PurchaseOrder", b =>
                 {
+                    b.Navigation("Corrections");
+
                     b.Navigation("Lines");
 
                     b.Navigation("Receipts");

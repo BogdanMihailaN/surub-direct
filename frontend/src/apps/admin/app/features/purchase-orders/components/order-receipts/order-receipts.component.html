@@ -1,8 +1,8 @@
 <section>
   <h2>Recepții de marfă</h2>
   <p class="help">
-    Înregistrează cantitatea fizic primită în bucăți. Recepțiile sunt definitive. Un document poate
-    fi folosit o singură dată pentru aceeași linie.
+    Înregistrează cantitatea fizic primită în bucăți. Recepțiile originale se păstrează; greșelile
+    se corectează separat. Un document poate fi folosit o singură dată pentru aceeași linie.
   </p>
   <div class="table-scroll" tabindex="0" role="region" aria-label="Situația recepțiilor">
     <table>
@@ -10,7 +10,7 @@
         <tr>
           <th>SKU</th>
           <th>Comandat</th>
-          <th>Confirmat în stoc</th>
+          <th>Confirmat net în stoc</th>
           <th>În așteptare</th>
           <th>Rămas disponibil</th>
         </tr>
@@ -69,9 +69,11 @@
   @if (order().status === 'Sent' && !hasRemaining()) {
     <p>
       {{
-        hasPending()
-          ? 'Toată cantitatea comandată este înregistrată. Reia recepțiile în așteptare pentru confirmarea stocului.'
-          : 'Toată cantitatea comandată este confirmată în stoc.'
+        hasPendingCorrections()
+          ? 'Există corecții în așteptare. Situația netă se actualizează după confirmarea lor.'
+          : hasPending()
+            ? 'Toată cantitatea comandată este înregistrată. Reia recepțiile în așteptare pentru confirmarea stocului.'
+            : 'Toată cantitatea comandată este confirmată în stoc.'
       }}
     </p>
   }

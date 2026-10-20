@@ -65,6 +65,14 @@
           (retried)="store.retry($event)"
         />
       }
+      @if (order.receipts.length) {
+        <sd-order-corrections
+          [order]="order"
+          [disabled]="store.busy() || store.stale()"
+          (corrected)="store.correct($event)"
+          (retried)="store.retryCorrection($event)"
+        />
+      }
       <sd-order-actions
         [order]="order"
         [disabled]="store.busy() || store.stale()"

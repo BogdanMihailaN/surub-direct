@@ -1,3 +1,4 @@
+import { OrderCorrections } from '../../components/order-corrections/order-corrections.component';
 import { OrderReceipts } from '../../components/order-receipts/order-receipts.component';
 import { Component, inject } from '@angular/core';
 import { PurchaseOrdersStore } from '../../state/purchase-orders.store';
@@ -11,6 +12,7 @@ import { OrderActions } from '../../components/order-actions/order-actions.compo
   selector: 'sd-purchase-orders',
   imports: [
     OrderReceipts,
+    OrderCorrections,
     OrderList,
     OrderCreate,
     OrderNotes,

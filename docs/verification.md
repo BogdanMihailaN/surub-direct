@@ -129,3 +129,15 @@ Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor o
 - Ambele builduri Angular de producție și Prettier au trecut. `python3 scripts/dev.py e2e`: **25 scenarii trecute**; fluxul nou verifică pierderea răspunsului, retry fără dublare, sold schimbat de o recepție concurentă, ajustare plus/minus, jurnal și protecțiile autentificare/CSRF direct/prin gateway.
 - Capturile private `work/stock-adjustments-desktop.png` și `work/stock-adjustments-mobile.png` verifică formularul și istoricul. Testul confirmă lipsa overflow-ului orizontal al paginii; tabelul are scroll propriu.
 - Scanarea secretelor și `git diff --check` au trecut. Datele demonstrative sunt arhivate; istoricul stocului rămâne intact. Automatizarea rămâne activă pentru etapele din `roadmap.md`, conform confirmării explicite a utilizatorului; activarea comercială și publicarea în producție necesită acord separat.
+
+## Corecții legate de recepții — 20 octombrie 2026
+
+- `python3 scripts/dev.py test`: **141/141** teste trecute. Corecții concurente/idempotente, răspuns pierdut, cantitate netă și capacitate blocată până la confirmare, protecția rezervărilor, rollback fără jurnal fals, păstrarea originalului și contractul HTTP.
+- Build .NET: 0 erori și 0 avertismente. Build-uri Angular de producție storefront și admin reușite; verificarea Prettier și `git diff --check` trecute.
+- Cele **28 de scenarii Playwright** au fost verificate: 26 au trecut în rularea completă; ultimele două au atins limita gateway (429) și au trecut separat, împreună cu scenariul principal de taxonomie, după resetarea ferestrei. Limita de trafic nu a fost modificată. Cele trei scenarii noi verifică istoricul, răspunsul pierdut și retry fără scădere dublă, recepționarea diferenței, CSRF și izolarea endpoint-ului intern.
+- În prima rulare țintită, serverul Angular de dezvoltare păstrase un șablon gol pentru istoricul stocului după actualizare; repornirea a eliminat cache-ul învechit. Scenariul de ajustări a trecut ulterior în suita completă. Build-ul de producție nu a avut această problemă.
+- Capturi desktop/mobil și verificare de overflow pentru corecții, păstrate privat în `work/corrections-*.png`; inspecția mobilă confirmă organizarea formularelor și istoricului.
+- Toate cele cinci contexte EF sunt fără diferențe de model. Migrațiile additive Inventory/Purchasing au fost aplicate local după backup privat al ambelor baze; legacy a fost păstrată.
+- Verificarea fișierelor versionabile nu a găsit valorile secretelor locale. Automatizarea rămâne **PAUSED**, conform cererii utilizatorului; această etapă a fost continuată manual.
+
+Limite: reluarea corecțiilor este manuală; nu există anulare a unei intenții în așteptare sau flux de retur către furnizor. Nu au fost activate checkout-ul sau integrarea comercială și nu s-a făcut deployment în producție.

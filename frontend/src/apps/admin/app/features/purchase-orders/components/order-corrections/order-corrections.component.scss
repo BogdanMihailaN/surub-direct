@@ -1,0 +1,26 @@
+@use '../../styles/forms';
+section {
+  margin-block: 1.5rem;
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+article {
+  border-top: 1px solid #dce3e8;
+  padding-block: 1rem;
+  overflow-wrap: anywhere;
+}
+.confirmation {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.confirmation input {
+  width: auto;
+}
+.pending {
+  color: #8a5300;
+}

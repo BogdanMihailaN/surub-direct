@@ -1,5 +1,6 @@
 using SurubDirect.BuildingBlocks;
 namespace SurubDirect.Purchasing.Domain;
+
 public sealed class PurchaseOrder
 {
     private PurchaseOrder() { }
@@ -21,14 +22,24 @@ public sealed class PurchaseOrder
     public string CancellationReason { get; private set; } = "";
     public List<PurchaseOrderLine> Lines { get; private set; } = [];
     public List<PurchaseReceipt> Receipts { get; private set; } = [];
+    public List<PurchaseReceiptCorrection> Corrections { get; private set; } = [];
     public decimal NetTotal => Lines.Sum(x => x.NetTotal);
     public static PurchaseOrder Create(Supplier supplier, string currency, string? notes)
     {
         if (!supplier.IsActive) throw new BusinessException("Furnizorul este inactiv.", 409);
         currency = Guard.Text(currency, "Monedă", 3).ToUpperInvariant();
         if (!new[] { "RON", "EUR", "USD", "GBP", "CHF" }.Contains(currency)) throw new BusinessException("Monedă neacceptată.");
-        return new() { SupplierId = supplier.Id, SupplierName = supplier.Name, SupplierCountry = supplier.CountryCode,
-            SupplierTaxId = supplier.TaxId, SupplierEmail = supplier.Email, SupplierAddress = supplier.Address, Currency = currency, Notes = ValidNotes(notes) };
+        return new()
+        {
+            SupplierId = supplier.Id,
+            SupplierName = supplier.Name,
+            SupplierCountry = supplier.CountryCode,
+            SupplierTaxId = supplier.TaxId,
+            SupplierEmail = supplier.Email,
+            SupplierAddress = supplier.Address,
+            Currency = currency,
+            Notes = ValidNotes(notes)
+        };
     }
     public void EnsureVersion(int expected)
     {
@@ -67,7 +78,7 @@ public sealed class PurchaseOrder
         var receipt = PurchaseReceipt.Create(requestId, Id, line, quantity, reference, actor);
         if (Receipts.Any(r => r.LineId == lineId && r.Reference == receipt.Reference))
             throw new BusinessException("Documentul există deja pentru această linie. Reia recepția existentă.", 409);
-        if (Receipts.Where(r => r.LineId == lineId).Sum(r => (long)r.Quantity) + quantity > line.BaseUnits)
+        if (Receipts.Where(r => r.LineId == lineId).Sum(r => (long)r.Quantity) - Corrections.Where(c => c.LineId == lineId && c.AppliedAt != null).Sum(c => (long)c.Quantity) + quantity > line.BaseUnits)
             throw new BusinessException("Cantitatea depășește restul de recepționat, inclusiv recepțiile în așteptare.", 409);
         Receipts.Add(receipt); Version++; return receipt;
     }
@@ -75,6 +86,20 @@ public sealed class PurchaseOrder
     {
         var receipt = Receipts.Single(r => r.Id == id);
         if (receipt.AppliedAt is null) { receipt.MarkApplied(); Version++; }
+    }
+    public PurchaseReceiptCorrection CorrectReceipt(Guid requestId, Guid receiptId, int quantity, string reference, string reason, string actor)
+    {
+        if (Status != PurchaseOrderStatus.Sent) throw new BusinessException("Se pot corecta doar recepții ale comenzilor trimise.", 409);
+        var receipt = Receipts.SingleOrDefault(r => r.Id == receiptId) ?? throw new BusinessException("Recepția nu există în această comandă.", 404);
+        if (receipt.AppliedAt is null) throw new BusinessException("Confirmă recepția în stoc înainte de corecție.", 409);
+        var correction = PurchaseReceiptCorrection.Create(requestId, receipt, quantity, reference, reason, actor);
+        if (Corrections.Where(c => c.ReceiptId == receiptId).Sum(c => (long)c.Quantity) + quantity > receipt.Quantity) throw new BusinessException("Cantitatea depășește restul corectabil al recepției, inclusiv corecțiile în așteptare.", 409);
+        if (Corrections.Any(c => c.ReceiptId == receiptId && c.Reference == correction.Reference)) throw new BusinessException("Documentul există deja pentru această recepție. Reia corecția existentă.", 409);
+        Corrections.Add(correction); Version++; return correction;
+    }
+    public void CompleteCorrection(Guid id)
+    {
+        var c = Corrections.Single(c => c.Id == id); if (c.AppliedAt is null) { c.MarkApplied(); Version++; }
     }
     private void EnsureDraft() { if (Status != PurchaseOrderStatus.Draft) throw new BusinessException("Doar comenzile în ciornă pot fi editate.", 409); }
     private void EnsureSupplier(Supplier supplier) { if (supplier.Id != SupplierId || !supplier.IsActive) throw new BusinessException("Furnizorul comenzii este inactiv sau invalid.", 409); }

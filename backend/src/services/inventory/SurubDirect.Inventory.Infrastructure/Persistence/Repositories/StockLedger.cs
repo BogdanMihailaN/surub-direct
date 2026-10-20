@@ -4,6 +4,7 @@ using SurubDirect.Inventory.Application;
 using SurubDirect.Inventory.Contracts;
 using SurubDirect.Inventory.Domain;
 namespace SurubDirect.Inventory.Infrastructure;
+
 internal sealed class StockLedger(InventoryDbContext db) : IStockLedger
 {
     public async Task<bool> Adjust(StockAdjustment a, CancellationToken ct)
@@ -24,13 +25,14 @@ internal sealed class StockLedger(InventoryDbContext db) : IStockLedger
     public async Task<StockLedgerDto> Read(Guid variant, int page, CancellationToken ct)
     {
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, ct);
-        var receipts = db.Receipts.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Receipt", x.Quantity, x.Reference, Reason = "", x.Actor, x.CreatedAt });
-        var adjustments = db.Adjustments.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Adjustment", x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt });
-        var query = receipts.Concat(adjustments);
+        var receipts = db.Receipts.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Receipt", x.Quantity, x.Reference, Reason = "", x.Actor, x.CreatedAt, OriginalReceiptId = (Guid?)null });
+        var adjustments = db.Adjustments.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Adjustment", x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt, OriginalReceiptId = (Guid?)null });
+        var corrections = db.ReceiptCorrections.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Correction", Quantity = -x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt, OriginalReceiptId = (Guid?)x.ReceiptId });
+        var query = receipts.Concat(adjustments).Concat(corrections);
         var total = await query.CountAsync(ct);
         var items = await query.OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Kind).ThenBy(x => x.Id).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
         var balance = await db.Balances.AsNoTracking().SingleOrDefaultAsync(x => x.VariantId == variant, ct);
         await tx.CommitAsync(ct);
-        return new(balance?.OnHand ?? 0, balance?.Reserved ?? 0, items.Select(x => new StockMovementDto(x.Id, x.Kind, x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt)).ToArray(), total, page, 25);
+        return new(balance?.OnHand ?? 0, balance?.Reserved ?? 0, items.Select(x => new StockMovementDto(x.Id, x.Kind, x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt, x.OriginalReceiptId)).ToArray(), total, page, 25);
     }
 }

@@ -4,6 +4,7 @@ using SurubDirect.Inventory.Application;
 using SurubDirect.Inventory.Contracts;
 
 namespace SurubDirect.Inventory.Infrastructure;
+
 public static class InventoryModule
 {
     public static IServiceCollection AddInventory(this IServiceCollection s, string connection)
@@ -15,6 +16,8 @@ public static class InventoryModule
         s.AddScoped<ReceiveStockHandler>();
         s.AddScoped<IStockLedger, StockLedger>();
         s.AddScoped<AdjustStockHandler>();
+        s.AddScoped<IReceiptCorrections, ReceiptCorrections>();
+        s.AddScoped<CorrectReceiptHandler>();
         s.AddScoped<GetStockLedgerHandler>();
         return s;
     }

@@ -4,6 +4,7 @@ using SurubDirect.Purchasing.Api.Clients;
 using SurubDirect.ServiceDefaults.Http;
 using SurubDirect.ServiceDefaults.Security;
 namespace SurubDirect.Purchasing.Api.Configuration;
+
 public static class ServiceRegistration
 {
     public static void AddPurchasingService(this WebApplicationBuilder builder)
@@ -14,6 +15,8 @@ public static class ServiceRegistration
         builder.Services.AddServiceHttp("catalog", builder.Configuration["Services:Catalog"] ?? "http://127.0.0.1:5101", ServiceKey.Required(builder.Configuration, "ServiceKeys:Catalog"));
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IInventoryReceipts, InventoryReceiptsClient>();
+        builder.Services.AddScoped<IInventoryCorrections, InventoryCorrectionsClient>();
+        builder.Services.AddServiceHttp("inventory-corrections", builder.Configuration["Services:Inventory"] ?? "http://127.0.0.1:5102", ServiceKey.Required(builder.Configuration, "ServiceKeys:Inventory"));
         builder.Services.AddHttpClient("inventory-receipts", c => { c.BaseAddress = new Uri(builder.Configuration["Services:Inventory"] ?? "http://127.0.0.1:5102"); c.Timeout = TimeSpan.FromSeconds(5); })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false, AllowAutoRedirect = false });
         builder.Services.AddProblemDetails(); builder.Services.AddOpenApi();

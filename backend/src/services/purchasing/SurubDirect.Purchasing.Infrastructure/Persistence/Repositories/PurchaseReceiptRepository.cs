@@ -4,6 +4,7 @@ using SurubDirect.BuildingBlocks;
 using SurubDirect.Purchasing.Application;
 using SurubDirect.Purchasing.Domain;
 namespace SurubDirect.Purchasing.Infrastructure;
+
 internal sealed class PurchaseReceiptRepository(PurchasingDbContext db) : IPurchaseReceiptRepository
 {
     private async Task<PurchaseOrder> Lock(Guid id, CancellationToken ct)
@@ -15,6 +16,7 @@ internal sealed class PurchaseReceiptRepository(PurchasingDbContext db) : IPurch
         var order = await db.PurchaseOrders.FromSqlInterpolated($"SELECT * FROM purchasing.\"PurchaseOrders\" WHERE \"Id\" = {id} FOR UPDATE").SingleAsync(ct);
         await db.Entry(order).Collection(o => o.Lines).LoadAsync(ct);
         await db.Entry(order).Collection(o => o.Receipts).LoadAsync(ct);
+        await db.Entry(order).Collection(o => o.Corrections).LoadAsync(ct);
         return order;
     }
     public async Task<PurchaseReceipt> Reserve(Guid orderId, ReceivePurchaseOrder c, string actor, CancellationToken ct)

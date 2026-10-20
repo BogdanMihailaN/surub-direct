@@ -1,6 +1,6 @@
 # Ajustări de stoc și jurnalul mișcărilor
 
-În administrarea unui produs, secțiunea **Stoc și mișcări** permite alegerea SKU-ului și afișează soldul, cantitatea rezervată, disponibilul și istoricul paginat. Sunt incluse atât recepțiile manuale și cele aplicate de Purchasing, cât și ajustările. Datele provin din Inventory; nu se fabrică un sold zero dacă Inventory sau Catalog nu poate fi consultat. Un SKU existent fără sold are zero bucăți.
+În administrarea unui produs, secțiunea **Stoc și mișcări** permite alegerea SKU-ului și afișează soldul, cantitatea rezervată, disponibilul și istoricul paginat. Sunt incluse atât recepțiile manuale și cele aplicate de Purchasing, cât și ajustările și corecțiile de recepție. Datele provin din Inventory; nu se fabrică un sold zero dacă Inventory sau Catalog nu poate fi consultat. Un SKU existent fără sold are zero bucăți.
 
 ## Ajustare
 
@@ -8,7 +8,7 @@ Introdu diferența în bucăți (pozitivă sau negativă), documentul și motivu
 
 Serverul verifică soldul și rezervările pe care le-ai văzut. Dacă s-au modificat între timp, primești 409 și trebuie să reîncarci datele. Nu poate rezulta un stoc negativ sau mai mic decât rezervările existente; depășirea limitei numerice este respinsă. În etapa actuală nu există încă flux comercial de rezervare, dar regula protejează soldurile rezervate.
 
-Ajustarea este definitivă și nu editează recepții ori alte operații. O corecție ulterioară se înregistrează ca o operație nouă cu motiv explicit. Ajustările pot fi făcute și pentru SKU-uri ale produselor arhivate. Ele nu schimbă prețuri, stări de publicare sau cantitățile recepționate din comenzile Purchasing. Corecția legată de o recepție Purchasing și retururile sunt etape separate.
+Ajustarea este definitivă și nu editează recepții ori alte operații. O corecție ulterioară se înregistrează ca o operație nouă cu motiv explicit. Ajustările pot fi făcute și pentru SKU-uri ale produselor arhivate. Ele nu schimbă prețuri, stări de publicare sau cantitățile recepționate din comenzile Purchasing. Pentru o greșeală într-o recepție Purchasing folosește [corecția legată de original](receipt-corrections.md). Retururile sunt o etapă ulterioară.
 
 ## Erori și idempotency
 
@@ -20,7 +20,7 @@ După o eroare de validare sau conflict, reîncarcă soldul și verifică istori
 
 Inventory adaugă jurnalul ajustării, blochează rândul soldului, verifică valorile așteptate și actualizează soldul în aceeași tranzacție. Inserarea jurnalului cu `ON CONFLICT` serializează cererile cu aceeași cheie; rollback-ul elimină și înregistrarea dacă ajustarea nu poate fi aplicată. Actualizările recepțiilor existente folosesc aceeași blocare PostgreSQL a soldului, evitând pierderea actualizărilor.
 
-Jurnalul unește tabelele Receipts și Adjustments fără a modifica datele istorice. Pagina și soldul sunt citite într-o tranzacție Repeatable Read. Sunt 25 de mișcări pe pagină, ordonate după data înregistrării, tip și ID. Data este cea a înregistrării, nu o garanție a ordinii de commit pentru operații concurente. Nu se inventează solduri istorice după fiecare mișcare sau operații pentru eventuale solduri migrate fără jurnal.
+Jurnalul unește tabelele Receipts, Adjustments și ReceiptCorrections fără a modifica datele istorice. Pagina și soldul sunt citite într-o tranzacție Repeatable Read. Sunt 25 de mișcări pe pagină, ordonate după data înregistrării, tip și ID. Data este cea a înregistrării, nu o garanție a ordinii de commit pentru operații concurente. Nu se inventează solduri istorice după fiecare mișcare sau operații pentru eventuale solduri migrate fără jurnal.
 
 ## API
 

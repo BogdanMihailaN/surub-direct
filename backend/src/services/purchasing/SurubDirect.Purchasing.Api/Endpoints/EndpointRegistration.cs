@@ -1,4 +1,5 @@
 namespace SurubDirect.Purchasing.Api.Endpoints;
+
 public static class EndpointRegistration
 {
     public static void MapPurchasingEndpoints(this WebApplication app)
@@ -12,6 +13,8 @@ public static class EndpointRegistration
         UpdateSupplierItemEndpoint.Map(admin);
         SearchVariantsEndpoint.Map(admin);
         ReceivePurchaseOrderEndpoint.Map(admin);
+        CorrectPurchaseReceiptEndpoint.Map(admin);
+        RetryPurchaseCorrectionEndpoint.Map(admin);
         RetryPurchaseReceiptEndpoint.Map(admin);
         CreatePurchaseOrderEndpoint.Map(admin);
         GetPurchaseOrderEndpoint.Map(admin);

@@ -48,7 +48,7 @@ def environment(service=None):
         'catalog': ('CATALOG', 'INVENTORY', 'IDENTITY'),
         'inventory': ('CATALOG', 'INVENTORY', 'IDENTITY'),
         'identity': ('IDENTITY',),
-        'purchasing': ('CATALOG', 'IDENTITY'),
+        'purchasing': ('CATALOG', 'IDENTITY', 'INVENTORY'),
     }
     for key in keys.get(service, ()):
         env['ServiceKeys__' + key.title()] = config.get(key + '_SERVICE_KEY', '')

@@ -1,3 +1,4 @@
+import { CorrectPurchaseReceiptRequest } from '../models/correct-purchase-receipt.request';
 import { ReceivePurchaseOrderRequest } from '../models/receive-purchase-order.request';
 import { inject, Injectable } from '@angular/core';
 import { ApiClient } from '@shared/http/api-client.service';
@@ -52,6 +53,15 @@ export class PurchaseOrdersApi {
   }
   retry(o: PurchaseOrder, receiptId: string) {
     return this.api.write('POST', this.root + '/' + o.id + '/receipts/' + receiptId + '/retry', {});
+  }
+  correct(o: PurchaseOrder, c: CorrectPurchaseReceiptRequest) {
+    return this.api.write('POST', this.root + '/' + o.id + '/corrections', {
+      ...c,
+      version: o.version,
+    });
+  }
+  retryCorrection(o: PurchaseOrder, id: string) {
+    return this.api.write('POST', this.root + '/' + o.id + '/corrections/' + id + '/retry', {});
   }
   cancel(o: PurchaseOrder, reason: string) {
     return this.api.write('POST', this.root + '/' + o.id + '/cancel', {

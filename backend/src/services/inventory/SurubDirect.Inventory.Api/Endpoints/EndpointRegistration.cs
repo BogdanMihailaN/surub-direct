@@ -1,4 +1,5 @@
 namespace SurubDirect.Inventory.Api.Endpoints;
+
 public static class EndpointRegistration
 {
     public static void MapInventoryEndpoints(this WebApplication app)
@@ -8,6 +9,7 @@ public static class EndpointRegistration
         AdjustStockEndpoint.Map(admin);
         GetStockLedgerEndpoint.Map(admin);
         StockQueryEndpoint.Map(app, app.Configuration);
+        CorrectReceiptEndpoint.Map(app, app.Configuration);
         LivenessEndpoint.Map(app);
         ReadinessEndpoint.Map(app);
     }
