@@ -1,3 +1,4 @@
+import { StockPanel } from '../../../inventory/components/stock-panel/stock-panel.component';
 import { ProductImagesPanel } from '../../../product-images/components/product-images-panel/product-images-panel.component';
 import { VariantAttributesForm } from '../../components/variant-attributes-form/variant-attributes-form.component';
 import { VariantEditForm } from '../../components/variant-edit-form/variant-edit-form.component';
@@ -17,6 +18,7 @@ import { ReceiptForm } from '../../components/receipt-form/receipt-form.componen
 @Component({
   selector: 'sd-catalog-admin',
   imports: [
+    StockPanel,
     MatButtonModule,
     ProductImagesPanel,
     ProductSidebarComponent,

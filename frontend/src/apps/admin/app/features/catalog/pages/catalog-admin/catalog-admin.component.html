@@ -114,10 +114,17 @@
           (restored)="store.restore()"
         />
       }
+      @for (identity of [row.product.id]; track identity) {
+        <sd-stock-panel
+          [variants]="row.product.variants"
+          [disabled]="store.busy() || store.editing()"
+          (updated)="store.refreshProduct(row.product.id)"
+        />
+      }
       <sd-product-images-panel
         [product]="row.product"
         [disabled]="store.busy() || store.editing()"
-        (updated)="store.refreshImages($event)"
+        (updated)="store.refreshProduct($event)"
       />
       @if (row.product.status !== 'Archived' && !store.editing()) {
         @for (identity of [row.product.id]; track identity) {

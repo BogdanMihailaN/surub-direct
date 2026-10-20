@@ -121,3 +121,11 @@ Limite: adaptor local, fără cloud/CDN sau curățare automată a fișierelor o
 - Două scenarii din prima rulare completă au fost întrerupte de reload-ul Angular în timpul ultimei ajustări vizuale; suita a fost reluată după terminarea editărilor. Furnizorii demonstrativi sunt dezactivați și produsele arhivate; documentele și recepțiile rămân în istoric, fără ștergerea stocului.
 - Rularea finală izolată `python3 scripts/dev.py e2e`: **23 scenarii trecute**. O reluare intermediară a primit 429 la taxonomia publică, confirmat în trace: rulările succesive au consumat limita de 600 cereri/minut a gateway-ului. După resetarea ferestrei, suita completă a trecut fără modificarea politicii de limitare.
 - Scanarea secretelor în fișierele versionabile și `git diff --check` au trecut; backupurile, logurile și capturile rămân excluse din Git.
+
+## Ajustări de stoc și jurnal — 20 octombrie 2026
+
+- `python3 scripts/dev.py test`: **129 teste trecute**, fără teste omise. Verifică inclusiv ajustări concurente, retry identic, payload modificat, rollback la sold insuficient, protecția rezervărilor, overflow și paginarea istoricului mixt de recepții/ajustări.
+- Migrarea `StockAdjustments` a fost inspectată și aplicată după backup privat Inventory. Adaugă o tabelă; păstrează soldurile și recepțiile. Verificarea modelelor EF a trecut pentru toate cele cinci contexte.
+- Ambele builduri Angular de producție și Prettier au trecut. `python3 scripts/dev.py e2e`: **25 scenarii trecute**; fluxul nou verifică pierderea răspunsului, retry fără dublare, sold schimbat de o recepție concurentă, ajustare plus/minus, jurnal și protecțiile autentificare/CSRF direct/prin gateway.
+- Capturile private `work/stock-adjustments-desktop.png` și `work/stock-adjustments-mobile.png` verifică formularul și istoricul. Testul confirmă lipsa overflow-ului orizontal al paginii; tabelul are scroll propriu.
+- Scanarea secretelor și `git diff --check` au trecut. Datele demonstrative sunt arhivate; istoricul stocului rămâne intact. Automatizarea rămâne activă pentru etapele din `roadmap.md`, conform confirmării explicite a utilizatorului; activarea comercială și publicarea în producție necesită acord separat.

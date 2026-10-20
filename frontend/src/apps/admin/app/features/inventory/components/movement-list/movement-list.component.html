@@ -1,0 +1,39 @@
+<h3>Istoric mișcări</h3>
+<p>{{ ledger().total }} operații înregistrate.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Istoric stoc">
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Operație</th>
+        <th>Bucăți</th>
+        <th>Document / motiv</th>
+        <th>Operator</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of ledger().items; track m.kind + m.id) {
+        <tr>
+          <td>{{ m.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>{{ m.kind === 'Receipt' ? 'Recepție' : 'Ajustare' }}</td>
+          <td>{{ m.quantity > 0 ? '+' : '' }}{{ m.quantity }}</td>
+          <td>
+            {{ m.reference }}<small>{{ m.reason }}</small>
+          </td>
+          <td>{{ m.actor }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<div class="paging">
+  <button [disabled]="disabled() || ledger().page <= 1" (click)="paged.emit(ledger().page - 1)">
+    Mișcări anterioare</button
+  ><span>Pagina {{ ledger().page }}</span
+  ><button
+    [disabled]="disabled() || ledger().page * ledger().pageSize >= ledger().total"
+    (click)="paged.emit(ledger().page + 1)"
+  >
+    Mișcări următoare
+  </button>
+</div>

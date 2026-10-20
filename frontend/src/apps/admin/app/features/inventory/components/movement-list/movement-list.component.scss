@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.scroll {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  min-width: 650px;
+  width: 100%;
+}
+th,
+td {
+  padding: 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid #dbe2d5;
+}
+th {
+  background: #eef2e8;
+}
+td {
+  overflow-wrap: anywhere;
+  max-width: 260px;
+}
+small {
+  display: block;
+}
+.paging {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+button {
+  padding: 0.5rem;
+  font: inherit;
+}

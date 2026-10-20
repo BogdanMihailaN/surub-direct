@@ -23,6 +23,51 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.StockAdjustment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ExpectedOnHand")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ExpectedReserved")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VariantId", "CreatedAt");
+
+                    b.ToTable("Adjustments", "inventory", t =>
+                        {
+                            t.HasCheckConstraint("CK_Adjustment_Quantity", "\"Quantity\" <> 0 AND \"Quantity\" BETWEEN -10000000 AND 10000000 AND \"ExpectedReserved\" >= 0 AND \"ExpectedOnHand\" >= \"ExpectedReserved\"");
+                        });
+                });
+
             modelBuilder.Entity("SurubDirect.Inventory.Domain.StockBalance", b =>
                 {
                     b.Property<Guid>("VariantId")

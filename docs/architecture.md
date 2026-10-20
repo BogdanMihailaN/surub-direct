@@ -30,7 +30,7 @@ flowchart LR
 | Serviciu | Responsabilitate implementată | Bază / scheme |
 |---|---|---|
 | Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
-| Inventory | Recepții idempotente, sold și interogare stoc; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
+| Inventory | Recepții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
 | Ordering | Proces independent cu health checks și capabilități; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
@@ -105,3 +105,5 @@ Mutările unui furnizor și ale articolelor sale folosesc tranzacție cu blocare
 Comenzile Purchasing păstrează snapshot-uri locale și o versiune de concurență. Modificările blochează furnizorul înaintea comenzii; verificarea Catalog poate refuza salvarea, fără scrieri în alt serviciu. Stările sunt Draft, Sent și Cancelled; recepțiile păstrează separat cantitățile în așteptare și confirmate. [Detalii](purchase-orders.md).
 
 Recepțiile comenzilor se salvează mai întâi în Purchasing, apoi se aplică idempotent prin API-ul administrativ Inventory și se confirmă local. Timeout-ul nu eliberează cantitatea rezervată pentru recepție. Sesiunea și CSRF sunt validate de fiecare serviciu; reluarea manuală folosește aceeași cheie și datele persistate. Nu există încă worker de retry sau mesaje RabbitMQ pentru acest flux. [Protocol și limite](purchase-receipts.md).
+
+Ajustările aparțin exclusiv Inventory. Jurnalul și soldul sunt scrise atomic; verificarea soldului așteptat și blocarea rândului serializează ajustările cu recepțiile. Citirea jurnalului folosește Repeatable Read pentru consistența soldului și paginii. [Ajustări și limite](stock-adjustments.md).

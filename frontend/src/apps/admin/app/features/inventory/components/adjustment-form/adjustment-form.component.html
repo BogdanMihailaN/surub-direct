@@ -1,0 +1,52 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="disabled()">
+    <h3>Ajustare de stoc</h3>
+    <p>
+      Introduce un plus sau un minus în bucăți. Operația păstrează recepțiile și documentele
+      originale.
+    </p>
+    <label
+      >Diferență în bucăți<input
+        name="quantity"
+        type="number"
+        [(ngModel)]="quantity"
+        required
+        min="-10000000"
+        max="10000000"
+        step="1"
+    /></label>
+    <label
+      >Document ajustare<input name="reference" [(ngModel)]="reference" required maxlength="100"
+    /></label>
+    <label
+      >Motiv ajustare<textarea
+        name="reason"
+        [(ngModel)]="reason"
+        required
+        maxlength="500"
+        rows="2"
+      ></textarea>
+    </label>
+    <p>
+      Sold după ajustare: {{ ledger().onHand + (quantity || 0) }} bucăți. Rezervat:
+      {{ ledger().reserved }}.
+    </p>
+    <label class="check"
+      ><input type="checkbox" name="confirm" [(ngModel)]="confirmed" /> Am verificat cantitatea și
+      motivul ajustării.</label
+    >
+    <button
+      [disabled]="
+        disabled() ||
+        form.invalid ||
+        !quantity ||
+        !confirmed ||
+        !reason.trim() ||
+        !reference.trim() ||
+        ledger().onHand + (quantity || 0) < ledger().reserved
+      "
+    >
+      Înregistrează ajustarea
+    </button>
+  </fieldset>
+</form>

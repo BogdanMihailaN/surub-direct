@@ -109,3 +109,5 @@ Pagina **Import CSV** din administrare permite încărcarea de produse noi cu va
 Pagina **Furnizori** gestionează datele firmelor și articolele cumpărate: cod furnizor, SKU, ambalaj, cost net și monedă. Purchasing verifică variantele prin HTTP, fără acces la baza Catalog. Vezi [fluxul și limitele actuale](docs/purchasing.md).
 
 Pagina **Aprovizionare** permite pregătirea comenzilor către furnizori, costuri negociate, marcarea manuală a trimiterii și anulare. Vezi [comenzile de aprovizionare](docs/purchase-orders.md). Sunt disponibile [recepții parțiale](docs/purchase-receipts.md) cu protecție împotriva dublării și suprarecepției, plus reluare manuală după eroare.
+
+În administrarea produselor, **Stoc și mișcări** oferă [jurnalul și ajustările de stoc](docs/stock-adjustments.md). [Planul de continuare](docs/roadmap.md) urmărește etapele rămase și automatizarea autorizată.

@@ -13,6 +13,9 @@ public static class InventoryModule
         s.AddScoped<IInventoryRepository>(p => p.GetRequiredService<InventoryRepository>());
         s.AddScoped<IInventoryReader>(p => p.GetRequiredService<InventoryRepository>());
         s.AddScoped<ReceiveStockHandler>();
+        s.AddScoped<IStockLedger, StockLedger>();
+        s.AddScoped<AdjustStockHandler>();
+        s.AddScoped<GetStockLedgerHandler>();
         return s;
     }
 

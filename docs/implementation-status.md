@@ -4,6 +4,8 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Ajustări de stoc plus/minus în Inventory, cu motiv, document, operator, cheie idempotentă și sold așteptat. Jurnal paginat al recepțiilor și ajustărilor în administrarea produsului; stocul negativ și scăderea sub rezervări sunt respinse. [Detalii](stock-adjustments.md).
+
 - Recepții parțiale pe liniile comenzilor trimise: jurnal persistent în Purchasing, actualizare idempotentă în Inventory, reluare manuală după eroare și protecție împotriva suprarecepției inclusiv pentru cantitățile în așteptare. Comenzile cu recepții nu mai pot fi anulate. [Flux și limite](purchase-receipts.md).
 
 - Comenzi de aprovizionare în Purchasing: ciornă, linii cu cantități și costuri negociate, snapshot-uri, total net, marcarea manuală ca trimisă și anulare cu motiv. Versiune pentru conflicte concurente, autentificare/CSRF și verificare Catalog; fără modificarea stocului. Vezi [fluxul complet](purchase-orders.md).
@@ -51,3 +53,5 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 ## Verificări ale reorganizării
 
 Rezultatele finale sunt în `verification.md`. Testele PostgreSQL rulează în baze distincte; testele de browser exercită procesele reale prin gateway, inclusiv accesul direct protejat la API-uri.
+
+Planul de continuare și condițiile automatizării sunt în [roadmap.md](roadmap.md).

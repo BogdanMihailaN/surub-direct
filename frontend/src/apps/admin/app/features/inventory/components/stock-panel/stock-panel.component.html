@@ -1,0 +1,46 @@
+<section>
+  <h2>Stoc și mișcări</h2>
+  <label
+    >SKU pentru jurnal<select
+      [ngModel]="store.variant()"
+      (ngModelChange)="store.select($event)"
+      [disabled]="disabled() || store.busy() || !!store.pending()"
+    >
+      <option value="">Alege SKU-ul</option>
+      @for (v of variants(); track v.id) {
+        <option [value]="v.id">{{ v.sku }}</option>
+      }
+    </select></label
+  >
+  @if (store.variant()) {
+    <button (click)="store.load()" [disabled]="disabled() || store.busy()">Reîncarcă stocul</button>
+  }
+  @if (store.error()) {
+    <p role="alert">{{ store.error() }} Verifică istoricul înainte de o nouă ajustare.</p>
+  }
+  @if (store.message()) {
+    <p role="status">{{ store.message() }}</p>
+  }
+  @if (store.pending()) {
+    <p>Rezultatul ajustării nu este confirmat. Reia aceeași operație pentru a evita dublarea.</p>
+    <button (click)="retry()" [disabled]="disabled() || store.busy()">Reia ajustarea</button>
+  }
+  @if (store.ledger(); as ledger) {
+    <p class="balance">
+      În stoc: {{ ledger.onHand }} buc. · Rezervat: {{ ledger.reserved }} buc. · Disponibil:
+      {{ ledger.onHand - ledger.reserved }} buc.
+    </p>
+    <sd-movement-list
+      [ledger]="ledger"
+      [disabled]="disabled() || store.busy()"
+      (paged)="store.load($event)"
+    />
+    @if (!store.pending()) {
+      <sd-adjustment-form
+        [ledger]="ledger"
+        [disabled]="disabled() || store.busy()"
+        (submitted)="adjust($event)"
+      />
+    }
+  }
+</section>

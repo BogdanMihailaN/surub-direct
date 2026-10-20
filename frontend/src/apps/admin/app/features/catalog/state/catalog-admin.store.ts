@@ -78,7 +78,7 @@ export class CatalogAdminStore {
     this.status.set(status);
     this.selected.set(selected);
   }
-  refreshImages(id: string) {
+  refreshProduct(id: string) {
     if (id === this.selectedId()) return this.run(() => this.reload(), '');
     return Promise.resolve();
   }

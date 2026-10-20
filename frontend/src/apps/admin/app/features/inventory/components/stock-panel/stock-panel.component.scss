@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+section {
+  border: 1px solid #dbe2d5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: white;
+  margin: 1.5rem 0;
+  min-width: 0;
+}
+label {
+  display: grid;
+  gap: 0.4rem;
+}
+select {
+  font: inherit;
+  padding: 0.7rem;
+  max-width: 100%;
+  min-width: 0;
+}
+button {
+  font: inherit;
+  padding: 0.6rem;
+  margin-top: 0.7rem;
+}
+.balance {
+  font-weight: 600;
+}
+sd-adjustment-form {
+  display: block;
+  border-top: 1px solid #dbe2d5;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+}
+[role='alert'] {
+  color: #9b281a;
+}
+[role='status'] {
+  color: #387329;
+}
