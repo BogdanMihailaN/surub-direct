@@ -123,4 +123,6 @@ Coșurile anonime folosesc un cookie de capabilitate HttpOnly și CSRF propriu O
 
 Ciorna PF/PJ aparține exclusiv Ordering și este atașată coșului. Nu este o entitate partajată cu Identity sau Purchasing. Datele clientului și liniile coșului folosesc aceeași versiune și tranzacție pentru evitarea suprascrierilor. [Detalii](customer-draft.md).
 
-Rezervările sunt deținute de Inventory și expuse numai prin /internal/reservations cu cheia dedicată ServiceKeys:Reservations. Worker-ul API eliberează rezervările expirate din PostgreSQL; gateway-ul și UI nu le expun. Ordering nu le apelează încă. [Protocol și limite](stock-reservations.md).
+Rezervările sunt deținute de Inventory și expuse numai prin /internal/reservations cu cheia dedicată ServiceKeys:Reservations. Worker-ul API eliberează rezervările expirate din PostgreSQL; gateway-ul și UI nu le expun. Coordonatorul intern Ordering le apelează prin HTTP; coșul nu generează încă planuri. [Protocol și limite](stock-reservations.md).
+
+Ordering deține ordering.ReservationPlans și un worker de reconciliere cu Inventory. Intenția persistată și cheia stabilă permit recuperarea răspunsurilor pierdute. [Coordonare și limite](reservation-coordination.md).

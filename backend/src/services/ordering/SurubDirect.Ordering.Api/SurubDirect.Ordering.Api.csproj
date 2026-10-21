@@ -3,4 +3,4 @@
   <ItemGroup><ProjectReference Include="../SurubDirect.Ordering.Infrastructure/SurubDirect.Ordering.Infrastructure.csproj" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
   </ItemGroup>
-<ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13"><PrivateAssets>all</PrivateAssets></PackageReference></ItemGroup></Project>
+<ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13"><PrivateAssets>all</PrivateAssets></PackageReference></ItemGroup><ItemGroup><ProjectReference Include="../../../shared/SurubDirect.ServiceDefaults/SurubDirect.ServiceDefaults.csproj" /></ItemGroup></Project>

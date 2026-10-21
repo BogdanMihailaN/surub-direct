@@ -13,6 +13,11 @@ public static class OrderingModule
         services.AddScoped<GetCartHandler>();
         services.AddScoped<ReplaceCartHandler>();
         services.AddScoped<SaveCartCustomerHandler>();
+        services.AddScoped<IReservationPlans, ReservationPlans>();
+        services.AddScoped<ProcessReservationPlanHandler>();
+        services.AddScoped<PlanReservationHandler>();
+        services.AddScoped<CancelReservationHandler>();
+        services.AddScoped<GetReservationPlanHandler>();
         return services;
     }
 

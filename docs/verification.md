@@ -192,3 +192,11 @@ Limite: fără teste de încărcare sau deployment de producție; fără curăț
 - Ambele builduri Angular și verificarea Prettier au trecut.
 - Migrarea Inventory a fost aplicată după backup privat. Nu există diferențe între model și migrare.
 - Nu s-au activat checkout-ul, integrarea Ordering sau consumarea rezervărilor. Nu s-a efectuat test de încărcare ori de failover distribuit.
+
+## Coordonarea rezervărilor în Ordering — 21 octombrie 2026
+
+- 199 de teste backend trecute după separarea coordonării în handler-ul Application. Cazurile noi acoperă răspunsul pierdut la rezervare/eliberare, reluarea din alt scope, anularea înaintea creării, refuzul Inventory, termenul local depășit și răspunsuri HTTP neconforme.
+- 8 scenarii Playwright trecute pentru coordonare, coș persistent și limitele de securitate. Fluxul real verifică Ordering → Inventory → sold Reserved, anulare, retry, payload schimbat și refuzul cheilor nepotrivite; gateway-ul nu expune rutele interne.
+- Buildurile de producție Angular au trecut; modelul Ordering nu are diferențe față de migrare.
+- Migrarea ReservationCoordination a fost aplicată după backup privat al bazei Ordering.
+- Nu s-au activat generarea planului din coș, confirmarea comenzii, consumarea rezervării, RabbitMQ sau checkout-ul. Nu s-au efectuat teste de încărcare/failover de producție.

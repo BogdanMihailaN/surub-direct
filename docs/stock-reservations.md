@@ -12,7 +12,7 @@ Toate rutele cer X-Service-Key cu cheia dedicată ServiceKeys:Reservations. Chei
 
 Răspunsurile au Cache-Control: no-store. ID-urile goale, liniile duplicate, cantitățile nepozitive sau duratele în afara intervalului 60–1800 secunde sunt respinse. Nu există validare Catalog la acest nivel: Inventory verifică disponibilitatea soldurilor proprii. O eroare de bază de date nu este raportată drept rezervare reușită sau sold zero.
 
-Cheia locală RESERVATIONS_SERVICE_KEY este generată de scripts/dev.py db, păstrată în .env și transmisă numai Inventory în etapa actuală. Pentru o instalare locală existentă, rulează comanda db pentru completarea secretelor, apoi init pentru migrare. Producția trebuie să configureze cheia separat, rețeaua internă și rotația ei.
+Cheia locală RESERVATIONS_SERVICE_KEY este generată de scripts/dev.py db, păstrată în .env și transmisă Inventory și coordonatorului Ordering. Pentru o instalare locală existentă, rulează comanda db pentru completarea secretelor, apoi init pentru migrare. Producția trebuie să configureze cheia separat, rețeaua internă și rotația ei.
 
 ## Atomicitate și idempotență
 
@@ -32,6 +32,6 @@ Nu există timere în memorie pentru fiecare rezervare; rândurile persistente p
 
 ## Limite și continuare
 
-Coșul și ciorna PF/PJ nu pornesc rezervări încă. Urmează coordonarea în Ordering, snapshot-urile comenzii, consumarea rezervării la confirmare și compensările, apoi integrarea RabbitMQ/Outbox/Inbox. Un OrderId poate avea mai multe încercări cu ID-uri distincte; coordonatorul trebuie să gestioneze încercările și să evite rezervările redundante.
+Coșul și ciorna PF/PJ nu pornesc rezervări încă. Coordonarea internă în Ordering este implementată; urmează legarea de snapshot-urile comenzii, consumarea rezervării la confirmare și compensările comerciale, apoi integrarea RabbitMQ/Outbox/Inbox. Un OrderId poate avea mai multe încercări cu ID-uri distincte; coordonatorul trebuie să gestioneze încercările și să evite rezervările redundante.
 
 În această etapă nu există prelungire, rezervare parțială, scădere fizică la confirmare sau ecran administrativ dedicat. Jurnalul existent al mișcărilor fizice rămâne pentru recepții, ajustări și corecții; tabela Reservations păstrează istoricul rezervărilor. Nu s-a făcut un test de încărcare sau deployment distribuit. Checkout-ul rămâne dezactivat.

@@ -1,3 +1,6 @@
+using SurubDirect.Ordering.Api.Workers;
+using SurubDirect.ServiceDefaults.Security;
+using SurubDirect.ServiceDefaults.Http;
 using SurubDirect.Ordering.Api.Security;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
@@ -14,6 +17,10 @@ public static class ServiceRegistration
         builder.Services.AddSingleton(NpgsqlDataSource.Create(builder.Configuration.GetConnectionString("Ordering") ?? throw new InvalidOperationException("Configure ConnectionStrings__Ordering.")));
         builder.Services.AddOrderingPersistence(builder.Configuration.GetConnectionString("Ordering")!);
         builder.Services.AddScoped<CartOwnerCookie>();
+        ServiceKey.Required(builder.Configuration, "ServiceKeys:Coordinator");
+        builder.Services.AddServiceHttp("inventory-reservations", builder.Configuration["Services:Inventory"] ?? "http://127.0.0.1:5102", ServiceKey.Required(builder.Configuration, "ServiceKeys:Reservations"));
+        builder.Services.AddScoped<IReservationInventory, InventoryReservationsClient>();
+        builder.Services.AddHostedService<ReservationCoordinatorWorker>();
         builder.Services.AddAntiforgery(o =>
         {
             o.HeaderName = "X-CART-CSRF";

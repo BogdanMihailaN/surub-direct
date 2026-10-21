@@ -114,3 +114,5 @@ Persistența coșului: entitatea în Ordering.Domain/Carts, portul în Applicati
 Datele PF/PJ sunt în Ordering.Domain/Customers; contractele de răspuns în Contracts/Customers, use case-ul în Application/Features/StoredCart/SaveCustomer. În Angular, features/cart separă componentele customer-form și customer-address, factory-ul formularelor, modelele și accesul API/starea.
 
 Rezervările: Inventory.Domain/Reservations, câte un handler în Application/Features/Reservations, portul IStockReservations și repository/configurație EF separate. Rutele sunt în Api/Endpoints/Internal/Reservations; worker-ul de expirare în Api/Workers. Nu există entități de rezervare partajate între servicii.
+
+Coordonarea rezervărilor este în Ordering.Domain/Reservations și Application/Features/Reservations. Portul IReservationInventory aparține Ordering; Infrastructure/Reservations conține adaptorul și DTO-urile locale. Persistența, configurația EF, fiecare endpoint intern și worker-ul au fișiere separate.
