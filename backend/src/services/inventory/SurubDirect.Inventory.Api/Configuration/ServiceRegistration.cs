@@ -1,3 +1,4 @@
+using SurubDirect.Inventory.Api.Workers;
 using SurubDirect.Inventory.Application;
 using SurubDirect.Inventory.Infrastructure;
 using SurubDirect.Inventory.Api.Clients;
@@ -14,6 +15,8 @@ public static class ServiceRegistration
         builder.Services.AddRemoteSession(builder.Configuration);
         builder.Services.AddServiceHttp("catalog", builder.Configuration["Services:Catalog"] ?? "http://127.0.0.1:5101", ServiceKey.Required(builder.Configuration, "ServiceKeys:Catalog"));
         ServiceKey.Required(builder.Configuration, "ServiceKeys:Inventory");
+        ServiceKey.Required(builder.Configuration, "ServiceKeys:Reservations");
+        builder.Services.AddHostedService<ReservationExpiryWorker>();
         builder.Services.AddProblemDetails();
         builder.Services.AddOpenApi();
     }

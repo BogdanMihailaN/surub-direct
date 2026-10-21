@@ -4,6 +4,8 @@ Actualizat la 21 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Inventory: rezervări atomice pe mai multe SKU-uri, idempotență, eliberare și expirare persistentă. Anulările sosite înaintea creării blochează mesajele întârziate. API intern cu cheie dedicată; coșul nu rezervă încă. [Detalii](stock-reservations.md).
+
 - Formular PF/PJ și ciornă atașată coșului în Ordering: contact, livrare, facturare distinctă, validări server, rezumat și ștergere explicită/la golirea coșului. Aceeași versiune protejează datele și articolele. Nu plasează comenzi. [Detalii](customer-draft.md).
 
 - Persistența coșului anonim în Ordering, import din copia locală, protecție CSRF inclusiv direct pe API, recuperare după răspuns pierdut și conflicte între taburi. [Detalii](cart-persistence.md).
@@ -48,7 +50,7 @@ Actualizat la 21 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul și facturarea nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
+- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile, checkout-ul, retururile, plățile, curierul și facturarea nu sunt implementate. Rezervările și expirările există în Inventory, dar integrarea în fluxul Ordering și consumarea lor la confirmare urmează.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.

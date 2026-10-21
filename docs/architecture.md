@@ -31,7 +31,7 @@ flowchart LR
 | Serviciu | Responsabilitate implementată | Bază / scheme |
 |---|---|---|
 | Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
-| Inventory | Recepții, corecții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
+| Inventory | Recepții, corecții și ajustări idempotente, rezervări atomice/expirări, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
 | Ordering | Persistența selecției și ciornei PF/PJ, recalculare prin Catalog HTTP; checkout dezactivat | `surub_ordering`: `ordering.Carts` |
@@ -122,3 +122,5 @@ Ordering expune o recalculare publică fără efecte persistente, prin portul pr
 Coșurile anonime folosesc un cookie de capabilitate HttpOnly și CSRF propriu Ordering pentru mutațiile publice. Identity continuă să dețină sesiunea autentificată și CSRF administrativ. Cookie-ul de coș nu acordă privilegii administrative. [Protocol](cart-persistence.md).
 
 Ciorna PF/PJ aparține exclusiv Ordering și este atașată coșului. Nu este o entitate partajată cu Identity sau Purchasing. Datele clientului și liniile coșului folosesc aceeași versiune și tranzacție pentru evitarea suprascrierilor. [Detalii](customer-draft.md).
+
+Rezervările sunt deținute de Inventory și expuse numai prin /internal/reservations cu cheia dedicată ServiceKeys:Reservations. Worker-ul API eliberează rezervările expirate din PostgreSQL; gateway-ul și UI nu le expun. Ordering nu le apelează încă. [Protocol și limite](stock-reservations.md).

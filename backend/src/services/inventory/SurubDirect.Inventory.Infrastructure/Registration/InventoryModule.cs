@@ -1,10 +1,10 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurubDirect.Inventory.Application;
 using SurubDirect.Inventory.Contracts;
 
 namespace SurubDirect.Inventory.Infrastructure;
-
 public static class InventoryModule
 {
     public static IServiceCollection AddInventory(this IServiceCollection s, string connection)
@@ -19,6 +19,12 @@ public static class InventoryModule
         s.AddScoped<IReceiptCorrections, ReceiptCorrections>();
         s.AddScoped<CorrectReceiptHandler>();
         s.AddScoped<GetStockLedgerHandler>();
+        s.TryAddSingleton<TimeProvider>(TimeProvider.System);
+        s.AddScoped<IStockReservations, StockReservations>();
+        s.AddScoped<ReserveStockHandler>();
+        s.AddScoped<ReleaseStockHandler>();
+        s.AddScoped<GetReservationHandler>();
+        s.AddScoped<ExpireReservationsHandler>();
         return s;
     }
 

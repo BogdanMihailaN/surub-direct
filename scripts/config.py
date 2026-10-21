@@ -46,7 +46,7 @@ def environment(service=None):
             f'Host=127.0.0.1;Port=55432;Database=surub_{owner};Username=surub_{owner};Password={password}')
     keys = {
         'catalog': ('CATALOG', 'INVENTORY', 'IDENTITY'),
-        'inventory': ('CATALOG', 'INVENTORY', 'IDENTITY'),
+        'inventory': ('CATALOG', 'INVENTORY', 'IDENTITY', 'RESERVATIONS'),
         'identity': ('IDENTITY',),
         'purchasing': ('CATALOG', 'IDENTITY', 'INVENTORY'),
     }

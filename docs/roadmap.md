@@ -19,7 +19,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Persistența coșului anonim în Ordering, cookie protejat, CSRF și controlul versiunilor.
 - [x] Date PF/PJ și ciornă persistentă atașată coșului, cu livrare/facturare și rezumat.
 - [ ] Plasarea comenzii, asociere cu contul, politici de retenție și curățarea coșurilor expirate.
-- [ ] Rezervări atomice, expirări, anulări și compensări.
+- [x] Inventory: rezervări atomice, expirări și eliberare/anulare idempotentă.
+- [ ] Coordonarea rezervărilor în Ordering, consumarea la confirmare și compensările.
 - [ ] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru fluxurile distribuite.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.

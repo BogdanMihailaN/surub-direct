@@ -183,3 +183,12 @@ Limite: fără teste de încărcare sau deployment de producție; fără curăț
 - Formularul mobil a fost inspectat vizual; nu depășește viewport-ul.
 - Migrarea CartCustomerDraft a fost aplicată după backup privat al bazei Ordering. EF nu raportează diferențe între model și migrare.
 - Nu se creează comenzi, rezervări, plăți sau facturi. Datele testelor sunt fictive. Retenția fizică automată și configurația de producție rămân în backlog.
+
+## Rezervări de stoc — 21 octombrie 2026
+
+- 190 de teste backend trecute, inclusiv rollback după actualizarea primei linii, concurență fără suprarezervare, retry simultan, payload schimbat, ajustare sub Reserved, anulare înaintea creării și concurență între expirare/eliberare.
+- 7 scenarii Playwright trecute pentru rezervări, coș și protecția serviciilor. Testul de expirare a așteptat durata reală de 60 de secunde și a verificat soldul prin API-ul de citire, fără a declanșa expirarea prin citirea rezervării.
+- Cheia de citire Inventory și sesiunea administrativă nu autorizează rezervările; cheia dedicată funcționează numai direct, ruta internă fiind blocată la gateway.
+- Ambele builduri Angular și verificarea Prettier au trecut.
+- Migrarea Inventory a fost aplicată după backup privat. Nu există diferențe între model și migrare.
+- Nu s-au activat checkout-ul, integrarea Ordering sau consumarea rezervărilor. Nu s-a efectuat test de încărcare ori de failover distribuit.

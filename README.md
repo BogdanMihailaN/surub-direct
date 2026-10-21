@@ -92,7 +92,7 @@ Ctrl+C în terminalul `up` închide procesele backend ale acelui grup. Oprește 
 
 ## Stadiu comercial
 
-Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul, comenzile clienților, rezervările, plățile, curierul, facturarea nu sunt implementate. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
+Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul persistent și ciorna PF/PJ sunt implementate; Inventory are rezervări atomice și expirări prin API intern, fără integrare în coș. Plasarea comenzilor, plățile, curierul și facturarea rămân de implementat. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
 
 Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, secrete gestionate, backup, monitorizare, chei Identity persistente, MFA, migrații controlate și domenii permise pentru SSR. `STORE_API_URL` indică gateway-ul pentru SSR, iar `SSR_ALLOWED_HOSTS` lista hosturilor permise. `scripts/dev.py` este exclusiv pentru Development.
 
@@ -111,3 +111,5 @@ Pagina **Furnizori** gestionează datele firmelor și articolele cumpărate: cod
 Pagina **Aprovizionare** permite pregătirea comenzilor către furnizori, costuri negociate, marcarea manuală a trimiterii și anulare. Vezi [comenzile de aprovizionare](docs/purchase-orders.md). Sunt disponibile [recepții parțiale](docs/purchase-receipts.md) cu protecție împotriva dublării și suprarecepției, plus reluare manuală după eroare.
 
 În administrarea produselor, **Stoc și mișcări** oferă [jurnalul și ajustările de stoc](docs/stock-adjustments.md). [Planul de continuare](docs/roadmap.md) urmărește etapele rămase și automatizarea autorizată.
+
+Rezervările Inventory necesită cheia locală RESERVATIONS_SERVICE_KEY, completată de python3 scripts/dev.py db. [Protocol și limite](docs/stock-reservations.md).

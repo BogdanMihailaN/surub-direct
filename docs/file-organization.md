@@ -112,3 +112,5 @@ Coșul storefront este în `features/cart`, cu `models`, `data-access`, `state`,
 Persistența coșului: entitatea în Ordering.Domain/Carts, portul în Application/Abstractions/Persistence și câte un handler în Features/StoredCart. Infrastructure/Persistence separă contextul, configurația și repository-ul; migrațiile sunt locale serviciului. API/Endpoints/Cart are un fișier per rută; Security/CartOwnerCookie gestionează accesul anonim. Angular separă modelul StoredCart, CartPersistenceApi și CartStore.
 
 Datele PF/PJ sunt în Ordering.Domain/Customers; contractele de răspuns în Contracts/Customers, use case-ul în Application/Features/StoredCart/SaveCustomer. În Angular, features/cart separă componentele customer-form și customer-address, factory-ul formularelor, modelele și accesul API/starea.
+
+Rezervările: Inventory.Domain/Reservations, câte un handler în Application/Features/Reservations, portul IStockReservations și repository/configurație EF separate. Rutele sunt în Api/Endpoints/Internal/Reservations; worker-ul de expirare în Api/Workers. Nu există entități de rezervare partajate între servicii.
