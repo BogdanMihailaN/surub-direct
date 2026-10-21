@@ -2,7 +2,10 @@
   <a routerLink="/">← Continuă cumpărăturile</a>
   <h1>Coșul tău</h1>
   <p class="notice">
-    Coș demonstrativ. Produsele și prețurile sunt ilustrative. Stocul nu este rezervat, iar
+    Coș demonstrativ. Produsele și prețurile sunt ilustrative.
+    {{
+      cart.preparedId() ? 'Există o pregătire de rezervare, iar' : 'Stocul nu este rezervat, iar'
+    }}
     comenzile și plățile nu sunt active.
   </p>
   @if (cart.error()) {
@@ -61,6 +64,7 @@
       </aside>
     }
     <sd-customer-form />
+    <sd-preparation />
     <p>Trimiterea comenzii va fi disponibilă după finalizarea magazinului.</p>
   }
 </section>

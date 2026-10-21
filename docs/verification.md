@@ -200,3 +200,15 @@ Limite: fără teste de încărcare sau deployment de producție; fără curăț
 - Buildurile de producție Angular au trecut; modelul Ordering nu are diferențe față de migrare.
 - Migrarea ReservationCoordination a fost aplicată după backup privat al bazei Ordering.
 - Nu s-au activat generarea planului din coș, confirmarea comenzii, consumarea rezervării, RabbitMQ sau checkout-ul. Nu s-au efectuat teste de încărcare/failover de producție.
+
+
+## Pregătirea demonstrativă a coșului — 21 octombrie 2026
+
+- `python3 scripts/dev.py test`: 204 teste backend trecute, inclusiv tranzacția snapshot/plan/coș, SKU-uri cumulate, replay fără recalculare, concurență, versiune stale la commit, dependență indisponibilă și anulare fără deblocare prematură.
+- Build-uri Angular de producție storefront SSR și admin reușite; verificarea Prettier trecută.
+- 15 scenarii Playwright trecute: 2 noi pentru pregătire și protecțiile HTTP, plus 13 regresii pentru ciorna PF/PJ, persistența coșului, recalculare și catalog.
+- Browserul confirmă recuperarea după răspuns pierdut, 35 de bucăți rezervate pentru două ambalaje ale aceluiași SKU, prețul snapshot-ului păstrat după editarea Catalog, eliberarea stocului și recalcularea după reluarea editării. Checkout false și endpoint-ul orders 404.
+- Protecții CSRF și cookie proprietar verificate prin gateway și direct pe Ordering. Captura mobilă a componentei inspectată; fără depășire orizontală la 390 px.
+- Migrarea PreparedCartSnapshots aplicată local după backup privat al bazei Ordering; verificarea EF Core confirmă că modelul nu are modificări fără migrare. Baza legacy păstrată.
+
+Fluxul este demonstrativ și disponibil numai în Development. Nu au fost testate comenzi comerciale, plăți, consumarea rezervărilor, broker sau lansarea în producție.

@@ -1,3 +1,4 @@
+import { PreparationApi } from '../data-access/preparation-api.service';
 import { CustomerDraft } from '../models/customer-draft.model';
 import { afterNextRender, computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -9,6 +10,8 @@ const CHANGE_KEY = 'surub-direct.cart.changed';
 @Injectable({ providedIn: 'root' })
 export class CartStore {
   private readonly api = inject(CartPersistenceApi);
+  private readonly preparationApi = inject(PreparationApi);
+  readonly preparedId = signal<string | null>(null);
   private current: StoredCart | null = null;
   readonly customer = signal<CustomerDraft | null>(null);
   readonly customerError = signal('');
@@ -20,7 +23,9 @@ export class CartStore {
   readonly legacyInvalid = signal(false);
   readonly error = signal('');
   readonly count = computed(() => this.items().length);
-  readonly locked = computed(() => !this.ready() || this.busy() || this.stale());
+  readonly locked = computed(
+    () => !this.ready() || this.busy() || this.stale() || !!this.preparedId(),
+  );
   constructor() {
     const destroy = inject(DestroyRef);
     afterNextRender(() => {
@@ -37,6 +42,7 @@ export class CartStore {
   }
   private accept(cart: StoredCart | null) {
     this.current = cart;
+    this.preparedId.set(cart?.preparedId ?? null);
     this.customer.set(cart?.customer ?? null);
     this.items.set(cart?.lines ?? []);
   }
@@ -137,6 +143,35 @@ export class CartStore {
         this.customerError.set(error.error?.detail ?? 'Verifică datele introduse.');
       else this.fail(error);
       return false;
+    } finally {
+      this.busy.set(false);
+    }
+  }
+  async prepare() {
+    if (this.locked() || !this.current || !this.customer()) return;
+    this.busy.set(true);
+    this.error.set('');
+    try {
+      await this.preparationApi.prepare(this.current.id, this.current.version, crypto.randomUUID());
+      this.accept(await this.api.read());
+      this.notify();
+    } catch (error) {
+      this.fail(error);
+    } finally {
+      this.busy.set(false);
+    }
+  }
+  async cancelPreparation() {
+    const id = this.preparedId();
+    if (!id || this.busy() || this.stale()) return;
+    this.busy.set(true);
+    this.error.set('');
+    try {
+      await this.preparationApi.cancel(id);
+      this.accept(await this.api.read());
+      this.notify();
+    } catch (error) {
+      this.fail(error);
     } finally {
       this.busy.set(false);
     }

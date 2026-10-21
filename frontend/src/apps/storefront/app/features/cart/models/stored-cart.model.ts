@@ -5,6 +5,7 @@ export interface StoredCart {
   version: number;
   updatedAt: string;
   expiresAt: string;
+  preparedId: string | null;
   customer: CustomerDraft | null;
   lines: CartSelection[];
 }

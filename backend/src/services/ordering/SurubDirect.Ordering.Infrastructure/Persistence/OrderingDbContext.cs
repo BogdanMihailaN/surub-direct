@@ -5,6 +5,7 @@ namespace SurubDirect.Ordering.Infrastructure;
 public sealed class OrderingDbContext(DbContextOptions<OrderingDbContext> options) : DbContext(options)
 {
     public DbSet<ReservationPlan> ReservationPlans => Set<ReservationPlan>();
+    public DbSet<PreparedCart> PreparedCarts => Set<PreparedCart>();
     public DbSet<ShoppingCart> Carts => Set<ShoppingCart>();
 
     protected override void OnModelCreating(ModelBuilder b)

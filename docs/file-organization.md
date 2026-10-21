@@ -116,3 +116,5 @@ Datele PF/PJ sunt în Ordering.Domain/Customers; contractele de răspuns în Con
 Rezervările: Inventory.Domain/Reservations, câte un handler în Application/Features/Reservations, portul IStockReservations și repository/configurație EF separate. Rutele sunt în Api/Endpoints/Internal/Reservations; worker-ul de expirare în Api/Workers. Nu există entități de rezervare partajate între servicii.
 
 Coordonarea rezervărilor este în Ordering.Domain/Reservations și Application/Features/Reservations. Portul IReservationInventory aparține Ordering; Infrastructure/Reservations conține adaptorul și DTO-urile locale. Persistența, configurația EF, fiecare endpoint intern și worker-ul au fișiere separate.
+
+Pregătirea coșului: Ordering.Domain/Preparation, Application/Features/Preparation cu handler separat pentru pregătire/citire/anulare, portul IPreparedCarts și repository/configurație EF proprii. Endpoint-urile sunt în Api/Endpoints/Preparation. Angular păstrează componenta preparation cu TS/HTML/SCSS colocate, PreparationApi în data-access, PreparationStore în state și modelele în models.

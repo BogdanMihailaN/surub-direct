@@ -18,6 +18,10 @@ public static class OrderingModule
         services.AddScoped<PlanReservationHandler>();
         services.AddScoped<CancelReservationHandler>();
         services.AddScoped<GetReservationPlanHandler>();
+        services.AddScoped<IPreparedCarts, PreparedCarts>();
+        services.AddScoped<PrepareCartHandler>();
+        services.AddScoped<GetPreparationHandler>();
+        services.AddScoped<CancelPreparationHandler>();
         return services;
     }
 

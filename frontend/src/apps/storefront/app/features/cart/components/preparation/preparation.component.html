@@ -1,0 +1,53 @@
+@if (state.enabled() || cart.preparedId()) {
+  <section aria-label="Rezervare demonstrativă">
+    <h2>Rezervare demonstrativă</h2>
+    @if (!cart.preparedId()) {
+      <p>
+        Reverificăm datele salvate și rezervăm temporar stocul. Această acțiune nu trimite o comandă
+        și nu inițiază o plată.
+      </p>
+      <button [disabled]="cart.locked() || !cart.customer()" (click)="cart.prepare()">
+        Pregătește și rezervă stocul
+      </button>
+      @if (!cart.customer()) {
+        <p>Salvează mai întâi datele clientului.</p>
+      }
+    } @else {
+      <p>Coșul nu poate fi modificat până la eliberarea rezervării.</p>
+      @if (state.snapshot(); as p) {
+        <h3 role="status">{{ labels[p.status] }}</h3>
+        @for (line of p.lines; track line.offerId) {
+          <p>
+            {{ line.productName }} · {{ line.offerLabel }} × {{ line.packs }} —
+            {{ line.grossTotal | number: '1.2-2' }} {{ p.currency }}
+          </p>
+        }
+        <strong
+          >Total demonstrativ: {{ p.grossTotal | number: '1.2-2' }} {{ p.currency }} cu TVA</strong
+        >
+        <p>Transportul nu este inclus. Date verificate la {{ p.checkedAt | date: 'HH:mm:ss' }}.</p>
+        @if (p.status === 'Active') {
+          <p>Termenul rezervării: {{ p.remoteExpiresAt | date: 'HH:mm:ss' }}.</p>
+        }
+        @if (p.status === 'Released' || p.status === 'Expired') {
+          <button [disabled]="cart.busy() || cart.stale()" (click)="cart.cancelPreparation()">
+            Reia editarea coșului
+          </button>
+        } @else {
+          <button
+            [disabled]="cart.busy() || cart.stale() || p.cancellationRequested"
+            (click)="cart.cancelPreparation()"
+          >
+            Anulează rezervarea
+          </button>
+        }
+      }
+      <button [disabled]="cart.busy()" (click)="state.load(cart.preparedId())">
+        Actualizează starea rezervării
+      </button>
+    }
+    @if (state.error()) {
+      <p role="alert">{{ state.error() }}</p>
+    }
+  </section>
+}

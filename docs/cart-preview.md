@@ -24,7 +24,7 @@ Prețul brut per ambalaj este cel rotunjit furnizat de Catalog, înmulțit cu nu
 
 Un produs arhivat, un preț lipsă, stocul insuficient sau cantitatea neconformă produce explicații pe linii și elimină totalul valid. O dependență indisponibilă sau un răspuns nevalid produce 503, fără a inventa stoc zero. Interfața elimină totalul anterior când începe recalcularea și ignoră răspunsurile vechi dacă selecția s-a schimbat între timp.
 
-Răspunsul include `checkedAt` și `checkoutEnabled: false`, cu `Cache-Control: no-store`. Verificarea nu rezervă stoc și nu constituie o imagine atomică a tuturor produselor; disponibilitatea se poate schimba imediat după citire. Viitorul flux de comandă trebuie să revalideze și să rezerve independent.
+Răspunsul include `checkedAt` și `checkoutEnabled: false`, cu `Cache-Control: no-store`. Verificarea nu rezervă stoc și nu constituie o imagine atomică a tuturor produselor; disponibilitatea se poate schimba imediat după citire. [Pregătirea demonstrativă](cart-preparation.md) revalidează și rezervă separat.
 
 ## Organizare și limite
 
@@ -32,4 +32,4 @@ Ordering are acum Domain, Application, Infrastructure, Contracts și API cu fiș
 
 Endpoint-ul limitează cererile la 60/minut pentru adresa peer observată de serviciu, fără coadă; în configurația locală, traficul gateway are același peer. Body limit 64 KB. Înainte de producție trebuie definită politica pentru proxy-uri de încredere și capacitatea de trafic. Limita globală a gateway-ului rămâne neschimbată.
 
-Următoarele etape sunt asocierea opțională cu un cont, plasarea comenzii, rezervările și expirările, apoi coordonarea prin Outbox/Inbox și RabbitMQ. Activarea comercială necesită date reale și autorizare separată.
+Următoarele etape sunt asocierea opțională cu un cont, plasarea comenzii și consumarea rezervării, apoi coordonarea prin Outbox/Inbox și RabbitMQ. Activarea comercială necesită date reale și autorizare separată.

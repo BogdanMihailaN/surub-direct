@@ -1,0 +1,25 @@
+section {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  background: #f1f4ee;
+  border: 1px solid #ccd6c7;
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+button {
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  padding: 0.75rem;
+  background: #28422d;
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+[role='alert'] {
+  color: #a33122;
+}

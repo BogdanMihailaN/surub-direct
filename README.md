@@ -92,7 +92,7 @@ Ctrl+C în terminalul `up` închide procesele backend ale acelui grup. Oprește 
 
 ## Stadiu comercial
 
-Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul persistent și ciorna PF/PJ sunt implementate; Inventory are rezervări atomice și expirări prin API intern, fără integrare în coș. Plasarea comenzilor, plățile, curierul și facturarea rămân de implementat. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
+Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul persistent și ciorna PF/PJ sunt implementate; Inventory are rezervări atomice și expirări, integrate cu pregătirea demonstrativă a coșului în Development. Vezi [pregătirea coșului](docs/cart-preparation.md). Plasarea comenzilor, plățile, curierul și facturarea rămân de implementat. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
 
 Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, secrete gestionate, backup, monitorizare, chei Identity persistente, MFA, migrații controlate și domenii permise pentru SSR. `STORE_API_URL` indică gateway-ul pentru SSR, iar `SSR_ALLOWED_HOSTS` lista hosturilor permise. `scripts/dev.py` este exclusiv pentru Development.
 

@@ -27,4 +27,7 @@ SaveCartCustomerEndpoint.Map(app);
 PlanReservationEndpoint.Map(app, app.Configuration);
 CancelReservationPlanEndpoint.Map(app, app.Configuration);
 GetReservationPlanEndpoint.Map(app, app.Configuration);
+PrepareCartEndpoint.Map(app);
+GetPreparationEndpoint.Map(app);
+CancelPreparationEndpoint.Map(app);
 app.Run();

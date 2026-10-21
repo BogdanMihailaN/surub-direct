@@ -2,7 +2,7 @@
 
 În pagina coșului, secțiunea „Pregătirea comenzii” permite salvarea datelor unui client persoană fizică sau firmă. Sunt disponibile datele de contact, adresa de livrare în România și, opțional, o adresă de facturare distinctă. Rezumatul datelor salvate apare sub formular; produsele și recalcularea prețurilor rămân în aceeași pagină.
 
-Aceasta este o ciornă atașată coșului, nu o comandă plasată. Nu există număr de comandă, preț blocat, rezervare, taxă de transport, plată sau emitere de factură. Formularul solicită date fictive în etapa demonstrativă; checkout-ul și indexarea rămân dezactivate.
+Aceasta este o ciornă atașată coșului, nu o comandă plasată. Salvarea datelor nu rezervă stoc și nu fixează prețul. [Pregătirea demonstrativă separată](cart-preparation.md) salvează un snapshot și rezervă temporar stocul; nu există număr de comandă, taxă de transport, plată sau emitere de factură. Formularul solicită date fictive în etapa demonstrativă; checkout-ul și indexarea rămân dezactivate.
 
 ## Validări
 
@@ -30,4 +30,4 @@ Utilizatorul poate șterge datele separat de articole; golirea coșului le elimi
 
 ## Etapa următoare
 
-Rezervări atomice de stoc și expirări, apoi plasarea comenzii cu snapshot-uri și coordonare distribuită. Asocierea cu un cont și integrările de plată, livrare și facturare rămân în backlog.
+Plasarea comenzii comerciale și consumarea rezervării, apoi coordonarea prin evenimente. Asocierea cu un cont și integrările de plată, livrare și facturare rămân în backlog.

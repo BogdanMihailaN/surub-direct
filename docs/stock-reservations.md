@@ -1,6 +1,6 @@
 # Rezervări atomice în Inventory
 
-Inventory deține tabela inventory.Reservations și cantitățile Reserved din inventory.Balances. O rezervare conține un ID idempotent, un OrderId de corelare, durata în secunde și 1–50 SKU-uri distincte, fiecare cu un număr pozitiv de bucăți. Ordering va transforma ambalajele în bucăți și va cumula SKU-urile înainte de integrare; browserul nu poate apela aceste operații prin gateway.
+Inventory deține tabela inventory.Reservations și cantitățile Reserved din inventory.Balances. O rezervare conține un ID idempotent, un OrderId de corelare, durata în secunde și 1–50 SKU-uri distincte, fiecare cu un număr pozitiv de bucăți. Ordering transformă ambalajele în bucăți și cumulează SKU-urile în pregătirea demonstrativă a coșului; browserul nu poate apela aceste operații prin gateway.
 
 ## Protocol intern
 
@@ -32,6 +32,6 @@ Nu există timere în memorie pentru fiecare rezervare; rândurile persistente p
 
 ## Limite și continuare
 
-Coșul și ciorna PF/PJ nu pornesc rezervări încă. Coordonarea internă în Ordering este implementată; urmează legarea de snapshot-urile comenzii, consumarea rezervării la confirmare și compensările comerciale, apoi integrarea RabbitMQ/Outbox/Inbox. Un OrderId poate avea mai multe încercări cu ID-uri distincte; coordonatorul trebuie să gestioneze încercările și să evite rezervările redundante.
+Pregătirea demonstrativă a coșului PF/PJ pornește rezervări prin coordonatorul Ordering. Urmează consumarea rezervării la confirmarea comenzii și compensările comerciale, apoi integrarea RabbitMQ/Outbox/Inbox. Un OrderId poate avea mai multe încercări cu ID-uri distincte; coordonatorul trebuie să gestioneze încercările și să evite rezervările redundante.
 
 În această etapă nu există prelungire, rezervare parțială, scădere fizică la confirmare sau ecran administrativ dedicat. Jurnalul existent al mișcărilor fizice rămâne pentru recepții, ajustări și corecții; tabela Reservations păstrează istoricul rezervărilor. Nu s-a făcut un test de încărcare sau deployment distribuit. Checkout-ul rămâne dezactivat.

@@ -2,7 +2,7 @@
 
 Ordering păstrează intențiile în ordering.ReservationPlans, în baza proprie. Inventory continuă să dețină soldurile și rezervările efective. Comunicarea este HTTP prin portul IReservationInventory și DTO-uri de transport locale Ordering; nu există referințe la proiectele sau baza Inventory.
 
-Etapa implementează mecanismul intern de coordonare. Coșul PF/PJ nu creează încă planuri; urmează generarea lor dintr-un snapshot validat al comenzii, cu asocierea proprietarului și conversia ambalajelor în bucăți. Checkout-ul rămâne dezactivat.
+Mecanismul intern este folosit de [pregătirea demonstrativă a coșului](cart-preparation.md), care salvează snapshot-ul și planul atomic, asociază proprietarul și convertește ambalajele în bucăți. Checkout-ul rămâne dezactivat.
 
 ## Protocol
 
@@ -30,4 +30,4 @@ Planurile Active sunt reconciliate la 15 secunde prin aceeași cerere idempotent
 
 ## Limite
 
-Nu sunt implementate încă snapshot-ul comercial al comenzii, legătura cu proprietarul coșului, o singură încercare activă per comandă, consumarea rezervării, plata sau confirmarea comenzii. Rutele interne sunt destinate serviciilor de încredere, nu browserului. Nu există RabbitMQ, Inbox ori dead-letter în această etapă; retry-ul HTTP este persistent și continuă cu întârziere plafonată până la rezolvare. Sunt necesare monitorizare operațională, politici de abandon și teste de încărcare înainte de producție.
+Există snapshot și o singură pregătire atașată per coș demonstrativ. Nu sunt implementate încă entitatea comercială de comandă, consumarea rezervării, plata sau confirmarea comenzii. Rutele interne sunt destinate serviciilor de încredere, nu browserului. Nu există RabbitMQ, Inbox ori dead-letter în această etapă; retry-ul HTTP este persistent și continuă cu întârziere plafonată până la rezolvare. Sunt necesare monitorizare operațională, politici de abandon și teste de încărcare înainte de producție.

@@ -1,6 +1,6 @@
 # Coș anonim persistent
 
-Ordering deține tabela `ordering.Carts`, în baza și cu credențialul propriu. Migrarea `PersistedCarts` se aplică prin `python3 scripts/dev.py init`; baza legacy nu este modificată. Selecția păstrează slug-ul produsului, ID-ul ambalajului și numărul de ambalaje, maximum 50 de linii distincte. Migrarea CartCustomerDraft adaugă opțional [datele PF/PJ și adresele](customer-draft.md), salvate explicit din formular. Prețurile și stocul sunt recitite separat prin recalculare. Nu se creează comenzi sau rezervări.
+Ordering deține tabela `ordering.Carts`, în baza și cu credențialul propriu. Migrarea `PersistedCarts` se aplică prin `python3 scripts/dev.py init`; baza legacy nu este modificată. Selecția păstrează slug-ul produsului, ID-ul ambalajului și numărul de ambalaje, maximum 50 de linii distincte. Migrarea CartCustomerDraft adaugă opțional [datele PF/PJ și adresele](customer-draft.md), salvate explicit din formular. Prețurile și stocul sunt recitite separat prin recalculare. Salvarea selecției nu creează comenzi sau rezervări. [Pregătirea demonstrativă](cart-preparation.md) poate atașa separat un snapshot și un plan de rezervare, blocând editarea până la eliberare.
 
 ## Acces și protocol
 
