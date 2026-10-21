@@ -4,7 +4,7 @@ Pagina produsului permite alegerea numărului de ambalaje și adăugarea în co�
 
 ## Păstrarea selecției
 
-Selecția este salvată în baza proprie Ordering, fără prețuri sau date personale. Cookie-ul HttpOnly identifică un coș anonim, valabil 30 de zile. Copia locală din versiunea anterioară este importată la prima încărcare reușită. Modificările concurente sunt respinse și necesită reîncărcare. [Protocol, securitate și recuperare](cart-persistence.md).
+Selecția este salvată în baza proprie Ordering, fără prețuri persistate. Datele PF/PJ pot fi salvate separat în ciorna atașată coșului; vezi [formularul și limitele](customer-draft.md). Cookie-ul HttpOnly identifică un coș anonim, valabil 30 de zile. Copia locală din versiunea anterioară este importată la prima încărcare reușită. Modificările concurente sunt respinse și necesită reîncărcare. [Protocol, securitate și recuperare](cart-persistence.md).
 
 ## Recalcularea autoritativă
 
@@ -32,4 +32,4 @@ Ordering are acum Domain, Application, Infrastructure, Contracts și API cu fiș
 
 Endpoint-ul limitează cererile la 60/minut pentru adresa peer observată de serviciu, fără coadă; în configurația locală, traficul gateway are același peer. Body limit 64 KB. Înainte de producție trebuie definită politica pentru proxy-uri de încredere și capacitatea de trafic. Limita globală a gateway-ului rămâne neschimbată.
 
-Următoarele etape sunt asocierea opțională cu un cont, datele PF/PJ ale comenzii, rezervările și expirările, apoi coordonarea prin Outbox/Inbox și RabbitMQ. Activarea comercială necesită date reale și autorizare separată.
+Următoarele etape sunt asocierea opțională cu un cont, plasarea comenzii, rezervările și expirările, apoi coordonarea prin Outbox/Inbox și RabbitMQ. Activarea comercială necesită date reale și autorizare separată.

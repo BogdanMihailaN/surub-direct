@@ -1,0 +1,90 @@
+<section aria-labelledby="customer-heading">
+  <h2 id="customer-heading">Pregătirea comenzii</h2>
+  <p>
+    Completează date fictive pentru verificarea formularului. Salvarea păstrează o ciornă; nu
+    trimite o comandă.
+  </p>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <fieldset [disabled]="cart.locked()">
+      <legend>Datele clientului</legend>
+      <label
+        >Tip client<select formControlName="customerType">
+          <option value="person">Persoană fizică</option>
+          <option value="company">Firmă (PJ)</option>
+        </select></label
+      >
+      <label
+        >Nume complet / persoană de contact<input
+          formControlName="fullName"
+          maxlength="150"
+          autocomplete="off"
+      /></label>
+      <label
+        >Email<input type="email" formControlName="email" maxlength="254" autocomplete="off"
+      /></label>
+      <label
+        >Telefon<input type="tel" formControlName="phone" maxlength="30" autocomplete="off"
+      /></label>
+      @if (form.controls.customerType.value === 'company') {
+        <label>Denumire firmă<input formControlName="companyName" maxlength="200" /></label>
+        <label>CUI<input formControlName="taxId" maxlength="12" /></label>
+        <label
+          >Număr registrul comerțului (opțional)<input
+            formControlName="registrationNumber"
+            maxlength="40"
+        /></label>
+      }
+      <sd-customer-address [group]="form.controls.shippingAddress" label="Adresă de livrare" />
+      <label class="check"
+        ><input type="checkbox" formControlName="billingSameAsShipping" /> Adresa de facturare este
+        aceeași</label
+      >
+      @if (!form.controls.billingSameAsShipping.value) {
+        <sd-customer-address [group]="form.controls.billingAddress" label="Adresă de facturare" />
+      }
+      @if (
+        attempted() &&
+        (form.invalid ||
+          (form.controls.customerType.value === 'company' &&
+            (!form.controls.companyName.value.trim() || !form.controls.taxId.value.trim())))
+      ) {
+        <p role="alert">
+          Completează câmpurile obligatorii și verifică emailul, telefonul, CUI-ul și codul poștal
+          (6 cifre).
+        </p>
+      }
+      @if (cart.customerError()) {
+        <p role="alert">{{ cart.customerError() }}</p>
+      }
+      <button type="submit">Salvează ciorna</button>
+      @if (cart.customer()) {
+        <button type="button" (click)="clear()">Șterge datele clientului</button>
+      }
+    </fieldset>
+  </form>
+  @if (message()) {
+    <p role="status">{{ message() }}</p>
+  }
+  @if (cart.customer(); as customer) {
+    <aside aria-label="Date salvate">
+      <h3>Date salvate pentru verificare</h3>
+      <p>{{ customer.fullName }} · {{ customer.email }} · {{ customer.phone }}</p>
+      @if (customer.customerType === 'company') {
+        <p>{{ customer.companyName }} · CUI {{ customer.taxId }}</p>
+      }
+      <p>
+        Livrare: {{ customer.shippingAddress.street }}, {{ customer.shippingAddress.city }},
+        {{ customer.shippingAddress.county }}, {{ customer.shippingAddress.postalCode }}
+      </p>
+      @if (customer.billingAddress; as address) {
+        <p>
+          Facturare: {{ address.street }}, {{ address.city }}, {{ address.county }},
+          {{ address.postalCode }}
+        </p>
+      } @else {
+        <p>Facturare la adresa de livrare.</p>
+      }
+      <p>Produsele și totalul estimat sunt afișate mai sus. Transportul nu este inclus.</p>
+    </aside>
+  }
+</section>

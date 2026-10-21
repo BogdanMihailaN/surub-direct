@@ -1,0 +1,60 @@
+section {
+  border-top: 1px solid #ccd6c7;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  gap: 1rem;
+  max-width: 650px;
+}
+legend {
+  font-weight: 600;
+  padding-bottom: 1rem;
+}
+label {
+  display: grid;
+  gap: 0.3rem;
+}
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.65rem;
+  border: 1px solid #85917c;
+  border-radius: 4px;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.check input {
+  width: auto;
+}
+button {
+  padding: 0.75rem 1rem;
+  border: 1px solid #28422d;
+  background: #28422d;
+  color: white;
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+}
+fieldset:disabled {
+  opacity: 0.65;
+}
+aside {
+  background: #f1f4ee;
+  padding: 1rem;
+  margin-top: 1rem;
+  overflow-wrap: anywhere;
+}
+[role='alert'] {
+  color: #a33122;
+}

@@ -12,6 +12,7 @@ public static class OrderingModule
         services.AddScoped<CreateCartHandler>();
         services.AddScoped<GetCartHandler>();
         services.AddScoped<ReplaceCartHandler>();
+        services.AddScoped<SaveCartCustomerHandler>();
         return services;
     }
 

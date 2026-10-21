@@ -23,4 +23,5 @@ GetCartTokenEndpoint.Map(app);
 GetCartEndpoint.Map(app);
 CreateCartSessionEndpoint.Map(app);
 ReplaceCartEndpoint.Map(app);
+SaveCartCustomerEndpoint.Map(app);
 app.Run();

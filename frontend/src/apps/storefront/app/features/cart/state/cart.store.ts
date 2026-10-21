@@ -1,3 +1,4 @@
+import { CustomerDraft } from '../models/customer-draft.model';
 import { afterNextRender, computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CartSelection } from '../models/cart-selection.model';
@@ -9,6 +10,8 @@ const CHANGE_KEY = 'surub-direct.cart.changed';
 export class CartStore {
   private readonly api = inject(CartPersistenceApi);
   private current: StoredCart | null = null;
+  readonly customer = signal<CustomerDraft | null>(null);
+  readonly customerError = signal('');
   readonly items = signal<readonly CartSelection[]>([]);
   readonly ready = signal(false);
   readonly busy = signal(false);
@@ -34,6 +37,7 @@ export class CartStore {
   }
   private accept(cart: StoredCart | null) {
     this.current = cart;
+    this.customer.set(cart?.customer ?? null);
     this.items.set(cart?.lines ?? []);
   }
   private notify() {
@@ -116,6 +120,23 @@ export class CartStore {
       this.notify();
     } catch (error) {
       this.fail(error);
+    } finally {
+      this.busy.set(false);
+    }
+  }
+  async saveCustomer(customer: CustomerDraft | null) {
+    if (this.locked() || !this.current) return false;
+    this.busy.set(true);
+    this.customerError.set('');
+    try {
+      this.accept(await this.api.saveCustomer(this.current, customer));
+      this.notify();
+      return true;
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.status === 400)
+        this.customerError.set(error.error?.detail ?? 'Verifică datele introduse.');
+      else this.fail(error);
+      return false;
     } finally {
       this.busy.set(false);
     }

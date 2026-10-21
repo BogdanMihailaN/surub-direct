@@ -15,7 +15,7 @@ surub-direct/
 │   │   │   ├── inventory/SurubDirect.Inventory.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   ├── identity/SurubDirect.Identity.{Api,Infrastructure}/
 │   │   │   ├── purchasing/SurubDirect.Purchasing.{Api,Application,Domain,Infrastructure,Contracts}/
-│   │   │   └── ordering/SurubDirect.Ordering.Api/
+│   │   │   └── ordering/SurubDirect.Ordering.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   ├── gateway/SurubDirect.Gateway/
 │   │   └── shared/
 │   │       ├── SurubDirect.BuildingBlocks/
@@ -110,3 +110,5 @@ Corecțiile de recepție sunt grupate în `Domain/Corrections`, `Application/Fea
 Coșul storefront este în `features/cart`, cu `models`, `data-access`, `state`, componente `add-to-cart`/`cart-line` și pagina `pages/cart`. Ordering organizează use case-ul în `Application/Features/QuoteCart`, portul consumatorului în `Abstractions/Catalog`, iar transportul HTTP în `Infrastructure/Catalog/Transport`, cu un DTO per fișier.
 
 Persistența coșului: entitatea în Ordering.Domain/Carts, portul în Application/Abstractions/Persistence și câte un handler în Features/StoredCart. Infrastructure/Persistence separă contextul, configurația și repository-ul; migrațiile sunt locale serviciului. API/Endpoints/Cart are un fișier per rută; Security/CartOwnerCookie gestionează accesul anonim. Angular separă modelul StoredCart, CartPersistenceApi și CartStore.
+
+Datele PF/PJ sunt în Ordering.Domain/Customers; contractele de răspuns în Contracts/Customers, use case-ul în Application/Features/StoredCart/SaveCustomer. În Angular, features/cart separă componentele customer-form și customer-address, factory-ul formularelor, modelele și accesul API/starea.

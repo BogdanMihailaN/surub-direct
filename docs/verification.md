@@ -174,3 +174,12 @@ Limite: selecție locală în browser, fără persistență server sau cont; tot
 - Capturile desktop și mobil ale coșului au fost verificate; mobilul nu depășește viewport-ul.
 
 Limite: fără teste de încărcare sau deployment de producție; fără curățare fizică periodică a coșurilor expirate, cont de client sau comandă. Checkout-ul rămâne dezactivat.
+
+## Ciornă PF/PJ — 21 octombrie 2026
+
+- 180 de teste backend trecute. Cazurile noi verifică normalizarea și validarea contactului/adreselor/firmei, coșul gol, expirarea, versiunea, izolarea proprietarilor, citirea din PostgreSQL în alt scope și ștergerea datelor.
+- Ambele builduri Angular de producție au trecut.
+- 13 scenarii Playwright pentru datele clientului, persistența coșului, recalculare și catalog au trecut. Verificate: PF → PJ → PF, facturare separată, reluare după reload, ștergere explicită, CSRF/ownership direct și prin gateway, versiune depășită, golire și recuperarea răspunsului pierdut fără repetarea scrierii.
+- Formularul mobil a fost inspectat vizual; nu depășește viewport-ul.
+- Migrarea CartCustomerDraft a fost aplicată după backup privat al bazei Ordering. EF nu raportează diferențe între model și migrare.
+- Nu se creează comenzi, rezervări, plăți sau facturi. Datele testelor sunt fictive. Retenția fizică automată și configurația de producție rămân în backlog.

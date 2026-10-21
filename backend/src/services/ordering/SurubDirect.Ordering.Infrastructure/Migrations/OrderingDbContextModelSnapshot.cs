@@ -28,6 +28,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Customer")
+                        .HasColumnType("jsonb");
+
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("timestamp with time zone");
 

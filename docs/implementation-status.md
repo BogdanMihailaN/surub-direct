@@ -4,6 +4,8 @@ Actualizat la 21 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Formular PF/PJ și ciornă atașată coșului în Ordering: contact, livrare, facturare distinctă, validări server, rezumat și ștergere explicită/la golirea coșului. Aceeași versiune protejează datele și articolele. Nu plasează comenzi. [Detalii](customer-draft.md).
+
 - Persistența coșului anonim în Ordering, import din copia locală, protecție CSRF inclusiv direct pe API, recuperare după răspuns pierdut și conflicte între taburi. [Detalii](cart-persistence.md).
 
 - Ajustări de stoc plus/minus în Inventory, cu motiv, document, operator, cheie idempotentă și sold așteptat. Jurnal paginat al recepțiilor și ajustărilor în administrarea produsului; stocul negativ și scăderea sub rezervări sunt respinse. [Detalii](stock-adjustments.md).

@@ -34,7 +34,7 @@ flowchart LR
 | Inventory | Recepții, corecții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
-| Ordering | Persistența selecției și recalculare prin Catalog HTTP; checkout dezactivat | `surub_ordering`: `ordering.Carts` |
+| Ordering | Persistența selecției și ciornei PF/PJ, recalculare prin Catalog HTTP; checkout dezactivat | `surub_ordering`: `ordering.Carts` |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
 
 Fiecare bază are utilizator propriu, fără drept de conectare la bazele celorlalte servicii. Instanța PostgreSQL locală este comună pentru economie de resurse; separarea este la nivel de baze și permisiuni. Se pot muta pe instanțe separate fără schimbări în domeniu.
@@ -120,3 +120,5 @@ Purchasing coordonează intenția persistentă prin portul propriu `IInventoryCo
 Ordering expune o recalculare publică fără efecte persistente, prin portul propriu `ICartCatalog` și adaptor HTTP către Catalog. Selecția este păstrată în baza Ordering; prețurile și stocul sunt recitite de server. Nu există referințe între proiectele serviciilor sau acces la bazele vecine. Checkout-ul rămâne dezactivat. [Reguli și limite](cart-preview.md).
 
 Coșurile anonime folosesc un cookie de capabilitate HttpOnly și CSRF propriu Ordering pentru mutațiile publice. Identity continuă să dețină sesiunea autentificată și CSRF administrativ. Cookie-ul de coș nu acordă privilegii administrative. [Protocol](cart-persistence.md).
+
+Ciorna PF/PJ aparține exclusiv Ordering și este atașată coșului. Nu este o entitate partajată cu Identity sau Purchasing. Datele clientului și liniile coșului folosesc aceeași versiune și tranzacție pentru evitarea suprascrierilor. [Detalii](customer-draft.md).

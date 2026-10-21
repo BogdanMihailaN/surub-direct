@@ -17,7 +17,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Închiderea comenzilor de aprovizionare, inclusiv cantitatea rămasă nelivrată.
 - [x] Coș demonstrativ local, cu recalculare server a prețurilor, ambalajelor și stocului.
 - [x] Persistența coșului anonim în Ordering, cookie protejat, CSRF și controlul versiunilor.
-- [ ] Date PF/PJ și flux de comandă; asociere cu contul, politici de retenție și curățarea coșurilor expirate.
+- [x] Date PF/PJ și ciornă persistentă atașată coșului, cu livrare/facturare și rezumat.
+- [ ] Plasarea comenzii, asociere cu contul, politici de retenție și curățarea coșurilor expirate.
 - [ ] Rezervări atomice, expirări, anulări și compensări.
 - [ ] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru fluxurile distribuite.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.

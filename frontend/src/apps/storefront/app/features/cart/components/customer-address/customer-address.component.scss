@@ -1,0 +1,27 @@
+fieldset {
+  border: 1px solid #ccd6c7;
+  border-radius: 6px;
+  padding: 1rem;
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+}
+legend {
+  font-weight: 600;
+}
+label {
+  display: grid;
+  gap: 0.3rem;
+}
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem;
+  border: 1px solid #85917c;
+  border-radius: 4px;
+  min-width: 0;
+  font: inherit;
+}
+p {
+  margin: 0;
+}

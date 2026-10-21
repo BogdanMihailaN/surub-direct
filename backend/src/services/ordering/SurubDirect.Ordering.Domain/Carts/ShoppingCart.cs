@@ -13,6 +13,7 @@ public sealed class ShoppingCart
     public DateTimeOffset UpdatedAt { get; private set; }
     public DateTimeOffset ExpiresAt { get; private set; }
     public List<CartSelection> Lines { get; private set; } = [];
+    public CustomerDraft? Customer { get; private set; }
 
     public static ShoppingCart Create(string ownerHash, DateTimeOffset now)
     {
@@ -42,6 +43,21 @@ public sealed class ShoppingCart
         foreach (var line in lines)
             line.Validate();
         Lines = lines.ToList();
+        if (Lines.Count == 0)
+            Customer = null;
+        UpdatedAt = now;
+        Version = checked(Version + 1);
+    }
+
+    public void SaveCustomer(Guid cartId, int version, CustomerDraft? customer, DateTimeOffset now)
+    {
+        EnsureActive(now);
+        if (cartId != Id || version != Version)
+            throw new BusinessException("Coșul s-a modificat. Reîncarcă înainte de a continua.", 409);
+        if (customer is not null && Lines.Count == 0)
+            throw new BusinessException("Adaugă produse înainte de a salva datele clientului.");
+        var normalized = customer?.Normalize();
+        Customer = normalized;
         UpdatedAt = now;
         Version = checked(Version + 1);
     }

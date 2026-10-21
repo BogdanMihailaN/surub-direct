@@ -1,0 +1,16 @@
+<fieldset [formGroup]="group()">
+  <legend>{{ label() }}</legend>
+  <label
+    >Stradă și număr<input formControlName="street" maxlength="200" autocomplete="off"
+  /></label>
+  <label>Localitate<input formControlName="city" maxlength="100" autocomplete="off" /></label>
+  <label>Județ / sector<input formControlName="county" maxlength="100" autocomplete="off" /></label>
+  <label
+    >Cod poștal<input
+      formControlName="postalCode"
+      maxlength="6"
+      inputmode="numeric"
+      autocomplete="off"
+  /></label>
+  <p>Țară: România</p>
+</fieldset>

@@ -1,3 +1,4 @@
+import { CustomerDraft } from '../models/customer-draft.model';
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -24,6 +25,15 @@ export class CartPersistenceApi {
       this.http.put<StoredCart>(
         this.path,
         { cartId: cart.id, version: cart.version, lines },
+        { headers: await this.headers() },
+      ),
+    );
+  }
+  async saveCustomer(cart: StoredCart, customer: CustomerDraft | null) {
+    return firstValueFrom(
+      this.http.put<StoredCart>(
+        this.path + '/customer',
+        { cartId: cart.id, version: cart.version, customer },
         { headers: await this.headers() },
       ),
     );

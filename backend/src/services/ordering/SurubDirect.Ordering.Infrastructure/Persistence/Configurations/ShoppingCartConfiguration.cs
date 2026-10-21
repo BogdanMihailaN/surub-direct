@@ -16,6 +16,7 @@ internal sealed class ShoppingCartConfiguration : IEntityTypeConfiguration<Shopp
         b.HasIndex(c => c.OwnerHash).IsUnique();
         b.HasIndex(c => c.ExpiresAt);
         b.Property(c => c.Version).IsConcurrencyToken();
+        b.Property(c => c.Customer).HasColumnType("jsonb").HasConversion(v => JsonSerializer.Serialize(v, (JsonSerializerOptions? )null), v => JsonSerializer.Deserialize<CustomerDraft>(v, (JsonSerializerOptions? )null));
         b.Property(c => c.Lines).HasColumnType("jsonb").HasConversion(v => JsonSerializer.Serialize(v, (JsonSerializerOptions? )null), v => JsonSerializer.Deserialize<List<CartSelection>>(v, (JsonSerializerOptions? )null)!).Metadata.SetValueComparer(new ValueComparer<List<CartSelection>>((a, b) => a!.SequenceEqual(b!), v => v.Aggregate(0, (h, x) => HashCode.Combine(h, x.GetHashCode())), v => v.ToList()));
     }
 }

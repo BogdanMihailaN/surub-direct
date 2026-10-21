@@ -25,4 +25,15 @@ internal sealed class ShoppingCartRepository(OrderingDbContext db) : IShoppingCa
         await tx.CommitAsync(ct);
         return cart;
     }
+
+    public async Task<ShoppingCart> SaveCustomer(string hash, Guid id, int version, CustomerDraft? customer, CancellationToken ct)
+    {
+        db.ChangeTracker.Clear();
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash" = {hash} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu mai este accesibil. Reîncarcă pagina.", 401);
+        cart.SaveCustomer(id, version, customer, DateTimeOffset.UtcNow);
+        await db.SaveChangesAsync(ct);
+        await tx.CommitAsync(ct);
+        return cart;
+    }
 }

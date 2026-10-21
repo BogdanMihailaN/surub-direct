@@ -1,6 +1,6 @@
 # Coș anonim persistent
 
-Ordering deține tabela `ordering.Carts`, în baza și cu credențialul propriu. Migrarea `PersistedCarts` se aplică prin `python3 scripts/dev.py init`; baza legacy nu este modificată. Sunt salvate numai slug-ul produsului, ID-ul ambalajului și numărul de ambalaje, maximum 50 de linii distincte. Prețurile și stocul sunt recitite separat prin recalculare. Nu se creează comenzi sau rezervări.
+Ordering deține tabela `ordering.Carts`, în baza și cu credențialul propriu. Migrarea `PersistedCarts` se aplică prin `python3 scripts/dev.py init`; baza legacy nu este modificată. Selecția păstrează slug-ul produsului, ID-ul ambalajului și numărul de ambalaje, maximum 50 de linii distincte. Migrarea CartCustomerDraft adaugă opțional [datele PF/PJ și adresele](customer-draft.md), salvate explicit din formular. Prețurile și stocul sunt recitite separat prin recalculare. Nu se creează comenzi sau rezervări.
 
 ## Acces și protocol
 
@@ -14,6 +14,8 @@ Cookie-ul `SurubDirect.Cart` conține 32 de octeți aleatori, codificați hex. B
 Înlocuirile sunt serializate prin blocare PostgreSQL a rândului, în tranzacție. ID-ul și versiunea sunt verificate după obținerea blocării. Un conflict produce 409, lipsa proprietarului 401, expirarea 410. Un retry cu versiunea veche nu suprascrie o salvare deja confirmată de baza de date.
 
 Coșul expiră la 30 de zile de la creare, fără prelungire automată. Datele expirate nu mai sunt accesibile; curățarea fizică periodică nu este implementată încă. Eliminarea cookie-ului pierde accesul la coș. Nu există recuperare între dispozitive sau asociere cu un cont.
+
+Golirea coșului șterge și datele clientului. PUT /api/v1/ordering/cart/customer folosește aceleași verificări de proprietar, CSRF și versiune; customer null permite ștergerea separată a datelor.
 
 ## Interfață și recuperare
 
