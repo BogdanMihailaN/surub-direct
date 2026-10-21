@@ -4,9 +4,7 @@ Pagina produsului permite alegerea numărului de ambalaje și adăugarea în co�
 
 ## Păstrarea selecției
 
-Browserul salvează exclusiv slug-ul produsului, ID-ul ambalajului și numărul de ambalaje în `surub-direct.cart.v1`. Nu salvează prețuri, stoc, identitate sau date de facturare. Maximum 50 de ambalaje distincte. Datele locale sunt validate la citire; o valoare coruptă este semnalată și nu blochează crearea unui coș nou. Dacă stocarea este refuzată de browser, selecția rămâne în memoria paginii și este afișat un mesaj.
-
-Selecția se păstrează după reîncărcare în același browser și origine, iar modificările altor taburi sunt preluate prin evenimentul `storage`. Nu există încă asociere cu un cont, sincronizare între dispozitive sau coș persistent în baza Ordering. Pentru modificări simultane din taburi, ultima scriere locală prevalează. SSR nu citește localStorage și nu păstrează coșuri între cererile utilizatorilor.
+Selecția este salvată în baza proprie Ordering, fără prețuri sau date personale. Cookie-ul HttpOnly identifică un coș anonim, valabil 30 de zile. Copia locală din versiunea anterioară este importată la prima încărcare reușită. Modificările concurente sunt respinse și necesită reîncărcare. [Protocol, securitate și recuperare](cart-persistence.md).
 
 ## Recalcularea autoritativă
 
@@ -30,8 +28,8 @@ Răspunsul include `checkedAt` și `checkoutEnabled: false`, cu `Cache-Control: 
 
 ## Organizare și limite
 
-Ordering are acum Domain, Application, Infrastructure, Contracts și API cu fișiere separate. Domain conține selecția și regulile de cantitate; Application coordonează recalcularea, Infrastructure adaptează HTTP, iar API compune serviciile și expune endpoint-ul. Nu s-au introdus tabele sau migrații; conexiunea proprie Ordering rămâne folosită de readiness.
+Ordering are acum Domain, Application, Infrastructure, Contracts și API cu fișiere separate. Domain conține selecția și regulile de cantitate; Application coordonează recalcularea, Infrastructure adaptează HTTP, iar API compune serviciile și expune endpoint-ul. Persistența selecției este separată în use case-urile StoredCart și în OrderingDbContext; migrarea PersistedCarts creează ordering.Carts.
 
 Endpoint-ul limitează cererile la 60/minut pentru adresa peer observată de serviciu, fără coadă; în configurația locală, traficul gateway are același peer. Body limit 64 KB. Înainte de producție trebuie definită politica pentru proxy-uri de încredere și capacitatea de trafic. Limita globală a gateway-ului rămâne neschimbată.
 
-Următoarele etape sunt persistența și identitatea coșului, datele PF/PJ ale comenzii, rezervările și expirările, apoi coordonarea prin Outbox/Inbox și RabbitMQ. Activarea comercială necesită date reale și autorizare separată.
+Următoarele etape sunt asocierea opțională cu un cont, datele PF/PJ ale comenzii, rezervările și expirările, apoi coordonarea prin Outbox/Inbox și RabbitMQ. Activarea comercială necesită date reale și autorizare separată.

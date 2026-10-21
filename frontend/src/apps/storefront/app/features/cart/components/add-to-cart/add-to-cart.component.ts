@@ -26,7 +26,7 @@ export class AddToCart {
   existing() {
     return this.cart.items().some((x) => x.offerId === this.offer().id);
   }
-  submit(form: NgForm) {
+  async submit(form: NgForm) {
     const o = this.offer();
     if (
       form.invalid ||
@@ -37,7 +37,7 @@ export class AddToCart {
       this.packs * o.unitsPerPack > this.available()
     )
       return;
-    this.cart.set({ productSlug: this.slug(), offerId: o.id, packs: this.packs });
+    await this.cart.set({ productSlug: this.slug(), offerId: o.id, packs: this.packs });
     this.message.set(this.cart.error() || 'Cantitatea este în coș.');
   }
 }

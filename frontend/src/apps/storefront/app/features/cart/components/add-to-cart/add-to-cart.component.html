@@ -8,11 +8,11 @@
       [step]="offer().packStep"
       [max]="available() / offer().unitsPerPack"
       required
-      [disabled]="!cart.ready() || !priced()" /></label
+      [disabled]="cart.locked() || !priced()" /></label
   ><button
     [disabled]="
       form.invalid ||
-      !cart.ready() ||
+      cart.locked() ||
       !priced() ||
       available() < offer().minPacks * offer().unitsPerPack
     "

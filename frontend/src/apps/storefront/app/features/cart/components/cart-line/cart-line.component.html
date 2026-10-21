@@ -30,8 +30,11 @@
         min="1"
         max="2147483647"
         step="1"
+        [disabled]="disabled()"
         [(ngModel)]="packs" /></label
-    ><button [disabled]="form.invalid">Actualizează</button
-    ><button type="button" (click)="removed.emit(selection().offerId)">Elimină</button>
+    ><button [disabled]="disabled() || form.invalid">Actualizează</button
+    ><button type="button" [disabled]="disabled()" (click)="removed.emit(selection().offerId)">
+      Elimină
+    </button>
   </form>
 </article>

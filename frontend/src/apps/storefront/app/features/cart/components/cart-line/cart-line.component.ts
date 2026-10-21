@@ -11,6 +11,7 @@ import { CartQuoteLine } from '../../models/cart-quote-line.model';
   styleUrl: './cart-line.component.scss',
 })
 export class CartLine {
+  readonly disabled = input(false);
   readonly selection = input.required<CartSelection>();
   readonly detail = input<CartQuoteLine>();
   readonly changed = output<CartSelection>();
@@ -22,7 +23,7 @@ export class CartLine {
     });
   }
   submit(form: NgForm) {
-    if (form.invalid || !Number.isInteger(this.packs) || this.packs < 1) return;
+    if (this.disabled() || form.invalid || !Number.isInteger(this.packs) || this.packs < 1) return;
     this.changed.emit({ ...this.selection(), packs: this.packs });
   }
 }

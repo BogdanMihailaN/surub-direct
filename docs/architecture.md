@@ -34,12 +34,12 @@ flowchart LR
 | Inventory | Recepții, corecții și ajustări idempotente, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
-| Ordering | Recalcularea coșului din Catalog prin HTTP; checkout dezactivat | `surub_ordering`: încă fără tabele comerciale |
+| Ordering | Persistența selecției și recalculare prin Catalog HTTP; checkout dezactivat | `surub_ordering`: `ordering.Carts` |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
 
 Fiecare bază are utilizator propriu, fără drept de conectare la bazele celorlalte servicii. Instanța PostgreSQL locală este comună pentru economie de resurse; separarea este la nivel de baze și permisiuni. Se pot muta pe instanțe separate fără schimbări în domeniu.
 
-Pricing rămâne parte a serviciului Catalog. Proiectele Pricing separate reprezintă organizarea internă și păstrează migrațiile existente, nu un serviciu suplimentar. Store.Application este compoziția internă a Catalogului: nu mai încarcă infrastructura Inventory. Ordering conține Domain/Application/Infrastructure/Contracts pentru validarea și recalcularea coșului, fără persistență comercială încă.
+Pricing rămâne parte a serviciului Catalog. Proiectele Pricing separate reprezintă organizarea internă și păstrează migrațiile existente, nu un serviciu suplimentar. Store.Application este compoziția internă a Catalogului: nu mai încarcă infrastructura Inventory. Ordering conține Domain/Application/Infrastructure/Contracts pentru validarea și recalcularea coșului, cu persistența selecției anonime în baza proprie.
 
 ## Comunicarea și erorile
 
@@ -117,4 +117,6 @@ Purchasing coordonează intenția persistentă prin portul propriu `IInventoryCo
 
 ## Coș demonstrativ — 20 octombrie 2026
 
-Ordering expune o recalculare publică fără efecte persistente, prin portul propriu `ICartCatalog` și adaptor HTTP către Catalog. Selecția este locală în browser; prețurile și stocul sunt recitite de server. Nu există referințe între proiectele serviciilor sau acces la bazele vecine. Checkout-ul rămâne dezactivat. [Reguli și limite](cart-preview.md).
+Ordering expune o recalculare publică fără efecte persistente, prin portul propriu `ICartCatalog` și adaptor HTTP către Catalog. Selecția este păstrată în baza Ordering; prețurile și stocul sunt recitite de server. Nu există referințe între proiectele serviciilor sau acces la bazele vecine. Checkout-ul rămâne dezactivat. [Reguli și limite](cart-preview.md).
+
+Coșurile anonime folosesc un cookie de capabilitate HttpOnly și CSRF propriu Ordering pentru mutațiile publice. Identity continuă să dețină sesiunea autentificată și CSRF administrativ. Cookie-ul de coș nu acordă privilegii administrative. [Protocol](cart-persistence.md).

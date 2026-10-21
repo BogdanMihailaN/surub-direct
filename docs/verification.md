@@ -163,3 +163,14 @@ Limite: reluarea corecțiilor este manuală; nu există anulare a unei intenții
 - Prettier, `git diff --check` și verificarea secretelor locale trecute. Automatizarea rămâne oprită.
 
 Limite: selecție locală în browser, fără persistență server sau cont; totaluri demonstrative, fără rezervare, date PF/PJ, comandă, plăți, transport sau facturare. Verificarea stocului nu este atomică între produse și nu garantează disponibilitatea la un checkout viitor.
+
+## Persistența coșului anonim — 21 octombrie 2026
+
+- Backend: 166 de teste trecute, inclusiv persistență PostgreSQL între scope-uri, izolarea proprietarilor, concurență cu un singur câștigător, refuzul retry-ului cu versiune veche, expirare și validarea selecțiilor.
+- Buildurile de producție Angular storefront și admin au trecut; verificarea Prettier a trecut.
+- 16 scenarii Playwright distincte trecute: suita inițială de 15 pentru coș, persistență, catalog, administrare și servicii, apoi cele 6 scenarii afectate de recuperarea localStorage (inclusiv un scenariu nou). CSRF și izolarea sunt verificate atât prin gateway, cât și direct pe Ordering. Importul local, răspunsul pierdut după salvare, notificarea între taburi și indisponibilitatea citirii sunt acoperite.
+- Migrarea Ordering a fost aplicată după backup privat al bazei. EF raportează că nu există diferențe între model și migrare.
+- Izolarea bazelor a trecut pentru toate cele cinci servicii; accesul la bazele vecine și legacy este refuzat.
+- Capturile desktop și mobil ale coșului au fost verificate; mobilul nu depășește viewport-ul.
+
+Limite: fără teste de încărcare sau deployment de producție; fără curățare fizică periodică a coșurilor expirate, cont de client sau comandă. Checkout-ul rămâne dezactivat.

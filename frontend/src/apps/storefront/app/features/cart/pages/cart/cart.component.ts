@@ -19,7 +19,7 @@ export class CartPage {
     inject(Title).setTitle('Coș demonstrativ | Șurub Direct');
     effect(() => {
       const lines = this.cart.items();
-      if (this.cart.ready()) void this.pricing.load(lines);
+      if (this.cart.ready()) void this.pricing.load(this.cart.locked() ? [] : lines);
     });
   }
   detail(id: string) {

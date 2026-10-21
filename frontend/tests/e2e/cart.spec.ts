@@ -73,9 +73,9 @@ test('cart persists quantities, recalculates prices and stock, and never enables
     await expect(page.getByRole('heading', { name: 'Total cu TVA: 96,80 RON' })).toBeVisible();
     await page.reload();
     await expect(page.locator('sd-cart-line input')).toHaveValue('2');
-    expect(
-      await page.evaluate(() => JSON.parse(localStorage.getItem('surub-direct.cart.v1')!)),
-    ).toEqual([{ productSlug: slug, offerId, packs: 2 }]);
+    expect((await (await page.request.get(shop + '/api/v1/ordering/cart')).json()).lines).toEqual([
+      { productSlug: slug, offerId, packs: 2 },
+    ]);
     const quotePath = '/api/v1/ordering/cart/quote';
     const quote = async (lines: object[]) =>
       (await page.request.post(shop + quotePath, { data: { lines } })).json();

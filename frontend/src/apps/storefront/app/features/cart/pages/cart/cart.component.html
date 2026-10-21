@@ -8,14 +8,29 @@
   @if (cart.error()) {
     <p role="alert">{{ cart.error() }}</p>
   }
+  @if (cart.stale()) {
+    <button (click)="cart.reload()" [disabled]="cart.busy()">Reîncarcă coșul</button>
+    @if (cart.canRestart()) {
+      <button (click)="cart.restart()" [disabled]="cart.busy()">Începe un coș nou</button>
+    }
+    @if (cart.legacyInvalid()) {
+      <button (click)="cart.reload(true)" [disabled]="cart.busy()">Renunță la copia locală</button>
+    }
+  }
+  @if (cart.busy()) {
+    <p role="status">Sincronizăm coșul…</p>
+  }
   @if (!cart.ready()) {
     <p>Se încarcă coșul…</p>
+  } @else if (cart.stale()) {
+    <p>Conținutul coșului trebuie reconfirmat de server.</p>
   } @else if (!cart.count()) {
     <p>Coșul este gol. Alege un ambalaj din pagina unui produs.</p>
   } @else {
     @for (line of cart.items(); track line.offerId) {
       <sd-cart-line
         [selection]="line"
+        [disabled]="cart.locked()"
         [detail]="detail(line.offerId)"
         (changed)="cart.set($event)"
         (removed)="cart.remove($event)"
@@ -27,7 +42,7 @@
     @if (pricing.error()) {
       <p role="alert">{{ pricing.error() }}</p>
     }
-    <button (click)="pricing.load(cart.items())" [disabled]="pricing.busy()">
+    <button (click)="pricing.load(cart.items())" [disabled]="pricing.busy() || cart.locked()">
       Recalculează coșul
     </button>
     @if (pricing.quote(); as quote) {

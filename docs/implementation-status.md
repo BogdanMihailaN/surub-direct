@@ -1,8 +1,10 @@
 # Starea implementării
 
-Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 21 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
+
+- Persistența coșului anonim în Ordering, import din copia locală, protecție CSRF inclusiv direct pe API, recuperare după răspuns pierdut și conflicte între taburi. [Detalii](cart-persistence.md).
 
 - Ajustări de stoc plus/minus în Inventory, cu motiv, document, operator, cheie idempotentă și sold așteptat. Jurnal paginat al recepțiilor și ajustărilor în administrarea produsului; stocul negativ și scăderea sub rezervări sunt respinse. [Detalii](stock-adjustments.md).
 
@@ -35,7 +37,7 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 - Catalog citește stocul prin API-ul Inventory. Timeout și erorile de dependență sunt raportate explicit, fără a afișa fals stoc zero.
 - Identity deține conturile, cookie-ul HttpOnly și tokenurile CSRF. Catalog și Inventory validează sesiunea și modificările prin Identity, apoi aplică rolul Administrator. Accesul direct la servicii are aceleași verificări.
 - Prețurile și Outbox rămân în serviciul Catalog. Worker-ul actualizează jurnalul local de publicare, cu tranzacție și SKIP LOCKED; nu publică mesaje RabbitMQ.
-- Ordering recalculează coșul demonstrativ din datele publice Catalog, cu validarea cantităților și stocului agregat pe SKU. Selecția rămâne locală în browser; fără rezervări sau creare de comenzi. [Coș și limite](cart-preview.md).
+- Ordering recalculează coșul demonstrativ din datele publice Catalog, cu validarea cantităților și stocului agregat pe SKU. Selecția anonimă este persistentă în PostgreSQL, cu cookie HttpOnly, CSRF și versiuni concurente; fără rezervări sau creare de comenzi. [Coș și limite](cart-preview.md).
 - Angular storefront SSR și admin Material în `frontend/src/apps/`, cu fișiere granulare și verificări stricte. Contractele publice și URL-urile existente sunt păstrate prin gateway.
 - Transferul datelor existente a copiat schemele și a verificat numărul de rânduri pentru fiecare tabel. Baza veche și backup-urile private sunt păstrate.
 - Scripturi pentru pornire independentă sau grupată, migrare legacy, verificarea izolării și a diferențelor de model EF; CI adaptat noilor directoare.
@@ -44,7 +46,7 @@ Actualizat la 20 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul demonstrativ este local, fără cont sau persistență server. Comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul și facturarea nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
+- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile, checkout-ul, rezervările, expirările, retururile, plățile, curierul și facturarea nu sunt implementate. Coloana Reserved nu implică existența operațiilor de rezervare.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.
