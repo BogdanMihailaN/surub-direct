@@ -6,7 +6,7 @@
     {{
       cart.preparedId() ? 'Există o pregătire de rezervare, iar' : 'Stocul nu este rezervat, iar'
     }}
-    comenzile și plățile nu sunt active.
+    comenzile comerciale și plățile nu sunt active.
   </p>
   @if (cart.error()) {
     <p role="alert">{{ cart.error() }}</p>
@@ -65,6 +65,7 @@
     }
     <sd-customer-form />
     <sd-preparation />
-    <p>Trimiterea comenzii va fi disponibilă după finalizarea magazinului.</p>
+    <p>Comenzile comerciale vor fi disponibile după finalizarea magazinului.</p>
   }
+  <sd-demo-orders />
 </section>

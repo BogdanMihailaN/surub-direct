@@ -57,6 +57,9 @@ internal sealed class ReservationPlans(OrderingDbContext db) : IReservationPlans
         }
 
         await reconcile(plan, ct);
+        var order = await db.DemoOrders.SingleOrDefaultAsync(x => x.Id == plan.Id, ct);
+        if (order is not null)
+            order.Reconcile(plan, DateTimeOffset.UtcNow);
         await db.SaveChangesAsync(ct);
         await tx.CommitAsync(ct);
         return 1;

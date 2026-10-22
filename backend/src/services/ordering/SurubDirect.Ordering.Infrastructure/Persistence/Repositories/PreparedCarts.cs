@@ -16,8 +16,9 @@ internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
             return null;
         var snapshot = await db.PreparedCarts.AsNoTracking().SingleAsync(x => x.Id == id, ct);
         var plan = await db.ReservationPlans.AsNoTracking().SingleAsync(x => x.Id == id, ct);
+        var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id, ct);
         await tx.CommitAsync(ct);
-        return PreparedCartProjection.Map(snapshot, plan);
+        return PreparedCartProjection.Map(snapshot, plan, order);
     }
 
     public async Task<PreparedCartDto> Save(string owner, PreparedCart snapshot, ReservationPlan plan, CancellationToken ct)
@@ -60,6 +61,8 @@ internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
         if (cart.PreparedId != id)
             throw new BusinessException("Pregătirea coșului s-a modificat.", 409);
         var plan = await db.ReservationPlans.FromSqlInterpolated($"""SELECT * FROM ordering."ReservationPlans" WHERE "Id"={id} FOR UPDATE""").SingleAsync(ct);
+        if (plan.ConfirmationRequested)
+            throw new BusinessException("Pregătirea are o comandă. Așteaptă rezultatul confirmării înainte de a relua coșul.", 409);
         if (plan.Status == "Consumed")
             throw new BusinessException("Stocul a fost consumat; pregătirea nu poate fi anulată sau reutilizată.", 409);
         if (plan.Terminal)

@@ -1,0 +1,48 @@
+@if (state.result() || state.error()) {
+  <section aria-label="Comenzi demonstrative">
+    <h2>Comenzi demonstrative</h2>
+    <p>Istoricul acestui browser. Comenzile nu inițiază plăți, livrări sau facturi.</p>
+    <button [disabled]="state.busy()" (click)="state.load(state.result()?.page ?? 1)">
+      Actualizează comenzile
+    </button>
+    @if (state.error()) {
+      <p role="alert">{{ state.error() }}</p>
+    }
+    @if (state.result(); as result) {
+      @for (order of result.items; track order.id) {
+        <article>
+          <h3>{{ order.number }}</h3>
+          <p role="status">{{ labels[order.status] }}</p>
+          <p>
+            {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }} ·
+            {{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} cu TVA
+          </p>
+          <details>
+            <summary>Produse și date salvate</summary>
+            <p>{{ order.customer.fullName }} · {{ order.customer.email }}</p>
+            @for (line of order.lines; track line.offerId) {
+              <p>
+                {{ line.productName }} · {{ line.offerLabel }} × {{ line.packs }} —
+                {{ line.grossTotal | number: '1.2-2' }} {{ order.currency }}
+              </p>
+            }
+          </details>
+        </article>
+      } @empty {
+        <p>Nu există comenzi demonstrative în acest browser.</p>
+      }
+      @if (result.total > result.pageSize) {
+        <button [disabled]="state.busy() || result.page <= 1" (click)="state.load(result.page - 1)">
+          Pagina anterioară
+        </button>
+        <span>Pagina {{ result.page }}</span>
+        <button
+          [disabled]="state.busy() || result.page * result.pageSize >= result.total"
+          (click)="state.load(result.page + 1)"
+        >
+          Pagina următoare
+        </button>
+      }
+    }
+  </section>
+}

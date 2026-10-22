@@ -92,7 +92,7 @@ Ctrl+C în terminalul `up` închide procesele backend ale acelui grup. Oprește 
 
 ## Stadiu comercial
 
-Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul persistent și ciorna PF/PJ sunt implementate; Inventory are rezervări atomice și expirări, integrate cu pregătirea demonstrativă a coșului în Development. Vezi [pregătirea coșului](docs/cart-preparation.md). Plasarea comenzilor, plățile, curierul și facturarea rămân de implementat. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
+Fluxul funcțional este: produs → variantă → ambalaj/preț → recepție → publicare. Coșul persistent și ciorna PF/PJ sunt implementate; Inventory are rezervări atomice și expirări, integrate cu pregătirea demonstrativă a coșului în Development. Vezi [pregătirea coșului](docs/cart-preparation.md). Confirmarea demonstrativă este disponibilă în Development; comenzile comerciale, plățile, curierul și facturarea rămân de finalizat. Ilustrațiile și TVA-ul din demo nu constituie date comerciale verificate. `noindex` rămâne activ; domeniul nu a fost înregistrat.
 
 Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, secrete gestionate, backup, monitorizare, chei Identity persistente, MFA, migrații controlate și domenii permise pentru SSR. `STORE_API_URL` indică gateway-ul pentru SSR, iar `SSR_ALLOWED_HOSTS` lista hosturilor permise. `scripts/dev.py` este exclusiv pentru Development.
 
@@ -116,4 +116,6 @@ Rezervările Inventory necesită cheia locală RESERVATIONS_SERVICE_KEY, complet
 
 Ordering coordonează intern rezervările prin planuri persistente. Necesită COORDINATOR_SERVICE_KEY și RESERVATIONS_SERVICE_KEY, generate local de comanda db. Fluxul public de checkout rămâne dezactivat. [Detalii](docs/reservation-coordination.md).
 
-Inventory permite consumarea atomică/idempotentă a rezervărilor și o afișează în jurnalul administrativ. Legarea operației la confirmarea comenzii urmează. [Protocol și limite](docs/stock-consumption.md).
+Inventory permite consumarea atomică/idempotentă a rezervărilor și o afișează în jurnalul administrativ. Operația este legată la confirmarea demonstrativă cu istoric în coș. [Protocol și limite](docs/stock-consumption.md).
+
+[Comenzile demonstrative](docs/demo-orders.md) păstrează număr unic, datele clientului și prețurile, consumă rezervarea idempotent și păstrează istoricul după golirea coșului. Checkout-ul comercial rămâne dezactivat.

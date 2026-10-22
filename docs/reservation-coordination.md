@@ -30,6 +30,6 @@ Planurile Active sunt reconciliate la 15 secunde prin aceeași cerere idempotent
 
 ## Limite
 
-Există snapshot și o singură pregătire atașată per coș demonstrativ. Nu sunt implementate încă entitatea comercială de comandă, consumarea rezervării, plata sau confirmarea comenzii. Rutele interne sunt destinate serviciilor de încredere, nu browserului. Nu există RabbitMQ, Inbox ori dead-letter în această etapă; retry-ul HTTP este persistent și continuă cu întârziere plafonată până la rezolvare. Sunt necesare monitorizare operațională, politici de abandon și teste de încărcare înainte de producție.
+Există snapshot și o singură pregătire atașată per coș demonstrativ. [Confirmarea demonstrativă](demo-orders.md) creează o comandă și solicită consumarea. Activarea comercială și plata rămân neimplementate. Rutele interne sunt destinate serviciilor de încredere, nu browserului. Nu există RabbitMQ, Inbox ori dead-letter în această etapă; retry-ul HTTP este persistent și continuă cu întârziere plafonată până la rezolvare. Sunt necesare monitorizare operațională, politici de abandon și teste de încărcare înainte de producție.
 
-Inventory expune acum [consumarea internă](stock-consumption.md). Coordonatorul recunoaște răspunsul Consumed drept terminal și nu îl confundă cu eliberarea; nu solicită încă el însuși consumul. Pregătirea consumată rămâne atașată și nu poate fi anulată prin endpoint-ul coșului.
+Inventory expune acum [consumarea internă](stock-consumption.md). Coordonatorul recunoaște răspunsul Consumed drept terminal și nu îl confundă cu eliberarea; solicită consumul când există o intenție persistentă de confirmare. Pregătirea consumată rămâne atașată și nu poate fi anulată prin endpoint-ul coșului.

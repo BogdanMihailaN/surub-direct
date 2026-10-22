@@ -1,8 +1,10 @@
 import { CustomerDraft } from './customer-draft.model';
 export interface PreparedCart {
   id: string;
-  status: 'Pending' | 'Active' | 'Cancelling' | 'Released' | 'Expired' | 'Consumed';
+  status: 'Confirming' | 'Pending' | 'Active' | 'Cancelling' | 'Released' | 'Expired' | 'Consumed';
   cancellationRequested: boolean;
+  confirmationRequested: boolean;
+  orderNumber: string | null;
   checkedAt: string;
   deadline: string;
   remoteExpiresAt: string | null;

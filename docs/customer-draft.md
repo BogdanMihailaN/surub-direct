@@ -30,4 +30,4 @@ Utilizatorul poate șterge datele separat de articole; golirea coșului le elimi
 
 ## Etapa următoare
 
-Plasarea comenzii comerciale și consumarea rezervării, apoi coordonarea prin evenimente. Asocierea cu un cont și integrările de plată, livrare și facturare rămân în backlog.
+Confirmarea demonstrativă și consumarea rezervării sunt descrise în [comenzi demonstrative](demo-orders.md). Urmează administrarea comenzilor, activarea comercială și coordonarea prin evenimente. Asocierea cu un cont și integrările de plată, livrare și facturare rămân în backlog.

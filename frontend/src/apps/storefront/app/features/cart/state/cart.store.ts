@@ -161,6 +161,27 @@ export class CartStore {
       this.busy.set(false);
     }
   }
+  async confirmPreparation() {
+    await this.orderAction('confirm');
+  }
+  async completePreparation() {
+    await this.orderAction('complete');
+  }
+  private async orderAction(action: 'confirm' | 'complete') {
+    const id = this.preparedId();
+    if (!id || this.busy() || this.stale()) return;
+    this.busy.set(true);
+    this.error.set('');
+    try {
+      await this.preparationApi[action](id);
+      this.accept(await this.api.read());
+      this.notify();
+    } catch (error) {
+      this.fail(error);
+    } finally {
+      this.busy.set(false);
+    }
+  }
   async cancelPreparation() {
     const id = this.preparedId();
     if (!id || this.busy() || this.stale()) return;

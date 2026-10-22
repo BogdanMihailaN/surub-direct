@@ -29,6 +29,20 @@ export class PreparationApi {
       ),
     );
   }
+  async confirm(id: string) {
+    return firstValueFrom(
+      this.http.post(this.path + '/' + id + '/confirm', {}, { headers: await this.headers() }),
+    );
+  }
+  async complete(id: string) {
+    return firstValueFrom(
+      this.http.post<void>(
+        this.path + '/' + id + '/complete',
+        {},
+        { headers: await this.headers() },
+      ),
+    );
+  }
   async cancel(id: string) {
     return firstValueFrom(
       this.http.post<void>(this.path + '/' + id + '/cancel', {}, { headers: await this.headers() }),

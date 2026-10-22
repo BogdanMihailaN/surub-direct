@@ -224,3 +224,15 @@ Fluxul este demonstrativ și disponibil numai în Development. Nu au fost testat
 - Backup privat Inventory înainte de migrarea StockConsumptionLedger. Migrarea aplicată local; EF Core confirmă absența diferențelor de model. Baza legacy păstrată.
 
 Confirmarea comenzii în Ordering nu solicită încă acest consum. Nu sunt activate checkout-ul, plățile sau indexarea. Procesele aplicațiilor pornite temporar pentru verificare sunt oprite după încheiere.
+
+
+## Confirmarea comenzilor demonstrative — 22 octombrie 2026
+
+- `python3 scripts/dev.py test`: 228 teste trecute. Noile verificări acoperă crearea atomică a comenzii/intentei, confirmări concurente, păstrarea snapshot-ului, răspuns pierdut după consum, rollback local după succes remote, reluare după termenul local, expirare remote, concurență anulare/confirmare, izolarea proprietarului și limitele temporale inclusive.
+- Build-urile de producție Angular storefront SSR și admin reușite; Prettier și verificarea modelului Ordering trecute.
+- 13 scenarii browser verificate: 11 regresii pentru coș/ciornă/pregătire și 2 scenarii noi pentru confirmare/istoric/protecții HTTP. Lotul inițial a trecut cele 11 regresii și a atins limita cart-storage la scenariile noi (429); cele două au trecut la rularea separată, cu limita aplicației păstrată.
+- Browserul confirmă o singură comandă și un singur consum de 35 de bucăți după pierderea răspunsului de confirmare; totalul rămâne 42,35 RON, iar coșul poate fi golit fără pierderea istoricului. Checkout comercial false, orders 404.
+- Capturile mobile pentru confirmare și istoricul extins au fost inspectate; fără depășire orizontală la 390 px.
+- Migrarea DemoOrderConfirmation aplicată local după backup privat Ordering; baza legacy păstrată. Procesele pornite temporar pentru testare sunt oprite la final.
+
+Nu au fost activate plăți/livrări/facturi sau checkout comercial. Comenzile sunt demonstrative și accesibile prin cookie-ul anonim; administrarea comenzilor de vânzare și politicile de retenție rămân în backlog.

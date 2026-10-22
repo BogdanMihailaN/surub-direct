@@ -22,6 +22,10 @@ public static class OrderingModule
         services.AddScoped<PrepareCartHandler>();
         services.AddScoped<GetPreparationHandler>();
         services.AddScoped<CancelPreparationHandler>();
+        services.AddScoped<IDemoOrders, DemoOrders>();
+        services.AddScoped<ConfirmDemoOrderHandler>();
+        services.AddScoped<CompleteDemoOrderHandler>();
+        services.AddScoped<GetDemoOrdersHandler>();
         return services;
     }
 

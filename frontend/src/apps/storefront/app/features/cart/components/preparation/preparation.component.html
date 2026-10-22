@@ -13,7 +13,7 @@
         <p>Salvează mai întâi datele clientului.</p>
       }
     } @else {
-      <p>Coșul nu poate fi modificat până la eliberarea rezervării.</p>
+      <p>Coșul este blocat pe durata pregătirii și confirmării.</p>
       @if (state.snapshot(); as p) {
         <h3 role="status">{{ labels[p.status] }}</h3>
         @for (line of p.lines; track line.offerId) {
@@ -29,7 +29,34 @@
         @if (p.status === 'Active') {
           <p>Termenul rezervării: {{ p.remoteExpiresAt | date: 'HH:mm:ss' }}.</p>
         }
-        @if (p.status === 'Released' || p.status === 'Expired') {
+        @if (p.orderNumber) {
+          <p>
+            Comandă demonstrativă: <strong>{{ p.orderNumber }}</strong>
+          </p>
+        }
+        @if (p.status === 'Active' && !p.cancellationRequested && !p.confirmationRequested) {
+          <p>Confirmarea scade stocul demonstrativ. Nu inițiază plată, livrare sau facturare.</p>
+          <button [disabled]="cart.busy() || cart.stale()" (click)="cart.confirmPreparation()">
+            Confirmă comanda demonstrativă
+          </button>
+        }
+        @if (p.confirmationRequested) {
+          @if (p.status === 'Consumed') {
+            <p role="status">Comanda demonstrativă este confirmată.</p>
+            <button [disabled]="cart.busy() || cart.stale()" (click)="cart.completePreparation()">
+              Golește coșul confirmat
+            </button>
+          } @else if (p.status === 'Released' || p.status === 'Expired') {
+            <p role="alert">Comanda nu a putut fi confirmată. Rezervarea nu mai este activă.</p>
+            <button [disabled]="cart.busy() || cart.stale()" (click)="cart.completePreparation()">
+              Reia coșul după confirmarea nereușită
+            </button>
+          } @else {
+            <p>
+              Așteptăm confirmarea stocului. Comanda nu poate fi anulată cât rezultatul este incert.
+            </p>
+          }
+        } @else if (p.status === 'Released' || p.status === 'Expired') {
           <button [disabled]="cart.busy() || cart.stale()" (click)="cart.cancelPreparation()">
             Reia editarea coșului
           </button>

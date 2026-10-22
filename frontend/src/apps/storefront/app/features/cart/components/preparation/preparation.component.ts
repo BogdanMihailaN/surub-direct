@@ -13,6 +13,7 @@ export class Preparation {
   readonly cart = inject(CartStore);
   readonly state = inject(PreparationStore);
   readonly labels = {
+    Confirming: 'Confirmare în curs',
     Pending: 'Rezervare în așteptare',
     Active: 'Stoc rezervat',
     Cancelling: 'Anulare în curs',

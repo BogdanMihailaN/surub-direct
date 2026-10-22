@@ -30,4 +30,7 @@ GetReservationPlanEndpoint.Map(app, app.Configuration);
 PrepareCartEndpoint.Map(app);
 GetPreparationEndpoint.Map(app);
 CancelPreparationEndpoint.Map(app);
+ConfirmDemoOrderEndpoint.Map(app);
+CompleteDemoOrderEndpoint.Map(app);
+GetDemoOrdersEndpoint.Map(app);
 app.Run();

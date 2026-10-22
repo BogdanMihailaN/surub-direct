@@ -11,6 +11,7 @@ public sealed class ReservationPlan
     public Guid OrderId { get; private set; }
     public List<ReservationItem> Lines { get; private set; } = [];
     public string Status { get; private set; } = "Pending";
+    public bool ConfirmationRequested { get; private set; }
     public bool CancellationRequested { get; private set; }
     public string? LastError { get; private set; }
     public int Attempts { get; private set; }
@@ -54,10 +55,23 @@ public sealed class ReservationPlan
             throw new BusinessException("Cheia planului a fost folosită cu alte date.", 409);
     }
 
+    public void Confirm(DateTimeOffset now)
+    {
+        if (ConfirmationRequested)
+            return;
+        if (Status != "Active" || CancellationRequested || Deadline <= now || RemoteExpiresAt is null || RemoteExpiresAt <= now)
+            throw new BusinessException("Rezervarea nu mai poate fi confirmată. Actualizează starea.", 409);
+        ConfirmationRequested = true;
+        Status = "Confirming";
+        NextAttemptAt = now;
+    }
+
     public void Cancel(DateTimeOffset now)
     {
         if (Terminal)
             return;
+        if (ConfirmationRequested)
+            throw new BusinessException("Confirmarea este în curs; anularea nu mai este permisă.", 409);
         CancellationRequested = true;
         Status = "Cancelling";
         NextAttemptAt = now;

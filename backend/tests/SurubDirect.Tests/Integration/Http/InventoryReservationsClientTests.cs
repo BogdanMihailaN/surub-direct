@@ -37,4 +37,23 @@ public sealed class InventoryReservationsClientTests
         Assert.Equal("Consumed", (await client.Reserve(plan, default)).Status);
         Assert.Equal("Consumed", (await client.Release(plan, default)).Status);
     }
+
+    [Theory]
+    [InlineData(HttpStatusCode.Conflict)]
+    [InlineData(HttpStatusCode.NotFound)]
+    [InlineData(HttpStatusCode.ServiceUnavailable)]
+    public async Task Consume_errors_remain_uncertain_and_do_not_trigger_cancellation(HttpStatusCode code)
+    {
+        var plan = ReservationPlan.Create(Guid.NewGuid(), Guid.NewGuid(), [new(Guid.NewGuid(), 1)], DateTimeOffset.UtcNow);
+        var client = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(code)));
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.Consume(plan, default));
+    }
+
+    [Fact]
+    public async Task Consume_rejects_active_response()
+    {
+        var plan = ReservationPlan.Create(Guid.NewGuid(), Guid.NewGuid(), [new(Guid.NewGuid(), 1)], DateTimeOffset.UtcNow);
+        var client = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(HttpStatusCode.OK) { Content = JsonContent.Create(new { plan.Id, plan.OrderId, Status = "Active", ExpiresAt = DateTimeOffset.UtcNow, plan.Lines }) }));
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.Consume(plan, default));
+    }
 }

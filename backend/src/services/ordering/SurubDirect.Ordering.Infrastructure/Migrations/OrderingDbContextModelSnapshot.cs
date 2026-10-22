@@ -23,6 +23,59 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.DemoOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Customer")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset?>("FinalizedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Lines")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("OwnerHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("Sequence")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Sequence"));
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Sequence")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerHash", "Sequence");
+
+                    b.ToTable("DemoOrders", "ordering");
+                });
+
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PreparedCart", b =>
                 {
                     b.Property<Guid>("Id")
@@ -67,6 +120,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<bool>("CancellationRequested")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ConfirmationRequested")
                         .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset>("Deadline")

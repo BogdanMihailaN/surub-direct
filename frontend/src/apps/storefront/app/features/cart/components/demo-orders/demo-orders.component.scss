@@ -1,0 +1,22 @@
+section {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid #ccd7c8;
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+}
+article {
+  border-top: 1px solid #ccd7c8;
+  padding-block: 1rem;
+}
+button {
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+summary {
+  cursor: pointer;
+}
