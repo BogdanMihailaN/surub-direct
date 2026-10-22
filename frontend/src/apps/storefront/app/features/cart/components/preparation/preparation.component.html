@@ -33,6 +33,8 @@
           <button [disabled]="cart.busy() || cart.stale()" (click)="cart.cancelPreparation()">
             Reia editarea coșului
           </button>
+        } @else if (p.status === 'Consumed') {
+          <p>Stocul a fost consumat. Această pregătire nu mai poate fi anulată sau reutilizată.</p>
         } @else {
           <button
             [disabled]="cart.busy() || cart.stale() || p.cancellationRequested"

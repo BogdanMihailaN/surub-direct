@@ -133,6 +133,32 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.StockConsumption", b =>
+                {
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ReservationId", "VariantId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("VariantId", "CreatedAt");
+
+                    b.ToTable("Consumptions", "inventory");
+                });
+
             modelBuilder.Entity("SurubDirect.Inventory.Domain.StockReceipt", b =>
                 {
                     b.Property<Guid>("Id")
@@ -207,6 +233,15 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                     b.HasOne("SurubDirect.Inventory.Domain.StockReceipt", null)
                         .WithMany()
                         .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.StockConsumption", b =>
+                {
+                    b.HasOne("SurubDirect.Inventory.Domain.StockReservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

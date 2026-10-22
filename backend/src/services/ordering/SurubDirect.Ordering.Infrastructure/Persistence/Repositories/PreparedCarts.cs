@@ -60,6 +60,8 @@ internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
         if (cart.PreparedId != id)
             throw new BusinessException("Pregătirea coșului s-a modificat.", 409);
         var plan = await db.ReservationPlans.FromSqlInterpolated($"""SELECT * FROM ordering."ReservationPlans" WHERE "Id"={id} FOR UPDATE""").SingleAsync(ct);
+        if (plan.Status == "Consumed")
+            throw new BusinessException("Stocul a fost consumat; pregătirea nu poate fi anulată sau reutilizată.", 409);
         if (plan.Terminal)
         {
             db.PreparedCarts.Remove(await db.PreparedCarts.SingleAsync(x => x.Id == id, ct));

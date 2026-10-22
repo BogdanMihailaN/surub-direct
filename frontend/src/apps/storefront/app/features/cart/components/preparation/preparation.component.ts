@@ -18,6 +18,7 @@ export class Preparation {
     Cancelling: 'Anulare în curs',
     Released: 'Rezervare eliberată',
     Expired: 'Rezervare expirată',
+    Consumed: 'Stoc consumat',
   };
   constructor() {
     const destroy = inject(DestroyRef);

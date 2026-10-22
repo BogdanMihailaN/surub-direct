@@ -28,7 +28,7 @@ public sealed class InventoryReservationsClient(IHttpClientFactory clients) : IR
             throw new ReservationRejectedException();
         response.EnsureSuccessStatusCode();
         var value = await response.Content.ReadFromJsonAsync<InventoryReservationResponse>(ct);
-        if (value is null || value.Id != p.Id || value.OrderId != p.OrderId || value.ExpiresAt == default || value.Status is not ("Active" or "Released" or "Expired") || value.Lines is null || value.Lines.Any(x => x is null) || (release && value.Status == "Active") || !(value.Status == "Released" && value.Lines.Length == 0) && !value.Lines.OrderBy(x => x.VariantId).Select(x => new ReservationItem(x.VariantId, x.Quantity)).SequenceEqual(p.Lines))
+        if (value is null || value.Id != p.Id || value.OrderId != p.OrderId || value.ExpiresAt == default || value.Status is not ("Active" or "Released" or "Expired" or "Consumed") || value.Lines is null || value.Lines.Any(x => x is null) || (release && value.Status == "Active") || !(value.Status == "Released" && value.Lines.Length == 0) && !value.Lines.OrderBy(x => x.VariantId).Select(x => new ReservationItem(x.VariantId, x.Quantity)).SequenceEqual(p.Lines))
             throw new HttpRequestException("Invalid reservation response.");
         return new(value.Status, value.ExpiresAt);
     }

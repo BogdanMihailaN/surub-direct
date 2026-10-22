@@ -10,6 +10,7 @@ public static class EndpointRegistration
         StockQueryEndpoint.Map(app, app.Configuration);
         CorrectReceiptEndpoint.Map(app, app.Configuration);
         ReserveStockEndpoint.Map(app, app.Configuration);
+        ConsumeStockEndpoint.Map(app, app.Configuration);
         ReleaseStockEndpoint.Map(app, app.Configuration);
         GetReservationEndpoint.Map(app, app.Configuration);
         LivenessEndpoint.Map(app);

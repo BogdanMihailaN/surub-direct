@@ -28,4 +28,4 @@ Pe durata pregătirii sunt blocate editarea articolelor și datelor clientului. 
 
 ## Limite
 
-Nu există comandă comercială, consumare fizică a stocului, plată, transport, factură sau RabbitMQ. Termenul coordonatorului este de 15 minute; expirarea Inventory și reconcilierea sunt descrise separat. Snapshot-urile abandonate și coșurile expirate necesită încă politici de retenție și curățare, inclusiv pentru backupuri. Datele sunt fictive, iar noindex rămâne activ.
+Nu există comandă comercială, plată, transport, factură sau RabbitMQ. Inventory permite consumarea internă, dar pregătirea coșului nu o declanșează. O stare Consumed observată din serviciu este afișată explicit și blochează anularea/reutilizarea pregătirii. Termenul coordonatorului este de 15 minute; expirarea Inventory și reconcilierea sunt descrise separat. Snapshot-urile abandonate și coșurile expirate necesită încă politici de retenție și curățare, inclusiv pentru backupuri. Datele sunt fictive, iar noindex rămâne activ.

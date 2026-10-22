@@ -106,4 +106,21 @@ public sealed class ReservationCoordinatorTests(ReservationCoordinatorFixture fi
         await scope.ServiceProvider.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);
         Assert.Equal("Released", (await plans.Read(id, default))!.Status);
     }
+
+    [Fact]
+    public async Task Observed_consumption_is_terminal_and_cannot_be_cancelled_or_reprocessed()
+    {
+        await using var scope = fixture.Services.CreateAsyncScope();
+        var plans = scope.ServiceProvider.GetRequiredService<IReservationPlans>();
+        var plan = ReservationPlan.Create(Guid.NewGuid(), Guid.NewGuid(), [new(Guid.NewGuid(), 2)], DateTimeOffset.UtcNow);
+        await plans.Save(plan, default);
+        fixture.Remote.Records[plan.Id] = new("Consumed", DateTimeOffset.UtcNow.AddMinutes(15));
+        await scope.ServiceProvider.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);
+        Assert.True((await plans.Read(plan.Id, default))!.Terminal);
+        Assert.Equal("Consumed", (await plans.Cancel(plan.Id, plan.OrderId, default)).Status);
+        var calls = fixture.Remote.ReserveCalls;
+        await scope.ServiceProvider.GetRequiredService<OrderingDbContext>().ReservationPlans.Where(x => x.Id == plan.Id).ExecuteUpdateAsync(x => x.SetProperty(p => p.NextAttemptAt, DateTimeOffset.UtcNow.AddSeconds(-1)));
+        await scope.ServiceProvider.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);
+        Assert.Equal(calls, fixture.Remote.ReserveCalls);
+    }
 }

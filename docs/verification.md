@@ -212,3 +212,15 @@ Limite: fără teste de încărcare sau deployment de producție; fără curăț
 - Migrarea PreparedCartSnapshots aplicată local după backup privat al bazei Ordering; verificarea EF Core confirmă că modelul nu are modificări fără migrare. Baza legacy păstrată.
 
 Fluxul este demonstrativ și disponibil numai în Development. Nu au fost testate comenzi comerciale, plăți, consumarea rezervărilor, broker sau lansarea în producție.
+
+
+## Consumarea rezervărilor — 22 octombrie 2026
+
+- `python3 scripts/dev.py test`: 213 teste trecute, inclusiv consumarea concurentă fără dublare, rollback pe mai multe SKU-uri, concurență cu release/expiry, identificatori greșiți, termen inclusiv și jurnalul paginat. Docker era oprit la prima încercare; după pornire, suita completă a trecut.
+- Ordering: testele verifică acceptarea Consumed din HTTP, oprirea procesării planului terminal și refuzul detașării pregătirii consumate.
+- Build-uri Angular storefront SSR și admin reușite; Prettier trecut.
+- 6 scenarii Playwright trecute: consum intern/jurnal admin, ajustări/protecții, pregătirea coșului și coordonatorul de rezervări. Noul scenariu verifică cheia dedicată, refuzul cheii de citire și al sesiunii admin, gateway 404, replay fără dublare și afișarea scăderii de 12 bucăți.
+- Captura mobilă a jurnalului a fost inspectată; pagina nu depășește viewportul de 390 px, tabelul permite derulare internă.
+- Backup privat Inventory înainte de migrarea StockConsumptionLedger. Migrarea aplicată local; EF Core confirmă absența diferențelor de model. Baza legacy păstrată.
+
+Confirmarea comenzii în Ordering nu solicită încă acest consum. Nu sunt activate checkout-ul, plățile sau indexarea. Procesele aplicațiilor pornite temporar pentru verificare sunt oprite după încheiere.

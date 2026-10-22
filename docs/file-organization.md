@@ -118,3 +118,5 @@ Rezervările: Inventory.Domain/Reservations, câte un handler în Application/Fe
 Coordonarea rezervărilor este în Ordering.Domain/Reservations și Application/Features/Reservations. Portul IReservationInventory aparține Ordering; Infrastructure/Reservations conține adaptorul și DTO-urile locale. Persistența, configurația EF, fiecare endpoint intern și worker-ul au fișiere separate.
 
 Pregătirea coșului: Ordering.Domain/Preparation, Application/Features/Preparation cu handler separat pentru pregătire/citire/anulare, portul IPreparedCarts și repository/configurație EF proprii. Endpoint-urile sunt în Api/Endpoints/Preparation. Angular păstrează componenta preparation cu TS/HTML/SCSS colocate, PreparationApi în data-access, PreparationStore în state și modelele în models.
+
+Consumarea rezervărilor: Inventory.Domain/Reservations/StockConsumption, handler și comandă în Application/Features/Reservations/ConsumeStock, endpoint intern separat și configurație EF proprie. Jurnalul existent este extins cu tipul Consumption. Testele PostgreSQL sunt în Integration/StockConsumptionTests; scenariul browser în stock-consumption.spec.ts.

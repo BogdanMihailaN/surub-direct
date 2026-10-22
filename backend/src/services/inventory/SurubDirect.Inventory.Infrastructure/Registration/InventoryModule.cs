@@ -23,6 +23,7 @@ public static class InventoryModule
         s.AddScoped<IStockReservations, StockReservations>();
         s.AddScoped<ReserveStockHandler>();
         s.AddScoped<ReleaseStockHandler>();
+        s.AddScoped<ConsumeStockHandler>();
         s.AddScoped<GetReservationHandler>();
         s.AddScoped<ExpireReservationsHandler>();
         return s;

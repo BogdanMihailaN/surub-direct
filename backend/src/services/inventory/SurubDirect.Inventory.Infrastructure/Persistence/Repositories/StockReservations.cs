@@ -41,6 +41,42 @@ internal sealed class StockReservations(InventoryDbContext db, TimeProvider cloc
         return candidate;
     }
 
+    public async Task<StockReservation> Consume(Guid id, Guid orderId, CancellationToken ct)
+    {
+        if (id == Guid.Empty || orderId == Guid.Empty)
+            throw new BusinessException("Identificator rezervare sau comandă invalid.");
+        db.ChangeTracker.Clear();
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        await Lock(id, ct);
+        var current = await db.Reservations.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Rezervarea nu există.", 404);
+        current.EnsureOrder(orderId);
+        if (current.Status == ReservationStatus.Active)
+        {
+            // Lock all balances before checking expiry: waiting for a writer can cross the deadline.
+            foreach (var line in current.Lines.OrderBy(x => x.VariantId))
+                _ = await db.Balances.FromSqlInterpolated($"""SELECT * FROM inventory."Balances" WHERE "VariantId"={line.VariantId} FOR UPDATE""").AsNoTracking().SingleAsync(ct);
+            var now = clock.GetUtcNow();
+            if (current.ExpiresAt <= now)
+                await End(current, ct);
+            else
+            {
+                current.Consume(now);
+                foreach (var line in current.Lines.OrderBy(x => x.VariantId))
+                {
+                    var changed = await db.Database.ExecuteSqlInterpolatedAsync($"""UPDATE inventory."Balances" SET "OnHand" = "OnHand" - {line.Quantity}, "Reserved" = "Reserved" - {line.Quantity} WHERE "VariantId"={line.VariantId} AND "OnHand">={line.Quantity} AND "Reserved">={line.Quantity}""", ct);
+                    if (changed != 1)
+                        throw new InvalidOperationException("Reservation balance invariant violated.");
+                    db.Consumptions.Add(StockConsumption.From(current, line));
+                }
+            }
+
+            await db.SaveChangesAsync(ct);
+        }
+
+        await tx.CommitAsync(ct);
+        return current;
+    }
+
     public async Task<StockReservation> Release(Guid id, Guid orderId, CancellationToken ct)
     {
         var cancellation = StockReservation.CancelBeforeCreation(id, orderId, clock.GetUtcNow());

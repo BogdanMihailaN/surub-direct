@@ -28,4 +28,13 @@ public sealed class InventoryReservationsClientTests
         var unavailable = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(HttpStatusCode.ServiceUnavailable)));
         await Assert.ThrowsAsync<HttpRequestException>(() => unavailable.Reserve(plan, default));
     }
+
+    [Fact]
+    public async Task Consumed_is_preserved_on_reserve_replay_and_release()
+    {
+        var plan = ReservationPlan.Create(Guid.NewGuid(), Guid.NewGuid(), [new(Guid.NewGuid(), 2)], DateTimeOffset.UtcNow);
+        var client = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(HttpStatusCode.OK) { Content = JsonContent.Create(new { plan.Id, plan.OrderId, Status = "Consumed", ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(15), plan.Lines }) }));
+        Assert.Equal("Consumed", (await client.Reserve(plan, default)).Status);
+        Assert.Equal("Consumed", (await client.Release(plan, default)).Status);
+    }
 }

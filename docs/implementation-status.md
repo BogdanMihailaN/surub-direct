@@ -1,8 +1,10 @@
 # Starea implementării
 
-Actualizat la 21 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 22 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
+
+- Inventory: consumarea atomică și idempotentă a rezervărilor, cu jurnal per SKU și protecție la anulare/expirare concurentă. Ordering recunoaște starea terminală; confirmarea comenzii nu invocă încă operația. [Detalii](stock-consumption.md).
 
 - Pregătire demonstrativă în Development: snapshot PF/PJ și prețuri revalidate, plan de rezervare atomic cu blocarea coșului, recuperare după răspuns pierdut și reluarea editării după eliberare. [Detalii](cart-preparation.md).
 
@@ -54,7 +56,7 @@ Actualizat la 21 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile, checkout-ul, retururile, plățile, curierul și facturarea nu sunt implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumarea la confirmare și compensările comerciale urmează.
+- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile, checkout-ul, retururile, plățile, curierul și facturarea nu sunt implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; operația internă de consum este implementată, iar legarea la confirmarea comenzii și compensările comerciale urmează.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Nu există încă un flux distribuit de comandă.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.

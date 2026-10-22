@@ -22,7 +22,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Inventory: rezervări atomice, expirări și eliberare/anulare idempotentă.
 - [x] Coordonator intern Ordering cu intenții persistente, retry, reconciliere și anulări.
 - [x] Snapshot demonstrativ al coșului și generarea atomică a planului din ciorna clientului, cu prețuri revalidate.
-- [ ] Comandă comercială, consumarea rezervării la confirmare și compensările comerciale.
+- [x] Inventory: consumare atomică/idempotentă și jurnal de stoc; compatibilitate Ordering pentru starea Consumed.
+- [ ] Comandă comercială, intenție persistentă de confirmare care invocă consumarea și compensări comerciale.
 - [ ] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru fluxurile distribuite.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.

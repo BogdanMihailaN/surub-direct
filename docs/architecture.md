@@ -126,3 +126,5 @@ Ciorna PF/PJ aparține exclusiv Ordering și este atașată coșului. Nu este o 
 Rezervările sunt deținute de Inventory și expuse numai prin /internal/reservations cu cheia dedicată ServiceKeys:Reservations. Worker-ul API eliberează rezervările expirate din PostgreSQL; gateway-ul și UI nu le expun. Coordonatorul intern Ordering le apelează prin HTTP; pregătirea demonstrativă a coșului generează atomic snapshot și plan în baza Ordering. [Protocol și limite](stock-reservations.md).
 
 Ordering deține ordering.ReservationPlans și un worker de reconciliere cu Inventory. Intenția persistată și cheia stabilă permit recuperarea răspunsurilor pierdute. [Coordonare și limite](reservation-coordination.md).
+
+Inventory deține și [consumarea rezervărilor](stock-consumption.md): scădere OnHand/Reserved, stare terminală și jurnal per SKU în aceeași tranzacție locală. Ordering recunoaște Consumed, fără referințe la entitățile sau baza Inventory. Intenția de confirmare a comenzii care va invoca operația rămâne în etapa următoare.

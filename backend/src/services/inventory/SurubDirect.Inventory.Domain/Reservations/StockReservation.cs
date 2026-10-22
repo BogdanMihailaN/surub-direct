@@ -71,6 +71,17 @@ public sealed class StockReservation
             throw new BusinessException("Rezervarea aparține altei comenzi.", 409);
     }
 
+    public bool Consume(DateTimeOffset now)
+    {
+        if (Status == ReservationStatus.Consumed)
+            return false;
+        if (Status != ReservationStatus.Active || ExpiresAt <= now)
+            throw new BusinessException("Rezervarea nu mai poate fi consumată.", 409);
+        Status = ReservationStatus.Consumed;
+        EndedAt = now;
+        return true;
+    }
+
     public bool End(DateTimeOffset now)
     {
         if (Status != ReservationStatus.Active)

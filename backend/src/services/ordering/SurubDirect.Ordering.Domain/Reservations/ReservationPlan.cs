@@ -17,7 +17,7 @@ public sealed class ReservationPlan
     public DateTimeOffset Deadline { get; private set; }
     public DateTimeOffset NextAttemptAt { get; private set; }
     public DateTimeOffset? RemoteExpiresAt { get; private set; }
-    public bool Terminal => Status is "Released" or "Expired";
+    public bool Terminal => Status is "Released" or "Expired" or "Consumed";
 
     public static ReservationPlan Create(Guid id, Guid order, IReadOnlyList<ReservationItem>? lines, DateTimeOffset now)
     {

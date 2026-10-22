@@ -121,4 +121,23 @@ public sealed class PreparedCartTests(OrderingCartFixture fixture) : IClassFixtu
         var saved = await db.Carts.AsNoTracking().SingleAsync(x => x.Id == cart.Id);
         Assert.True(await db.ReservationPlans.AnyAsync(x => x.Id == saved.PreparedId));
     }
+
+    [Fact]
+    public async Task Consumed_preparation_cannot_be_detached_as_if_stock_were_released()
+    {
+        var(owner, cart, catalog) = await Setup();
+        await using var scope = fixture.Services.CreateAsyncScope();
+        var carts = scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>();
+        var prepared = scope.ServiceProvider.GetRequiredService<IPreparedCarts>();
+        var id = Guid.NewGuid();
+        await new PrepareCartHandler(carts, prepared, new(catalog)).Handle(owner, new(id, cart.Id, cart.Version), default);
+        var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+        db.ChangeTracker.Clear();
+        var plan = await db.ReservationPlans.SingleAsync(x => x.Id == id);
+        plan.Observe("Consumed", DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+        await db.SaveChangesAsync();
+        Assert.Equal(409, (await Assert.ThrowsAsync<BusinessException>(() => prepared.Cancel(owner, id, default))).Status);
+        Assert.Equal(id, (await carts.Find(owner, default))!.PreparedId);
+        Assert.Equal("Consumed", (await prepared.Read(owner, default))!.Status);
+    }
 }

@@ -115,3 +115,5 @@ Pagina **Aprovizionare** permite pregătirea comenzilor către furnizori, costur
 Rezervările Inventory necesită cheia locală RESERVATIONS_SERVICE_KEY, completată de python3 scripts/dev.py db. [Protocol și limite](docs/stock-reservations.md).
 
 Ordering coordonează intern rezervările prin planuri persistente. Necesită COORDINATOR_SERVICE_KEY și RESERVATIONS_SERVICE_KEY, generate local de comanda db. Fluxul public de checkout rămâne dezactivat. [Detalii](docs/reservation-coordination.md).
+
+Inventory permite consumarea atomică/idempotentă a rezervărilor și o afișează în jurnalul administrativ. Legarea operației la confirmarea comenzii urmează. [Protocol și limite](docs/stock-consumption.md).
