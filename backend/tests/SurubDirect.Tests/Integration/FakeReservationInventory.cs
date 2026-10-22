@@ -4,6 +4,25 @@ using SurubDirect.Ordering.Domain;
 namespace SurubDirect.Tests;
 public sealed class FakeReservationInventory : IReservationInventory
 {
+    public bool LoseRestoreResponse { get; set; }
+    public int RestoreCalls { get; private set; }
+
+    public Task<ReservationObservation> Restore(ReservationPlan plan, CancellationToken ct)
+    {
+        RestoreCalls++;
+        Records[plan.Id] = Records[plan.Id] with
+        {
+            Status = "Restored"
+        };
+        if (LoseRestoreResponse)
+        {
+            LoseRestoreResponse = false;
+            throw new HttpRequestException("Lost restore response");
+        }
+
+        return Task.FromResult(Records[plan.Id]);
+    }
+
     public bool LoseConsumeResponse { get; set; }
     public int ConsumeCalls { get; private set; }
 

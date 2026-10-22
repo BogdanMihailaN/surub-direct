@@ -1,0 +1,23 @@
+<form (ngSubmit)="cancelled.emit(reason)">
+  <h3>Anulare comandă demonstrativă</h3>
+  <p>
+    Restituie integral stocul consumat. Operația nu reprezintă un retur comercial sau o rambursare.
+  </p>
+  <label
+    >Motivul anulării<textarea
+      name="reason"
+      [(ngModel)]="reason"
+      required
+      minlength="3"
+      maxlength="500"
+      [disabled]="busy()"
+    ></textarea>
+  </label>
+  <label
+    ><input type="checkbox" name="confirmed" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm
+    anularea integrală și restituirea stocului</label
+  >
+  <button type="submit" [disabled]="busy() || !confirmed || reason.trim().length < 3">
+    Anulează comanda și restituie stocul
+  </button>
+</form>

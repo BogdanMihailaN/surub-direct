@@ -130,3 +130,5 @@ Ordering deține ordering.ReservationPlans și un worker de reconciliere cu Inve
 Inventory deține și [consumarea rezervărilor](stock-consumption.md): scădere OnHand/Reserved, stare terminală și jurnal per SKU în aceeași tranzacție locală. Ordering recunoaște Consumed, fără referințe la entitățile sau baza Inventory. [Intenția de confirmare demonstrativă](demo-orders.md) invocă operația prin HTTP și actualizează planul și comanda în aceeași tranzacție Ordering.
 
 Ordering oferă [consultarea administrativă a comenzilor](admin-sales-orders.md) cu aceeași validare RemoteSession/Administrator prin Identity, independent de gateway. Cheia Identity este transmisă numai proceselor care o folosesc; coșul anonim păstrează propriul mecanism cookie/CSRF.
+
+Anularea integrală demonstrativă salvează auditul și intenția Restoring în Ordering, sub același lock de plan ca worker-ul. Inventory păstrează consumul original și jurnalul pozitiv separat Restorations. Confirmarea Restored finalizează Cancelled; răspunsurile incerte păstrează retry-ul persistent. Vezi `order-cancellation.md`.

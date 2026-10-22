@@ -41,7 +41,14 @@
           </button>
         }
         @if (p.confirmationRequested) {
-          @if (p.status === 'Consumed') {
+          @if (p.status === 'Restored') {
+            <p role="status">Comanda a fost anulată și stocul restituit.</p>
+            <button [disabled]="cart.busy() || cart.stale()" (click)="cart.completePreparation()">
+              Golește coșul comenzii anulate
+            </button>
+          } @else if (p.status === 'Restoring') {
+            <p role="status">Anularea comenzii este în curs. Așteptăm restituirea stocului.</p>
+          } @else if (p.status === 'Consumed') {
             <p role="status">Comanda demonstrativă este confirmată.</p>
             <button [disabled]="cart.busy() || cart.stale()" (click)="cart.completePreparation()">
               Golește coșul confirmat

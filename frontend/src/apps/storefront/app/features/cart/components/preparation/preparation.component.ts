@@ -14,6 +14,8 @@ export class Preparation {
   readonly state = inject(PreparationStore);
   readonly labels = {
     Confirming: 'Confirmare în curs',
+    Restoring: 'Anulare în curs',
+    Restored: 'Stoc restituit',
     Pending: 'Rezervare în așteptare',
     Active: 'Stoc rezervat',
     Cancelling: 'Anulare în curs',

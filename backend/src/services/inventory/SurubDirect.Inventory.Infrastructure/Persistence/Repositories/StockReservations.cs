@@ -77,6 +77,36 @@ internal sealed class StockReservations(InventoryDbContext db, TimeProvider cloc
         return current;
     }
 
+    public async Task<StockReservation> Restore(Guid id, Guid orderId, CancellationToken ct)
+    {
+        if (id == Guid.Empty || orderId == Guid.Empty)
+            throw new BusinessException("Identificator invalid.");
+        db.ChangeTracker.Clear();
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        await Lock(id, ct);
+        var current = await db.Reservations.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Rezervarea nu există.", 404);
+        current.EnsureOrder(orderId);
+        if (current.Restore())
+        {
+            var now = clock.GetUtcNow();
+            foreach (var line in current.Lines.OrderBy(x => x.VariantId))
+            {
+                var original = await db.Consumptions.SingleOrDefaultAsync(x => x.ReservationId == id && x.VariantId == line.VariantId, ct);
+                if (original is null || original.OrderId != orderId || original.Quantity != line.Quantity)
+                    throw new InvalidOperationException("Original consumption invariant violated.");
+                var changed = await db.Database.ExecuteSqlInterpolatedAsync($"""UPDATE inventory."Balances" SET "OnHand" = "OnHand" + {line.Quantity} WHERE "VariantId"={line.VariantId} AND "OnHand" <= {int.MaxValue - line.Quantity}""", ct);
+                if (changed != 1)
+                    throw new BusinessException("Soldul nu permite restituirea integrală.", 409);
+                db.Restorations.Add(StockRestoration.From(current, line, now));
+            }
+
+            await db.SaveChangesAsync(ct);
+        }
+
+        await tx.CommitAsync(ct);
+        return current;
+    }
+
     public async Task<StockReservation> Release(Guid id, Guid orderId, CancellationToken ct)
     {
         var cancellation = StockReservation.CancelBeforeCreation(id, orderId, clock.GetUtcNow());

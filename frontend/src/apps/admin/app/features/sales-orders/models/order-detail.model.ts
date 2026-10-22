@@ -2,6 +2,10 @@ import { OrderSummary } from './order-summary.model';
 import { OrderCustomer } from './order-customer.model';
 import { OrderLine } from './order-line.model';
 export interface OrderDetail {
+  cancellationReason: string | null;
+  cancelledBy: string | null;
+  cancellationRequestedAt: string | null;
+  cancelledAt: string | null;
   order: Omit<OrderSummary, 'customerName'> & {
     finalizedAt: string | null;
     netTotal: number;

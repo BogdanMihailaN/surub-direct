@@ -246,3 +246,15 @@ Nu au fost activate plăți/livrări/facturi sau checkout comercial. Comenzile s
 - Verificate filtrele, detaliile PJ cu adrese distincte, recuperarea după 503 fără afișarea unei liste false goale, accesul autentificat și 401 fără sesiune prin gateway și direct pe Ordering, precum și `Cache-Control: no-store`.
 - Capturile desktop și mobil inspectate; pagina nu depășește viewportul de 390 px, iar tabelul permite derulare internă.
 - Nu sunt modificări de model sau migrări noi. Comenzile rămân demonstrative, disponibile numai în Development; plățile, livrările și facturarea comercială sunt inactive.
+
+
+## Anularea comenzilor demonstrative — 22 octombrie 2026
+
+- `python3 scripts/dev.py test`: 247 teste backend trecute. Noile teste acoperă restituiri concurente fără dublare, păstrarea consumului original, refuzul rezervărilor neconsumate/identificatorilor greșiți, rollback integral la depășirea soldului maxim, audit nemodificat la replay și motive conflictuale.
+- Coordonarea Ordering verificată cu răspuns pierdut după restituire, termen original depășit, eșec al commitului local după succes remote, coș blocat pe durata anulării și istoric păstrat după golire. Clientul HTTP refuză stări diferite de Restored pentru confirmarea restituirii.
+- 7 scenarii Playwright trecute: anulare (2), consultare administrativă (2), confirmare/istoric/protecții (2), consum și jurnal (1). Browserul pierde răspunsul după salvarea intenției, recuperează Cancelled și verifică sold 100, Reserved 0 și o singură restituire de 35 de bucăți, inclusiv după replay direct pe Ordering.
+- CSRF fără token refuzat atât prin gateway cât și direct; utilizatorul anonim nu poate anula, cheia internă este obligatorie și gateway-ul nu expune restore.
+- Ambele build-uri Angular de producție trecute; Prettier verificat. Formularul de anulare mobil inspectat, fără depășire orizontală la 390 px.
+- Migrările StockRestorationLedger și DemoOrderCancellation aplicate local după backup-uri private; modelele EF Inventory și Ordering nu au diferențe fără migrare. Baza legacy păstrată.
+
+Flux exclusiv demonstrativ: fără retur parțial, rambursări, anulări de expediere/factură sau checkout comercial. Procesele aplicațiilor pornite temporar sunt oprite la final.

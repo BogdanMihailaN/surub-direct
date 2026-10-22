@@ -121,3 +121,5 @@ Inventory permite consumarea atomică/idempotentă a rezervărilor și o afișea
 [Comenzile demonstrative](docs/demo-orders.md) păstrează număr unic, datele clientului și prețurile, consumă rezervarea idempotent și păstrează istoricul după golirea coșului. Checkout-ul comercial rămâne dezactivat.
 
 Panoul de administrare include [lista și detaliile comenzilor demonstrative](docs/admin-sales-orders.md), cu filtre, paginare și acces Administrator verificat de Identity.
+
+Anularea demonstrativă și restituirea stocului: [flux, audit și recuperare](docs/order-cancellation.md).

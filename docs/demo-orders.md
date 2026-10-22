@@ -30,7 +30,7 @@ Worker-ul citește intenția persistentă și apelează portul Ordering `IReserv
 
 După începerea confirmării, termenul local nu mai transformă intenția în anulare: răspunsul unui consum deja executat poate fi pierdut. La reîncercare, Inventory returnează Consumed fără o nouă scădere; dacă nu a consumat și rezervarea a expirat, returnează Expired. Starea planului și a comenzii se actualizează în aceeași tranzacție Ordering. Eșecul commitului local nu poate produce un al doilea consum remote.
 
-Anularea și confirmarea concurente sunt serializate. Cea care începe prima stabilește intenția; nu se salvează o comandă cu intenție de anulare. Confirmarea incertă nu poate fi anulată sau desprinsă de coș. Pentru o comandă deja confirmată nu există încă retur sau compensare comercială.
+Anularea și confirmarea concurente sunt serializate. Cea care începe prima stabilește intenția; nu se salvează o comandă cu intenție de anulare. Confirmarea incertă nu poate fi anulată sau desprinsă de coș. Comenzile confirmate pot fi anulate integral de administrator, cu [restituire demonstrativă](order-cancellation.md); nu există retur sau compensare comercială.
 
 ## Coș și istoric
 
@@ -40,6 +40,6 @@ Interfața afișează separat confirmarea în curs, rezultatul confirmat și cel
 
 ## Limite
 
-[Consultarea în administrare](admin-sales-orders.md) este implementată. Nu există încă acțiuni administrative asupra comenzilor, asociere cu contul, notificări, anulări după confirmare, plăți, livrare, facturare sau RabbitMQ. Accesul anonim este legat de cookie, fără recuperare între dispozitive; pierderea/expirarea cookie-ului pierde accesul la acel istoric. Politicile de retenție, ștergere/anonimizare și backup rămân necesare înainte de producție. Încheierea coșului nu șterge copia personală din comandă.
+[Consultarea în administrare](admin-sales-orders.md) este implementată. Anularea administrativă integrală după confirmare este implementată. Nu există încă asociere cu contul, notificări, plăți, livrare, facturare sau RabbitMQ. Accesul anonim este legat de cookie, fără recuperare între dispozitive; pierderea/expirarea cookie-ului pierde accesul la acel istoric. Politicile de retenție, ștergere/anonimizare și backup rămân necesare înainte de producție. Încheierea coșului nu șterge copia personală din comandă.
 
 Retry-ul pentru rezultate incerte este persistent și fără abandon automat. Înainte de operare comercială sunt necesare monitorizare și intervenție controlată. Noindex și checkout dezactivat rămân obligatorii.

@@ -16,6 +16,10 @@ public sealed class DemoOrder
     public List<PreparedCartLine> Lines { get; private set; } = [];
     public string Currency { get; private set; } = "";
     public DateTimeOffset CreatedAt { get; private set; }
+    public string? CancellationReason { get; private set; }
+    public string? CancelledBy { get; private set; }
+    public DateTimeOffset? CancellationRequestedAt { get; private set; }
+    public DateTimeOffset? CancelledAt { get; private set; }
     public DateTimeOffset? FinalizedAt { get; private set; }
 
     public static DemoOrder Create(string owner, PreparedCart snapshot, DateTimeOffset now) => new()
@@ -28,10 +32,37 @@ public sealed class DemoOrder
         Currency = snapshot.Currency,
         CreatedAt = now
     };
+    public void Cancel(string reason, string actor, DateTimeOffset now)
+    {
+        reason = reason.Trim();
+        if (reason.Length is < 3 or > 500 || string.IsNullOrWhiteSpace(actor) || actor.Length > 200)
+            throw new BusinessException("Motivul anulării trebuie să aibă 3–500 caractere.");
+        if (Status is "Cancelling" or "Cancelled")
+        {
+            if (CancellationReason != reason)
+                throw new BusinessException("Anularea a fost deja cerută cu alt motiv.", 409);
+            return;
+        }
+
+        if (Status != "Confirmed")
+            throw new BusinessException("Doar o comandă confirmată poate fi anulată.", 409);
+        CancellationReason = reason;
+        CancelledBy = actor;
+        CancellationRequestedAt = now;
+        Status = "Cancelling";
+    }
+
     public void Reconcile(ReservationPlan plan, DateTimeOffset now)
     {
         if (plan.Id != Id || !plan.ConfirmationRequested)
             throw new BusinessException("Planul nu confirmă această comandă.", 409);
+        if (Status == "Cancelling" && plan.Status == "Restored")
+        {
+            Status = "Cancelled";
+            CancelledAt = now;
+            return;
+        }
+
         if (Status != "Confirming")
             return;
         if (plan.Status == "Consumed")

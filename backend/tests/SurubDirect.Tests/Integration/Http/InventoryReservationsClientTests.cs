@@ -56,4 +56,24 @@ public sealed class InventoryReservationsClientTests
         var client = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(HttpStatusCode.OK) { Content = JsonContent.Create(new { plan.Id, plan.OrderId, Status = "Active", ExpiresAt = DateTimeOffset.UtcNow, plan.Lines }) }));
         await Assert.ThrowsAsync<HttpRequestException>(() => client.Consume(plan, default));
     }
+
+    [Theory]
+    [InlineData("Consumed")]
+    [InlineData("Active")]
+    [InlineData("Released")]
+    [InlineData("Expired")]
+    public async Task Restoration_requires_explicit_confirmation(string status)
+    {
+        var plan = ReservationPlan.Create(Guid.NewGuid(), Guid.NewGuid(), [new(Guid.NewGuid(), 1)], DateTimeOffset.UtcNow);
+        var client = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(HttpStatusCode.OK) { Content = JsonContent.Create(new { plan.Id, plan.OrderId, Status = status, ExpiresAt = DateTimeOffset.UtcNow, plan.Lines }) }));
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.Restore(plan, default));
+    }
+
+    [Fact]
+    public async Task Restoration_accepts_matching_restored_response()
+    {
+        var plan = ReservationPlan.Create(Guid.NewGuid(), Guid.NewGuid(), [new(Guid.NewGuid(), 1)], DateTimeOffset.UtcNow);
+        var client = new InventoryReservationsClient(new StubHttpClientFactory(_ => new(HttpStatusCode.OK) { Content = JsonContent.Create(new { plan.Id, plan.OrderId, Status = "Restored", ExpiresAt = DateTimeOffset.UtcNow, plan.Lines }) }));
+        Assert.Equal("Restored", (await client.Restore(plan, default)).Status);
+    }
 }

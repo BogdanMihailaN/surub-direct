@@ -23,3 +23,5 @@ Ordering recunoaște Consumed ca stare terminală și nu mai reprogramează plan
 ## Etapa următoare
 
 Această etapă livrează operația Inventory și compatibilitatea consumatorilor existenți. Ordering solicită consumarea prin [confirmarea demonstrativă](demo-orders.md), cu număr de comandă, intenție persistentă și recuperare după răspuns pierdut. Urmează administrarea comenzilor și compensările comerciale. Un apel manual cu cheia de serviciu nu este un substitut pentru acel flux. Plata, transportul, factura, retururile și RabbitMQ nu sunt implementate. Checkout-ul comercial și indexarea rămân dezactivate.
+
+Consumul confirmat poate fi compensat integral prin [anularea demonstrativă](order-cancellation.md). Restored împiedică un consum întârziat; jurnalul original și data consumului se păstrează, iar mișcarea pozitivă are propriul jurnal.

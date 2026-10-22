@@ -28,6 +28,20 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset?>("CancellationRequestedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CancelledBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<Guid>("CartId")
                         .HasColumnType("uuid");
 
@@ -144,6 +158,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
                     b.Property<DateTimeOffset?>("RemoteExpiresAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RestorationRequested")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Status")
                         .IsRequired()

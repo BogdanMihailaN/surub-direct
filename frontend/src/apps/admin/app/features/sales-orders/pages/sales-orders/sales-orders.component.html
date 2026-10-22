@@ -12,6 +12,9 @@
   @if (state.busy()) {
     <p role="status">Se încarcă lista…</p>
   }
+  @if (state.cancelError()) {
+    <p role="alert">{{ state.cancelError() }}</p>
+  }
   <div class="layout">
     <aside>
       @if (state.data(); as data) {
@@ -38,6 +41,11 @@
       }
       @if (state.detail(); as detail) {
         <sd-sales-order-detail [data]="detail" />
+        @if (detail.order.status === 'Confirmed') {
+          @for (id of [detail.order.id]; track id) {
+            <sd-order-cancellation [busy]="state.cancelling()" (cancelled)="state.cancel($event)" />
+          }
+        }
       } @else if (!state.selected()) {
         <p>Selectează o comandă pentru detalii.</p>
       }

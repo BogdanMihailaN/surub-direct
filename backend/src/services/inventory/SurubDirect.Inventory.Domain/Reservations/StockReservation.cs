@@ -82,6 +82,16 @@ public sealed class StockReservation
         return true;
     }
 
+    public bool Restore()
+    {
+        if (Status == ReservationStatus.Restored)
+            return false;
+        if (Status != ReservationStatus.Consumed)
+            throw new BusinessException("Doar un consum confirmat poate fi restituit.", 409);
+        Status = ReservationStatus.Restored;
+        return true;
+    }
+
     public bool End(DateTimeOffset now)
     {
         if (Status != ReservationStatus.Active)

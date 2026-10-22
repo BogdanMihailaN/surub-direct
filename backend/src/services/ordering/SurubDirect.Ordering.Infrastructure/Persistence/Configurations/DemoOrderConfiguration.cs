@@ -10,6 +10,8 @@ internal sealed class DemoOrderConfiguration : IEntityTypeConfiguration<DemoOrde
     public void Configure(EntityTypeBuilder<DemoOrder> b)
     {
         b.ToTable("DemoOrders");
+        b.Property(x => x.CancellationReason).HasMaxLength(500);
+        b.Property(x => x.CancelledBy).HasMaxLength(200);
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();
         b.Property(x => x.Sequence).UseIdentityAlwaysColumn();

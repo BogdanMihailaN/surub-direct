@@ -6,6 +6,8 @@ import { OrderDetail } from '../models/order-detail.model';
 @Injectable()
 export class SalesOrdersStore {
   private readonly api = inject(SalesOrdersApi);
+  readonly cancelling = signal(false);
+  readonly cancelError = signal('');
   readonly data = signal<OrderPage | null>(null);
   readonly detail = signal<OrderDetail | null>(null);
   readonly busy = signal(false);
@@ -36,6 +38,21 @@ export class SalesOrdersStore {
       }
     } finally {
       if (sequence === this.listSequence) this.busy.set(false);
+    }
+  }
+  async cancel(reason: string) {
+    const id = this.selected();
+    if (!id || this.cancelling()) return;
+    this.cancelling.set(true);
+    this.cancelError.set('');
+    try {
+      await this.api.cancel(id, reason);
+    } catch (e) {
+      this.cancelError.set(errorMessage(e) + ' Actualizează starea înainte de a reîncerca.');
+    } finally {
+      if (this.selected() === id) await this.select(id);
+      await this.load();
+      this.cancelling.set(false);
     }
   }
   async select(id: string) {

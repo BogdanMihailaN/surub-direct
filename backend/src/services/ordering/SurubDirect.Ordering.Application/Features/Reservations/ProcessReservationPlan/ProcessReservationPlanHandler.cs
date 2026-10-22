@@ -10,7 +10,7 @@ public sealed class ProcessReservationPlanHandler(IReservationPlans plans, IRese
             plan.Cancel(DateTimeOffset.UtcNow);
         try
         {
-            var result = plan.ConfirmationRequested ? await inventory.Consume(plan, ct) : plan.CancellationRequested ? await inventory.Release(plan, ct) : await inventory.Reserve(plan, ct);
+            var result = plan.RestorationRequested ? await inventory.Restore(plan, ct) : plan.ConfirmationRequested ? await inventory.Consume(plan, ct) : plan.CancellationRequested ? await inventory.Release(plan, ct) : await inventory.Reserve(plan, ct);
             plan.Observe(result.Status, result.ExpiresAt, DateTimeOffset.UtcNow);
         }
         catch (ReservationRejectedException)when (!plan.ConfirmationRequested)

@@ -4,6 +4,8 @@ Actualizat la 22 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Anulare administrativă integrală a comenzilor demonstrative confirmate: motiv/operator/data cererii, intenție persistentă, restituire idempotentă cu jurnal Inventory și recuperare după răspuns pierdut. [Detalii](order-cancellation.md).
+
 - Administrare comenzi demonstrative: listă paginată, filtre după stare și număr, detalii PF/PJ/adrese/produse/prețuri și starea confirmării. Ordering validează sesiunea Administrator prin Identity inclusiv pe API-ul direct. [Detalii](admin-sales-orders.md).
 
 - Comenzi demonstrative în Ordering: număr unic, snapshot PF/PJ/prețuri, intenție de confirmare persistentă, consum idempotent în Inventory și istoric în coș. Recuperare după răspuns pierdut sau commit local eșuat; exclusiv Development. [Detalii](demo-orders.md).
@@ -60,7 +62,7 @@ Actualizat la 22 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; activarea comercială și compensările urmează.
+- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; compensarea integrală demonstrativă este implementată; activarea comercială și retururile urmează.
 - RabbitMQ, consumatori de evenimente comerciale, Inbox, retry și dead-letter urmează odată cu Ordering. Fluxul demonstrativ de confirmare folosește HTTP și intenții persistente, fără broker.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.

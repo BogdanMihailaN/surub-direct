@@ -28,6 +28,6 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
             return null;
         var plan = await db.ReservationPlans.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Starea confirmării nu este disponibilă.", 503);
         await tx.CommitAsync(ct);
-        return new(DemoOrderProjection.Map(order), ReservationPlanProjection.Map(plan));
+        return new(DemoOrderProjection.Map(order), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt);
     }
 }

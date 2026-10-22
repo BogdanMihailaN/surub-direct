@@ -1,3 +1,4 @@
+import { OrderCancellation } from '../../components/order-cancellation/order-cancellation.component';
 import { Component, inject, afterNextRender } from '@angular/core';
 import { SalesOrdersStore } from '../../state/sales-orders.store';
 import { OrderFilters } from '../../components/order-filters/order-filters.component';
@@ -5,7 +6,7 @@ import { OrderList } from '../../components/order-list/order-list.component';
 import { OrderDetail } from '../../components/order-detail/order-detail.component';
 @Component({
   selector: 'sd-sales-orders',
-  imports: [OrderFilters, OrderList, OrderDetail],
+  imports: [OrderFilters, OrderList, OrderDetail, OrderCancellation],
   providers: [SalesOrdersStore],
   templateUrl: './sales-orders.component.html',
   styleUrl: './sales-orders.component.scss',

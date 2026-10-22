@@ -37,4 +37,5 @@ CompleteDemoOrderEndpoint.Map(app);
 GetDemoOrdersEndpoint.Map(app);
 ListAdminOrdersEndpoint.Map(app);
 GetAdminOrderEndpoint.Map(app);
+CancelDemoOrderEndpoint.Map(app);
 app.Run();

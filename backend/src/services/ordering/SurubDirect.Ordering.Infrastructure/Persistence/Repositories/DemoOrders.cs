@@ -48,8 +48,8 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
         var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner, ct) ?? throw new BusinessException("Comanda nu este accesibilă.", 404);
-        if (order.Status == "Confirming")
-            throw new BusinessException("Confirmarea este încă în curs.", 409);
+        if (order.Status is "Confirming" or "Cancelling")
+            throw new BusinessException("Confirmarea sau anularea este încă în curs.", 409);
         if (cart.PreparedId is null)
         {
             await tx.CommitAsync(ct);
@@ -59,7 +59,7 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         if (cart.PreparedId != id)
             throw new BusinessException("Coșul are altă pregătire.", 409);
         cart.DetachPreparation(DateTimeOffset.UtcNow);
-        if (order.Status == "Confirmed")
+        if (order.Status is "Confirmed" or "Cancelled")
             cart.Replace(cart.Id, cart.Version, [], DateTimeOffset.UtcNow);
         db.PreparedCarts.Remove(await db.PreparedCarts.SingleAsync(x => x.Id == id, ct));
         await db.SaveChangesAsync(ct);

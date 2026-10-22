@@ -4,5 +4,6 @@ public enum ReservationStatus
     Active,
     Released,
     Expired,
-    Consumed
+    Consumed,
+    Restored
 }

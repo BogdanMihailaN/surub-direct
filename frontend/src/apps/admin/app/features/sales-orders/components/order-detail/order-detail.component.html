@@ -14,6 +14,23 @@
   @if (data().reservation.lastError) {
     <p role="alert">Ultima verificare Inventory nu a reușit. Reluarea automată este activă.</p>
   }
+  @if (data().cancellationReason) {
+    <p>Motiv anulare: {{ data().cancellationReason }}</p>
+    <p>
+      Solicitată de {{ data().cancelledBy }} la
+      {{ data().cancellationRequestedAt | date: 'dd.MM.yyyy HH:mm:ss' }}
+    </p>
+  }
+  @if (data().order.status === 'Cancelling') {
+    <p role="status">
+      Anularea este în curs. Așteptăm confirmarea restituirii stocului. Actualizează detaliile
+      pentru rezultat.
+    </p>
+  }
+  @if (data().order.status === 'Cancelled') {
+    <p role="status">Comandă anulată. Stocul a fost restituit integral.</p>
+    <p>Anulată la {{ data().cancelledAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
+  }
   <h3>
     Client
     {{ data().order.customer.customerType === 'company' ? 'persoană juridică' : 'persoană fizică' }}

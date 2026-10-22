@@ -33,7 +33,8 @@ internal sealed class StockLedger(InventoryDbContext db) : IStockLedger
         var adjustments = db.Adjustments.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Adjustment", x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt, OriginalReceiptId = (Guid? )null });
         var corrections = db.ReceiptCorrections.Where(x => x.VariantId == variant).Select(x => new { x.Id, Kind = "Correction", Quantity = -x.Quantity, x.Reference, x.Reason, x.Actor, x.CreatedAt, OriginalReceiptId = (Guid? )x.ReceiptId });
         var consumptions = db.Consumptions.Where(x => x.VariantId == variant).Select(x => new { Id = x.ReservationId, Kind = "Consumption", Quantity = -x.Quantity, Reference = x.OrderId.ToString(), Reason = "Consum rezervare", Actor = "Ordering", x.CreatedAt, OriginalReceiptId = (Guid? )null });
-        var query = receipts.Concat(adjustments).Concat(corrections).Concat(consumptions);
+        var restorations = db.Restorations.Where(x => x.VariantId == variant).Select(x => new { Id = x.ReservationId, Kind = "Restoration", Quantity = x.Quantity, Reference = x.OrderId.ToString(), Reason = "Restituire comandă anulată", Actor = "Ordering", x.CreatedAt, OriginalReceiptId = (Guid? )null });
+        var query = receipts.Concat(adjustments).Concat(corrections).Concat(consumptions).Concat(restorations);
         var total = await query.CountAsync(ct);
         var items = await query.OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Kind).ThenBy(x => x.Id).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
         var balance = await db.Balances.AsNoTracking().SingleOrDefaultAsync(x => x.VariantId == variant, ct);

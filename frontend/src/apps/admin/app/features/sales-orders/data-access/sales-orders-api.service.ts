@@ -10,6 +10,9 @@ export class SalesOrdersApi {
     const params = new URLSearchParams({ status, number, page: String(page) });
     return this.api.get<OrderPage>(this.root + '?' + params);
   }
+  cancel(id: string, reason: string) {
+    return this.api.write('POST', this.root + '/' + encodeURIComponent(id) + '/cancel', { reason });
+  }
   detail(id: string) {
     return this.api.get<OrderDetail>(this.root + '/' + encodeURIComponent(id));
   }

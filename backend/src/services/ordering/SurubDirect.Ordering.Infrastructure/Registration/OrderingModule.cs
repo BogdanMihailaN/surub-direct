@@ -29,6 +29,8 @@ public static class OrderingModule
         services.AddScoped<IAdminDemoOrders, AdminDemoOrders>();
         services.AddScoped<ListAdminOrdersHandler>();
         services.AddScoped<GetAdminOrderHandler>();
+        services.AddScoped<CancelDemoOrderHandler>();
+        services.AddScoped<IOrderCancellations, OrderCancellations>();
         return services;
     }
 

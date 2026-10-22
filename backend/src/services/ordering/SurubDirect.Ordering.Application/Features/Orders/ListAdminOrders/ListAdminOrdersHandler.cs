@@ -8,7 +8,7 @@ public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
     public Task<AdminOrderPageDto> Handle(string? status, string? number, int page, CancellationToken ct)
     {
         status = string.IsNullOrWhiteSpace(status) ? null : status.Trim();
-        if (page is < 1 or > 100000 || status is not (null or "Confirming" or "Confirmed" or "Failed"))
+        if (page is < 1 or > 100000 || status is not (null or "Confirming" or "Confirmed" or "Failed" or "Cancelling" or "Cancelled"))
             throw new BusinessException("Filtrul sau pagina nu sunt valide.");
         long? sequence = null;
         if (!string.IsNullOrWhiteSpace(number))

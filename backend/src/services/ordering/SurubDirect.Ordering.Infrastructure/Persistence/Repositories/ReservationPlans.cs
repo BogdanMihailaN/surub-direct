@@ -48,7 +48,7 @@ internal sealed class ReservationPlans(OrderingDbContext db) : IReservationPlans
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var now = DateTimeOffset.UtcNow;
-        var list = await db.ReservationPlans.FromSqlInterpolated($"""SELECT * FROM ordering."ReservationPlans" WHERE "Status" NOT IN ('Released','Expired','Consumed') AND "NextAttemptAt"<={now} ORDER BY "NextAttemptAt","Id" LIMIT 1 FOR UPDATE SKIP LOCKED""").ToListAsync(ct);
+        var list = await db.ReservationPlans.FromSqlInterpolated($"""SELECT * FROM ordering."ReservationPlans" WHERE "Status" NOT IN ('Released','Expired','Consumed','Restored') AND "NextAttemptAt"<={now} ORDER BY "NextAttemptAt","Id" LIMIT 1 FOR UPDATE SKIP LOCKED""").ToListAsync(ct);
         var plan = list.SingleOrDefault();
         if (plan is null)
         {

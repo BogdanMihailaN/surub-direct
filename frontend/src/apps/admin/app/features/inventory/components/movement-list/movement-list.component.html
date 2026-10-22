@@ -21,9 +21,11 @@
                 ? 'Recepție'
                 : m.kind === 'Correction'
                   ? 'Corecție recepție'
-                  : m.kind === 'Consumption'
-                    ? 'Consum rezervare'
-                    : 'Ajustare'
+                  : m.kind === 'Restoration'
+                    ? 'Restituire comandă'
+                    : m.kind === 'Consumption'
+                      ? 'Consum rezervare'
+                      : 'Ajustare'
             }}
           </td>
           <td>{{ m.quantity > 0 ? '+' : '' }}{{ m.quantity }}</td>
