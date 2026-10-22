@@ -1,0 +1,38 @@
+section {
+  border: 1px solid #cbd5c9;
+  border-radius: 0.5rem;
+  padding: 1.3rem;
+  overflow-wrap: anywhere;
+}
+.addresses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+.table-scroll {
+  overflow: auto;
+  max-width: 100%;
+}
+table {
+  border-collapse: collapse;
+  min-width: 600px;
+  width: 100%;
+}
+th,
+td {
+  padding: 0.65rem;
+  border-bottom: 1px solid #dce4da;
+  text-align: left;
+}
+th {
+  background: #f0f5ee;
+}
+small {
+  display: block;
+}
+details {
+  margin-top: 1rem;
+}
+summary {
+  cursor: pointer;
+}

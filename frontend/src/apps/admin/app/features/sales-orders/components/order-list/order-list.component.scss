@@ -1,0 +1,28 @@
+.list {
+  display: grid;
+  gap: 0.6rem;
+}
+.list button {
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+  padding: 1rem;
+  border: 1px solid #cbd5c9;
+  background: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.list button[aria-pressed='true'] {
+  border: 2px solid #315738;
+  background: #f0f5ee;
+}
+.pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.pages button {
+  padding: 0.6rem;
+}

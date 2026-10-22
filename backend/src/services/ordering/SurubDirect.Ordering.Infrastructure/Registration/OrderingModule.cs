@@ -26,6 +26,9 @@ public static class OrderingModule
         services.AddScoped<ConfirmDemoOrderHandler>();
         services.AddScoped<CompleteDemoOrderHandler>();
         services.AddScoped<GetDemoOrdersHandler>();
+        services.AddScoped<IAdminDemoOrders, AdminDemoOrders>();
+        services.AddScoped<ListAdminOrdersHandler>();
+        services.AddScoped<GetAdminOrderHandler>();
         return services;
     }
 

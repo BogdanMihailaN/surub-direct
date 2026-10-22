@@ -1,0 +1,19 @@
+<form (ngSubmit)="applied.emit({ status, number })">
+  <label
+    >Număr comandă<input
+      name="number"
+      [(ngModel)]="number"
+      placeholder="DEMO-00000001"
+      maxlength="30"
+  /></label>
+  <label
+    ><span id="order-status-label">Stare comandă</span
+    ><select name="status" [(ngModel)]="status" aria-labelledby="order-status-label">
+      <option value="">Toate stările</option>
+      <option value="Confirming">Confirmare în curs</option>
+      <option value="Confirmed">Confirmată</option>
+      <option value="Failed">Confirmare nereușită</option>
+    </select></label
+  >
+  <button type="submit" [disabled]="busy()">Aplică filtrele</button>
+</form>

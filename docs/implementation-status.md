@@ -4,6 +4,8 @@ Actualizat la 22 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Administrare comenzi demonstrative: listă paginată, filtre după stare și număr, detalii PF/PJ/adrese/produse/prețuri și starea confirmării. Ordering validează sesiunea Administrator prin Identity inclusiv pe API-ul direct. [Detalii](admin-sales-orders.md).
+
 - Comenzi demonstrative în Ordering: număr unic, snapshot PF/PJ/prețuri, intenție de confirmare persistentă, consum idempotent în Inventory și istoric în coș. Recuperare după răspuns pierdut sau commit local eșuat; exclusiv Development. [Detalii](demo-orders.md).
 
 - Inventory: consumarea atomică și idempotentă a rezervărilor, cu jurnal per SKU și protecție la anulare/expirare concurentă. Ordering recunoaște starea terminală și invocă operația din confirmarea demonstrativă. [Detalii](stock-consumption.md).

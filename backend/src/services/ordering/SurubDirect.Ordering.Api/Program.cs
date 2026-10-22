@@ -14,6 +14,8 @@ if (args.Contains("--initialize"))
 }
 
 app.UseMiddleware<ApiExceptionMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseRateLimiter();
 CapabilitiesEndpoint.Map(app);
 QuoteCartEndpoint.Map(app);
@@ -33,4 +35,6 @@ CancelPreparationEndpoint.Map(app);
 ConfirmDemoOrderEndpoint.Map(app);
 CompleteDemoOrderEndpoint.Map(app);
 GetDemoOrdersEndpoint.Map(app);
+ListAdminOrdersEndpoint.Map(app);
+GetAdminOrderEndpoint.Map(app);
 app.Run();

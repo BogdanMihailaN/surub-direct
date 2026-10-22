@@ -1,0 +1,26 @@
+<p>{{ data().total }} comenzi · Pagina {{ data().page }}</p>
+<div class="list" aria-label="Lista comenzilor">
+  @for (order of data().items; track order.id) {
+    <button [attr.aria-pressed]="selected() === order.id" (click)="chosen.emit(order.id)">
+      <strong>{{ order.number }}</strong
+      ><span>{{ labels[order.status] }}</span
+      ><span>{{ order.customerName }}</span
+      ><span
+        >{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} ·
+        {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span
+      >
+    </button>
+  } @empty {
+    <p>Nu există comenzi pentru filtrele alese.</p>
+  }
+</div>
+<div class="pages">
+  <button [disabled]="busy() || data().page <= 1" (click)="paged.emit(data().page - 1)">
+    Pagina anterioară</button
+  ><button
+    [disabled]="busy() || data().page * data().pageSize >= data().total"
+    (click)="paged.emit(data().page + 1)"
+  >
+    Pagina următoare
+  </button>
+</div>

@@ -236,3 +236,13 @@ Confirmarea comenzii în Ordering nu solicită încă acest consum. Nu sunt acti
 - Migrarea DemoOrderConfirmation aplicată local după backup privat Ordering; baza legacy păstrată. Procesele pornite temporar pentru testare sunt oprite la final.
 
 Nu au fost activate plăți/livrări/facturi sau checkout comercial. Comenzile sunt demonstrative și accesibile prin cookie-ul anonim; administrarea comenzilor de vânzare și politicile de retenție rămân în backlog.
+
+
+## Consultarea administrativă a comenzilor — 22 octombrie 2026
+
+- `python3 scripts/dev.py test`: 235 teste backend trecute. Acoperirea nouă verifică paginarea cu 28 de comenzi, ordinea numerelor salvate, filtrele, snapshot-ul clientului și produsele, starea rezervării, identificatorii lipsă și parametrii invalizi.
+- Build-urile Angular de producție storefront SSR și admin și verificarea Prettier au trecut.
+- 7 scenarii browser distincte validate: administrarea comenzilor (2), comenzile demonstrative (2) și serviciile/protecțiile existente (3). Prima rulare a trecut 6 scenarii și a identificat eticheta ambiguă a selectorului de stare; după corecția accesibilității, ambele scenarii administrative au trecut.
+- Verificate filtrele, detaliile PJ cu adrese distincte, recuperarea după 503 fără afișarea unei liste false goale, accesul autentificat și 401 fără sesiune prin gateway și direct pe Ordering, precum și `Cache-Control: no-store`.
+- Capturile desktop și mobil inspectate; pagina nu depășește viewportul de 390 px, iar tabelul permite derulare internă.
+- Nu sunt modificări de model sau migrări noi. Comenzile rămân demonstrative, disponibile numai în Development; plățile, livrările și facturarea comercială sunt inactive.

@@ -46,6 +46,14 @@ export const routes: Routes = [
         (m) => m.PurchaseOrdersPage,
       ),
   },
+  {
+    path: 'comenzi',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/sales-orders/pages/sales-orders/sales-orders.component').then(
+        (m) => m.SalesOrdersPage,
+      ),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'catalog' },
   { path: '**', redirectTo: 'catalog' },
 ];

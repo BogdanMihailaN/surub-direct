@@ -17,8 +17,8 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
         }
         catch (NpgsqlException e)
         {
-            logger.LogError(e, "Cart database unavailable");
-            await Results.Problem("Coșul nu este disponibil momentan.", statusCode: 503).ExecuteAsync(context);
+            logger.LogError(e, "Ordering database unavailable");
+            await Results.Problem("Datele solicitate nu sunt disponibile momentan.", statusCode: 503).ExecuteAsync(context);
         }
         catch (BusinessException e)
         {
@@ -26,12 +26,12 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
         }
         catch (BadHttpRequestException e)
         {
-            await Results.Problem("Coș invalid.", statusCode: e.StatusCode).ExecuteAsync(context);
+            await Results.Problem("Cerere invalidă.", statusCode: e.StatusCode).ExecuteAsync(context);
         }
         catch (Exception e)when (e is not OperationCanceledException)
         {
             logger.LogError(e, "Ordering request failed");
-            await Results.Problem("Coșul nu poate fi verificat momentan.", statusCode: 500).ExecuteAsync(context);
+            await Results.Problem("Operația nu poate fi procesată momentan.", statusCode: 500).ExecuteAsync(context);
         }
     }
 }

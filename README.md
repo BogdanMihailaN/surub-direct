@@ -119,3 +119,5 @@ Ordering coordonează intern rezervările prin planuri persistente. Necesită CO
 Inventory permite consumarea atomică/idempotentă a rezervărilor și o afișează în jurnalul administrativ. Operația este legată la confirmarea demonstrativă cu istoric în coș. [Protocol și limite](docs/stock-consumption.md).
 
 [Comenzile demonstrative](docs/demo-orders.md) păstrează număr unic, datele clientului și prețurile, consumă rezervarea idempotent și păstrează istoricul după golirea coșului. Checkout-ul comercial rămâne dezactivat.
+
+Panoul de administrare include [lista și detaliile comenzilor demonstrative](docs/admin-sales-orders.md), cu filtre, paginare și acces Administrator verificat de Identity.

@@ -1,0 +1,80 @@
+<section aria-label="Detalii comandă">
+  <h2>{{ data().order.number }}</h2>
+  <p role="status">{{ labels[data().order.status] }}</p>
+  <p>Creată: {{ data().order.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
+  @if (data().order.finalizedAt) {
+    <p>Rezultat confirmat: {{ data().order.finalizedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
+  }
+  @if (data().order.status === 'Confirming') {
+    <p>Confirmarea stocului este în curs. Nu trata comanda ca fiind confirmată.</p>
+  }
+  @if (data().order.status === 'Failed') {
+    <p>Rezervarea nu a putut fi consumată. Comanda nu este confirmată.</p>
+  }
+  @if (data().reservation.lastError) {
+    <p role="alert">Ultima verificare Inventory nu a reușit. Reluarea automată este activă.</p>
+  }
+  <h3>
+    Client
+    {{ data().order.customer.customerType === 'company' ? 'persoană juridică' : 'persoană fizică' }}
+  </h3>
+  <p>
+    {{ data().order.customer.fullName }}<br />{{ data().order.customer.email }}<br />{{
+      data().order.customer.phone
+    }}
+  </p>
+  @if (data().order.customer.companyName) {
+    <p>
+      {{ data().order.customer.companyName }} · CUI {{ data().order.customer.taxId }}<br />{{
+        data().order.customer.registrationNumber
+      }}
+    </p>
+  }
+  <div class="addresses">
+    <sd-order-address label="Livrare" [address]="data().order.customer.shippingAddress" />
+    @if (data().order.customer.billingAddress; as billing) {
+      <sd-order-address label="Facturare" [address]="billing" />
+    } @else {
+      <p>Facturare la adresa de livrare.</p>
+    }
+  </div>
+  <h3>Produse și prețuri salvate</h3>
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Produsele comenzii">
+    <table>
+      <thead>
+        <tr>
+          <th>Produs / SKU</th>
+          <th>Ambalaj</th>
+          <th>Cantitate</th>
+          <th>Preț cu TVA</th>
+          <th>Total cu TVA</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (line of data().order.lines; track line.offerId) {
+          <tr>
+            <td>
+              {{ line.productName }}<small>{{ line.sku }}</small>
+            </td>
+            <td>{{ line.offerLabel }}</td>
+            <td>{{ line.packs }}</td>
+            <td>{{ line.unitGross | number: '1.2-2' }} {{ data().order.currency }}</td>
+            <td>{{ line.grossTotal | number: '1.2-2' }} {{ data().order.currency }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p>Total fără TVA: {{ data().order.netTotal | number: '1.2-2' }} {{ data().order.currency }}</p>
+  <strong
+    >Total cu TVA: {{ data().order.grossTotal | number: '1.2-2' }}
+    {{ data().order.currency }}</strong
+  >
+  <p>Transportul nu este inclus. Nicio plată, livrare sau factură nu a fost inițiată.</p>
+  <details>
+    <summary>Detalii procesare</summary>
+    <p>Stare rezervare: {{ data().reservation.status }}</p>
+    <p>Încercări nereușite consecutive: {{ data().reservation.attempts }}</p>
+    <p>Referință în jurnalul stocului: {{ data().reservation.orderId }}</p>
+  </details>
+</section>

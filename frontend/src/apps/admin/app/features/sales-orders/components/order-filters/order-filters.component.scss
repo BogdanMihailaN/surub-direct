@@ -1,0 +1,21 @@
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+label {
+  display: grid;
+  gap: 0.4rem;
+}
+input,
+select,
+button {
+  padding: 0.65rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+input {
+  width: 16rem;
+}

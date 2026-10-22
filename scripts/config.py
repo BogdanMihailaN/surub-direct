@@ -48,7 +48,7 @@ def environment(service=None):
         'catalog': ('CATALOG', 'INVENTORY', 'IDENTITY'),
         'inventory': ('CATALOG', 'INVENTORY', 'IDENTITY', 'RESERVATIONS'),
         'identity': ('IDENTITY',),
-        'ordering': ('RESERVATIONS', 'COORDINATOR'),
+        'ordering': ('RESERVATIONS', 'COORDINATOR', 'IDENTITY'),
         'purchasing': ('CATALOG', 'IDENTITY', 'INVENTORY'),
     }
     for key in keys.get(service, ()):

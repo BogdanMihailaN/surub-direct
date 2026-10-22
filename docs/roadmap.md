@@ -24,7 +24,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Snapshot demonstrativ al coșului și generarea atomică a planului din ciorna clientului, cu prețuri revalidate.
 - [x] Inventory: consumare atomică/idempotentă și jurnal de stoc; compatibilitate Ordering pentru starea Consumed.
 - [x] Comandă demonstrativă, număr unic, intenție persistentă de confirmare/consum și istoric pentru proprietarul coșului.
-- [ ] Administrarea comenzilor de vânzare, activarea comercială și compensările ulterioare confirmării.
+- [x] Consultarea comenzilor de vânzare demonstrative în administrare: listă, filtre, paginare și detalii protejate.
+- [ ] Acțiuni administrative asupra comenzilor, activarea comercială și compensări ulterioare confirmării.
 - [ ] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru fluxurile distribuite.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.

@@ -128,3 +128,5 @@ Rezervările sunt deținute de Inventory și expuse numai prin /internal/reserva
 Ordering deține ordering.ReservationPlans și un worker de reconciliere cu Inventory. Intenția persistată și cheia stabilă permit recuperarea răspunsurilor pierdute. [Coordonare și limite](reservation-coordination.md).
 
 Inventory deține și [consumarea rezervărilor](stock-consumption.md): scădere OnHand/Reserved, stare terminală și jurnal per SKU în aceeași tranzacție locală. Ordering recunoaște Consumed, fără referințe la entitățile sau baza Inventory. [Intenția de confirmare demonstrativă](demo-orders.md) invocă operația prin HTTP și actualizează planul și comanda în aceeași tranzacție Ordering.
+
+Ordering oferă [consultarea administrativă a comenzilor](admin-sales-orders.md) cu aceeași validare RemoteSession/Administrator prin Identity, independent de gateway. Cheia Identity este transmisă numai proceselor care o folosesc; coșul anonim păstrează propriul mecanism cookie/CSRF.
