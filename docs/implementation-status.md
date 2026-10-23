@@ -4,6 +4,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Jurnal operațional comun local pentru Inventory/Ordering: JSON structurat, câmpuri permise, rotație limitată, permisiuni private și comandă de consultare. Activ la pornirea prin dev.py up; fără export extern. [Detalii](local-operational-logs.md).
+
 - Retenție pentru corpurile mesajelor eșuate reluate și confirmate în Inbox prin ID/hash: simulare implicită, verificarea vechimii procesării, audit/deduplicare păstrate și marcaj vizibil în administrare. [Detalii](failed-message-retention.md).
 
 - Retenția payload-urilor Outbox publicate: simulare implicită, perioadă configurabilă, loturi concurente și păstrarea hash-ului, identificatorilor și auditului. Inbox-ul și mesajele eșuate rămân păstrate. [Detalii](outbox-retention.md).

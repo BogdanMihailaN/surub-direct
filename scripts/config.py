@@ -54,6 +54,10 @@ def environment(service=None):
     for key in keys.get(service, ()):
         env['ServiceKeys__' + key.title()] = config.get(key + '_SERVICE_KEY', '')
     if service in ('inventory', 'ordering'):
+        env['Logging__Console__FormatterName'] = 'json'
+        env['Logging__Console__FormatterOptions__IncludeScopes'] = 'false'
+        env['Logging__Console__FormatterOptions__UseUtcTimestamp'] = 'true'
+        env['Logging__Console__FormatterOptions__TimestampFormat'] = "yyyy-MM-ddTHH:mm:ss.fffZ"
         password = config.get(service.upper() + '_BROKER_PASSWORD')
         if password:
             env['Messaging__Enabled'] = 'true'

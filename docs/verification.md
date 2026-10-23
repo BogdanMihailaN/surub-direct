@@ -316,3 +316,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Testul avertizărilor a evidențiat o eroare DatePipe pentru timestamp invalid. MetricDatePipe afișează acum Necunoscută; regresia verifică lipsa erorii de randare.
 - Migrarea ProcessedFailedMessageRetention aplicată local după backup privat Ordering; hash-urile și identificatorii eligibili ai rândurilor existente sunt completate fără eliminarea corpurilor. EF confirmă model fără diferențe. Prima încercare --no-build avea o dependență lipsă în directorul executabil; build-ul complet a remediat artefactele, apoi migrarea a trecut.
 - Worker-ul real a raportat DryRun=True, Candidates=0, Removed=0. Eliminările efective s-au executat exclusiv în baza izolată de test. Inbox și erorile nerezolvate rămân păstrate; aplicațiile temporare au fost oprite.
+
+## Jurnal operațional comun local — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: **292 teste .NET trecute**, urmate de testele Python ale colectorului. Suita Python finală, după adăugarea lock-ului, are **10 teste trecute**.
+- Verificate allowlist-ul de categorii/ID/nivel/cod, eliminarea mesajelor/excepțiilor/scopes/câmpurilor sensibile, tipurile și limitele contoarelor, intrări invalide, scrieri concurente, rotație, permisiuni 0700/0600, un singur colector, citire filtrată/limitată și disc indisponibil.
+- Serviciile reale au produs alerte când PostgreSQL/RabbitMQ erau oprite. După pornirea Docker și a dependențelor, același jurnal a înregistrat Recovered pentru broker, Outbox și registrul Ordering.
+- Repornire cu dependențe healthy: evenimentele reale 7200 și 7300 au fost colectate din Inventory/Ordering cu DryRun=true, Removed=0 și câmpuri tipizate, fără corpuri sau excepții. Istoricul a rămas consultabil după oprirea supervisor-ului.
+- Sintaxa Python verificată cu cache în work/pycache; încercarea inițială folosea cache-ul macOS din afara workspace-ului și a fost înlocuită cu această cale locală. git diff --check trecut.
+- Nu sunt modificări în codul C#, frontend, scheme sau date comerciale. Aplicațiile de test sunt oprite; dependențele locale rămân disponibile. Jurnalul este local, limitat ca dimensiune și exclus din Git.

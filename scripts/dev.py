@@ -6,7 +6,12 @@ import signal
 import subprocess
 import sys
 import time
+import json
+import threading
 from config import ROOT, SERVICES, environment
+from operations.collector import OperationalCollector
+from operations.reader import read_events
+from operations.streams import forward_output
 from tasks.broker import provision_broker
 from tasks.database import provision, migrate_legacy, verify_isolation
 
@@ -21,9 +26,21 @@ def command_for(service):
 
 def serve_all():
     children = []
+    readers = []
+    collector = None
+    try:
+        collector = OperationalCollector(ROOT / 'work/operations')
+    except OSError:
+        print('Operational collector unavailable; local events will not be saved.', file=sys.stderr)
     try:
         for service in ('identity', 'inventory', 'catalog', 'ordering', 'purchasing', 'gateway', 'worker'):
-            children.append(subprocess.Popen(command_for(service), cwd=ROOT, env=environment(service), start_new_session=True))
+            child = subprocess.Popen(command_for(service), cwd=ROOT, env=environment(service),
+                                     start_new_session=True, stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace')
+            children.append(child)
+            reader = threading.Thread(target=forward_output, args=(service, child.stdout, collector), daemon=True)
+            readers.append(reader)
+            reader.start()
         while all(p.poll() is None for p in children):
             time.sleep(1)
         raise RuntimeError('A service stopped. Check its log above.')
@@ -36,14 +53,29 @@ def serve_all():
                 child.wait(timeout=10)
             except subprocess.TimeoutExpired:
                 os.killpg(child.pid, signal.SIGKILL)
+                child.wait()
+        for reader in readers:
+            reader.join(timeout=5)
+        if collector is not None:
+            collector.close()
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=[*SERVICES, 'api', 'up', 'db', 'migrate-legacy', 'init', 'seed-demo', 'storefront', 'admin', 'build', 'test', 'e2e', 'check-migrations', 'verify-isolation', 'broker'])
+    parser.add_argument('command', choices=[*SERVICES, 'api', 'up', 'db', 'migrate-legacy', 'init', 'seed-demo', 'storefront', 'admin', 'build', 'test', 'e2e', 'check-migrations', 'verify-isolation', 'broker', 'operations'])
+    parser.add_argument('--limit', type=int, default=100, help='Recent operational events (1–1000)')
+    parser.add_argument('--service', choices=['inventory', 'ordering'], help='Filter operational events')
     args = parser.parse_args()
+    if args.command == 'operations' and not 1 <= args.limit <= 1000:
+        parser.error('--limit must be between 1 and 1000')
     command = 'gateway' if args.command == 'api' else args.command
-    if command == 'broker':
+    if command == 'operations':
+        events = read_events(ROOT / 'work/operations', args.limit, args.service)
+        for event in events:
+            print(json.dumps(event, ensure_ascii=False))
+        if not events:
+            print('No local operational events recorded.')
+    elif command == 'broker':
         provision_broker()
     elif command == 'db':
         provision()
@@ -68,6 +100,7 @@ def main():
         run(['npm', 'run', 'build'], cwd=ROOT / 'frontend')
     elif command == 'test':
         run(['dotnet', 'test', 'backend/SurubDirect.sln', '--nologo'])
+        run([sys.executable, '-m', 'unittest', 'discover', '-s', 'backend/tests/SurubDirect.Tooling.Tests/Unit', '-v'])
     elif command == 'e2e':
         run(['npm', 'exec', '--', 'playwright', 'test'], cwd=ROOT / 'frontend')
     elif command == 'check-migrations':

@@ -136,3 +136,5 @@ Monitorizarea în fundal separă worker-ele din fiecare API de citirile agregate
 Retenția Outbox aparține Inventory: portul IOutboxRetention în Application, rezultatul în Contracts/Messaging, implementarea tranzacțională în Infrastructure/Messaging și configurația/worker-ul în API. Modelul InventoryEvent păstrează hash-ul și marcajul eliminării. Testele PostgreSQL sunt grupate în Integration/Messaging/OutboxRetentionTests.
 
 Retenția mesajelor eșuate aparține Ordering: portul IFailedMessageRetention și rezultatul au fișiere proprii, implementarea SQL se află în Infrastructure/Messaging, iar configurația și worker-ul sunt în API. EventId/hash/marcajul retenției sunt metadate tehnice locale. Frontend-ul afișează marcajul în componenta message-replay; testele sunt FailedMessageRetentionTests și messaging-retention.spec.ts.
+
+Colectorul local din scripts/operations separă validarea evenimentelor (events.py), scrierea/rotația (collector.py), consultarea (reader.py) și drenarea ieșirii proceselor (streams.py). Testele Python de infrastructură sunt în backend/tests/SurubDirect.Tooling.Tests/Unit; datele generate rămân exclusiv în work/operations.
