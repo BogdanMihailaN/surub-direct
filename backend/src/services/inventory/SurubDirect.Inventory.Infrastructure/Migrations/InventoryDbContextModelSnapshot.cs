@@ -267,6 +267,13 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<string>("PayloadHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset?>("PayloadRemovedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset?>("PublishedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -280,12 +287,18 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PublishedAt", "Id")
+                        .HasFilter("\"PublishedAt\" IS NOT NULL AND \"PayloadRemovedAt\" IS NULL");
+
                     b.HasIndex("PublishedAt", "OccurredAt");
 
                     b.HasIndex("ReservationId", "Status")
                         .IsUnique();
 
-                    b.ToTable("ReservationOutbox", "inventory");
+                    b.ToTable("ReservationOutbox", "inventory", t =>
+                        {
+                            t.HasCheckConstraint("CK_ReservationOutbox_RemovedPayload", "\"PayloadRemovedAt\" IS NULL OR (\"PublishedAt\" IS NOT NULL AND \"PayloadHash\" IS NOT NULL AND \"Payload\" = '{}'::jsonb)");
+                        });
                 });
 
             modelBuilder.Entity("SurubDirect.Inventory.Domain.ReceiptCorrection", b =>

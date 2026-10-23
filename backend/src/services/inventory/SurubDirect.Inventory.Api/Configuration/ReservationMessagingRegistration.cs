@@ -14,5 +14,7 @@ public static class ReservationMessagingRegistration
         builder.Services.AddSingleton(new BrokerSettings(Required("Host"), builder.Configuration.GetValue<int>("Messaging:Port", 5672), Required("VirtualHost"), Required("Username"), Required("Password")));
         builder.Services.AddSingleton(new BrokerTopology("inventory.reservations.v1", "ordering.reservation-outcomes.v1", "reservation.outcome", "ordering.reservation-outcomes.v1.dead"));
         builder.Services.AddHostedService<ReservationOutboxWorker>();
+        builder.Services.AddOptions<OutboxRetentionOptions>().Bind(builder.Configuration.GetSection("Messaging:OutboxRetention")).ValidateDataAnnotations().ValidateOnStart();
+        builder.Services.AddHostedService<OutboxRetentionWorker>();
     }
 }

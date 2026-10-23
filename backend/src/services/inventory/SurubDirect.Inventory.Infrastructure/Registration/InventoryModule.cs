@@ -21,6 +21,7 @@ public static class InventoryModule
         s.AddScoped<GetStockLedgerHandler>();
         s.TryAddSingleton<TimeProvider>(TimeProvider.System);
         s.AddScoped<InventoryOutbox>();
+        s.AddScoped<IOutboxRetention, OutboxRetention>();
         s.AddScoped<IOutboxMonitor, OutboxMonitor>();
         s.AddScoped<GetOutboxStatusHandler>();
         s.AddScoped<IStockReservations, StockReservations>();

@@ -299,3 +299,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Test cu gazdele Inventory/Ordering reale și interval temporar de 5 secunde: brokerul local oprit controlat, `ordering.broker-unavailable: Raised` observat, broker repornit, apoi `Recovered` observat. Nu a fost deschis niciun browser. Gazdele temporare au fost oprite, RabbitMQ readus în stare healthy.
 - Registrul existent a produs o singură alertă Raised pentru mesajele de investigat, fără repetare la fiecare probă. Memento-ul de 30 minute este verificat prin ceas controlat în testul unitar.
 - Fără modificări Angular, API public sau schemă de baze; nu sunt necesare migrări. Nicio ștergere de mesaje/date și nicio notificare externă. Deduplicarea alertelor este locală procesului și se resetează la repornire.
+
+## Retenția payload-urilor Outbox — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: **281 teste backend trecute**. Acoperire nouă: simulare fără modificări, limitarea lotului, excluderea mesajelor nepublicate/publicate recent, păstrarea hash-ului și auditului, idempotență, loturi concurente, SKIP LOCKED și confirmare de publicare pierdută.
+- Constrângerea SQL refuză marcarea unui payload nepublicat drept eliminat; indexul unic păstrat refuză recrearea aceluiași eveniment. Publisher-ul nu selectează payload-urile eliminate. Parametrii de retenție/lot invalizi sunt refuzați.
+- Migrarea PublishedOutboxPayloadRetention aplicată local după backup privat Inventory; EF confirmă lipsa diferențelor de model fără migrare. Baza legacy nu a fost modificată.
+- Gazda Inventory pornită cu setările implicite: eveniment DryRun=True observat. Amprenta payload-urilor și metadatelor de retenție identică înainte/după. Gazda temporară oprită.
+- Eliminarea reală verificată exclusiv în baze izolate de test; instalația locală rămâne în simulare. Fără modificări frontend, API public, Inbox sau registru de erori.

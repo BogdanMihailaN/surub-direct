@@ -8,6 +8,8 @@ public sealed class InventoryEvent
     public Guid ReservationId { get; set; }
     public string Status { get; set; } = "";
     public string Payload { get; set; } = "";
+    public DateTimeOffset? PayloadRemovedAt { get; set; }
+    public string? PayloadHash { get; set; }
     public DateTimeOffset OccurredAt { get; set; }
     public DateTimeOffset? PublishedAt { get; set; }
 
