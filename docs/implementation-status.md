@@ -4,6 +4,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Administrare mesagerie: starea brokerului, Outbox/Inbox, registru durabil al erorilor, reluare individuală cu motiv, audit și intenție persistentă; contractele invalide sunt blocate. [Detalii](messaging-administration.md).
+
 - RabbitMQ pentru rezultatele Consumed/Restored: Outbox tranzacțional Inventory, publisher confirms, Inbox Ordering, deduplicare, retry și coadă de erori. HTTP și reconcilierea rămân active; [detalii și limite](reservation-messaging.md).
 
 - Anulare administrativă integrală a comenzilor demonstrative confirmate: motiv/operator/data cererii, intenție persistentă, restituire idempotentă cu jurnal Inventory și recuperare după răspuns pierdut. [Detalii](order-cancellation.md).
@@ -65,7 +67,7 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 ## Limite și etapele următoare
 
 - Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; compensarea integrală demonstrativă este implementată; activarea comercială și retururile urmează.
-- RabbitMQ este implementat pentru rezultatele rezervărilor Inventory → Ordering, cu Outbox/Inbox, retry și dead-letter. Comenzile rămân prin HTTP. Extinderea la celelalte evenimente, monitorizarea și reluarea controlată din coada de erori urmează.
+- RabbitMQ este implementat pentru rezultatele rezervărilor Inventory → Ordering, cu Outbox/Inbox, retry și dead-letter. Comenzile rămân prin HTTP. Monitorizarea și reluarea individuală sunt implementate; extinderea la celelalte evenimente, alertele și retenția urmează.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.
 - Categoriile au nume unice în întregul catalog, maximum 5 niveluri și maximum 50 de atribute efective (proprii și moștenite). Atributele sunt opționale, Text sau Number; nu există încă liste de valori, atribute obligatorii, conversii de unități sau ștergere de categorii/definiții. Codul, tipul și unitatea atributului rămân stabile. Se vând doar bucăți și ambalaje convertibile; fără kituri sau cantități fracționare.

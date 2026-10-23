@@ -134,3 +134,5 @@ Inventory deține și [consumarea rezervărilor](stock-consumption.md): scădere
 Ordering oferă [consultarea administrativă a comenzilor](admin-sales-orders.md) cu aceeași validare RemoteSession/Administrator prin Identity, independent de gateway. Cheia Identity este transmisă numai proceselor care o folosesc; coșul anonim păstrează propriul mecanism cookie/CSRF.
 
 Anularea integrală demonstrativă salvează auditul și intenția Restoring în Ordering, sub același lock de plan ca worker-ul. Inventory păstrează consumul original și jurnalul pozitiv separat Restorations. Confirmarea Restored finalizează Cancelled; răspunsurile incerte păstrează retry-ul persistent. Vezi `order-cancellation.md`.
+
+Registrul mesajelor eșuate și cererile de reluare aparțin Ordering. ACK din `.dead` urmează salvării arhivei, iar publicarea reluării este confirmată înainte de PublishedAt. Generația replay-id separă un eșec nou de o relivrare duplicată. Monitorizarea Outbox rămâne în Inventory, fără acces încrucișat la baze. Vezi `messaging-administration.md`.

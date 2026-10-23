@@ -1,0 +1,37 @@
+<section aria-label="Mesaje eșuate">
+  <h2>Registrul mesajelor eșuate</h2>
+  <p>{{ data().total }} înregistrări · Pagina {{ data().page }}</p>
+  @for (item of data().items; track item.id) {
+    <button
+      class="item"
+      [disabled]="disabled()"
+      [attr.aria-pressed]="selected() === item.id"
+      (click)="chosen.emit(item.id)"
+    >
+      <strong>{{ item.messageId || 'Identificator lipsă' }}</strong
+      ><span>{{ item.messageType || 'Tip lipsă' }}</span
+      ><span>{{
+        item.publishedAt
+          ? 'Republicat'
+          : item.requestedAt
+            ? 'Reluare solicitată'
+            : item.canReplay
+              ? 'De investigat'
+              : 'Contract invalid · reluare blocată'
+      }}</span
+      ><small>{{ item.capturedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</small>
+    </button>
+  } @empty {
+    <p>Nu există mesaje în registru.</p>
+  }
+  <div class="pages">
+    <button [disabled]="disabled() || data().page <= 1" (click)="paged.emit(data().page - 1)">
+      Pagina anterioară</button
+    ><button
+      [disabled]="disabled() || data().page * data().pageSize >= data().total"
+      (click)="paged.emit(data().page + 1)"
+    >
+      Pagina următoare
+    </button>
+  </div>
+</section>

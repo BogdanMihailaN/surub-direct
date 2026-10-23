@@ -1,0 +1,49 @@
+<section aria-label="Detalii mesaj eșuat">
+  <h2>Detalii și reluare</h2>
+  <p>Eveniment: {{ data().messageId || 'lipsă' }}</p>
+  <p>Tip: {{ data().messageType || 'lipsă' }}</p>
+  <p>Dimensiune: {{ data().originalSize }} octeți · Încercări raportate: {{ data().attempts }}</p>
+  @if (data().previousReplayId) {
+    <p>Eșec după reluarea: {{ data().previousReplayId }}</p>
+  }
+  @if (data().requestedAt) {
+    <p>
+      Solicitat de {{ data().requestedBy }} la
+      {{ data().requestedAt | date: 'dd.MM.yyyy HH:mm:ss' }}
+    </p>
+    <p>Motiv: {{ data().replayReason }}</p>
+    <p>
+      {{
+        data().publishedAt
+          ? 'Publicarea a fost confirmată de broker. Aceasta nu confirmă procesarea mesajului.'
+          : 'Cererea este salvată și așteaptă publicarea.'
+      }}
+    </p>
+  } @else if (!data().canReplay) {
+    <p>
+      Contractul este invalid. Reluarea automată nu poate remedia conținutul; este necesară
+      investigarea tehnică.
+    </p>
+  } @else {
+    <form (ngSubmit)="replay.emit(reason)">
+      <p>
+        Reluarea păstrează identificatorul și conținutul original. Remediază cauza erorii înainte de
+        a continua.
+      </p>
+      <label
+        >Motivul reluării<textarea
+          name="reason"
+          [(ngModel)]="reason"
+          maxlength="500"
+          required
+          [disabled]="disabled()"
+        ></textarea></label
+      ><label
+        ><input type="checkbox" name="confirmed" [(ngModel)]="confirmed" [disabled]="disabled()" />
+        Am verificat cauza și solicit reluarea acestui mesaj</label
+      ><button type="submit" [disabled]="disabled() || !confirmed || reason.trim().length < 3">
+        Solicită reluarea
+      </button>
+    </form>
+  }
+</section>

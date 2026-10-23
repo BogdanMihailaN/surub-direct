@@ -1,0 +1,43 @@
+<main>
+  <h1>Mesagerie între servicii</h1>
+  <p>
+    Rezultatele rezervărilor Inventory → Ordering. Monitorizare demonstrativă; actualizarea este
+    manuală.
+  </p>
+  <button [disabled]="state.busy() || state.saving()" (click)="state.load()">
+    Actualizează mesageria
+  </button>
+  @if (state.busy()) {
+    <p role="status">Se încarcă starea mesageriei…</p>
+  }
+  @for (error of state.errors(); track error) {
+    <p role="alert">{{ error }}</p>
+  }
+  @if (state.actionError()) {
+    <p role="alert">{{ state.actionError() }}</p>
+  }
+  @if (state.notice()) {
+    <p role="status">{{ state.notice() }}</p>
+  }
+  <sd-message-metrics [data]="state.data()" [broker]="state.broker()" [outbox]="state.outbox()" />
+  <div class="layout">
+    @if (state.data(); as data) {
+      <sd-failed-message-list
+        [data]="data"
+        [disabled]="state.busy() || state.saving()"
+        [selected]="state.selectedId()"
+        (chosen)="state.select($event)"
+        (paged)="state.load($event)"
+      />
+    }
+    @if (state.selected(); as selected) {
+      @for (id of [selected.id]; track id) {
+        <sd-message-replay
+          [data]="selected"
+          [disabled]="state.busy() || state.saving() || !state.broker()?.configured"
+          (replay)="state.replay($event)"
+        />
+      }
+    }
+  </div>
+</main>

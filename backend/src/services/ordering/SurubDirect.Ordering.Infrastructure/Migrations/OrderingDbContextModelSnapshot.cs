@@ -214,6 +214,74 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.ToTable("Carts", "ordering");
                 });
 
+            modelBuilder.Entity("SurubDirect.Ordering.Infrastructure.FailedReservationMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("CanReplay")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("CapturedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Fingerprint")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("MessageId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("MessageType")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("OriginalSize")
+                        .HasColumnType("integer");
+
+                    b.Property<byte[]>("Payload")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<Guid?>("PreviousReplayId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReplayReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid?>("ReplayRequestId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("RequestedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequestedBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Fingerprint")
+                        .IsUnique();
+
+                    b.HasIndex("ReplayRequestId")
+                        .IsUnique();
+
+                    b.HasIndex("PublishedAt", "RequestedAt");
+
+                    b.ToTable("FailedReservationMessages", "ordering");
+                });
+
             modelBuilder.Entity("SurubDirect.Ordering.Infrastructure.ReservationInboxEntry", b =>
                 {
                     b.Property<Guid>("Id")

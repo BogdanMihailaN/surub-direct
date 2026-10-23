@@ -125,3 +125,5 @@ Panoul de administrare include [lista și detaliile comenzilor demonstrative](do
 Anularea demonstrativă și restituirea stocului: [flux, audit și recuperare](docs/order-cancellation.md).
 
 RabbitMQ local: `python3 scripts/dev.py broker` după inițializarea bazei. [Fluxul Inventory → Ordering, Outbox/Inbox și operare](docs/reservation-messaging.md).
+
+Administrare: pagina **Mesagerie** oferă [monitorizare și reluare individuală cu audit](docs/messaging-administration.md).

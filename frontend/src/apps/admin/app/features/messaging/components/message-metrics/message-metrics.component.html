@@ -1,0 +1,50 @@
+<div class="metrics">
+  <section aria-label="Stare broker">
+    <h2>RabbitMQ</h2>
+    @if (broker(); as b) {
+      @if (!b.configured) {
+        <p>Neconfigurat</p>
+      } @else if (!b.available) {
+        <p role="alert">Broker indisponibil. Numărul mesajelor nu poate fi citit.</p>
+      } @else {
+        <p>Conexiune disponibilă</p>
+        <p>În așteptare: {{ b.ready }}</p>
+        <p>În coada de erori, înainte de arhivare: {{ b.deadReady }}</p>
+      }
+      <small>Verificat: {{ b.checkedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</small>
+    } @else {
+      <p>Stare necunoscută</p>
+    }
+    <p>Numerele din cozi includ doar mesajele gata de preluare, nu cele în curs.</p>
+  </section>
+  <section aria-label="Stare Outbox">
+    <h2>Inventory · Outbox</h2>
+    @if (outbox(); as o) {
+      <p>Nepublicate: {{ o.pending }}</p>
+      <p>
+        Cel mai vechi:
+        {{ o.oldestPendingAt ? (o.oldestPendingAt | date: 'dd.MM.yyyy HH:mm:ss') : '—' }}
+      </p>
+      <p>
+        Ultima publicare:
+        {{ o.lastPublishedAt ? (o.lastPublishedAt | date: 'dd.MM.yyyy HH:mm:ss') : '—' }}
+      </p>
+    } @else {
+      <p>Date indisponibile</p>
+    }
+  </section>
+  <section aria-label="Stare Inbox">
+    <h2>Ordering · Inbox</h2>
+    @if (data(); as d) {
+      <p>Evenimente înregistrate: {{ d.inboxTotal }}</p>
+      <p>Mesaje de investigat: {{ d.awaitingReview }}</p>
+      <p>Reluări de publicat: {{ d.pendingReplays }}</p>
+      <p>
+        Ultima recepție:
+        {{ d.lastReceivedAt ? (d.lastReceivedAt | date: 'dd.MM.yyyy HH:mm:ss') : '—' }}
+      </p>
+    } @else {
+      <p>Date indisponibile</p>
+    }
+  </section>
+</div>

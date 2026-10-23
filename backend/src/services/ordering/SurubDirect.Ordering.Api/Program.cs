@@ -38,4 +38,7 @@ GetDemoOrdersEndpoint.Map(app);
 ListAdminOrdersEndpoint.Map(app);
 GetAdminOrderEndpoint.Map(app);
 CancelDemoOrderEndpoint.Map(app);
+GetBrokerStatusEndpoint.Map(app);
+GetMessagingStatusEndpoint.Map(app);
+ReplayMessageEndpoint.Map(app);
 app.Run();

@@ -54,6 +54,14 @@ export const routes: Routes = [
         (m) => m.SalesOrdersPage,
       ),
   },
+  {
+    path: 'mesagerie',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/messaging/pages/messaging/messaging.component').then(
+        (m) => m.MessagingPage,
+      ),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'catalog' },
   { path: '**', redirectTo: 'catalog' },
 ];

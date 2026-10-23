@@ -15,7 +15,7 @@ public static class DeliveryProcessor
             if (!dead)
                 await Task.Delay(TimeSpan.FromSeconds(Math.Min(30, 2 << message.Attempt)), ct);
             // Never ACK the original until its persistent replacement has a publisher confirmation.
-            await session.Publish(message.MessageId ?? "invalid", message.Type ?? "unknown", message.Body, ct, message.Attempt + 1, dead);
+            await session.Publish(message.MessageId ?? "invalid", message.Type ?? "unknown", message.Body, ct, message.Attempt + 1, dead, message.ReplayId);
         }
 
         await session.Ack(message.Tag, ct);

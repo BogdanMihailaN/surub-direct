@@ -1,0 +1,22 @@
+.item {
+  display: grid;
+  text-align: left;
+  width: 100%;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  gap: 0.3rem;
+  overflow-wrap: anywhere;
+  border: 1px solid #b9c9b5;
+  background: transparent;
+}
+.item[aria-pressed='true'] {
+  border: 2px solid #365b3d;
+}
+.pages {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+button {
+  padding: 0.7rem;
+}

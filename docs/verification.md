@@ -271,3 +271,15 @@ Flux exclusiv demonstrativ: fără retur parțial, rambursări, anulări de expe
 - Sintaxa scripturilor Python, scanarea pentru secrete și `git diff --check` trecute. Nu sunt modificări frontend în această etapă. Porturile aplicațiilor de test sunt închise la final.
 
 Brokerul transportă rezultatele Consumed/Restored; comenzile și reconcilierea rămân HTTP. Nu sunt implementate încă panoul de monitorizare/reluare a mesajelor, propagarea tuturor evenimentelor, clusterul de producție sau checkout-ul comercial.
+
+
+## Administrarea mesageriei — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: 261 teste backend trecute. Acoperă deduplicarea arhivării concurente, o nouă generație de eșec după replay, auditul nemodificat, request-id reutilizat, motiv invalid, payload invalid/supradimensionat păstrat fără reluare și publicare reluabilă după confirmare pierdută.
+- Broker real: monitorizare pasivă fără creare de cozi, diferențiere între indisponibil și gol, păstrarea replay-id în retry/dead-letter. Migrarea FailedMessageRecovery aplicată după backup privat Ordering; EF nu raportează diferențe de model fără migrare.
+- Ambele build-uri Angular de producție și Prettier trecute. Captura mobilă a paginii Mesagerie inspectată, fără depășire orizontală la 390 px.
+- 6 scenarii browser distincte trecute: confirmare (2), anulare (2), monitorizare/reluare și securitate (2). Cele două de mesagerie au fost reluate după corectarea antetului numeric RabbitMQ primit ca Int64, cu verificarea explicită a celor 5 încercări afișate.
+- Browserul verifică mesaj invalid blocat, confirmare explicită, răspuns pierdut după salvarea cererii, publicare ulterioară, audit, replay idempotent direct pe Ordering, conflict pentru alt request-id, CSRF și autentificare inclusiv direct. Inventory 503 și broker indisponibil nu sunt afișate ca zero; reîncărcarea recuperează starea.
+- Scanarea pentru secrete și `git diff --check` trecute. Înregistrările demonstrative folosite de scenariile browser rămân în registrul local cu audit; nu s-au purjat mesaje sau tabele. Aplicațiile pornite temporar sunt oprite la final.
+
+Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă confirmarea procesării; alertele, retenția și extinderea la alte fluxuri rămân în backlog. Checkout-ul comercial și indexarea rămân dezactivate.

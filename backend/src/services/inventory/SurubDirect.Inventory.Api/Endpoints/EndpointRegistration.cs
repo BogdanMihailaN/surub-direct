@@ -4,6 +4,7 @@ public static class EndpointRegistration
     public static void MapInventoryEndpoints(this WebApplication app)
     {
         var admin = app.MapGroup("/api/v1/admin").RequireAuthorization("Admin");
+        GetOutboxStatusEndpoint.Map(admin);
         ReceiveStockEndpoint.Map(admin);
         AdjustStockEndpoint.Map(admin);
         GetStockLedgerEndpoint.Map(admin);

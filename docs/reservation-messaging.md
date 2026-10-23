@@ -38,7 +38,7 @@ Migrațiile sunt `ReservationOutcomeOutbox` și `ReservationOutcomeInbox`. Share
 
 ## Operare și limite
 
-Urmărește numărul/vârsta rândurilor ReservationOutbox cu PublishedAt null, coada principală, coada `.dead`, avertismentele worker-ului și conectivitatea brokerului. Nu goli cozile pentru a trata o eroare. Pentru un mesaj în `.dead`, remediază cauza și păstrează ID-ul, tipul și corpul când îl republici controlat, cu attempt resetat. Nu edita corpul unui ID deja procesat. Interfața dedicată de inspecție/reluare, alertele și politicile de retenție urmează.
+Urmărește numărul/vârsta rândurilor ReservationOutbox cu PublishedAt null, coada principală, coada `.dead`, avertismentele worker-ului și conectivitatea brokerului. Nu goli cozile pentru a trata o eroare. Pentru un mesaj în `.dead`, remediază cauza și păstrează ID-ul, tipul și corpul când îl republici controlat, cu attempt resetat. Nu edita corpul unui ID deja procesat. [Interfața de monitorizare și reluare](messaging-administration.md) este implementată. Worker-ul arhivează durabil mesajele din `.dead` înainte de ACK, iar reluările se solicită din registru cu motiv și audit. Alertele și politicile de retenție urmează.
 
 Instanța locală este un singur nod, nu un cluster cu toleranță la pierderea gazdei. Sunt necesare TLS, rotație de credențiale, monitorizare, backup/restore și dimensionare înainte de producție. Polling-ul serial și tranzacția Outbox ținută pe durata confirmării sunt potrivite pentru volumul demonstrativ, nu validate prin teste de încărcare. RabbitMQ nu înlocuiește autorizarea intențiilor în Ordering.
 
