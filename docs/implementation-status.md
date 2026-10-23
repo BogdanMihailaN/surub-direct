@@ -4,6 +4,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Curățarea coșurilor anonime expirate fără pregătiri/comenzi asociate: perioadă de grație, simulare implicită, loturi concurente și evenimente operaționale fără date personale. [Detalii](expired-cart-cleanup.md).
+
 - Jurnal operațional comun local pentru Inventory/Ordering: JSON structurat, câmpuri permise, rotație limitată, permisiuni private și comandă de consultare. Activ la pornirea prin dev.py up; fără export extern. [Detalii](local-operational-logs.md).
 
 - Retenție pentru corpurile mesajelor eșuate reluate și confirmate în Inbox prin ID/hash: simulare implicită, verificarea vechimii procesării, audit/deduplicare păstrate și marcaj vizibil în administrare. [Detalii](failed-message-retention.md).

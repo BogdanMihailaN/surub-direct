@@ -18,7 +18,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Coș demonstrativ local, cu recalculare server a prețurilor, ambalajelor și stocului.
 - [x] Persistența coșului anonim în Ordering, cookie protejat, CSRF și controlul versiunilor.
 - [x] Date PF/PJ și ciornă persistentă atașată coșului, cu livrare/facturare și rezumat.
-- [ ] Plasarea comenzii, asociere cu contul, politici de retenție și curățarea coșurilor expirate.
+- [x] Curățarea coșurilor anonime expirate fără legături comerciale, cu simulare implicită și perioadă de grație.
+- [ ] Plasarea comercială a comenzii, asociere cu contul și politici pentru coșuri expirate legate de pregătiri/comenzi.
 - [x] Inventory: rezervări atomice, expirări și eliberare/anulare idempotentă.
 - [x] Coordonator intern Ordering cu intenții persistente, retry, reconciliere și anulări.
 - [x] Snapshot demonstrativ al coșului și generarea atomică a planului din ciorna clientului, cu prețuri revalidate.

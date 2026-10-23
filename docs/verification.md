@@ -325,3 +325,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Repornire cu dependențe healthy: evenimentele reale 7200 și 7300 au fost colectate din Inventory/Ordering cu DryRun=true, Removed=0 și câmpuri tipizate, fără corpuri sau excepții. Istoricul a rămas consultabil după oprirea supervisor-ului.
 - Sintaxa Python verificată cu cache în work/pycache; încercarea inițială folosea cache-ul macOS din afara workspace-ului și a fost înlocuită cu această cale locală. git diff --check trecut.
 - Nu sunt modificări în codul C#, frontend, scheme sau date comerciale. Aplicațiile de test sunt oprite; dependențele locale rămân disponibile. Jurnalul este local, limitat ca dimensiune și exclus din Git.
+
+## Curățarea coșurilor anonime expirate — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: **301 teste .NET și 10 teste Python trecute**. Cazuri noi: simulare fără modificarea ciornei/selecțiilor, perioadă de grație, coșuri active, pregătiri atașate sau detașate, comenzi asociate, idempotență, loturi concurente și rânduri blocate/reevaluate.
+- Coșul eliminat nu poate fi modificat cu vechiul identificator; citirea nu recreează datele și un proprietar nou poate primi un coș gol. Snapshot-urile, comenzile și planurile de rezervare au rămas intacte în testul de curățare.
+- Build backend fără erori sau avertismente. Migrarea CartCleanupOrderIndex aplicată după backup privat Ordering; EF nu raportează diferențe de model fără migrare.
+- **9 scenarii browser trecute**: persistența coșului (4), ciorna clientului PF/PJ (3), pregătire/rezervare și securitate (2).
+- Worker-ul real a emis evenimentul 7400 în jurnalul comun: DryRun=true, Candidates=0, Removed=0. Eliminarea efectivă a fost testată numai în baza izolată; coșurile locale nu au fost șterse.
+- Frontend-ul nu a fost modificat. Aplicațiile pornite pentru verificări au fost oprite la final; automatizarea chatului rămâne oprită.

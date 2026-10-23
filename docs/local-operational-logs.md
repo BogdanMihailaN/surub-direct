@@ -18,8 +18,8 @@ Comanda citește și când aplicațiile sunt oprite. Afișează JSONL, implicit 
 
 - version, timestamp (sursa, UTC), receivedAt (colector, UTC), service, eventId și level;
 - pentru 7100/7101/7102: alertCode și alertState, numai codurile și tranzițiile cunoscute;
-- pentru 7200/7300: dryRun, candidates, removed, cu tipuri și intervale validate;
-- pentru 7201/7301: errorType dintr-o listă de tipuri cunoscute, altfel OtherException.
+- pentru 7200/7300/7400: dryRun, candidates, removed, cu tipuri și intervale validate;
+- pentru 7201/7301/7401: errorType dintr-o listă de tipuri cunoscute, altfel OtherException.
 
 Sursa este dată de procesul pornit de supervisor. Sunt acceptate doar combinațiile cunoscute de serviciu/categorie/EventId/nivel. Mesajul formatat, exception, scopes, payload-uri, motivele reluărilor, operatorii, SQL și câmpurile suplimentare nu sunt persistate de colector. Liniile mai mari de 64 KiB și intrările nevalide sunt ignorate. Jurnalele generale ale aplicației continuă separat în consolă și nu fac parte din acest filtru.
 
@@ -41,4 +41,4 @@ Testele Python sunt în `backend/tests/SurubDirect.Tooling.Tests/Unit` și se ex
 python3 -m unittest discover -s backend/tests/SurubDirect.Tooling.Tests/Unit -v
 ```
 
-Această etapă centralizează local alertele mesageriei și rezultatele retenției. Nu colectează toate logurile și nu oferă dashboard web, tracing, metrici, alerte externe sau colectare de pe mai multe calculatoare. Producția necesită colector dedicat, acces controlat, politică de stocare și monitorizare independentă de procesul aplicației.
+Această etapă centralizează local alertele mesageriei, rezultatele retenției și curățarea coșurilor expirate. Nu colectează toate logurile și nu oferă dashboard web, tracing, metrici, alerte externe sau colectare de pe mai multe calculatoare. Producția necesită colector dedicat, acces controlat, politică de stocare și monitorizare independentă de procesul aplicației.

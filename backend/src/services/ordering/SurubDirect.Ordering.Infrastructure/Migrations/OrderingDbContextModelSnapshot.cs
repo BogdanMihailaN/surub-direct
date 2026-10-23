@@ -82,6 +82,8 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CartId");
+
                     b.HasIndex("Sequence")
                         .IsUnique();
 

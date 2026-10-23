@@ -10,6 +10,7 @@ public static class OrderingModule
     {
         services.AddDbContext<OrderingDbContext>(o => o.UseNpgsql(connection, n => n.MigrationsHistoryTable("__EFMigrationsHistory", "ordering")));
         services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+        services.AddScoped<IExpiredCartCleanup, ExpiredCartCleanup>();
         services.AddScoped<CreateCartHandler>();
         services.AddScoped<GetCartHandler>();
         services.AddScoped<ReplaceCartHandler>();

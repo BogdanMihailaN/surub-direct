@@ -11,6 +11,11 @@ ALERTS = {
 ERROR_TYPES = {'TimeoutException', 'OperationCanceledException', 'TaskCanceledException',
                'DbUpdateException', 'PostgresException', 'NpgsqlException',
                'InvalidOperationException', 'IOException', 'SocketException'}
+BATCH_WORKERS = {
+    ('inventory', 7200): 'OutboxRetentionWorker',
+    ('ordering', 7300): 'FailedMessageRetentionWorker',
+    ('ordering', 7400): 'ExpiredCartCleanupWorker',
+}
 TRANSITIONS = {7100: ('Raised', 'Warning'), 7101: ('Reminder', 'Warning'),
                7102: ('Recovered', 'Information')}
 
@@ -38,9 +43,9 @@ def parse_event(service, line):
             return None
         fields = {'alertCode': code, 'alertState': transition}
     else:
-        batch_id = 7200 if service == 'inventory' else 7300
-        worker = 'OutboxRetentionWorker' if service == 'inventory' else 'FailedMessageRetentionWorker'
-        if category != prefix + worker:
+        batch_id = event_id if event_id % 2 == 0 else event_id - 1
+        worker = BATCH_WORKERS.get((service, batch_id))
+        if worker is None or category != prefix + worker:
             return None
         if event_id == batch_id:
             level = 'Information'

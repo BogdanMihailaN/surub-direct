@@ -138,3 +138,5 @@ Retenția Outbox aparține Inventory: portul IOutboxRetention în Application, r
 Retenția mesajelor eșuate aparține Ordering: portul IFailedMessageRetention și rezultatul au fișiere proprii, implementarea SQL se află în Infrastructure/Messaging, iar configurația și worker-ul sunt în API. EventId/hash/marcajul retenției sunt metadate tehnice locale. Frontend-ul afișează marcajul în componenta message-replay; testele sunt FailedMessageRetentionTests și messaging-retention.spec.ts.
 
 Colectorul local din scripts/operations separă validarea evenimentelor (events.py), scrierea/rotația (collector.py), consultarea (reader.py) și drenarea ieșirii proceselor (streams.py). Testele Python de infrastructură sunt în backend/tests/SurubDirect.Tooling.Tests/Unit; datele generate rămân exclusiv în work/operations.
+
+Curățarea coșurilor expirate are portul IExpiredCartCleanup în Application/Abstractions/Persistence, rezultatul în Contracts/Carts și repository separat în Infrastructure/Persistence/Repositories. API separă configurația, înregistrarea și worker-ul. Testele PostgreSQL sunt în ExpiredCartCleanupTests; colectorul local permite doar contoarele evenimentelor 7400/7401.

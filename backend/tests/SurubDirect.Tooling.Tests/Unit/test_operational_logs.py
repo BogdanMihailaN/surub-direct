@@ -58,7 +58,8 @@ class OperationalLogsTests(unittest.TestCase):
 
     def test_retention_events_have_typed_bounded_counts(self):
         for service, event_id, worker in [('inventory', 7200, 'OutboxRetentionWorker'),
-                                          ('ordering', 7300, 'FailedMessageRetentionWorker')]:
+                                          ('ordering', 7300, 'FailedMessageRetentionWorker'),
+                                          ('ordering', 7400, 'ExpiredCartCleanupWorker')]:
             event = {'EventId': event_id, 'Category': f'SurubDirect.{service.title()}.Api.Workers.{worker}',
                      'LogLevel': 'Information', 'State': {'DryRun': True, 'Candidates': 5, 'Removed': 0}}
             parsed = parse_event(service, json.dumps(event))
