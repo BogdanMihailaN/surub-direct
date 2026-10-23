@@ -29,7 +29,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [ ] Activarea comercială și fluxuri de operare/retur după plată și expediere.
 - [x] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru rezultatele Inventory → Ordering.
 - [x] Monitorizare și reluare controlată a mesajelor eșuate, cu audit și publicare persistentă.
-- [ ] Alerte, retenția mesajelor și extinderea brokerului la celelalte fluxuri.
+- [x] Avertizări operaționale în panoul Mesagerie, cu praguri, severitate și recomandări de intervenție.
+- [ ] Alertare în fundal/notificări externe, retenția mesajelor și extinderea brokerului la celelalte fluxuri.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.
 - [ ] Validarea completă a fluxurilor comerciale, securității și operării; documentarea recuperării și backupurilor.

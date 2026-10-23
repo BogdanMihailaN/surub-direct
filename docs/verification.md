@@ -283,3 +283,12 @@ Brokerul transportă rezultatele Consumed/Restored; comenzile și reconcilierea 
 - Scanarea pentru secrete și `git diff --check` trecute. Înregistrările demonstrative folosite de scenariile browser rămân în registrul local cu audit; nu s-au purjat mesaje sau tabele. Aplicațiile pornite temporar sunt oprite la final.
 
 Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă confirmarea procesării; alertele, retenția și extinderea la alte fluxuri rămân în backlog. Checkout-ul comercial și indexarea rămân dezactivate.
+
+## Avertizări operaționale în mesagerie — 23 octombrie 2026
+
+- Ambele aplicații Angular compilate în producție; administrarea recompilată după ajustarea finală a textelor.
+- 3 scenarii Playwright trecute: avertizări cu răspunsuri API controlate și ceas fix, reluare reală cu răspuns pierdut, autentificare/CSRF prin gateway și direct.
+- Praguri verificate exact la 5 minute și 100 mesaje, precum și imediat sub prag; totalurile sunt globale, independente de pagina registrului. Verificate răspunsuri 503, broker indisponibil/neconfigurat și recuperare prin actualizare manuală.
+- Testul de avertizări acoperă și timestamp absent, invalid sau în viitor. Captură mobilă la 390 px inspectată, fără depășire orizontală.
+- Prima încercare a testului UI suspenda și timer-ele de randare Angular; ceasul testului a fost schimbat la setFixedTime. Prima pornire a regresiei a precedat disponibilitatea Identity; după verificarea readiness, toate cele 3 scenarii au trecut.
+- Modificări numai în frontend și documentație; backend-ul și schema bazelor nu s-au schimbat. Nu s-au trimis notificări externe și nu s-au șters înregistrări.

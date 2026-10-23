@@ -31,4 +31,24 @@ Worker-ul publică cererile salvate cu ID-ul, tipul și corpul original, attempt
 
 Migrarea Ordering: `FailedMessageRecovery`, aplicată local după backup privat. Inventory nu are migrare nouă. Nu se schimbă autorizarea comenzilor, regulile stocului sau checkout-ul demonstrativ.
 
-Starea brokerului este o observație punctuală, nu monitorizare cu alertare. Verificările UI pot reprezenta momente diferite între servicii. Nu există încă alerte, politici de retenție/ștergere, confirmare automată în UI a succesului unei reluări sau un panou pentru toate fluxurile viitoare. Cauza tehnică detaliată se investighează în jurnale; registrul păstrează contractul, încercările și auditul, nu stack trace-uri. Datele tehnice și eventualele corpuri invalide necesită control de acces și retenție înainte de producție.
+Starea brokerului este o observație punctuală. Avertizările din panou se evaluează la fiecare încărcare manuală, fără supraveghere în fundal. Verificările UI pot reprezenta momente diferite între servicii. Nu există încă notificări externe, politici de retenție/ștergere, confirmare automată în UI a succesului unei reluări sau un panou pentru toate fluxurile viitoare. Cauza tehnică detaliată se investighează în jurnale; registrul păstrează contractul, încercările și auditul, nu stack trace-uri. Datele tehnice și eventualele corpuri invalide necesită control de acces și retenție înainte de producție.
+
+## Avertizări operaționale în administrare
+
+Evaluarea este separată în funcția pură `state/evaluate-messaging-alerts.ts`, cu model și componentă de prezentare proprii. Nu implică acces suplimentar la baze sau schimbări în gateway. Se folosesc contoarele globale ale API-ului, inclusiv atunci când lista afișată este paginată.
+
+| Condiție la verificare | Nivel | Acțiune sugerată |
+| --- | --- | --- |
+| Broker configurat, dar indisponibil | Critic | Verifică RabbitMQ și conexiunea din Ordering |
+| Citirea brokerului, registrului sau Outbox eșuează | Critic | Verifică serviciul/accesul; starea este necunoscută |
+| Mesaj Outbox restant de cel puțin 5 minute | Critic | Verifică publisher-ul Inventory și conexiunea |
+| Mesageria neconfigurată | Atenție | Verifică setările mediului |
+| Cel puțin 100 mesaje ready | Atenție | Verifică procesarea în Ordering |
+| Mesaje în dead-letter | Atenție | Verifică arhivarea în registru dacă numărul persistă |
+| Mesaje fără cerere de reluare | Atenție | Investighează cauza, inclusiv contractele invalide |
+| Cereri de reluare nepublicate | Atenție | Verifică worker-ul și brokerul, evită cereri duplicate |
+| Outbox restant cu dată absentă, invalidă sau în viitor | Atenție | Verifică timestamp-urile și sincronizarea ceasurilor |
+
+Pragurile inițiale sunt definite în cod, nu sunt SLA-uri comerciale. Vechimea se calculează față de ceasul browserului la terminarea citirilor; ceasurile incorecte pot influența rezultatul. Nu deducem vechimea unei reluări din pagina curentă, deoarece endpoint-ul nu furnizează cea mai veche cerere globală.
+
+Panoul arată momentul ultimei evaluări și prioritizează avertizările critice. În timpul actualizării nu afișează concluziile vechi. Absența avertizărilor nu certifică procesarea fiecărui mesaj. Închiderea paginii oprește observarea; nu există polling, email, notificări externe, istoric de incidente sau confirmare de rezolvare. Arhivarea și reluarea continuă prin worker-ele existente, independent de browser.

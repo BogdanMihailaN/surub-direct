@@ -1,0 +1,26 @@
+section {
+  margin: 1.5rem 0;
+}
+article {
+  border-left: 4px solid #956300;
+  background: #fff8e8;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  overflow-wrap: anywhere;
+  color: #493500;
+}
+article.critical {
+  border-color: #a12727;
+  background: #fff0f0;
+  color: #721c1c;
+}
+h2 {
+  font-size: 1.25rem;
+}
+h3 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+article p {
+  margin: 0;
+}

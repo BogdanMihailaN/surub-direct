@@ -1,0 +1,17 @@
+<section aria-labelledby="messaging-alerts-title">
+  <h2 id="messaging-alerts-title">Avertizări operaționale</h2>
+  <p>
+    Evaluare la {{ observedAt() | date: 'dd.MM.yyyy HH:mm:ss' }}. Actualizează manual pentru o nouă
+    verificare.
+  </p>
+  <div aria-live="polite">
+    @for (alert of alerts(); track alert.code) {
+      <article [class.critical]="alert.severity === 'critical'">
+        <h3>{{ alert.severity === 'critical' ? 'Critic' : 'Atenție' }} · {{ alert.title }}</h3>
+        <p>{{ alert.detail }}</p>
+      </article>
+    } @empty {
+      <p>Nu sunt avertizări la ultima verificare. Aceasta nu confirmă procesarea fiecărui mesaj.</p>
+    }
+  </div>
+</section>

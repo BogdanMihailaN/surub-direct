@@ -4,6 +4,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Avertizări operaționale în Mesagerie: indisponibilitate, Outbox întârziat, cozi aglomerate, erori și reluări restante; evaluare la încărcare manuală cu momentul observației și pași de verificare. Fără notificări externe sau purjare.
+
 - Administrare mesagerie: starea brokerului, Outbox/Inbox, registru durabil al erorilor, reluare individuală cu motiv, audit și intenție persistentă; contractele invalide sunt blocate. [Detalii](messaging-administration.md).
 
 - RabbitMQ pentru rezultatele Consumed/Restored: Outbox tranzacțional Inventory, publisher confirms, Inbox Ordering, deduplicare, retry și coadă de erori. HTTP și reconcilierea rămân active; [detalii și limite](reservation-messaging.md).

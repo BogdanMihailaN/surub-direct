@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { errorMessage } from '@shared/http/error-message';
+import { evaluateMessagingAlerts } from './evaluate-messaging-alerts';
 import { MessagingApi } from '../data-access/messaging-api.service';
 import { MessagingStatus } from '../models/messaging-status.model';
 import { BrokerStatus } from '../models/broker-status.model';
@@ -7,6 +8,10 @@ import { OutboxStatus } from '../models/outbox-status.model';
 @Injectable()
 export class MessagingStore {
   private readonly api = inject(MessagingApi);
+  readonly observedAt = signal<number | null>(null);
+  readonly alerts = computed(() =>
+    evaluateMessagingAlerts(this.data(), this.broker(), this.outbox(), this.observedAt() ?? 0),
+  );
   readonly data = signal<MessagingStatus | null>(null);
   readonly broker = signal<BrokerStatus | null>(null);
   readonly outbox = signal<OutboxStatus | null>(null);
@@ -52,6 +57,7 @@ export class MessagingStore {
       this.outbox.set(null);
       errors.push('Inventory: ' + errorMessage(outbox.reason));
     }
+    this.observedAt.set(Date.now());
     this.errors.set(errors);
     this.busy.set(false);
   }

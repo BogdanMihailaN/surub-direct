@@ -19,6 +19,11 @@
   @if (state.notice()) {
     <p role="status">{{ state.notice() }}</p>
   }
+  @if (!state.busy()) {
+    @if (state.observedAt(); as observedAt) {
+      <sd-message-alerts [alerts]="state.alerts()" [observedAt]="observedAt" />
+    }
+  }
   <sd-message-metrics [data]="state.data()" [broker]="state.broker()" [outbox]="state.outbox()" />
   <div class="layout">
     @if (state.data(); as data) {
