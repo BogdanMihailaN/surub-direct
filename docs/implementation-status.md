@@ -4,6 +4,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Monitorizare mesagerie în fundal: worker-e Inventory/Ordering, probe independente cu timeout, agregate fără payload, evenimente structurate de apariție/recuperare și memento-uri limitate. Configurație validată și oprire controlată; fără notificări externe sau retenție automată.
+
 - Avertizări operaționale în Mesagerie: indisponibilitate, Outbox întârziat, cozi aglomerate, erori și reluări restante; evaluare la încărcare manuală cu momentul observației și pași de verificare. Fără notificări externe sau purjare.
 
 - Administrare mesagerie: starea brokerului, Outbox/Inbox, registru durabil al erorilor, reluare individuală cu motiv, audit și intenție persistentă; contractele invalide sunt blocate. [Detalii](messaging-administration.md).

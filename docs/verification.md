@@ -292,3 +292,10 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Testul de avertizări acoperă și timestamp absent, invalid sau în viitor. Captură mobilă la 390 px inspectată, fără depășire orizontală.
 - Prima încercare a testului UI suspenda și timer-ele de randare Angular; ceasul testului a fost schimbat la setFixedTime. Prima pornire a regresiei a precedat disponibilitatea Identity; după verificarea readiness, toate cele 3 scenarii au trecut.
 - Modificări numai în frontend și documentație; backend-ul și schema bazelor nu s-au schimbat. Nu s-au trimis notificări externe și nu s-au șters înregistrări.
+
+## Monitorizare mesagerie în fundal — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: **271 teste backend trecute**, inclusiv PostgreSQL/RabbitMQ în containere izolate. Verificate agregatele globale fără încărcarea payload-urilor, tranzițiile Raised/Reminder/Recovered, deduplicarea, date necunoscute, independența probelor, timeout, anulare la oprire, dezactivarea worker-ului și respingerea intervalelor invalide.
+- Test cu gazdele Inventory/Ordering reale și interval temporar de 5 secunde: brokerul local oprit controlat, `ordering.broker-unavailable: Raised` observat, broker repornit, apoi `Recovered` observat. Nu a fost deschis niciun browser. Gazdele temporare au fost oprite, RabbitMQ readus în stare healthy.
+- Registrul existent a produs o singură alertă Raised pentru mesajele de investigat, fără repetare la fiecare probă. Memento-ul de 30 minute este verificat prin ceas controlat în testul unitar.
+- Fără modificări Angular, API public sau schemă de baze; nu sunt necesare migrări. Nicio ștergere de mesaje/date și nicio notificare externă. Deduplicarea alertelor este locală procesului și se resetează la repornire.

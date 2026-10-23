@@ -33,6 +33,7 @@ public static class OrderingModule
         services.AddScoped<ReservationInbox>();
         services.AddScoped<FailedMessageStore>();
         services.AddScoped<IMessagingAdministration, MessagingAdministration>();
+        services.AddScoped<IMessageFailureMonitor, MessageFailureMonitor>();
         services.AddScoped<GetMessagingStatusHandler>();
         services.AddScoped<ReplayMessageHandler>();
         services.AddScoped<IOrderCancellations, OrderCancellations>();

@@ -11,6 +11,18 @@ using Xunit;
 namespace SurubDirect.Tests;
 public sealed class MessageRecoveryTests(MessagingFixture fixture) : IClassFixture<MessagingFixture>
 {
+    [Fact]
+    public async Task Failure_monitor_reports_global_aggregates()
+    {
+        await Capture(Delivery());
+        await using var scope = fixture.Services.CreateAsyncScope();
+        var summary = await scope.ServiceProvider.GetRequiredService<IMessageFailureMonitor>().Read(default);
+        var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+        Assert.Equal(await db.FailedReservationMessages.CountAsync(x => x.RequestedAt == null), summary.AwaitingReview);
+        Assert.Equal(await db.FailedReservationMessages.CountAsync(x => x.RequestedAt != null && x.PublishedAt == null), summary.PendingReplays);
+        Assert.True(summary.AwaitingReview > 0);
+    }
+
     private static BrokerDelivery Delivery(Guid? replay = null)
     {
         var id = Guid.NewGuid();

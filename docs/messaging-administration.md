@@ -31,7 +31,7 @@ Worker-ul publică cererile salvate cu ID-ul, tipul și corpul original, attempt
 
 Migrarea Ordering: `FailedMessageRecovery`, aplicată local după backup privat. Inventory nu are migrare nouă. Nu se schimbă autorizarea comenzilor, regulile stocului sau checkout-ul demonstrativ.
 
-Starea brokerului este o observație punctuală. Avertizările din panou se evaluează la fiecare încărcare manuală, fără supraveghere în fundal. Verificările UI pot reprezenta momente diferite între servicii. Nu există încă notificări externe, politici de retenție/ștergere, confirmare automată în UI a succesului unei reluări sau un panou pentru toate fluxurile viitoare. Cauza tehnică detaliată se investighează în jurnale; registrul păstrează contractul, încercările și auditul, nu stack trace-uri. Datele tehnice și eventualele corpuri invalide necesită control de acces și retenție înainte de producție.
+Starea brokerului este o observație punctuală. Avertizările din panou se evaluează la fiecare încărcare manuală; separat, worker-ele verifică periodic starea și emit tranziții în jurnalele serviciilor. Verificările UI pot reprezenta momente diferite între servicii. Nu există încă notificări externe, politici de retenție/ștergere, confirmare automată în UI a succesului unei reluări sau un panou pentru toate fluxurile viitoare. Cauza tehnică detaliată se investighează în jurnale; registrul păstrează contractul, încercările și auditul, nu stack trace-uri. Datele tehnice și eventualele corpuri invalide necesită control de acces și retenție înainte de producție.
 
 ## Avertizări operaționale în administrare
 
@@ -51,4 +51,38 @@ Evaluarea este separată în funcția pură `state/evaluate-messaging-alerts.ts`
 
 Pragurile inițiale sunt definite în cod, nu sunt SLA-uri comerciale. Vechimea se calculează față de ceasul browserului la terminarea citirilor; ceasurile incorecte pot influența rezultatul. Nu deducem vechimea unei reluări din pagina curentă, deoarece endpoint-ul nu furnizează cea mai veche cerere globală.
 
-Panoul arată momentul ultimei evaluări și prioritizează avertizările critice. În timpul actualizării nu afișează concluziile vechi. Absența avertizărilor nu certifică procesarea fiecărui mesaj. Închiderea paginii oprește observarea; nu există polling, email, notificări externe, istoric de incidente sau confirmare de rezolvare. Arhivarea și reluarea continuă prin worker-ele existente, independent de browser.
+Panoul arată momentul ultimei evaluări și prioritizează avertizările critice. În timpul actualizării nu afișează concluziile vechi. Absența avertizărilor nu certifică procesarea fiecărui mesaj. Închiderea paginii oprește observarea din browser; worker-ele de monitorizare continuă separat. Nu există polling în UI, email, notificări externe sau istoric persistent de incidente. Arhivarea și reluarea continuă prin worker-ele existente, independent de browser.
+
+## Monitorizare în fundal și jurnale
+
+Inventory și Ordering înregistrează fiecare câte un `MessagingMonitorWorker` atunci când `Messaging:Enabled=true`. Inventory citește propriul Outbox. Ordering verifică AMQP pasiv și citește agregatele propriului registru prin `IMessageFailureMonitor`, fără corpuri de mesaje. Probele sunt independente: eșecul brokerului nu împiedică verificarea registrului. Nu sunt necesare sesiune Administrator, browser deschis sau acces la baza altui serviciu.
+
+Configurația fiecărui host, sub `Messaging:Monitoring`:
+
+| Opțiune | Implicit | Valori acceptate |
+| --- | --- | --- |
+| Enabled | true | true/false |
+| IntervalSeconds | 60 | 5–3600 |
+| ProbeTimeoutSeconds | 10 | 1–60 |
+| ReminderSeconds | 1800 | 60–86400 |
+
+De exemplu, `Messaging__Monitoring__IntervalSeconds=60` configurează intervalul prin mediu. Prima verificare are loc la pornire; intervalul este pauza după terminarea ciclului, fără suprapunere. Timeout-ul folosește anularea cooperativă a clienților. Configurațiile numerice invalide sunt refuzate la pornire. Oprirea gazdei nu este tratată drept incident.
+
+Evenimente structurate: **7100 / Raised**, **7101 / Reminder**, **7102 / Recovered**. Apariția și memento-ul au nivel Warning; recuperarea are nivel Information. Proprietăți: `AlertCode`, `AlertState`, `ObservedAt` (UTC); categoria logger-ului identifică serviciul. Nivelul Information trebuie păstrat pentru categoria worker-ului dacă se dorește colectarea recuperărilor. Nu se includ payload-uri, motive de reluare, operatori, credențiale sau excepții brute.
+
+| Cod | Condiție |
+| --- | --- |
+| inventory.outbox-unavailable | Citire eșuată sau timeout |
+| inventory.outbox-age-unknown | Mesaje restante, timestamp lipsă sau în viitor |
+| inventory.outbox-delayed | Mesaj restant de cel puțin 5 minute |
+| ordering.broker-probe-unavailable | Proba AMQP nu se poate finaliza |
+| ordering.broker-unavailable | Monitorul raportează broker indisponibil |
+| ordering.ready-backlog | Cel puțin 100 mesaje ready |
+| ordering.dead-letter | Mesaje prezente în coada de erori |
+| ordering.registry-unavailable | Agregatele registrului nu pot fi citite |
+| ordering.failures-awaiting-review | Mesaje fără cerere de reluare |
+| ordering.replays-awaiting-publication | Cereri salvate, încă nepublicate |
+
+Lipsa datelor nu rezolvă alerte anterioare: de exemplu, un broker indisponibil păstrează alerta de backlog până când o citire validă confirmă scăderea. Datele cu vechime necunoscută păstrează o alertă Outbox întârziat deja activă. O alertă de indisponibilitate a probei se recuperează când proba răspunde; aceasta nu implică rezolvarea alertelor comerciale sau procesarea mesajelor.
+
+Starea deduplicării se păstrează în memorie, separat per proces. Repornirea poate emite din nou Raised pentru probleme încă prezente; replicile emit independent. Nu se implementează un registru persistent de incidente, escaladări, email sau webhooks. Un colector extern poate prelua jurnalele, dar nu este configurat în această etapă. Dacă procesul însuși este oprit, aceste worker-e nu îl pot supraveghea; producția necesită monitorizare externă. Datele și mesajele nu sunt șterse.
