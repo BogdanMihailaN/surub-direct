@@ -10,9 +10,11 @@ public sealed class FailedMessageStore(OrderingDbContext db)
     {
         var fingerprint = Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(new { message.MessageId, message.Type, message.ReplayId, Hash = Convert.ToHexString(SHA256.HashData(message.Body)) })));
         var valid = true;
+        Guid? eventId = null;
+        var payloadHash = Convert.ToHexString(SHA256.HashData(message.Body));
         try
         {
-            ReservationOutcomeParser.Parse(message.MessageId, message.Type, message.Body);
+            eventId = ReservationOutcomeParser.Parse(message.MessageId, message.Type, message.Body).EventId;
         }
         catch (InvalidReservationEventException)
         {
@@ -24,7 +26,7 @@ public sealed class FailedMessageStore(OrderingDbContext db)
         await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtextextended({fingerprint},5))", ct);
         if (!await db.FailedReservationMessages.AnyAsync(x => x.Fingerprint == fingerprint, ct))
         {
-            db.FailedReservationMessages.Add(new() { Id = Guid.NewGuid(), Fingerprint = fingerprint, MessageId = message.MessageId?[..Math.Min(200, message.MessageId.Length)], MessageType = message.Type?[..Math.Min(200, message.Type.Length)], PreviousReplayId = message.ReplayId, Payload = message.Body, OriginalSize = message.Body.Length, Attempts = message.Attempt, CanReplay = valid, CapturedAt = DateTimeOffset.UtcNow });
+            db.FailedReservationMessages.Add(new() { Id = Guid.NewGuid(), Fingerprint = fingerprint, MessageId = message.MessageId?[..Math.Min(200, message.MessageId.Length)], MessageType = message.Type?[..Math.Min(200, message.Type.Length)], PreviousReplayId = message.ReplayId, EventId = eventId, PayloadHash = payloadHash, Payload = message.Body, OriginalSize = message.Body.Length, Attempts = message.Attempt, CanReplay = valid, CapturedAt = DateTimeOffset.UtcNow });
             await db.SaveChangesAsync(ct);
         }
 

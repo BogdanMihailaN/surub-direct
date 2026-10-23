@@ -4,6 +4,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Implementat
 
+- Retenție pentru corpurile mesajelor eșuate reluate și confirmate în Inbox prin ID/hash: simulare implicită, verificarea vechimii procesării, audit/deduplicare păstrate și marcaj vizibil în administrare. [Detalii](failed-message-retention.md).
+
 - Retenția payload-urilor Outbox publicate: simulare implicită, perioadă configurabilă, loturi concurente și păstrarea hash-ului, identificatorilor și auditului. Inbox-ul și mesajele eșuate rămân păstrate. [Detalii](outbox-retention.md).
 
 - Monitorizare mesagerie în fundal: worker-e Inventory/Ordering, probe independente cu timeout, agregate fără payload, evenimente structurate de apariție/recuperare și memento-uri limitate. Configurație validată și oprire controlată; fără notificări externe sau retenție automată.

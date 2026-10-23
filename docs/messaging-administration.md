@@ -15,7 +15,7 @@ Toate rutele cer Administrator, inclusiv apelurile directe. Scrierea cere CSRF v
 
 `FailedMessageWorker` citește `.dead` cu ACK manual. Mai întâi salvează mesajul în `ordering.FailedReservationMessages`, apoi confirmă livrarea. Dacă salvarea eșuează sau procesul se oprește, brokerul poate relivra. Fingerprint-ul include ID, tip, hash-ul corpului și generația de reluare; lock-ul tranzacțional și indexul unic deduplică relivrările fără a șterge auditul.
 
-Contractul este validat cu același parser folosit de Inbox. Mesajele invalide rămân vizibile, cu reluarea blocată. Corpul original este păstrat privat, inclusiv pentru mesaje invalide. Peste limita contractului de 64 KiB, reluarea este blocată; mesajul rămâne disponibil pentru investigare tehnică. Administratorul nu poate modifica un payload sau forța un contract invalid din interfață.
+Contractul este validat cu același parser folosit de Inbox. Mesajele invalide rămân vizibile, cu reluarea blocată. Corpul original este păstrat privat, inclusiv pentru mesaje invalide. Corpurile mesajelor valide reluate și confirmate în Inbox pot fi eliminate după perioada configurată; [retenția are simulare implicită](failed-message-retention.md). Peste limita contractului de 64 KiB, reluarea este blocată; mesajul rămâne disponibil pentru investigare tehnică. Administratorul nu poate modifica un payload sau forța un contract invalid din interfață.
 
 Scăderea numărului din coada `.dead` indică arhivarea în registru, nu rezolvarea erorii. Înregistrările nu sunt șterse automat. Numărul de încercări este antetul raportat de transport, nu un contor exact al tuturor livrărilor fizice.
 
@@ -25,13 +25,13 @@ Administratorul selectează un mesaj valid, introduce motivul și bifează confi
 
 Worker-ul publică cererile salvate cu ID-ul, tipul și corpul original, attempt resetat la zero și un antet `replay-id` egal cu RequestId. Publicarea trebuie confirmată de broker înainte de salvarea PublishedAt. Dacă răspunsul sau commitul se pierde, aceeași cerere este republicabilă; Inbox-ul existent împiedică repetarea efectelor comerciale. O indisponibilitate a brokerului lasă cererea persistentă în așteptare, fără a necesita browserul deschis.
 
-„Republicat” înseamnă numai confirmarea publicării, nu succesul procesării. Dacă mesajul eșuează din nou, retry-ul transportă același replay-id, iar arhivarea produce o nouă înregistrare legată de cererea anterioară. Aceasta poate fi investigată și reluată separat. Nu există bulk replay, editare payload sau purjare din administrare.
+„Republicat” înseamnă numai confirmarea publicării, nu succesul procesării. Dacă mesajul eșuează din nou, retry-ul transportă același replay-id, iar arhivarea produce o nouă înregistrare legată de cererea anterioară. Aceasta poate fi investigată și reluată separat. Nu există bulk replay, editare payload sau purjare din administrare. Detaliile afișează PayloadRemovedAt când retenția a eliminat corpul, păstrând auditul.
 
 ## Limite și migrare
 
 Migrarea Ordering: `FailedMessageRecovery`, aplicată local după backup privat. Inventory nu are migrare nouă. Nu se schimbă autorizarea comenzilor, regulile stocului sau checkout-ul demonstrativ.
 
-Starea brokerului este o observație punctuală. Avertizările din panou se evaluează la fiecare încărcare manuală; separat, worker-ele verifică periodic starea și emit tranziții în jurnalele serviciilor. Verificările UI pot reprezenta momente diferite între servicii. Retenția payload-urilor Outbox publicate este disponibilă cu simulare implicită; [detalii](outbox-retention.md). Nu există încă notificări externe, retenție pentru Inbox/registrul erorilor, confirmare automată în UI a succesului unei reluări sau un panou pentru toate fluxurile viitoare. Cauza tehnică detaliată se investighează în jurnale; registrul păstrează contractul, încercările și auditul, nu stack trace-uri. Datele tehnice și eventualele corpuri invalide necesită control de acces și retenție înainte de producție.
+Starea brokerului este o observație punctuală. Avertizările din panou se evaluează la fiecare încărcare manuală; separat, worker-ele verifică periodic starea și emit tranziții în jurnalele serviciilor. Verificările UI pot reprezenta momente diferite între servicii. Retenția payload-urilor Outbox publicate este disponibilă cu simulare implicită; [detalii](outbox-retention.md). Nu există încă notificări externe, retenție pentru Inbox/erori nerezolvate, confirmare automată în UI a succesului unei reluări sau un panou pentru toate fluxurile viitoare. Cauza tehnică detaliată se investighează în jurnale; registrul păstrează contractul, încercările și auditul, nu stack trace-uri. Datele tehnice și eventualele corpuri invalide necesită control de acces și retenție înainte de producție.
 
 ## Avertizări operaționale în administrare
 

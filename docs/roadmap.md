@@ -32,7 +32,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Avertizări operaționale în panoul Mesagerie, cu praguri, severitate și recomandări de intervenție.
 - [x] Monitorizare în fundal și evenimente structurate pentru apariție, recuperare și persistența problemelor.
 - [x] Retenție pentru payload-urile Outbox publicate, cu simulare implicită și păstrarea cheilor de deduplicare/audit.
-- [ ] Colectare centralizată/notificări externe, retenție pentru Inbox/mesaje eșuate și extinderea brokerului la celelalte fluxuri.
+- [x] Retenție pentru payload-urile eșuate reluate și confirmate în Inbox, cu simulare implicită și audit păstrat.
+- [ ] Colectare centralizată/notificări externe, politici pentru Inbox/erori nerezolvate și extinderea brokerului la celelalte fluxuri.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.
 - [ ] Validarea completă a fluxurilor comerciale, securității și operării; documentarea recuperării și backupurilor.

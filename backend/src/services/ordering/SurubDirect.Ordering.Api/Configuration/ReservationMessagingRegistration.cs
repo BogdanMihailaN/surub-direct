@@ -23,5 +23,7 @@ public static class ReservationMessagingRegistration
         builder.Services.AddSingleton(new BrokerTopology("inventory.reservations.v1", "ordering.reservation-outcomes.v1", "reservation.outcome", "ordering.reservation-outcomes.v1.dead"));
         builder.Services.AddHostedService<ReservationEventsWorker>();
         builder.Services.AddHostedService<FailedMessageWorker>();
+        builder.Services.AddOptions<FailedMessageRetentionOptions>().Bind(builder.Configuration.GetSection("Messaging:FailedMessageRetention")).ValidateDataAnnotations().ValidateOnStart();
+        builder.Services.AddHostedService<FailedMessageRetentionWorker>();
     }
 }

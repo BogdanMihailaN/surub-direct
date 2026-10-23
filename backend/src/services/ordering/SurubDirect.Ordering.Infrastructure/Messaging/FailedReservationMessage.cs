@@ -6,6 +6,9 @@ public sealed class FailedReservationMessage
     public string? MessageId { get; set; }
     public string? MessageType { get; set; }
     public Guid? PreviousReplayId { get; set; }
+    public Guid? EventId { get; set; }
+    public string? PayloadHash { get; set; }
+    public DateTimeOffset? PayloadRemovedAt { get; set; }
     public byte[] Payload { get; set; } = [];
     public int OriginalSize { get; set; }
     public int Attempts { get; set; }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using SurubDirect.Ordering.Application;
 
@@ -32,6 +33,8 @@ public static class OrderingModule
         services.AddScoped<CancelDemoOrderHandler>();
         services.AddScoped<ReservationInbox>();
         services.AddScoped<FailedMessageStore>();
+        services.TryAddSingleton<TimeProvider>(TimeProvider.System);
+        services.AddScoped<IFailedMessageRetention, FailedMessageRetention>();
         services.AddScoped<IMessagingAdministration, MessagingAdministration>();
         services.AddScoped<IMessageFailureMonitor, MessageFailureMonitor>();
         services.AddScoped<GetMessagingStatusHandler>();

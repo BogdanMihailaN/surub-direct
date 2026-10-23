@@ -229,6 +229,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CapturedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Fingerprint")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -248,6 +251,13 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<byte[]>("Payload")
                         .IsRequired()
                         .HasColumnType("bytea");
+
+                    b.Property<string>("PayloadHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset?>("PayloadRemovedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("PreviousReplayId")
                         .HasColumnType("uuid");
@@ -277,9 +287,15 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.HasIndex("ReplayRequestId")
                         .IsUnique();
 
+                    b.HasIndex("PublishedAt", "Id")
+                        .HasFilter("\"PublishedAt\" IS NOT NULL AND \"PayloadRemovedAt\" IS NULL");
+
                     b.HasIndex("PublishedAt", "RequestedAt");
 
-                    b.ToTable("FailedReservationMessages", "ordering");
+                    b.ToTable("FailedReservationMessages", "ordering", t =>
+                        {
+                            t.HasCheckConstraint("CK_FailedReservationMessages_RemovedPayload", "\"PayloadRemovedAt\" IS NULL OR (\"PublishedAt\" IS NOT NULL AND \"RequestedAt\" IS NOT NULL AND \"ReplayRequestId\" IS NOT NULL AND \"EventId\" IS NOT NULL AND \"PayloadHash\" IS NOT NULL AND octet_length(\"Payload\") = 0)");
+                        });
                 });
 
             modelBuilder.Entity("SurubDirect.Ordering.Infrastructure.ReservationInboxEntry", b =>

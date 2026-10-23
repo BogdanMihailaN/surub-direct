@@ -12,4 +12,5 @@ export interface FailedMessage {
   requestedBy: string | null;
   requestedAt: string | null;
   publishedAt: string | null;
+  payloadRemovedAt: string | null;
 }

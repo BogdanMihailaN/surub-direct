@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 test('operational warnings use global totals, thresholds and recover after refresh', async ({
   page,
 }) => {
+  const dateErrors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error' && message.text().includes('InvalidPipeArgument'))
+      dateErrors.push(message.text());
+  });
   const now = Date.parse('2026-10-23T10:00:00Z');
   await page.clock.setFixedTime(now);
   await page.route('**/api/auth/me', (route) => route.fulfill({ json: { isAdmin: true } }));
@@ -81,4 +86,5 @@ test('operational warnings use global totals, thresholds and recover after refre
   broker = { ...broker, configured: true, available: true, ready: 0, deadReady: 0 };
   await page.getByRole('button', { name: 'Actualizează mesageria' }).click();
   await expect(alerts).toContainText('Nu sunt avertizări la ultima verificare');
+  expect(dateErrors).toEqual([]);
 });

@@ -79,7 +79,11 @@ test('monitoring distinguishes outages and replays an audited failure after a lo
     .toBe(true);
   const data = await (await page.request.get(admin + root)).json();
   record = data.items.find((x: { messageId: string }) => x.messageId === messageId);
-  expect(JSON.stringify(data)).not.toContain('payload');
+  for (const item of data.items) {
+    expect(item).not.toHaveProperty('payload');
+    expect(item).not.toHaveProperty('payloadHash');
+    expect(item).not.toHaveProperty('fingerprint');
+  }
   for (const origin of [admin, 'http://localhost:5104']) {
     expect(
       (

@@ -307,3 +307,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Migrarea PublishedOutboxPayloadRetention aplicată local după backup privat Inventory; EF confirmă lipsa diferențelor de model fără migrare. Baza legacy nu a fost modificată.
 - Gazda Inventory pornită cu setările implicite: eveniment DryRun=True observat. Amprenta payload-urilor și metadatelor de retenție identică înainte/după. Gazda temporară oprită.
 - Eliminarea reală verificată exclusiv în baze izolate de test; instalația locală rămâne în simulare. Fără modificări frontend, API public, Inbox sau registru de erori.
+
+## Retenția mesajelor eșuate procesate — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: **292 teste backend trecute**. Cazuri noi: ID normalizat, dovadă Inbox cu același hash, Inbox absent/hash diferit/procesare recentă, publicare lipsă, corp schimbat, contract invalid, simulare, concurență și rânduri blocate.
+- După eliminarea corpului în baza izolată: auditul rămâne identic, recapturarea nu reintroduce payload-ul, aceeași cerere de reluare păstrează operatorul, publisher-ul nu republică corpul gol și Inbox deduplică livrarea originală.
+- Ambele aplicații Angular compilate în producție; administrarea recompilată după corectarea afișării datelor invalide. **4 scenarii browser trecute**: reluare reală/răspuns pierdut, securitate, avertizări și audit după retenție.
+- Testul avertizărilor a evidențiat o eroare DatePipe pentru timestamp invalid. MetricDatePipe afișează acum Necunoscută; regresia verifică lipsa erorii de randare.
+- Migrarea ProcessedFailedMessageRetention aplicată local după backup privat Ordering; hash-urile și identificatorii eligibili ai rândurilor existente sunt completate fără eliminarea corpurilor. EF confirmă model fără diferențe. Prima încercare --no-build avea o dependență lipsă în directorul executabil; build-ul complet a remediat artefactele, apoi migrarea a trecut.
+- Worker-ul real a raportat DryRun=True, Candidates=0, Removed=0. Eliminările efective s-au executat exclusiv în baza izolată de test. Inbox și erorile nerezolvate rămân păstrate; aplicațiile temporare au fost oprite.

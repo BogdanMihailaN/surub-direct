@@ -40,7 +40,7 @@ Evenimentul 7200 (OutboxRetentionBatch, Information) include DryRun, Candidates 
 
 PublishedAt confirmă acceptarea de către broker, nu procesarea de către consumator. După curățare, Outbox nu mai poate furniza corpul pentru o recuperare manuală după pierderea brokerului; perioada trebuie să acopere fereastra operațională de recuperare și backup. Această limită este motivul simulării implicite.
 
-Inbox-ul păstrează ID/hash pentru deduplicarea evenimentelor întârziate. Registrul erorilor păstrează corpurile necesare investigării și reluării. Retenția acestora, arhivarea externă, centralizarea jurnalelor și notificările externe rămân etape distincte. Curățarea payload-ului nu elimină automat copii din backup și nu micșorează garantat fișierele bazei; PostgreSQL își recuperează spațiul conform mentenanței sale obișnuite.
+Inbox-ul păstrează ID/hash pentru deduplicarea evenimentelor întârziate. Registrul erorilor păstrează corpurile necesare investigării și reluării. Retenția mesajelor eșuate procesate ulterior este descrisă [separat](failed-message-retention.md). Retenția Inbox/erorilor nerezolvate, arhivarea externă, centralizarea jurnalelor și notificările externe rămân etape distincte. Curățarea payload-ului nu elimină automat copii din backup și nu micșorează garantat fișierele bazei; PostgreSQL își recuperează spațiul conform mentenanței sale obișnuite.
 
 ## Migrare
 

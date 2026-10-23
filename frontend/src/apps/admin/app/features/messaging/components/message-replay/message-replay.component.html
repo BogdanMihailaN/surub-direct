@@ -6,6 +6,13 @@
   @if (data().previousReplayId) {
     <p>Eșec după reluarea: {{ data().previousReplayId }}</p>
   }
+  @if (data().payloadRemovedAt) {
+    <p>
+      Corpul mesajului a fost eliminat prin retenție la
+      {{ data().payloadRemovedAt | date: 'dd.MM.yyyy HH:mm:ss' }}. Evenimentul și hash-ul au fost
+      confirmate în Inbox. Auditul este păstrat; aceasta nu confirmă plata sau livrarea comenzii.
+    </p>
+  }
   @if (data().requestedAt) {
     <p>
       Solicitat de {{ data().requestedBy }} la

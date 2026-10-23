@@ -1,11 +1,11 @@
 import { Component, input } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { MetricDatePipe } from './metric-date.pipe';
 import { MessagingStatus } from '../../models/messaging-status.model';
 import { BrokerStatus } from '../../models/broker-status.model';
 import { OutboxStatus } from '../../models/outbox-status.model';
 @Component({
   selector: 'sd-message-metrics',
-  imports: [DatePipe],
+  imports: [MetricDatePipe],
   templateUrl: './message-metrics.component.html',
   styleUrl: './message-metrics.component.scss',
 })
