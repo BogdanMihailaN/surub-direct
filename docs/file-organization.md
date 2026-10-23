@@ -126,3 +126,5 @@ Comenzile demonstrative: Ordering.Domain/Orders/DemoOrder, contracte Orders, por
 Consultarea administrativă a comenzilor folosește portul IAdminDemoOrders și repository separat, handler-e ListAdminOrders/GetAdminOrder și câte un endpoint GET. Angular are feature sales-orders cu modele, API, store, componente filters/list/detail/address și o pagină de compoziție. Datele comenzii rămân exclusiv în Ordering.
 
 Anularea comenzilor separă handler-ul `CancelDemoOrder`, portul `IOrderCancellations`, repository-ul tranzacțional și endpoint-ul administrativ. Inventory deține `StockRestoration`, configurația EF și handler-ul RestoreStock. Formularul Angular `order-cancellation` este separat de pagina și starea comenzilor.
+
+Mesageria tehnică se află în `backend/src/shared/SurubDirect.Messaging`, fără persistență sau contracte comerciale. Inventory/Ordering au fiecare DTO-uri în Infrastructure/Messaging și configurații EF separate pentru Outbox/Inbox. Fiecare worker și înregistrarea configurației sunt în fișiere API proprii. Testele cu RabbitMQ și PostgreSQL sunt în `Integration/Messaging`; provisionarea locală este în `scripts/tasks/broker.py`.

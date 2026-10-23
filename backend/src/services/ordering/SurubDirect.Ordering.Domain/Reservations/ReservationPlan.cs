@@ -89,6 +89,17 @@ public sealed class ReservationPlan
         NextAttemptAt = now;
     }
 
+    public bool ObserveOutcome(string status, DateTimeOffset expires, DateTimeOffset now)
+    {
+        if (status == "Consumed" && ConfirmationRequested && !RestorationRequested && Status == "Confirming" || status == "Restored" && RestorationRequested && Status == "Restoring")
+        {
+            Observe(status, expires, now);
+            return true;
+        }
+
+        return false;
+    }
+
     public void Observe(string status, DateTimeOffset expires, DateTimeOffset now)
     {
         Status = status;

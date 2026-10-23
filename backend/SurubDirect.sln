@@ -89,6 +89,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurubDirect.Ordering.Domain
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurubDirect.Ordering.Contracts", "src\services\ordering\SurubDirect.Ordering.Contracts\SurubDirect.Ordering.Contracts.csproj", "{DAB98048-3625-4E46-BF6A-4F05420731A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurubDirect.Messaging", "src\shared\SurubDirect.Messaging\SurubDirect.Messaging.csproj", "{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -495,6 +497,18 @@ Global
 		{DAB98048-3625-4E46-BF6A-4F05420731A2}.Release|x64.Build.0 = Release|Any CPU
 		{DAB98048-3625-4E46-BF6A-4F05420731A2}.Release|x86.ActiveCfg = Release|Any CPU
 		{DAB98048-3625-4E46-BF6A-4F05420731A2}.Release|x86.Build.0 = Release|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Debug|x64.Build.0 = Debug|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Release|x64.ActiveCfg = Release|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Release|x64.Build.0 = Release|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -541,5 +555,6 @@ Global
 		{A3044468-1913-4C6B-9C91-6B49D30C5C0C} = {D3BAB01C-7F3F-8576-96BE-8BE70C9B9915}
 		{2E36B237-4F4E-4DFC-B4EE-62828BAD9A58} = {D3BAB01C-7F3F-8576-96BE-8BE70C9B9915}
 		{DAB98048-3625-4E46-BF6A-4F05420731A2} = {D3BAB01C-7F3F-8576-96BE-8BE70C9B9915}
+		{7B58D2B7-DEF5-45C6-A550-6B975B23A4DE} = {C8E42992-5E42-0C2B-DBFE-AA848D06431C}
 	EndGlobalSection
 EndGlobal

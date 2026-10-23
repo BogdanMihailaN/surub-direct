@@ -7,6 +7,7 @@ import subprocess
 import sys
 import time
 from config import ROOT, SERVICES, environment
+from tasks.broker import provision_broker
 from tasks.database import provision, migrate_legacy, verify_isolation
 
 
@@ -39,10 +40,12 @@ def serve_all():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=[*SERVICES, 'api', 'up', 'db', 'migrate-legacy', 'init', 'seed-demo', 'storefront', 'admin', 'build', 'test', 'e2e', 'check-migrations', 'verify-isolation'])
+    parser.add_argument('command', choices=[*SERVICES, 'api', 'up', 'db', 'migrate-legacy', 'init', 'seed-demo', 'storefront', 'admin', 'build', 'test', 'e2e', 'check-migrations', 'verify-isolation', 'broker'])
     args = parser.parse_args()
     command = 'gateway' if args.command == 'api' else args.command
-    if command == 'db':
+    if command == 'broker':
+        provision_broker()
+    elif command == 'db':
         provision()
     elif command == 'migrate-legacy':
         migrate_legacy()

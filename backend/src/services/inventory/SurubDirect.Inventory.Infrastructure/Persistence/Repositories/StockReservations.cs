@@ -68,6 +68,8 @@ internal sealed class StockReservations(InventoryDbContext db, TimeProvider cloc
                         throw new InvalidOperationException("Reservation balance invariant violated.");
                     db.Consumptions.Add(StockConsumption.From(current, line));
                 }
+
+                db.ReservationOutbox.Add(InventoryEvent.From(current, now));
             }
 
             await db.SaveChangesAsync(ct);
@@ -100,6 +102,7 @@ internal sealed class StockReservations(InventoryDbContext db, TimeProvider cloc
                 db.Restorations.Add(StockRestoration.From(current, line, now));
             }
 
+            db.ReservationOutbox.Add(InventoryEvent.From(current, now));
             await db.SaveChangesAsync(ct);
         }
 

@@ -213,6 +213,25 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
                     b.ToTable("Carts", "ordering");
                 });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Infrastructure.ReservationInboxEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PayloadHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReservationInbox", "ordering");
+                });
 #pragma warning restore 612, 618
         }
     }

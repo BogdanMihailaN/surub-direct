@@ -17,6 +17,7 @@ public static class ServiceRegistration
         ServiceKey.Required(builder.Configuration, "ServiceKeys:Inventory");
         ServiceKey.Required(builder.Configuration, "ServiceKeys:Reservations");
         builder.Services.AddHostedService<ReservationExpiryWorker>();
+        builder.AddReservationMessaging();
         builder.Services.AddProblemDetails();
         builder.Services.AddOpenApi();
     }

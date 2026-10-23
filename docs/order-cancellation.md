@@ -25,3 +25,5 @@ Jurnalul consumului și data sa originală rămân neschimbate; jurnalul restitu
 Migrări: Inventory `StockRestorationLedger`; Ordering `DemoOrderCancellation`. Bazele au backup privat înaintea aplicării locale; baza legacy este păstrată. Nu există acces între baze sau referințe între proiectele serviciilor.
 
 Sunt implementate numai anulări integrale ale comenzilor demonstrative confirmate, fără expediere sau plată. Retururile parțiale, rambursările și regulile comerciale după expediere rămân în backlog. Retry-ul persistent necesită monitorizare și intervenție controlată înainte de producție.
+
+Rezultatele consumului și restituirii sunt propagate și prin [RabbitMQ cu Outbox/Inbox](reservation-messaging.md), fără eliminarea reconcilierii HTTP.

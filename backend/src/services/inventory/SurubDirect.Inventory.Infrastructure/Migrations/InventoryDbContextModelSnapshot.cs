@@ -254,6 +254,40 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                     b.ToTable("Restorations", "inventory");
                 });
 
+            modelBuilder.Entity("SurubDirect.Inventory.Infrastructure.InventoryEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublishedAt", "OccurredAt");
+
+                    b.HasIndex("ReservationId", "Status")
+                        .IsUnique();
+
+                    b.ToTable("ReservationOutbox", "inventory");
+                });
+
             modelBuilder.Entity("SurubDirect.Inventory.Domain.ReceiptCorrection", b =>
                 {
                     b.HasOne("SurubDirect.Inventory.Domain.StockReceipt", null)

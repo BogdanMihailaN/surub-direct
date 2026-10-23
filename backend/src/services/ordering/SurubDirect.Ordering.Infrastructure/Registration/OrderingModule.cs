@@ -30,6 +30,7 @@ public static class OrderingModule
         services.AddScoped<ListAdminOrdersHandler>();
         services.AddScoped<GetAdminOrderHandler>();
         services.AddScoped<CancelDemoOrderHandler>();
+        services.AddScoped<ReservationInbox>();
         services.AddScoped<IOrderCancellations, OrderCancellations>();
         return services;
     }

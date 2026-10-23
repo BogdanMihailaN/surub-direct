@@ -24,6 +24,8 @@ flowchart LR
   A --> AD[(surub_identity)]
   O --> OD[(surub_ordering)]
   W[Catalog Worker] --> CD
+  I -->|Outbox: Consumed / Restored| MQ[RabbitMQ]
+  MQ -->|Inbox| O
 ```
 
 ## Limite și proprietatea datelor
@@ -57,9 +59,9 @@ Acesta este un mecanism de validare la distanță a sesiunii existente, nu un se
 
 ## Evenimente și RabbitMQ
 
-Outbox și jurnalul local de publicare aparțin exclusiv Catalogului. Worker-ul are acces doar la baza Catalog. În această reorganizare nu există încă un consumator comercial de evenimente între servicii, deci RabbitMQ nu este instalat și nu pretindem că jurnalul actual este un message bus.
+Catalog păstrează Outbox-ul și jurnalul local de publicare, fără transport RabbitMQ pentru acel flux. Inventory are un Outbox separat, atomic cu consumul/restituirea, iar Ordering un Inbox care deduplică și finalizează numai intenții locale autorizate. RabbitMQ transportă Consumed/Restored prin cozi quorum, confirmări de publicare, ACK după commit, retry limitat și coadă de erori.
 
-La implementarea comenzilor: Ordering păstrează snapshot-ul prețurilor, Inventory efectuează rezervarea atomică, iar RabbitMQ transportă evenimentele cu Outbox, confirmări de publicare, Inbox/deduplicare, retry limitat și dead-letter. Checkout-ul nu se activează înainte de această implementare și de definirea compensărilor.
+Comenzile și reconcilierea rămân HTTP. Brokerul nu autorizează comenzi noi și nu modifică direct stocul. [Contract, topologie, recuperare și limite](reservation-messaging.md).
 
 ## Date existente și revenire
 

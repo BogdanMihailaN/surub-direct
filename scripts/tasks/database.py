@@ -24,7 +24,7 @@ def prepare_secrets():
     if not path.exists():
         path.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\nADMIN_EMAIL=admin@surubdirect.local\nADMIN_PASSWORD=' + secrets.token_hex(24) + 'aA!1\n')
     additions = []
-    for name in [s.upper() + '_DB_PASSWORD' for s in OWNERS] + [s + '_SERVICE_KEY' for s in ('CATALOG', 'INVENTORY', 'IDENTITY', 'RESERVATIONS', 'COORDINATOR')]:
+    for name in ['RABBITMQ_ADMIN_PASSWORD'] + [s.upper() + '_DB_PASSWORD' for s in OWNERS] + [s + '_SERVICE_KEY' for s in ('CATALOG', 'INVENTORY', 'IDENTITY', 'RESERVATIONS', 'COORDINATOR')]:
         if not config.get(name):
             additions.append(name + '=' + secrets.token_hex(32))
     if additions:

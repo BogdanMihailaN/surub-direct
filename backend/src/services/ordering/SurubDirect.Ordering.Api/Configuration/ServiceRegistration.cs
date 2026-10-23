@@ -17,6 +17,7 @@ public static class ServiceRegistration
         builder.Services.AddSingleton(NpgsqlDataSource.Create(builder.Configuration.GetConnectionString("Ordering") ?? throw new InvalidOperationException("Configure ConnectionStrings__Ordering.")));
         builder.Services.AddOrderingPersistence(builder.Configuration.GetConnectionString("Ordering")!);
         builder.Services.AddRemoteSession(builder.Configuration);
+        builder.AddReservationMessaging();
         builder.Services.AddScoped<CartOwnerCookie>();
         ServiceKey.Required(builder.Configuration, "ServiceKeys:Coordinator");
         builder.Services.AddServiceHttp("inventory-reservations", builder.Configuration["Services:Inventory"] ?? "http://127.0.0.1:5102", ServiceKey.Required(builder.Configuration, "ServiceKeys:Reservations"));

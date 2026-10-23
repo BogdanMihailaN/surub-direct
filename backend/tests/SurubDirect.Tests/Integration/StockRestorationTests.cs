@@ -48,6 +48,7 @@ public sealed class StockRestorationTests(DatabaseFixture fixture) : IClassFixtu
         });
         Assert.Equal(ReservationStatus.Restored, (await Consume(r)).Status);
         await using var scope = fixture.Services.CreateAsyncScope();
+        Assert.Equal(2, await scope.ServiceProvider.GetRequiredService<InventoryDbContext>().ReservationOutbox.CountAsync(x => x.ReservationId == r.Id));
         var repo = scope.ServiceProvider.GetRequiredService<IStockReservations>();
         Assert.Equal(ReservationStatus.Restored, (await repo.Release(r.Id, r.OrderId, default)).Status);
         Assert.Equal(ReservationStatus.Restored, (await repo.Reserve(r, default)).Status);
@@ -87,6 +88,7 @@ public sealed class StockRestorationTests(DatabaseFixture fixture) : IClassFixtu
         await db.Balances.Where(x => x.VariantId == last.VariantId).ExecuteUpdateAsync(x => x.SetProperty(v => v.OnHand, int.MaxValue));
         Assert.Equal(409, (await Assert.ThrowsAsync<BusinessException>(() => Restore(r))).Status);
         Assert.False(await db.Restorations.AnyAsync(x => x.ReservationId == r.Id));
+        Assert.False(await db.ReservationOutbox.AnyAsync(x => x.ReservationId == r.Id && x.Status == "Restored"));
         Assert.Equal(ReservationStatus.Consumed, (await db.Reservations.AsNoTracking().SingleAsync(x => x.Id == r.Id)).Status);
         Assert.Equal(100 - r.Lines.First().Quantity, (await db.Balances.AsNoTracking().SingleAsync(x => x.VariantId == r.Lines.First().VariantId)).OnHand);
         await db.Balances.Where(x => x.VariantId == last.VariantId).ExecuteUpdateAsync(x => x.SetProperty(v => v.OnHand, 100 - last.Quantity));

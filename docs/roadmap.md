@@ -27,7 +27,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Consultarea comenzilor de vânzare demonstrative în administrare: listă, filtre, paginare și detalii protejate.
 - [x] Anulare administrativă integrală demonstrativă și restituire idempotentă după confirmare.
 - [ ] Activarea comercială și fluxuri de operare/retur după plată și expediere.
-- [ ] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru fluxurile distribuite.
+- [x] RabbitMQ, Outbox/Inbox, deduplicare, retry și dead-letter pentru rezultatele Inventory → Ordering.
+- [ ] Monitorizare, reluare controlată din coada de erori și extinderea brokerului la celelalte fluxuri.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.
 - [ ] Validarea completă a fluxurilor comerciale, securității și operării; documentarea recuperării și backupurilor.

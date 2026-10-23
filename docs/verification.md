@@ -258,3 +258,16 @@ Nu au fost activate plăți/livrări/facturi sau checkout comercial. Comenzile s
 - Migrările StockRestorationLedger și DemoOrderCancellation aplicate local după backup-uri private; modelele EF Inventory și Ordering nu au diferențe fără migrare. Baza legacy păstrată.
 
 Flux exclusiv demonstrativ: fără retur parțial, rambursări, anulări de expediere/factură sau checkout comercial. Procesele aplicațiilor pornite temporar sunt oprite la final.
+
+
+## RabbitMQ pentru rezultatele rezervărilor — 23 octombrie 2026
+
+- `python3 scripts/dev.py test`: 253 teste backend trecute, cu PostgreSQL și RabbitMQ reale în containere izolate. La reluarea din 23 octombrie Docker era oprit; după pornire, suita completă a trecut.
+- Verificate Outbox atomic cu stocul, rollback fără eveniment, publicare repetată după pierderea confirmării, Inbox concurent fără aplicare dublă, reconectare înainte de ACK, retry persistent și dead-letter, contract invalid, ID reutilizat cu alt corp și eveniment Consumed întârziat după Restored.
+- Testul explicit fără rută confirmă refuzul mandatory cu PublishReturnException/NO_ROUTE. Aserțiunea inițială cerea exact clasa de bază PublishException; a fost corectată pentru excepția concretă a clientului 7.2.2.
+- 7 scenarii Playwright trecute: confirmare/istoric/protecții (2) cu brokerul oprit; consultare administrativă (2), anulare (2) și consum/jurnal (1) cu brokerul activ.
+- Oprirea brokerului a lăsat un mesaj nepublicat în Outbox fără blocarea confirmării. După repornire, worker-ele au recuperat automat: pending Outbox 0, Inbox 1. Conturile distincte Inventory/Ordering s-au conectat cu permisiunile configurate local.
+- Migrările ReservationOutcomeOutbox și ReservationOutcomeInbox aplicate după backup privat. EF confirmă că nu există diferențe de model fără migrare. Baza legacy păstrată.
+- Sintaxa scripturilor Python, scanarea pentru secrete și `git diff --check` trecute. Nu sunt modificări frontend în această etapă. Porturile aplicațiilor de test sunt închise la final.
+
+Brokerul transportă rezultatele Consumed/Restored; comenzile și reconcilierea rămân HTTP. Nu sunt implementate încă panoul de monitorizare/reluare a mesajelor, propagarea tuturor evenimentelor, clusterul de producție sau checkout-ul comercial.

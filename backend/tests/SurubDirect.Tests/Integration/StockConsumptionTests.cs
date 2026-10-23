@@ -37,6 +37,7 @@ public sealed class StockConsumptionTests(DatabaseFixture fixture) : IClassFixtu
         Assert.All(results, result => Assert.Equal(ReservationStatus.Consumed, result.Status));
         Assert.Single(results.Select(x => x.EndedAt).Distinct());
         await using var scope = fixture.Services.CreateAsyncScope();
+        Assert.Equal(1, await scope.ServiceProvider.GetRequiredService<InventoryDbContext>().ReservationOutbox.CountAsync(x => x.ReservationId == r.Id));
         var repo = scope.ServiceProvider.GetRequiredService<IStockReservations>();
         Assert.Equal(ReservationStatus.Consumed, (await repo.Release(r.Id, r.OrderId, default)).Status);
         Assert.Equal(ReservationStatus.Consumed, (await repo.Reserve(r, default)).Status);
@@ -122,6 +123,7 @@ public sealed class StockConsumptionTests(DatabaseFixture fixture) : IClassFixtu
         await Assert.ThrowsAsync<InvalidOperationException>(() => Consume(r));
         Assert.Equal(ReservationStatus.Active, (await db.Reservations.AsNoTracking().SingleAsync(x => x.Id == r.Id)).Status);
         Assert.False(await db.Consumptions.AnyAsync(x => x.ReservationId == r.Id));
+        Assert.False(await db.ReservationOutbox.AnyAsync(x => x.ReservationId == r.Id));
         var first = await db.Balances.AsNoTracking().SingleAsync(x => x.VariantId == r.Lines.First().VariantId);
         Assert.Equal(100, first.OnHand);
         Assert.Equal(r.Lines.First().Quantity, first.Reserved);

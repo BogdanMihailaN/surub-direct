@@ -16,7 +16,7 @@ Magazin de șuruburi și elemente de fixare, reorganizat în servicii independen
 
 [Arhitectură și limite](docs/architecture.md) · [Organizarea fișierelor](docs/file-organization.md) · [Starea implementării](docs/implementation-status.md)
 
-.NET 10, ASP.NET Core, EF Core/Npgsql, PostgreSQL 17, ASP.NET Identity, YARP 2.3, Angular 22, Angular Material, SSR. xUnit/Testcontainers și Playwright pentru verificare. RabbitMQ nu este încă implementat; va fi introdus împreună cu fluxurile de comandă și rezervare.
+.NET 10, ASP.NET Core, EF Core/Npgsql, PostgreSQL 17, ASP.NET Identity, YARP 2.3, Angular 22, Angular Material, SSR. xUnit/Testcontainers și Playwright pentru verificare. RabbitMQ transportă rezultatele consumului și restituirii din Inventory în Ordering, cu Outbox/Inbox; reconcilierea HTTP rămâne activă.
 
 Soluția .NET este în `backend/SurubDirect.sln`. Configurația Angular și comenzile npm sunt în `frontend/`.
 
@@ -123,3 +123,5 @@ Inventory permite consumarea atomică/idempotentă a rezervărilor și o afișea
 Panoul de administrare include [lista și detaliile comenzilor demonstrative](docs/admin-sales-orders.md), cu filtre, paginare și acces Administrator verificat de Identity.
 
 Anularea demonstrativă și restituirea stocului: [flux, audit și recuperare](docs/order-cancellation.md).
+
+RabbitMQ local: `python3 scripts/dev.py broker` după inițializarea bazei. [Fluxul Inventory → Ordering, Outbox/Inbox și operare](docs/reservation-messaging.md).

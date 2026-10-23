@@ -40,6 +40,8 @@ Interfața afișează separat confirmarea în curs, rezultatul confirmat și cel
 
 ## Limite
 
-[Consultarea în administrare](admin-sales-orders.md) este implementată. Anularea administrativă integrală după confirmare este implementată. Nu există încă asociere cu contul, notificări, plăți, livrare, facturare sau RabbitMQ. Accesul anonim este legat de cookie, fără recuperare între dispozitive; pierderea/expirarea cookie-ului pierde accesul la acel istoric. Politicile de retenție, ștergere/anonimizare și backup rămân necesare înainte de producție. Încheierea coșului nu șterge copia personală din comandă.
+[Consultarea în administrare](admin-sales-orders.md) este implementată. Anularea administrativă integrală după confirmare este implementată. Nu există încă asociere cu contul, notificări, plăți, livrare sau facturare. Accesul anonim este legat de cookie, fără recuperare între dispozitive; pierderea/expirarea cookie-ului pierde accesul la acel istoric. Politicile de retenție, ștergere/anonimizare și backup rămân necesare înainte de producție. Încheierea coșului nu șterge copia personală din comandă.
 
 Retry-ul pentru rezultate incerte este persistent și fără abandon automat. Înainte de operare comercială sunt necesare monitorizare și intervenție controlată. Noindex și checkout dezactivat rămân obligatorii.
+
+Rezultatele consumului și restituirii sunt propagate și prin [RabbitMQ cu Outbox/Inbox](reservation-messaging.md), fără eliminarea reconcilierii HTTP.

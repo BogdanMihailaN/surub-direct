@@ -15,5 +15,21 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+  rabbitmq:
+    image: rabbitmq:4.2-management
+    environment:
+      RABBITMQ_DEFAULT_USER: surub_admin
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_ADMIN_PASSWORD:?Run python3 scripts/dev.py broker}
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
 volumes:
+  rabbitmq-data:
   postgres-data:

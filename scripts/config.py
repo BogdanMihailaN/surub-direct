@@ -53,6 +53,15 @@ def environment(service=None):
     }
     for key in keys.get(service, ()):
         env['ServiceKeys__' + key.title()] = config.get(key + '_SERVICE_KEY', '')
+    if service in ('inventory', 'ordering'):
+        password = config.get(service.upper() + '_BROKER_PASSWORD')
+        if password:
+            env['Messaging__Enabled'] = 'true'
+            env['Messaging__Host'] = '127.0.0.1'
+            env['Messaging__Port'] = '5672'
+            env['Messaging__VirtualHost'] = 'surub-direct'
+            env['Messaging__Username'] = 'surub_' + service
+            env['Messaging__Password'] = password
     if service == 'catalog':
         env['Media__Root'] = str(ROOT / 'work/media/catalog')
     if service == 'identity':
