@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { assertAccountOrderOwnership } from './support/account-order-ownership';
 import { adminWrite, loginAdmin } from './support/admin-session';
 const shop = 'http://localhost:4200';
 const admin = 'http://localhost:4201';
@@ -23,6 +24,7 @@ const person = {
 };
 test('demo confirmation recovers a lost response, consumes stock once and retains history after clearing cart', async ({
   page,
+  playwright,
 }) => {
   test.setTimeout(90000);
   await loginAdmin(page.request, admin);
@@ -168,6 +170,7 @@ test('demo confirmation recovers a lost response, consumes stock once and retain
     expect((await page.request.post(shop + '/api/v1/ordering/orders', { data: {} })).status()).toBe(
       404,
     );
+    await assertAccountOrderOwnership(playwright, page.request, prepared.id);
   } finally {
     const response = await page.request.get(shop + cartPath);
     const cart = response.status() === 200 ? await response.json() : null;

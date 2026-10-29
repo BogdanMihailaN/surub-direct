@@ -140,3 +140,7 @@ Registrul mesajelor eșuate și cererile de reluare aparțin Ordering. ACK din `
 ## Înregistrarea conturilor de client
 
 Înregistrarea demonstrativă aparține Identity: Application validează cererea printr-un handler și un port, Infrastructure utilizează UserManager, iar API aplică CSRF, limitare și disponibilitate numai în Development. Clienții nu primesc roluri administrative. Nu există acces la bazele Ordering și nici asociere automată a coșului/comenzilor după e-mail. [Contract și limite](customer-accounts.md).
+
+## Comenzile contului
+
+Ordering deține asocierea opțională AccountId/AccountLinkedAt a comenzilor, prin identificatorul utilizatorului validat de Identity. Dovada coșului original și sesiunea autentificată sunt necesare simultan pentru asociere; e-mailul nu este criteriu de proprietate. Citirea ulterioară filtrează după cont, iar accesul anonim exclude comenzile asociate. [Protocol și limite](account-order-ownership.md).

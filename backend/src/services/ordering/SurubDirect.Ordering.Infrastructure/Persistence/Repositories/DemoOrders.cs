@@ -12,7 +12,7 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
-        var existing = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner, ct);
+        var existing = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == null, ct);
         if (existing is not null)
         {
             await tx.CommitAsync(ct);
@@ -35,7 +35,7 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
     public async Task<DemoOrderPageDto> Read(string owner, int page, CancellationToken ct)
     {
         await using var tx = await db.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead, ct);
-        var query = db.DemoOrders.AsNoTracking().Where(x => x.OwnerHash == owner);
+        var query = db.DemoOrders.AsNoTracking().Where(x => x.OwnerHash == owner && x.AccountId == null);
         var total = await query.CountAsync(ct);
         var items = await query.OrderByDescending(x => x.Sequence).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
         await tx.CommitAsync(ct);
@@ -47,7 +47,7 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
-        var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner, ct) ?? throw new BusinessException("Comanda nu este accesibilă.", 404);
+        var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == null, ct) ?? throw new BusinessException("Comanda nu este accesibilă.", 404);
         if (order.Status is "Confirming" or "Cancelling")
             throw new BusinessException("Confirmarea sau anularea este încă în curs.", 409);
         if (cart.PreparedId is null)

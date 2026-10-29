@@ -35,6 +35,8 @@ CancelPreparationEndpoint.Map(app);
 ConfirmDemoOrderEndpoint.Map(app);
 CompleteDemoOrderEndpoint.Map(app);
 GetDemoOrdersEndpoint.Map(app);
+GetAccountOrdersEndpoint.Map(app);
+LinkAccountOrderEndpoint.Map(app);
 ListAdminOrdersEndpoint.Map(app);
 GetAdminOrderEndpoint.Map(app);
 CancelDemoOrderEndpoint.Map(app);

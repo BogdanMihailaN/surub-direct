@@ -25,6 +25,9 @@ public static class OrderingModule
         services.AddScoped<GetPreparationHandler>();
         services.AddScoped<CancelPreparationHandler>();
         services.AddScoped<IDemoOrders, DemoOrders>();
+        services.AddScoped<IAccountOrders, AccountOrders>();
+        services.AddScoped<LinkAccountOrderHandler>();
+        services.AddScoped<GetAccountOrdersHandler>();
         services.AddScoped<ConfirmDemoOrderHandler>();
         services.AddScoped<CompleteDemoOrderHandler>();
         services.AddScoped<GetDemoOrdersHandler>();

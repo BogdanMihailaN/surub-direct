@@ -9,7 +9,9 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Identity: sesiune Administrator și CSRF, inclusiv direct pe servicii.
 - [x] API de înregistrare a clienților în Development, fără privilegii administrative, cu validare și protecție CSRF.
 - [x] Interfață Angular pentru cont: înregistrare, autentificare, sesiune și deconectare, inclusiv mobil.
-- [ ] Confirmarea e-mailului, recuperarea parolei și asocierea sigură a coșului/comenzilor.
+- [x] API pentru asocierea explicită a comenzilor demonstrative încheiate și istoricul contului, cu izolarea accesului anonim.
+- [ ] Interfață Angular pentru asociere și istoricul contului; proprietatea coșului activ.
+- [ ] Confirmarea e-mailului și recuperarea parolei.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.
 

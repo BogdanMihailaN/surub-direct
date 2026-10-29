@@ -148,3 +148,7 @@ Identity are portul `Application/Abstractions/ICustomerAccounts` și handler-ul 
 ## Contul clientului în storefront
 
 `features/account/pages/account` compune formularul și stările sesiunii. `components/account-form` deține câmpurile temporare și confirmarea parolei; `data-access/account-api.service` face apelurile Identity, iar `state/account.store` coordonează autentificarea, reîncercarea și deconectarea. Store-ul este furnizat pe pagină, fără stare personală în SSR sau localStorage. Scenariile browser sunt în `frontend/tests/e2e/customer-account.spec.ts`.
+
+## Proprietatea comenzilor pe cont
+
+`DemoOrder` păstrează regulile și momentul asocierii. Application are portul `IAccountOrders` și handler-e distincte `LinkAccountOrderHandler`/`GetAccountOrdersHandler`; Infrastructure implementează tranzacția și citirea în `AccountOrders`. Endpoint-urile au fișiere proprii și metadata RemoteSessionRequired. Testele PostgreSQL sunt în `Integration/AccountOrderTests.cs`; verificarea HTTP este compusă în scenariul demo-orders prin helper-ul `support/account-order-ownership.ts`.

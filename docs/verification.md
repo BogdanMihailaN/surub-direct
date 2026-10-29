@@ -352,3 +352,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Aspectul mobil la 390 px a fost inspectat vizual; navigația include Contul meu și nu depășește viewport-ul. Screenshot-ul local este în `work/account-mobile.png`, exclus din Git.
 - Nu sunt schimbări backend sau de schemă; suita backend nu a fost rerulată în această etapă. Conturile create de scenariile reale folosesc adrese fictive `example.test` și nu au privilegii administrative.
 - Asocierea comenzilor/coșului, confirmarea e-mailului și recuperarea parolei rămân în backlog. Aplicațiile de test sunt oprite la final; automatizarea rămâne oprită.
+
+## API pentru asocierea comenzilor cu contul — 29 octombrie 2026
+
+- `python3 scripts/dev.py test`: **324 teste .NET și 10 teste Python trecute**. Testele noi acoperă asocierea idempotentă, păstrarea snapshot-ului și momentului inițial, excluderea din istoricul anonim, blocarea retry-urilor anonime, proprietar greșit, coș nefinalizat, conturi concurente, paginare invalidă și acces după expirarea coșului.
+- Build complet backend: **0 erori, 0 avertismente**. Migrarea aditivă AccountOrderOwnership a fost aplicată local după backup privat Ordering în `work/backups/account-ownership-*`; EF nu raportează modificări de model fără migrare.
+- **3 scenarii Playwright trecute**: înregistrare fără privilegii administrative, flux complet de comandă cu asociere și acces din alt browser, securitatea comenzilor prin gateway și direct pe Ordering. Helper-ul verifică și CSRF, lipsa sesiunii, ignorarea unui cont destinație trimis în corp, repetarea asocierii, lipsa cookie-ului original și refuzul preluării de către alt cont.
+- Nu s-a schimbat sursa Angular; scenariul existent de comandă a fost extins. Checkout-ul comercial rămâne dezactivat, iar datele create sunt demonstrative.
+- Testele au fost reluate după indisponibilitatea temporară a verificării automate de aprobare. Aplicațiile de test sunt oprite la final, iar automatizarea chatului rămâne oprită.

@@ -101,3 +101,7 @@ Identity are înregistrare prin `/api/auth/register` numai în Development, cu v
 ## Contul clientului în Angular — 29 octombrie 2026
 
 Pagina `/cont` permite înregistrare demonstrativă cu confirmarea parolei, autentificare, afișarea sesiunii și deconectare. Navigația este accesibilă și pe mobil. Starea se citește numai în browser și se reverifică la revenirea ferestrei în prim-plan; erorile sau răspunsurile incerte au reîncercare explicită. Parolele nu se persistă. Coșul și comenzile rămân anonime până la implementarea asocierii sigure cu contul.
+
+## API pentru comenzile contului — 29 octombrie 2026
+
+Comenzile demonstrative confirmate/anulate, cu fluxul coșului încheiat, pot fi asociate explicit contului autentificat folosind cookie-ul original și CSRF Identity. Asocierea este atomică și idempotentă, cu un singur cont proprietar; istoricul anonim și retry-urile anonime nu mai expun comanda. Istoricul contului poate fi citit din alt browser. Interfața Angular pentru această operație și asocierea coșului activ rămân de implementat. [Protocol](account-order-ownership.md).

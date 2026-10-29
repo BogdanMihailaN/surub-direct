@@ -14,6 +14,8 @@ internal sealed class DemoOrderConfiguration : IEntityTypeConfiguration<DemoOrde
         b.Property(x => x.CancelledBy).HasMaxLength(200);
         b.HasKey(x => x.Id);
         b.HasIndex(x => x.CartId);
+        b.Property(x => x.AccountId).HasMaxLength(450);
+        b.HasIndex(x => new { x.AccountId, x.Sequence });
         b.Property(x => x.Id).ValueGeneratedNever();
         b.Property(x => x.Sequence).UseIdentityAlwaysColumn();
         b.HasIndex(x => x.Sequence).IsUnique();

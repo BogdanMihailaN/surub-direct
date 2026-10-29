@@ -28,6 +28,13 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AccountId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<DateTimeOffset?>("AccountLinkedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("CancellationReason")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -86,6 +93,8 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
                     b.HasIndex("Sequence")
                         .IsUnique();
+
+                    b.HasIndex("AccountId", "Sequence");
 
                     b.HasIndex("OwnerHash", "Sequence");
 

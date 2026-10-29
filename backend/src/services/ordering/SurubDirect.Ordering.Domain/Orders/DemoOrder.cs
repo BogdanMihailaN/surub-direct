@@ -10,6 +10,8 @@ public sealed class DemoOrder
     public Guid Id { get; private set; }
     public long Sequence { get; private set; }
     public string OwnerHash { get; private set; } = "";
+    public string? AccountId { get; private set; }
+    public DateTimeOffset? AccountLinkedAt { get; private set; }
     public Guid CartId { get; private set; }
     public string Status { get; private set; } = "Confirming";
     public CustomerDraft Customer { get; private set; } = null!;
@@ -32,6 +34,20 @@ public sealed class DemoOrder
         Currency = snapshot.Currency,
         CreatedAt = now
     };
+    public void LinkAccount(string accountId, DateTimeOffset now)
+    {
+        if (string.IsNullOrWhiteSpace(accountId) || accountId.Length > 450)
+            throw new BusinessException("Identificatorul contului nu este valid.");
+        if (AccountId is not null && AccountId != accountId)
+            throw new BusinessException("Comanda nu este accesibilă.", 404);
+        if (AccountId == accountId)
+            return;
+        if (Status is not ("Confirmed" or "Cancelled"))
+            throw new BusinessException("Doar comenzile confirmate sau anulate pot fi asociate contului.", 409);
+        AccountId = accountId;
+        AccountLinkedAt = now;
+    }
+
     public void Cancel(string reason, string actor, DateTimeOffset now)
     {
         reason = reason.Trim();
