@@ -377,3 +377,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Prima rulare a avut 15 reușite și 3 eșecuri de mediu: adminul oprit și limita de cereri atinsă. După pornirea adminului și expirarea ferestrei de limitare, cele două suite afectate și cele 4 teste noi au trecut integral (8/8).
 - Buildul a necesitat execuție în afara sandboxului pentru runtime-ul Sass. Verificările au fost reluate după indisponibilitatea temporară a aprobării automate.
 - Fără modificări backend sau de schemă; suita .NET nu a fost rerulată. Aplicațiile de test sunt oprite la final, iar automatizarea rămâne oprită. Coșul activ rămâne anonim; nu este încă sincronizat între dispozitive.
+
+## API pentru coșul contului — 29 octombrie 2026
+
+- `python3 scripts/dev.py test`: **331 teste .NET și 10 teste Python trecute**. Cele 7 teste noi acoperă crearea concurentă, izolarea conturilor și față de repository-ul anonim, versiunile, transferul cu/fără date client, refuzul destinației nevida/sursei pregătite, transferurile concurente și reînceperea explicită după expirare.
+- Build Ordering înaintea generării migrării: **0 erori, 0 avertismente**. Verificarea completă a recompilat proiectele soluției. Migrarea aditivă AccountCarts a fost aplicată local după backup privat `work/backups/account-carts-*`; EF nu raportează diferențe între model și migrare.
+- **2 scenarii API Playwright trecute**: noul flux de coș al contului și regresia înregistrării fără privilegii administrative. Sunt verificate sesiunea, CSRF Identity și contul așteptat prin gateway și direct pe Ordering, absența cookie-ului anonim pentru coșul contului, transferul și refuzul repetării, accesul din a doua sesiune, conflictul de versiune, izolarea altui cont și refuzul accesului după logout.
+- Nu există schimbări ale sursei Angular; buildurile Angular nu au fost repetate. Interfața existentă continuă să folosească coșul anonim. Pregătirea comenzilor din coșul contului și interfața de transfer rămân de implementat.
+- Aplicațiile pornite pentru testare sunt oprite la final; automatizarea rămâne oprită.

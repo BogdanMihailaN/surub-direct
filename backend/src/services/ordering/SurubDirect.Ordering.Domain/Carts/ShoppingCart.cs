@@ -8,6 +8,7 @@ public sealed class ShoppingCart
     }
 
     public Guid Id { get; private set; } = Guid.NewGuid();
+    public string? AccountId { get; private set; }
     public string OwnerHash { get; private set; } = "";
     public int Version { get; private set; } = 1;
     public DateTimeOffset UpdatedAt { get; private set; }
@@ -26,6 +27,27 @@ public sealed class ShoppingCart
             UpdatedAt = now,
             ExpiresAt = now.AddDays(30)
         };
+    }
+
+    public static ShoppingCart CreateForAccount(string accountId, string ownerHash, DateTimeOffset now)
+    {
+        if (string.IsNullOrWhiteSpace(accountId) || accountId.Length > 450)
+            throw new BusinessException("Cont invalid.");
+        var cart = Create(ownerHash, now);
+        cart.AccountId = accountId;
+        return cart;
+    }
+
+    public void RestartExpired(DateTimeOffset now)
+    {
+        if (AccountId is null || ExpiresAt > now) return;
+        if (PreparedId is not null)
+            throw new BusinessException("Finalizează pregătirea înainte de a începe un coș nou.", 409);
+        Lines = [];
+        Customer = null;
+        ExpiresAt = now.AddDays(30);
+        UpdatedAt = now;
+        Version = checked(Version + 1);
     }
 
     public void EnsureActive(DateTimeOffset now)

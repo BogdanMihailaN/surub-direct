@@ -13,6 +13,8 @@ internal sealed class ShoppingCartConfiguration : IEntityTypeConfiguration<Shopp
         b.HasKey(c => c.Id);
         b.Property(c => c.Id).ValueGeneratedNever();
         b.Property(c => c.OwnerHash).HasMaxLength(64);
+        b.Property(c => c.AccountId).HasMaxLength(450);
+        b.HasIndex(c => c.AccountId).IsUnique();
         b.HasIndex(c => c.OwnerHash).IsUnique();
         b.HasIndex(c => c.ExpiresAt);
         b.Property(c => c.Version).IsConcurrencyToken();

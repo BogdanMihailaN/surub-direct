@@ -9,6 +9,12 @@ public static class OrderingModule
     public static IServiceCollection AddOrderingPersistence(this IServiceCollection services, string connection)
     {
         services.AddDbContext<OrderingDbContext>(o => o.UseNpgsql(connection, n => n.MigrationsHistoryTable("__EFMigrationsHistory", "ordering")));
+        services.AddScoped<IAccountCarts, AccountCarts>();
+        services.AddScoped<GetAccountCartHandler>();
+        services.AddScoped<CreateAccountCartHandler>();
+        services.AddScoped<ReplaceAccountCartHandler>();
+        services.AddScoped<SaveAccountCartCustomerHandler>();
+        services.AddScoped<ImportGuestCartHandler>();
         services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
         services.AddScoped<IExpiredCartCleanup, ExpiredCartCleanup>();
         services.AddScoped<CreateCartHandler>();

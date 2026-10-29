@@ -190,6 +190,10 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AccountId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
                     b.Property<string>("Customer")
                         .HasColumnType("jsonb");
 
@@ -216,6 +220,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.HasIndex("ExpiresAt");
 

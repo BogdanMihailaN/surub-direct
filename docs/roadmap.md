@@ -11,7 +11,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Interfață Angular pentru cont: înregistrare, autentificare, sesiune și deconectare, inclusiv mobil.
 - [x] API pentru asocierea explicită a comenzilor demonstrative încheiate și istoricul contului, cu izolarea accesului anonim.
 - [x] Interfață Angular pentru asociere explicită și istoricul contului, cu paginare și protecție la schimbarea sesiunii.
-- [ ] Proprietatea coșului activ și sincronizarea între dispozitive.
+- [x] API separat pentru coșul contului: transfer explicit din browser, acces din două sesiuni și versiuni concurente.
+- [ ] Integrarea Angular a coșului contului și conectarea pregătirii/confirmării comenzilor la proprietatea pe cont.
 - [ ] Confirmarea e-mailului și recuperarea parolei.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.
