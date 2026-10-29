@@ -144,3 +144,7 @@ Curățarea coșurilor expirate are portul IExpiredCartCleanup în Application/A
 ## Înregistrarea clienților
 
 Identity are portul `Application/Abstractions/ICustomerAccounts` și handler-ul `Application/Features/RegisterCustomer/RegisterCustomerHandler`. Adaptorul UserManager este în `Infrastructure/Accounts`; endpoint-ul și cererea sunt separate în `Api/Endpoints/Authentication`. Testele de validare sunt în Unit, iar verificările HTTP cu PostgreSQL în `Integration/Identity`. Detalii în [customer-accounts.md](customer-accounts.md).
+
+## Contul clientului în storefront
+
+`features/account/pages/account` compune formularul și stările sesiunii. `components/account-form` deține câmpurile temporare și confirmarea parolei; `data-access/account-api.service` face apelurile Identity, iar `state/account.store` coordonează autentificarea, reîncercarea și deconectarea. Store-ul este furnizat pe pagină, fără stare personală în SSR sau localStorage. Scenariile browser sunt în `frontend/tests/e2e/customer-account.spec.ts`.

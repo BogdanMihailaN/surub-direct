@@ -1,0 +1,52 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="busy()">
+    <legend>{{ register() ? 'Creează un cont' : 'Autentificare' }}</legend>
+    <label for="account-email">Adresă e-mail</label>
+    <input
+      id="account-email"
+      name="email"
+      type="email"
+      email
+      required
+      maxlength="254"
+      autocomplete="username"
+      [(ngModel)]="email"
+    />
+    <label for="account-password">Parolă</label>
+    <input
+      id="account-password"
+      name="password"
+      type="password"
+      required
+      [minlength]="register() ? 12 : 1"
+      [attr.maxlength]="register() ? 128 : null"
+      [autocomplete]="register() ? 'new-password' : 'current-password'"
+      [(ngModel)]="password"
+      [attr.aria-describedby]="register() ? 'password-help' : null"
+    />
+    @if (register()) {
+      <p id="password-help">
+        12–128 de caractere, cu literă mare (A–Z), literă mică (a–z), cifră și simbol.
+      </p>
+      <label for="account-confirmation">Confirmă parola</label>
+      <input
+        id="account-confirmation"
+        name="confirmation"
+        type="password"
+        required
+        maxlength="128"
+        autocomplete="new-password"
+        [(ngModel)]="confirmation"
+      />
+      @if (confirmation && password !== confirmation) {
+        <p role="alert">Parolele nu coincid.</p>
+      }
+    }
+    <button
+      type="submit"
+      [disabled]="busy() || form.invalid || (register() && password !== confirmation)"
+    >
+      {{ busy() ? 'Se procesează…' : register() ? 'Creează contul' : 'Autentificare' }}
+    </button>
+  </fieldset>
+</form>

@@ -1,0 +1,76 @@
+.account {
+  max-width: 560px;
+  margin: 52px auto;
+  padding: 0 20px;
+}
+h1 {
+  font-size: 34px;
+  margin: 12px 0;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #536848;
+}
+.intro {
+  line-height: 1.7;
+  color: #52604b;
+  font-size: 14px;
+}
+.panel {
+  padding: 26px;
+  border: 1px solid #dce2d7;
+  border-radius: 12px;
+  background: #fff;
+}
+.modes {
+  display: flex;
+  gap: 12px;
+  margin: 28px 0 16px;
+}
+button {
+  font: inherit;
+  padding: 11px 16px;
+  border: 1px solid #536848;
+  border-radius: 6px;
+  color: #334d30;
+  background: white;
+  cursor: pointer;
+}
+button[aria-pressed='true'] {
+  background: #334d30;
+  color: white;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+button:focus-visible {
+  outline: 3px solid #748b56;
+  outline-offset: 3px;
+}
+.error,
+.notice {
+  padding: 16px;
+  border-radius: 6px;
+  line-height: 1.6;
+}
+.error {
+  background: #ffebe6;
+  color: #8c2e20;
+}
+.notice {
+  background: #edf4e7;
+  color: #334d30;
+}
+.email {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  .account {
+    margin: 28px auto;
+  }
+  .panel {
+    padding: 18px;
+  }
+}

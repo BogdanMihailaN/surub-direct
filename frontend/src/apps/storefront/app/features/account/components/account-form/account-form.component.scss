@@ -1,0 +1,49 @@
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+legend {
+  font-size: 22px;
+  font-weight: 600;
+  padding: 0 0 20px;
+}
+label {
+  font-size: 14px;
+  font-weight: 600;
+}
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #a7b09f;
+  border-radius: 6px;
+  font: inherit;
+}
+p {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 8px;
+}
+button {
+  background: #334d30;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+  padding: 14px;
+  font: inherit;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+input:focus-visible,
+button:focus-visible {
+  outline: 3px solid #748b56;
+  outline-offset: 3px;
+}

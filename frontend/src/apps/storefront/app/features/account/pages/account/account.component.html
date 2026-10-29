@@ -1,0 +1,73 @@
+<section class="account" aria-labelledby="account-title" [attr.aria-busy]="store.busy()">
+  <span class="eyebrow">ȘURUB DIRECT</span>
+  <h1 id="account-title">Contul meu</h1>
+  <p class="intro">
+    Cont demonstrativ. Confirmarea e-mailului și recuperarea parolei nu sunt încă disponibile.
+  </p>
+  <p class="intro">
+    Coșul și comenzile demonstrative rămân în acest browser și nu sunt încă asociate contului.
+    Folosește date de test.
+  </p>
+  @if (store.status() === 'loading') {
+    <p role="status">Se verifică sesiunea…</p>
+  }
+  @if (store.status() === 'unavailable') {
+    <p>Nu putem confirma starea sesiunii.</p>
+    <button type="button" (click)="store.load()" [disabled]="store.busy()">
+      Reîncearcă verificarea
+    </button>
+  }
+  @if (store.status() === 'authenticated') {
+    <div class="panel">
+      <h2>Ești autentificat</h2>
+      <p class="email">{{ store.session()?.email }}</p>
+      @if (store.session()?.isAdmin) {
+        <p>
+          Această sesiune are acces administrativ. Deconectarea se aplică și panoului de
+          administrare.
+        </p>
+      }
+      <button type="button" (click)="store.logout()" [disabled]="store.busy()">Deconectare</button>
+    </div>
+  }
+  @if (store.status() === 'guest') {
+    <div class="modes" aria-label="Acces cont">
+      <button
+        type="button"
+        [attr.aria-pressed]="!register()"
+        [disabled]="store.busy()"
+        (click)="changeMode(false)"
+      >
+        Am deja cont
+      </button>
+      <button
+        type="button"
+        [attr.aria-pressed]="register()"
+        [disabled]="store.busy()"
+        (click)="changeMode(true)"
+      >
+        Cont nou
+      </button>
+    </div>
+    <div class="panel">
+      @if (register()) {
+        <sd-account-form
+          [register]="true"
+          [busy]="store.busy()"
+          (credentials)="store.submit($event.email, $event.password, true)"
+        />
+      } @else {
+        <sd-account-form
+          [busy]="store.busy()"
+          (credentials)="store.submit($event.email, $event.password, false)"
+        />
+      }
+    </div>
+  }
+  @if (store.error()) {
+    <p role="alert" class="error">{{ store.error() }}</p>
+  }
+  @if (store.notice()) {
+    <p role="status" class="notice">{{ store.notice() }}</p>
+  }
+</section>

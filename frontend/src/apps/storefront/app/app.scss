@@ -85,15 +85,19 @@ footer small {
   }
   .site-header {
     padding: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
   }
   .brand {
     font-size: 25px;
   }
   nav {
-    gap: 10px;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: wrap;
   }
   nav a {
-    display: none;
+    display: block;
   }
   nav a.cart-link {
     display: block;

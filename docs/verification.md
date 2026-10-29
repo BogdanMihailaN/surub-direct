@@ -343,3 +343,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - **4 scenarii HTTP Playwright trecute**, prin `customer-account-api.spec.ts` și `services.spec.ts`: înregistrare/autentificare prin gateway, refuzul accesului administrativ pentru clienți inclusiv direct pe servicii, izolarea rutelor interne și regresie CSRF pentru administrator.
 - Nu s-a modificat sursa Angular; interfața contului rămâne în backlog. Scenariul HTTP a creat un cont demonstrativ fără privilegii, cu adresă `example.test`, în baza locală Identity. Aplicațiile pornite pentru verificări au fost oprite; PostgreSQL și RabbitMQ rămân disponibile.
 - `git diff --check` și verificarea fișierelor modificate împotriva secretelor locale: trecute. Automatizarea chatului rămâne oprită.
+
+## Pagina contului în Angular — 29 octombrie 2026
+
+- `npm run build`: build-uri de producție storefront (browser + SSR) și admin finalizate cu succes, cu verificările stricte TypeScript/template păstrate.
+- **12 scenarii Playwright trecute**: 4 pentru cont, 4 pentru catalog și 4 pentru persistența coșului. Contul acoperă confirmarea parolei, înregistrare reală, parolă greșită, autentificare, reîncărcare, deconectare, serviciu indisponibil, înregistrare indisponibilă, răspuns incert la login, eroare la logout și reverificare la focus.
+- Prima verificare a identificat o sincronizare incorectă a testului cu schimbarea formularului Angular. Testele așteaptă acum afișarea formularului selectat înainte să completeze datele; suita finală a trecut integral.
+- Aspectul mobil la 390 px a fost inspectat vizual; navigația include Contul meu și nu depășește viewport-ul. Screenshot-ul local este în `work/account-mobile.png`, exclus din Git.
+- Nu sunt schimbări backend sau de schemă; suita backend nu a fost rerulată în această etapă. Conturile create de scenariile reale folosesc adrese fictive `example.test` și nu au privilegii administrative.
+- Asocierea comenzilor/coșului, confirmarea e-mailului și recuperarea parolei rămân în backlog. Aplicațiile de test sunt oprite la final; automatizarea rămâne oprită.

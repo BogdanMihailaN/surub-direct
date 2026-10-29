@@ -96,4 +96,8 @@ Planul de continuare și condițiile automatizării sunt în [roadmap.md](roadma
 
 ## Conturi de client — API demonstrativ, 29 octombrie 2026
 
-Identity are înregistrare prin `/api/auth/register` numai în Development, cu validare, CSRF, limitare de cereri și tratarea duplicatelor/concurenței. Clienții pot utiliza sesiunea existentă fără rol Administrator. Nu sunt necesare migrații. Interfața Angular, confirmarea e-mailului, resetarea parolei și asocierea comenzilor rămân neimplementate. Vezi [customer-accounts.md](customer-accounts.md).
+Identity are înregistrare prin `/api/auth/register` numai în Development, cu validare, CSRF, limitare de cereri și tratarea duplicatelor/concurenței. Clienții pot utiliza sesiunea existentă fără rol Administrator. Nu sunt necesare migrații. Interfața Angular a fost adăugată în etapa următoare, descrisă mai jos. Confirmarea e-mailului, resetarea parolei și asocierea comenzilor rămân neimplementate. Vezi [customer-accounts.md](customer-accounts.md).
+
+## Contul clientului în Angular — 29 octombrie 2026
+
+Pagina `/cont` permite înregistrare demonstrativă cu confirmarea parolei, autentificare, afișarea sesiunii și deconectare. Navigația este accesibilă și pe mobil. Starea se citește numai în browser și se reverifică la revenirea ferestrei în prim-plan; erorile sau răspunsurile incerte au reîncercare explicită. Parolele nu se persistă. Coșul și comenzile rămân anonime până la implementarea asocierii sigure cu contul.

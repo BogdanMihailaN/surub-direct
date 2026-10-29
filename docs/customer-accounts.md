@@ -17,6 +17,8 @@ Conturile noi nu au roluri administrative și au `EmailConfirmed=false`. Cererea
 
 `Identity.Application` conține handler-ul `RegisterCustomerHandler` și portul `ICustomerAccounts`, fără referințe la ASP.NET Core, EF sau Infrastructure. `Identity.Infrastructure/Accounts/CustomerAccounts` adaptează UserManager. Endpoint-ul, cererea HTTP și limitarea accesului sunt în API. Nu adăugăm un Domain gol: nu există încă un model comercial de profil de client.
 
-Interfața Angular pentru cont, verificarea e-mailului, recuperarea parolei și asocierea contului cu coșul/comenzile rămân etape următoare. Coșul și istoricul demonstrativ continuă să fie identificate prin cookie-ul anonim existent. Autentificarea nu revendică date pe baza adresei de e-mail și nu mută istoricul între conturi.
+Interfața Angular este disponibilă la `/cont`, din navigația magazinului inclusiv pe mobil. Include înregistrare cu confirmarea parolei, autentificare, citirea sesiunii după reîncărcare și deconectare. Starea este verificată numai în browser, după randare, și din nou la revenirea ferestrei în prim-plan. Erorile de citire nu sunt prezentate drept deconectare; există reîncercare. Parolele sunt golite la trimiterea formularului și nu sunt persistate în stocarea browserului. Sesiunea Administrator este recunoscută, cu avertizare că deconectarea se aplică și administrării.
+
+Verificarea e-mailului, recuperarea parolei și asocierea contului cu coșul/comenzile rămân etape următoare. Coșul și istoricul demonstrativ continuă să fie identificate prin cookie-ul anonim existent. Autentificarea nu revendică date pe baza adresei de e-mail și nu mută istoricul între conturi.
 
 Înainte de lansare sunt necesare confirmarea e-mailului, resetarea parolei, politici de sesiune și abuz pentru producție și asocierea explicită a datelor cu identificatorul stabil al utilizatorului. Înregistrarea nu se activează comercial prin această etapă; checkout-ul și noindex rămân în regimul demonstrativ.
