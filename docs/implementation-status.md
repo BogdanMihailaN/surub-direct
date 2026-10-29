@@ -109,3 +109,7 @@ Comenzile demonstrative confirmate/anulate, cu fluxul coșului încheiat, pot fi
 ## Istoricul și asocierea comenzilor în Angular — 29 octombrie 2026
 
 Pagina Contul meu include două liste paginate independent, detalii despre produse și client, confirmarea explicită a contului destinație și recuperarea rezultatului după răspuns pierdut. Cererile trimit identificatorul așteptat al contului, verificat pe server pentru a bloca schimbările de sesiune între afișare și confirmare. Erorile listelor sunt separate, iar deconectarea elimină istoricul afișat. Coșul activ și sincronizarea între dispozitive rămân în backlog.
+
+## Reverificarea coșului în browser — 29 octombrie 2026
+
+Coșul se recitește la focus și după autentificare/deconectare. Invalidarea din alt tab sau în timpul unei cereri retrage datele afișate; răspunsurile întârziate nu mai pot restaura selecția, ciorna clientului sau debloca editarea. Operațiile cu rezultat incert se reconciliază prin reîncărcare, fără repetarea salvării. Acesta este un pas pregătitor pentru coșul pe cont: coșul activ rămâne anonim, iar asocierea persistentă și sincronizarea între dispozitive nu sunt încă implementate. [Comportament și limite](cart-persistence.md).

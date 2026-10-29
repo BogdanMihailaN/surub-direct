@@ -13,6 +13,7 @@ export class CartStore {
   private readonly preparationApi = inject(PreparationApi);
   readonly preparedId = signal<string | null>(null);
   private current: StoredCart | null = null;
+  private invalidated = false;
   readonly customer = signal<CustomerDraft | null>(null);
   readonly customerError = signal('');
   readonly items = signal<readonly CartSelection[]>([]);
@@ -32,19 +33,40 @@ export class CartStore {
       void this.reload();
       const sync = (event: StorageEvent) => {
         if (event.key === CHANGE_KEY) {
-          this.stale.set(true);
-          this.error.set('Coșul a fost modificat în alt tab. Reîncarcă pentru a continua.');
+          this.invalidate('Coșul a fost modificat în alt tab. Reîncarcă pentru a continua.');
         }
       };
+      const focus = () => this.revalidate();
       window.addEventListener('storage', sync);
-      destroy.onDestroy(() => window.removeEventListener('storage', sync));
+      window.addEventListener('focus', focus);
+      destroy.onDestroy(() => {
+        window.removeEventListener('storage', sync);
+        window.removeEventListener('focus', focus);
+      });
     });
   }
   private accept(cart: StoredCart | null) {
+    if (this.invalidated) return;
     this.current = cart;
     this.preparedId.set(cart?.preparedId ?? null);
     this.customer.set(cart?.customer ?? null);
     this.items.set(cart?.lines ?? []);
+  }
+  private invalidate(message: string) {
+    this.invalidated = true;
+    this.current = null;
+    this.preparedId.set(null);
+    this.customer.set(null);
+    this.customerError.set('');
+    this.items.set([]);
+    this.stale.set(true);
+    this.canRestart.set(false);
+    this.error.set(message);
+  }
+  revalidate() {
+    this.invalidate('Coșul trebuie reverificat. Reîncarcă pentru a continua.');
+    // An in-flight mutation may still commit. Keep it locked until an explicit reload.
+    if (!this.busy()) void this.reload();
   }
   private notify() {
     try {
@@ -54,17 +76,18 @@ export class CartStore {
     }
   }
   private fail(error: unknown) {
-    this.stale.set(true);
+    this.invalidate('Nu putem confirma starea coșului. Reîncarcă înainte de a modifica produsele.');
     this.canRestart.set(error instanceof HttpErrorResponse && error.status === 410);
-    this.error.set('Nu putem confirma starea coșului. Reîncarcă înainte de a modifica produsele.');
   }
   async reload(discardLegacy = false) {
     if (this.busy()) return;
+    this.invalidated = false;
     this.busy.set(true);
     this.error.set('');
     this.canRestart.set(false);
     try {
       const cart = await this.api.read();
+      if (this.invalidated) return;
       this.accept(cart);
       let legacy: CartSelection[];
       try {
@@ -84,6 +107,7 @@ export class CartStore {
       }
       if (legacy.length) {
         const target = cart ?? (await this.api.create());
+        if (this.invalidated) return;
         const merged = [
           ...target.lines,
           ...legacy.filter((x) => !target.lines.some((y) => y.offerId === x.offerId)),
@@ -106,8 +130,10 @@ export class CartStore {
         }
         this.notify();
       }
-      this.legacyInvalid.set(false);
-      this.stale.set(false);
+      if (!this.invalidated) {
+        this.legacyInvalid.set(false);
+        this.stale.set(false);
+      }
     } catch (error) {
       this.fail(error);
     } finally {
@@ -117,9 +143,11 @@ export class CartStore {
   }
   async restart() {
     if (this.busy() || !this.canRestart()) return;
+    this.invalidated = false;
     this.busy.set(true);
     try {
       this.accept(await this.api.create());
+      if (this.invalidated) return;
       this.stale.set(false);
       this.canRestart.set(false);
       this.error.set('');
@@ -137,7 +165,7 @@ export class CartStore {
     try {
       this.accept(await this.api.saveCustomer(this.current, customer));
       this.notify();
-      return true;
+      return !this.invalidated;
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.status === 400)
         this.customerError.set(error.error?.detail ?? 'Verifică datele introduse.');
@@ -221,6 +249,7 @@ export class CartStore {
     this.error.set('');
     try {
       const target = this.current ?? (await this.api.create());
+      if (this.invalidated) return false;
       const lines = change(target.lines);
       if (lines.length > 50) {
         this.error.set('Coșul acceptă maximum 50 de ambalaje distincte.');
@@ -228,7 +257,7 @@ export class CartStore {
       }
       this.accept(await this.api.replace(target, lines));
       this.notify();
-      return true;
+      return !this.invalidated;
     } catch (error) {
       this.fail(error);
       return false;

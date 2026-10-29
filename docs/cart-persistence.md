@@ -13,13 +13,17 @@ Cookie-ul `SurubDirect.Cart` conține 32 de octeți aleatori, codificați hex. B
 
 Înlocuirile sunt serializate prin blocare PostgreSQL a rândului, în tranzacție. ID-ul și versiunea sunt verificate după obținerea blocării. Un conflict produce 409, lipsa proprietarului 401, expirarea 410. Un retry cu versiunea veche nu suprascrie o salvare deja confirmată de baza de date.
 
-Coșul expiră la 30 de zile de la creare, fără prelungire automată. Datele expirate nu mai sunt accesibile; curățarea fizică periodică nu este implementată încă. Eliminarea cookie-ului pierde accesul la coș. Nu există recuperare între dispozitive sau asociere cu un cont.
+Coșul expiră la 30 de zile de la creare, fără prelungire automată. Datele expirate nu mai sunt accesibile; curățarea periodică selectivă este implementată, cu simulare implicită și păstrarea coșurilor legate de pregătiri sau comenzi. Eliminarea cookie-ului pierde accesul la coș. Nu există recuperare între dispozitive sau asociere cu un cont.
 
 Golirea coșului șterge și datele clientului. PUT /api/v1/ordering/cart/customer folosește aceleași verificări de proprietar, CSRF și versiune; customer null permite ștergerea separată a datelor.
 
 ## Interfață și recuperare
 
 Interfața afișează modificările numai după confirmarea serverului. Pe durata salvării, comenzile sunt blocate și totalul anterior este retras. În caz de răspuns pierdut, eroare sau conflict, utilizatorul reîncarcă starea serverului înainte de alte modificări; salvarea nu este repetată automat. Un semnal localStorage fără date de coș notifică celelalte taburi că trebuie să reîncarce. Verificarea versiunii pe server rămâne protecția autoritativă și dacă notificarea locală lipsește.
+
+La revenirea ferestrei în prim-plan și după încercările de autentificare/deconectare, interfața retrage selecția și ciorna clientului din memoria afișată și recitește coșul. Notificarea din alt tab retrage și ea datele și solicită reîncărcare explicită. Dacă o operație este deja în curs, aceasta nu este repetată sau anulată: răspunsul întârziat nu mai poate restaura datele ori debloca editarea, iar utilizatorul reconfirmă starea serverului prin „Reîncarcă coșul”. Erorile retrag datele vechi și nu sunt prezentate drept coș gol. Formularul clientului este recreat din ciorna salvată; modificările nesalvate în formular nu sunt persistate de această reverificare.
+
+Această protecție nu asociază coșul cu identitatea autentificată. Coșul rămâne al cookie-ului browserului, inclusiv după logout; proprietatea pe cont și sincronizarea între dispozitive rămân de implementat.
 
 Copia veche `surub-direct.cart.v1` este validată și importată. Liniile existente pe server prevalează pentru același ambalaj; liniile locale distincte sunt adăugate. Copia locală este eliminată numai după confirmare. Datele locale corupte necesită renunțare explicită; indisponibilitatea serverului nu este prezentată drept coș gol.
 

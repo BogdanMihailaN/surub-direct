@@ -369,3 +369,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Fluxul real verifică Renunță fără mutare, confirmarea contului destinație, răspuns pierdut după commit recuperat prin recitire, persistență după reload, acces din alt browser și izolarea față de al doilea cont. Cererile cu expectedAccountId diferit sunt respinse de API cu 409. `/api/auth/me` include identificatorul și interzice cache-ul.
 - Screenshot mobil la 390 px inspectat vizual, fără depășirea viewport-ului: `work/account-order-history-mobile.png`, exclus din Git. Datele afișate și comenzile create sunt demonstrative.
 - Aplicațiile pornite pentru testare sunt oprite la final. Automatizarea chatului rămâne oprită. Coșul activ rămâne anonim.
+
+## Reverificarea coșului și invalidarea răspunsurilor vechi — 29 octombrie 2026
+
+- `npm run build`: storefront (browser + SSR) și admin compilate pentru producție, cu verificările stricte păstrate.
+- **19 scenarii Playwright distincte trecute**, în două rulări: persistența coșului, ciorna PF/PJ, pregătirea rezervărilor, comenzile demonstrative, contul clientului și 4 scenarii noi de reverificare. Acestea verifică eroarea la focus fără afișarea unui coș gol, invalidarea unei citiri în curs din alt tab, răspunsul întârziat după o salvare și recitirea după login/logout fără reload de pagină.
+- Prima rulare a avut 15 reușite și 3 eșecuri de mediu: adminul oprit și limita de cereri atinsă. După pornirea adminului și expirarea ferestrei de limitare, cele două suite afectate și cele 4 teste noi au trecut integral (8/8).
+- Buildul a necesitat execuție în afara sandboxului pentru runtime-ul Sass. Verificările au fost reluate după indisponibilitatea temporară a aprobării automate.
+- Fără modificări backend sau de schemă; suita .NET nu a fost rerulată. Aplicațiile de test sunt oprite la final, iar automatizarea rămâne oprită. Coșul activ rămâne anonim; nu este încă sincronizat între dispozitive.

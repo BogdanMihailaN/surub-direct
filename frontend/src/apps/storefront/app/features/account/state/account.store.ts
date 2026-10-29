@@ -3,9 +3,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { errorMessage } from '@shared/http/error-message';
 import { AccountApi } from '../data-access/account-api.service';
 import { AccountSession } from '../models/account-session';
+import { CartStore } from '../../cart/state/cart.store';
 @Injectable()
 export class AccountStore {
   private readonly api = inject(AccountApi);
+  private readonly cart = inject(CartStore);
   readonly session = signal<AccountSession | null>(null);
   readonly status = signal<'loading' | 'guest' | 'authenticated' | 'unavailable'>('loading');
   readonly busy = signal(false);
@@ -64,6 +66,7 @@ export class AccountStore {
             : errorMessage(e),
       );
     } finally {
+      if (!register) this.cart.revalidate();
       this.busy.set(false);
     }
   }
@@ -82,6 +85,7 @@ export class AccountStore {
         this.error.set(errorMessage(e));
       }
     } finally {
+      this.cart.revalidate();
       this.session.set(null);
       this.busy.set(false);
     }
