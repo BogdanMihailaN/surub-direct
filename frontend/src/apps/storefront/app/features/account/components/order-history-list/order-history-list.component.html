@@ -1,0 +1,60 @@
+<section [attr.aria-label]="title()">
+  <h3>{{ title() }}</h3>
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+  @if (result(); as result) {
+    @for (order of result.items; track order.id) {
+      <article>
+        <h4>{{ order.number }}</h4>
+        <p>{{ labels[order.status] }} · {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+        <p>{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} cu TVA</p>
+        <details>
+          <summary>Detalii {{ order.number }}</summary>
+          <p>{{ order.customer.fullName }} · {{ order.customer.email }}</p>
+          @if (order.customer.companyName) {
+            <p>{{ order.customer.companyName }} · {{ order.customer.taxId }}</p>
+          }
+          <p>
+            Livrare: {{ order.customer.shippingAddress.street }},
+            {{ order.customer.shippingAddress.city }}, {{ order.customer.shippingAddress.county }},
+            {{ order.customer.shippingAddress.postalCode }},
+            {{ order.customer.shippingAddress.country }}
+          </p>
+          @for (line of order.lines; track line.offerId) {
+            <p>
+              {{ line.productName }} · {{ line.sku }} · {{ line.offerLabel }} × {{ line.packs }} —
+              {{ line.grossTotal | number: '1.2-2' }} {{ order.currency }}
+            </p>
+          }
+        </details>
+        @if (allowClaim() && (order.status === 'Confirmed' || order.status === 'Cancelled')) {
+          <button type="button" [disabled]="busy()" (click)="claim.emit(order)">
+            Asociază {{ order.number }}
+          </button>
+        }
+      </article>
+    } @empty {
+      <p>Nu există comenzi în această pagină.</p>
+    }
+    @if (result.total > result.pageSize || result.page > 1) {
+      <nav aria-label="Paginare comenzi">
+        <button
+          type="button"
+          [disabled]="busy() || result.page <= 1"
+          (click)="pageChange.emit(result.page - 1)"
+        >
+          Pagina anterioară
+        </button>
+        <span>Pagina {{ result.page }}</span>
+        <button
+          type="button"
+          [disabled]="busy() || result.page * result.pageSize >= result.total"
+          (click)="pageChange.emit(result.page + 1)"
+        >
+          Pagina următoare
+        </button>
+      </nav>
+    }
+  }
+</section>

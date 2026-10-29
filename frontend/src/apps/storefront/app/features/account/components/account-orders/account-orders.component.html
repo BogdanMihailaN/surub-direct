@@ -1,0 +1,55 @@
+<section class="orders" aria-label="Istoricul comenzilor" [attr.aria-busy]="state.busy()">
+  <h2>Comenzile tale</h2>
+  <p>Comenzile sunt demonstrative și nu inițiază plăți, livrări sau facturi.</p>
+  <button type="button" [disabled]="state.busy()" (click)="state.load(session().id)">
+    Actualizează istoricul
+  </button>
+  @if (state.busy()) {
+    <p role="status">Se actualizează comenzile…</p>
+  }
+  @if (state.notice()) {
+    <p role="status" class="notice">{{ state.notice() }}</p>
+  }
+  @if (state.error()) {
+    <p role="alert" class="error">{{ state.error() }}</p>
+  }
+  @if (state.selected(); as order) {
+    <section class="confirmation" #confirmation tabindex="-1" aria-label="Confirmă asocierea">
+      <h3>Asociezi {{ order.number }}?</h3>
+      <p>
+        Cont destinație: <strong>{{ session().email }}</strong
+        >.
+      </p>
+      <p>
+        Comanda va fi disponibilă din acest cont și nu va mai apărea în istoricul anonim al
+        browserului. Nu poate fi mutată ulterior în alt cont din această interfață.
+      </p>
+      <button type="button" [disabled]="state.busy()" (click)="state.confirm(session().id)">
+        Confirmă asocierea
+      </button>
+      <button type="button" [disabled]="state.busy()" (click)="state.selected.set(null)">
+        Renunță
+      </button>
+    </section>
+  }
+  <sd-order-history-list
+    title="Comenzile contului"
+    [result]="state.account()"
+    [error]="state.accountError()"
+    [busy]="state.busy()"
+    (pageChange)="state.load(session().id, 'account', $event)"
+  />
+  <p>
+    Poți asocia comenzile confirmate sau anulate din acest browser după ce ai încheiat fluxul lor în
+    <a routerLink="/cos">coș</a>. Coșul activ rămâne separat.
+  </p>
+  <sd-order-history-list
+    title="Comenzile neasociate din browser"
+    [result]="state.browser()"
+    [error]="state.browserError()"
+    [busy]="state.busy()"
+    [allowClaim]="state.account() !== null && !state.busy()"
+    (claim)="select($event)"
+    (pageChange)="state.load(session().id, 'browser', $event)"
+  />
+</section>

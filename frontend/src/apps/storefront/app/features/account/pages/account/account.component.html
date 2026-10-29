@@ -5,7 +5,7 @@
     Cont demonstrativ. Confirmarea e-mailului și recuperarea parolei nu sunt încă disponibile.
   </p>
   <p class="intro">
-    Coșul și comenzile demonstrative rămân în acest browser și nu sunt încă asociate contului.
+    Coșul activ rămâne în acest browser. Comenzile încheiate pot fi asociate explicit contului.
     Folosește date de test.
   </p>
   @if (store.status() === 'loading') {
@@ -27,8 +27,14 @@
           administrare.
         </p>
       }
+      <button type="button" (click)="store.load()" [disabled]="store.busy()">
+        Reverifică sesiunea
+      </button>
       <button type="button" (click)="store.logout()" [disabled]="store.busy()">Deconectare</button>
     </div>
+  }
+  @if (store.status() === 'authenticated' && store.session(); as session) {
+    <sd-account-orders [session]="session" />
   }
   @if (store.status() === 'guest') {
     <div class="modes" aria-label="Acces cont">

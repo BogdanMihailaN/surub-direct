@@ -360,3 +360,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - **3 scenarii Playwright trecute**: înregistrare fără privilegii administrative, flux complet de comandă cu asociere și acces din alt browser, securitatea comenzilor prin gateway și direct pe Ordering. Helper-ul verifică și CSRF, lipsa sesiunii, ignorarea unui cont destinație trimis în corp, repetarea asocierii, lipsa cookie-ului original și refuzul preluării de către alt cont.
 - Nu s-a schimbat sursa Angular; scenariul existent de comandă a fost extins. Checkout-ul comercial rămâne dezactivat, iar datele create sunt demonstrative.
 - Testele au fost reluate după indisponibilitatea temporară a verificării automate de aprobare. Aplicațiile de test sunt oprite la final, iar automatizarea chatului rămâne oprită.
+
+## Istoricul și asocierea în pagina contului — 29 octombrie 2026
+
+- `python3 scripts/dev.py test`: **324 teste .NET și 10 teste Python trecute**. Build backend complet: **0 erori, 0 avertismente**. Nu sunt modificări de schemă.
+- `npm run build`: build-uri de producție storefront (browser + SSR) și admin trecute, cu verificări stricte TypeScript/template.
+- **10 scenarii Playwright trecute**: istorice cu erori independente, paginare separată, confirmare legată de contul afișat, eliminarea istoricului la logout, regresii de înregistrare/autentificare și fluxul real de comandă/asociere.
+- Fluxul real verifică Renunță fără mutare, confirmarea contului destinație, răspuns pierdut după commit recuperat prin recitire, persistență după reload, acces din alt browser și izolarea față de al doilea cont. Cererile cu expectedAccountId diferit sunt respinse de API cu 409. `/api/auth/me` include identificatorul și interzice cache-ul.
+- Screenshot mobil la 390 px inspectat vizual, fără depășirea viewport-ului: `work/account-order-history-mobile.png`, exclus din Git. Datele afișate și comenzile create sunt demonstrative.
+- Aplicațiile pornite pentru testare sunt oprite la final. Automatizarea chatului rămâne oprită. Coșul activ rămâne anonim.

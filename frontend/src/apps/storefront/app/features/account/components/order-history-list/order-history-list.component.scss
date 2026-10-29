@@ -1,0 +1,50 @@
+section {
+  margin-top: 24px;
+  overflow-wrap: anywhere;
+}
+article {
+  border-top: 1px solid #dce2d7;
+  padding: 18px 0;
+}
+h4 {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+button {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: white;
+  color: #334d30;
+  border: 1px solid #536848;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid #748b56;
+  outline-offset: 3px;
+}
+[role='alert'] {
+  background: #ffebe6;
+  color: #8c2e20;
+  padding: 12px;
+}

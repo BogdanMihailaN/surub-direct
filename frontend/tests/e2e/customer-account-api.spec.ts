@@ -21,7 +21,10 @@ test('customer registration through gateway grants no administrative access', as
       })
     ).status(),
   ).toBe(200);
-  expect(await (await request.get(`${origin}/api/auth/me`)).json()).toEqual({
+  const me = await request.get(`${origin}/api/auth/me`);
+  expect(me.headers()['cache-control']).toBe('no-store');
+  expect(await me.json()).toEqual({
+    id: expect.any(String),
     email,
     isAdmin: false,
   });

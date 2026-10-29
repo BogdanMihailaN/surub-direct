@@ -16,6 +16,12 @@ După asociere, citirea anonimă nu mai include comanda. Nici retry-ul anonim de
 
 ## Limite și continuare
 
-Această etapă livrează API-ul și verificarea fluxului, nu butonul Angular de asociere sau lista comenzilor în pagina contului. Coșul activ rămâne anonim; autentificarea nu îl leagă automat, nu îl unește cu alt coș și nu transferă istoricul implicit. Cererea de asociere trebuie făcută înainte de pierderea cookie-ului original; odată asociată, comanda nu depinde de durata cookie-ului coșului.
+Pagina Angular `/cont` afișează separat comenzile contului și comenzile neasociate din browser, cu paginare independentă și detalii. Asocierea este inițiată pe o comandă confirmată/anulată și cere confirmare explicită cu e-mailul contului destinație; Renunță nu trimite cererea. Un coș încă legat de pregătire rămâne blocat de validarea serverului. Coșul activ rămâne anonim; autentificarea nu îl leagă automat, nu îl unește cu alt coș și nu transferă istoricul implicit. Cererea de asociere trebuie făcută înainte de pierderea cookie-ului original; odată asociată, comanda nu depinde de durata cookie-ului coșului.
 
-Urmează interfața de asociere cu confirmare explicită și istoricul contului, apoi politica de proprietate a coșului activ. Confirmarea e-mailului, recuperarea parolei și activarea comercială rămân în backlog. Nu se face downgrade al migrației în prezența comenzilor asociate fără un plan de păstrare a proprietății: eliminarea coloanelor ar pierde această restricție de acces.
+Urmează politica de proprietate a coșului activ. Confirmarea e-mailului, recuperarea parolei și activarea comercială rămân în backlog. Nu se face downgrade al migrației în prezența comenzilor asociate fără un plan de păstrare a proprietății: eliminarea coloanelor ar pierde această restricție de acces.
+
+## Protecția interfeței la schimbarea sesiunii
+
+Identity returnează identificatorul stabil `id` în `/api/auth/me`, cu `Cache-Control: no-store`. Interfața îl trimite drept `expectedAccountId` la citirea istoricului și asociere. Parametrul este o precondiție, nu un cont destinație: dacă diferă de identitatea validată, Ordering răspunde 409. Este opțional pentru compatibilitatea clienților API existenți; autoritatea rămâne exclusiv sesiunea validată de Identity.
+
+Listele sunt recitite după asociere, inclusiv după un răspuns pierdut; o comandă regăsită în istoricul contului confirmă rezultatul. Erorile nu sunt afișate ca liste goale, iar datele vechi sunt eliminate înainte de reîncărcare. Asocierea este indisponibilă cât timp istoricul contului nu poate fi validat. Deconectarea sau reverificarea sesiunii distruge componentele și starea istoricului; butonul Reverifică sesiunea permite recuperarea explicită.

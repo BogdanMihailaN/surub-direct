@@ -152,3 +152,7 @@ Identity are portul `Application/Abstractions/ICustomerAccounts` și handler-ul 
 ## Proprietatea comenzilor pe cont
 
 `DemoOrder` păstrează regulile și momentul asocierii. Application are portul `IAccountOrders` și handler-e distincte `LinkAccountOrderHandler`/`GetAccountOrdersHandler`; Infrastructure implementează tranzacția și citirea în `AccountOrders`. Endpoint-urile au fișiere proprii și metadata RemoteSessionRequired. Testele PostgreSQL sunt în `Integration/AccountOrderTests.cs`; verificarea HTTP este compusă în scenariul demo-orders prin helper-ul `support/account-order-ownership.ts`.
+
+## Istoricul în pagina contului
+
+`features/account/components/account-orders` compune confirmarea și două instanțe ale listei prezentationale `order-history-list`. `AccountOrdersStore` deține paginarea separată, selecția, erorile și reverificarea rezultatului; `AccountOrdersApi` deține HTTP. Modelele existente DemoOrder/DemoOrderPage sunt reutilizate din feature-ul cart. Pagina contului gestionează ciclul de viață al componentelor după sesiune. Testele UI izolate sunt în `account-order-history.spec.ts`; fluxul real extinde scenariul demo-orders.

@@ -10,7 +10,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] API de înregistrare a clienților în Development, fără privilegii administrative, cu validare și protecție CSRF.
 - [x] Interfață Angular pentru cont: înregistrare, autentificare, sesiune și deconectare, inclusiv mobil.
 - [x] API pentru asocierea explicită a comenzilor demonstrative încheiate și istoricul contului, cu izolarea accesului anonim.
-- [ ] Interfață Angular pentru asociere și istoricul contului; proprietatea coșului activ.
+- [x] Interfață Angular pentru asociere explicită și istoricul contului, cu paginare și protecție la schimbarea sesiunii.
+- [ ] Proprietatea coșului activ și sincronizarea între dispozitive.
 - [ ] Confirmarea e-mailului și recuperarea parolei.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.

@@ -1,6 +1,6 @@
 # Starea implementării
 
-Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 29 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
 
@@ -78,8 +78,8 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea fizică a coșurilor expirate urmează. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; compensarea integrală demonstrativă este implementată; activarea comercială și retururile urmează.
-- RabbitMQ este implementat pentru rezultatele rezervărilor Inventory → Ordering, cu Outbox/Inbox, retry și dead-letter. Comenzile rămân prin HTTP. Monitorizarea și reluarea individuală sunt implementate; extinderea la celelalte evenimente, alertele și retenția urmează.
+- Coșul demonstrativ este persistent pe server, fără asociere cu un cont sau sincronizare între dispozitive. Curățarea coșurilor expirate fără legături comerciale este implementată, cu simulare implicită. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; compensarea integrală demonstrativă este implementată; activarea comercială și retururile urmează.
+- RabbitMQ este implementat pentru rezultatele rezervărilor Inventory → Ordering, cu Outbox/Inbox, retry și dead-letter. Comenzile rămân prin HTTP. Monitorizarea și reluarea individuală sunt implementate; alertele locale și retenția selectivă sunt implementate. Extinderea la celelalte evenimente și operarea în producție rămân în backlog.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.
 - Categoriile au nume unice în întregul catalog, maximum 5 niveluri și maximum 50 de atribute efective (proprii și moștenite). Atributele sunt opționale, Text sau Number; nu există încă liste de valori, atribute obligatorii, conversii de unități sau ștergere de categorii/definiții. Codul, tipul și unitatea atributului rămân stabile. Se vând doar bucăți și ambalaje convertibile; fără kituri sau cantități fracționare.
@@ -96,12 +96,16 @@ Planul de continuare și condițiile automatizării sunt în [roadmap.md](roadma
 
 ## Conturi de client — API demonstrativ, 29 octombrie 2026
 
-Identity are înregistrare prin `/api/auth/register` numai în Development, cu validare, CSRF, limitare de cereri și tratarea duplicatelor/concurenței. Clienții pot utiliza sesiunea existentă fără rol Administrator. Nu sunt necesare migrații. Interfața Angular a fost adăugată în etapa următoare, descrisă mai jos. Confirmarea e-mailului, resetarea parolei și asocierea comenzilor rămân neimplementate. Vezi [customer-accounts.md](customer-accounts.md).
+Identity are înregistrare prin `/api/auth/register` numai în Development, cu validare, CSRF, limitare de cereri și tratarea duplicatelor/concurenței. Clienții pot utiliza sesiunea existentă fără rol Administrator. Nu sunt necesare migrații. Interfața Angular a fost adăugată în etapa următoare, descrisă mai jos. Confirmarea e-mailului și resetarea parolei rămân neimplementate; asocierea comenzilor este descrisă în etapele următoare. Vezi [customer-accounts.md](customer-accounts.md).
 
 ## Contul clientului în Angular — 29 octombrie 2026
 
-Pagina `/cont` permite înregistrare demonstrativă cu confirmarea parolei, autentificare, afișarea sesiunii și deconectare. Navigația este accesibilă și pe mobil. Starea se citește numai în browser și se reverifică la revenirea ferestrei în prim-plan; erorile sau răspunsurile incerte au reîncercare explicită. Parolele nu se persistă. Coșul și comenzile rămân anonime până la implementarea asocierii sigure cu contul.
+Pagina `/cont` permite înregistrare demonstrativă cu confirmarea parolei, autentificare, afișarea sesiunii și deconectare. Navigația este accesibilă și pe mobil. Starea se citește numai în browser și se reverifică la revenirea ferestrei în prim-plan; erorile sau răspunsurile incerte au reîncercare explicită. Parolele nu se persistă. Coșul rămâne anonim; comenzile încheiate pot fi asociate explicit contului.
 
 ## API pentru comenzile contului — 29 octombrie 2026
 
-Comenzile demonstrative confirmate/anulate, cu fluxul coșului încheiat, pot fi asociate explicit contului autentificat folosind cookie-ul original și CSRF Identity. Asocierea este atomică și idempotentă, cu un singur cont proprietar; istoricul anonim și retry-urile anonime nu mai expun comanda. Istoricul contului poate fi citit din alt browser. Interfața Angular pentru această operație și asocierea coșului activ rămân de implementat. [Protocol](account-order-ownership.md).
+Comenzile demonstrative confirmate/anulate, cu fluxul coșului încheiat, pot fi asociate explicit contului autentificat folosind cookie-ul original și CSRF Identity. Asocierea este atomică și idempotentă, cu un singur cont proprietar; istoricul anonim și retry-urile anonime nu mai expun comanda. Istoricul contului poate fi citit din alt browser. Interfața Angular este implementată în etapa de mai jos; asocierea coșului activ rămâne de implementat. [Protocol](account-order-ownership.md).
+
+## Istoricul și asocierea comenzilor în Angular — 29 octombrie 2026
+
+Pagina Contul meu include două liste paginate independent, detalii despre produse și client, confirmarea explicită a contului destinație și recuperarea rezultatului după răspuns pierdut. Cererile trimit identificatorul așteptat al contului, verificat pe server pentru a bloca schimbările de sesiune între afișare și confirmare. Erorile listelor sunt separate, iar deconectarea elimină istoricul afișat. Coșul activ și sincronizarea între dispozitive rămân în backlog.

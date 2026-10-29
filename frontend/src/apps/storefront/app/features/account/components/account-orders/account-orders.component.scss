@@ -1,0 +1,46 @@
+.orders {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid #dce2d7;
+  border-radius: 12px;
+  background: white;
+  overflow-wrap: anywhere;
+}
+p {
+  line-height: 1.7;
+  font-size: 14px;
+}
+button {
+  font: inherit;
+  padding: 10px 14px;
+  border: 1px solid #536848;
+  border-radius: 6px;
+  background: white;
+  color: #334d30;
+  cursor: pointer;
+  margin: 4px 8px 4px 0;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #748b56;
+  outline-offset: 3px;
+}
+.confirmation {
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid #536848;
+  border-radius: 8px;
+}
+.notice {
+  background: #edf4e7;
+  padding: 12px;
+}
+.error {
+  background: #ffebe6;
+  color: #8c2e20;
+  padding: 12px;
+}

@@ -73,7 +73,10 @@ test('uncertain login and failed logout require session verification', async ({ 
   await page.route('**/api/auth/me', (route) =>
     route.fulfill(
       authenticated
-        ? { status: 200, json: { email: 'session@example.test', isAdmin: true } }
+        ? {
+            status: 200,
+            json: { id: 'session-test-id', email: 'session@example.test', isAdmin: true },
+          }
         : { status: 401, json: {} },
     ),
   );
