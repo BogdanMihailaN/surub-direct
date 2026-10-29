@@ -7,12 +7,15 @@ public static class IdentityModule
 {
     public static IdentityBuilder AddStoreIdentity(this IServiceCollection s, string connection)
     {
+        s.AddScoped<SurubDirect.Identity.Application.Abstractions.ICustomerAccounts, SurubDirect.Identity.Infrastructure.Accounts.CustomerAccounts>();
+        s.AddScoped<SurubDirect.Identity.Application.Features.RegisterCustomer.RegisterCustomerHandler>();
         s.AddDbContext<StoreIdentityDbContext>(o => o.UseNpgsql(connection, n => n.MigrationsHistoryTable("__EFMigrationsHistory", "identity")));
         return s.AddIdentity<IdentityUser, IdentityRole>(o =>
         {
             o.Password.RequiredLength = 12;
             o.Lockout.MaxFailedAccessAttempts = 5;
             o.User.RequireUniqueEmail = true;
+            o.User.AllowedUserNameCharacters = string.Empty;
         }).AddEntityFrameworkStores<StoreIdentityDbContext>().AddDefaultTokenProviders();
     }
 
@@ -24,6 +27,8 @@ public static class IdentityModule
             await roles.CreateAsync(new("Administrator"));
         var users = services.GetRequiredService<UserManager<IdentityUser>>();
         var user = await users.FindByEmailAsync(email);
+        if (user is not null && !await users.IsInRoleAsync(user, "Administrator"))
+            throw new InvalidOperationException("Un cont existent fără rol Administrator nu poate fi promovat prin inițializare.");
         if (user == null)
         {
             user = new()

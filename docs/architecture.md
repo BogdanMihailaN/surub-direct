@@ -34,7 +34,7 @@ flowchart LR
 |---|---|---|
 | Catalog | Categorii, atribute tehnice, produse, variante, oferte, prețuri, publicare, compunerea catalogului cu disponibilitatea primită prin HTTP | `surub_catalog`: catalog, pricing |
 | Inventory | Recepții, corecții și ajustări idempotente, rezervări atomice/expirări, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
-| Identity | ASP.NET Identity, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
+| Identity | ASP.NET Identity, înregistrare demonstrativă clienți, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
 | Ordering | Persistența selecției și ciornei PF/PJ, recalculare prin Catalog HTTP; checkout dezactivat | `surub_ordering`: `ordering.Carts` |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
@@ -136,3 +136,7 @@ Ordering oferă [consultarea administrativă a comenzilor](admin-sales-orders.md
 Anularea integrală demonstrativă salvează auditul și intenția Restoring în Ordering, sub același lock de plan ca worker-ul. Inventory păstrează consumul original și jurnalul pozitiv separat Restorations. Confirmarea Restored finalizează Cancelled; răspunsurile incerte păstrează retry-ul persistent. Vezi `order-cancellation.md`.
 
 Registrul mesajelor eșuate și cererile de reluare aparțin Ordering. ACK din `.dead` urmează salvării arhivei, iar publicarea reluării este confirmată înainte de PublishedAt. Generația replay-id separă un eșec nou de o relivrare duplicată. Monitorizarea Outbox rămâne în Inventory, fără acces încrucișat la baze. Vezi `messaging-administration.md`.
+
+## Înregistrarea conturilor de client
+
+Înregistrarea demonstrativă aparține Identity: Application validează cererea printr-un handler și un port, Infrastructure utilizează UserManager, iar API aplică CSRF, limitare și disponibilitate numai în Development. Clienții nu primesc roluri administrative. Nu există acces la bazele Ordering și nici asociere automată a coșului/comenzilor după e-mail. [Contract și limite](customer-accounts.md).

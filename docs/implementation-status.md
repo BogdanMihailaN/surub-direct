@@ -93,3 +93,7 @@ Actualizat la 23 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 Rezultatele finale sunt în `verification.md`. Testele PostgreSQL rulează în baze distincte; testele de browser exercită procesele reale prin gateway, inclusiv accesul direct protejat la API-uri.
 
 Planul de continuare și condițiile automatizării sunt în [roadmap.md](roadmap.md).
+
+## Conturi de client — API demonstrativ, 29 octombrie 2026
+
+Identity are înregistrare prin `/api/auth/register` numai în Development, cu validare, CSRF, limitare de cereri și tratarea duplicatelor/concurenței. Clienții pot utiliza sesiunea existentă fără rol Administrator. Nu sunt necesare migrații. Interfața Angular, confirmarea e-mailului, resetarea parolei și asocierea comenzilor rămân neimplementate. Vezi [customer-accounts.md](customer-accounts.md).

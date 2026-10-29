@@ -36,6 +36,12 @@ public static class ServiceRegistration
         builder.Services.AddRateLimiter(o =>
         {
             o.RejectionStatusCode = 429;
+            o.AddFixedWindowLimiter("registration", x =>
+            {
+                x.PermitLimit = 10;
+                x.Window = TimeSpan.FromMinutes(1);
+                x.QueueLimit = 0;
+            });
             o.AddFixedWindowLimiter("login", x =>
             {
                 x.PermitLimit = 20;

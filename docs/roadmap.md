@@ -7,6 +7,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Servicii independente .NET cu Clean Architecture și gateway YARP; baze/credențiale separate.
 - [x] Catalog, variante, ambalaje, prețuri, taxonomie, imagini, import CSV și administrare.
 - [x] Identity: sesiune Administrator și CSRF, inclusiv direct pe servicii.
+- [x] API de înregistrare a clienților în Development, fără privilegii administrative, cu validare și protecție CSRF.
+- [ ] Interfață Angular pentru cont, confirmarea e-mailului, recuperarea parolei și asocierea sigură a coșului/comenzilor.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.
 

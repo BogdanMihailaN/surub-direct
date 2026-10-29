@@ -5,6 +5,7 @@ public static class EndpointRegistration
     {
         CsrfEndpoint.Map(app);
         LoginEndpoint.Map(app);
+        RegisterCustomerEndpoint.Map(app);
         LogoutEndpoint.Map(app);
         CurrentUserEndpoint.Map(app);
         SessionEndpoint.Map(app, app.Configuration);

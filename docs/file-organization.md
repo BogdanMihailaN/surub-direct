@@ -13,7 +13,7 @@ surub-direct/
 │   │   │   │   ├── SurubDirect.Store.{Application,Infrastructure}/
 │   │   │   │   └── SurubDirect.Catalog.Worker/
 │   │   │   ├── inventory/SurubDirect.Inventory.{Api,Application,Domain,Infrastructure,Contracts}/
-│   │   │   ├── identity/SurubDirect.Identity.{Api,Infrastructure}/
+│   │   │   ├── identity/SurubDirect.Identity.{Api,Application,Infrastructure}/
 │   │   │   ├── purchasing/SurubDirect.Purchasing.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   └── ordering/SurubDirect.Ordering.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   ├── gateway/SurubDirect.Gateway/
@@ -140,3 +140,7 @@ Retenția mesajelor eșuate aparține Ordering: portul IFailedMessageRetention �
 Colectorul local din scripts/operations separă validarea evenimentelor (events.py), scrierea/rotația (collector.py), consultarea (reader.py) și drenarea ieșirii proceselor (streams.py). Testele Python de infrastructură sunt în backend/tests/SurubDirect.Tooling.Tests/Unit; datele generate rămân exclusiv în work/operations.
 
 Curățarea coșurilor expirate are portul IExpiredCartCleanup în Application/Abstractions/Persistence, rezultatul în Contracts/Carts și repository separat în Infrastructure/Persistence/Repositories. API separă configurația, înregistrarea și worker-ul. Testele PostgreSQL sunt în ExpiredCartCleanupTests; colectorul local permite doar contoarele evenimentelor 7400/7401.
+
+## Înregistrarea clienților
+
+Identity are portul `Application/Abstractions/ICustomerAccounts` și handler-ul `Application/Features/RegisterCustomer/RegisterCustomerHandler`. Adaptorul UserManager este în `Infrastructure/Accounts`; endpoint-ul și cererea sunt separate în `Api/Endpoints/Authentication`. Testele de validare sunt în Unit, iar verificările HTTP cu PostgreSQL în `Integration/Identity`. Detalii în [customer-accounts.md](customer-accounts.md).

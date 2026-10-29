@@ -334,3 +334,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - **9 scenarii browser trecute**: persistența coșului (4), ciorna clientului PF/PJ (3), pregătire/rezervare și securitate (2).
 - Worker-ul real a emis evenimentul 7400 în jurnalul comun: DryRun=true, Candidates=0, Removed=0. Eliminarea efectivă a fost testată numai în baza izolată; coșurile locale nu au fost șterse.
 - Frontend-ul nu a fost modificat. Aplicațiile pornite pentru verificări au fost oprite la final; automatizarea chatului rămâne oprită.
+
+## API pentru conturi de client — 29 octombrie 2026
+
+- `python3 scripts/dev.py test`: **319 teste .NET și 10 teste Python trecute**. Prima rulare după reluarea lucrului a identificat o configurație nullable incorectă, corectată; următoarea nu a avut Docker disponibil. După pornirea Docker, suita finală a trecut integral.
+- Cazuri noi: validarea datelor și limitelor, CSRF direct pe Identity, înregistrare fără roluri, autentificare/deconectare, acces administrativ refuzat, duplicate fără schimbarea parolei, înregistrări concurente, dezactivare în afara Development și protecția inițializării administratorului împotriva promovării unui client existent.
+- Build complet backend: **0 erori, 0 avertismente**. Nu există schimbări de schemă sau migrații noi.
+- **4 scenarii HTTP Playwright trecute**, prin `customer-account-api.spec.ts` și `services.spec.ts`: înregistrare/autentificare prin gateway, refuzul accesului administrativ pentru clienți inclusiv direct pe servicii, izolarea rutelor interne și regresie CSRF pentru administrator.
+- Nu s-a modificat sursa Angular; interfața contului rămâne în backlog. Scenariul HTTP a creat un cont demonstrativ fără privilegii, cu adresă `example.test`, în baza locală Identity. Aplicațiile pornite pentru verificări au fost oprite; PostgreSQL și RabbitMQ rămân disponibile.
+- `git diff --check` și verificarea fișierelor modificate împotriva secretelor locale: trecute. Automatizarea chatului rămâne oprită.
