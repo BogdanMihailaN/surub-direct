@@ -395,3 +395,13 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Au fost corectați selectori de test prea largi: textul explicativ despre coșul gol și suprapunerea temporară a mesajelor de salvare/sincronizare. Scenariile afectate au fost reluate cu succes.
 - Afișarea la 390 px a fost verificată vizual și prin măsurarea viewport-ului, fără depășire orizontală. Screenshot privat: `work/account-cart-mobile.png` (exclus din Git).
 - Nu sunt modificări backend sau de schemă; suita backend nu a fost repetată. Pregătirea/confirmarea comenzilor din coșul contului rămân în backlog. Aplicațiile de test sunt oprite la final; automatizarea rămâne oprită.
+
+## API pentru pregătirea și confirmarea comenzilor pe cont — 30 octombrie 2026
+
+- `python3 scripts/dev.py test`: **335 teste .NET și 10 teste Python trecute**. Cele 4 teste noi acoperă confirmări concurente/idempotente, istoricul privat din momentul creării comenzii, refuzul accesului anonim sau al altui cont chiar cu identificatorul intern cunoscut, eliberarea rezervării înainte de reluarea editării și păstrarea selecției după confirmare eșuată.
+- Scenariul API Playwright a trecut pe servicii reale: verifică autentificarea, CSRF și contul așteptat prin gateway și direct, rezervarea a 10 bucăți din 100, eliberarea integrală la anulare, pregătirea din nou și confirmarea din al doilea dispozitiv, consum unic (90 rămase), reîncercarea idempotentă și istoricul privat după golirea coșului. Scenariul a fost reluat cu succes după repornirea mediului local.
+- Nu sunt modificări de schemă sau de sursă Angular. Logica de pregătire este reutilizată în Application; repository-urile verifică simultan proprietarul intern și AccountId. Comenzile contului primesc AccountId/AccountLinkedAt la crearea intenției, în aceeași tranzacție cu planul.
+- Interfața Angular de pregătire/confirmare pe cont rămâne de implementat. Automatizarea rămâne oprită.
+
+- Rularea finală Playwright: **5/5 scenarii trecute** (API pe cont și cele 4 regresii de pregătire/comenzi anonime). Regresiile de browser folosesc buildurile de producție Angular existente, servite local cu proxy către gateway. Încercările anterioare au întâlnit Chromium lipsă, servicii/infrastructură oprite și un timeout la afișarea eliberării; după refacerea mediului, toate cele cinci scenarii au trecut împreună.
+- `git diff --check` și scanarea modificărilor pentru secrete locale au trecut. Aplicațiile pornite pentru verificare au fost oprite la final; PostgreSQL și RabbitMQ rămân disponibile local.

@@ -7,12 +7,12 @@ using SurubDirect.Ordering.Domain;
 namespace SurubDirect.Ordering.Infrastructure;
 internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
 {
-    public async Task<DemoOrderDto> Confirm(string owner, Guid id, CancellationToken ct)
+    public async Task<DemoOrderDto> Confirm(string owner, Guid id, CancellationToken ct, string? accountId = null)
     {
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
-        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
-        var existing = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == null, ct);
+        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} AND "AccountId" IS NOT DISTINCT FROM {accountId} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
+        var existing = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == accountId, ct);
         if (existing is not null)
         {
             await tx.CommitAsync(ct);
@@ -25,7 +25,7 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         var plan = await db.ReservationPlans.FromSqlInterpolated($"""SELECT * FROM ordering."ReservationPlans" WHERE "Id"={id} FOR UPDATE""").SingleAsync(ct);
         plan.Confirm(DateTimeOffset.UtcNow);
         var snapshot = await db.PreparedCarts.AsNoTracking().SingleAsync(x => x.Id == id, ct);
-        var order = DemoOrder.Create(owner, snapshot, DateTimeOffset.UtcNow);
+        var order = DemoOrder.Create(owner, snapshot, DateTimeOffset.UtcNow, cart.AccountId);
         db.DemoOrders.Add(order);
         await db.SaveChangesAsync(ct);
         await tx.CommitAsync(ct);
@@ -42,12 +42,12 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         return new(items.Select(DemoOrderProjection.Map).ToArray(), page, total, 25);
     }
 
-    public async Task Complete(string owner, Guid id, CancellationToken ct)
+    public async Task Complete(string owner, Guid id, CancellationToken ct, string? accountId = null)
     {
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
-        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
-        var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == null, ct) ?? throw new BusinessException("Comanda nu este accesibilă.", 404);
+        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} AND "AccountId" IS NOT DISTINCT FROM {accountId} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
+        var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == accountId, ct) ?? throw new BusinessException("Comanda nu este accesibilă.", 404);
         if (order.Status is "Confirming" or "Cancelling")
             throw new BusinessException("Confirmarea sau anularea este încă în curs.", 409);
         if (cart.PreparedId is null)

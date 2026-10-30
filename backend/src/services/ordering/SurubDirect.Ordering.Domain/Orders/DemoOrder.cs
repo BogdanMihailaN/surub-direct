@@ -24,16 +24,23 @@ public sealed class DemoOrder
     public DateTimeOffset? CancelledAt { get; private set; }
     public DateTimeOffset? FinalizedAt { get; private set; }
 
-    public static DemoOrder Create(string owner, PreparedCart snapshot, DateTimeOffset now) => new()
+    public static DemoOrder Create(string owner, PreparedCart snapshot, DateTimeOffset now, string? accountId = null)
     {
-        Id = snapshot.Id,
-        OwnerHash = owner,
-        CartId = snapshot.CartId,
-        Customer = snapshot.Customer.Normalize(),
-        Lines = snapshot.Lines.ToList(),
-        Currency = snapshot.Currency,
-        CreatedAt = now
-    };
+        if (accountId is not null && (string.IsNullOrWhiteSpace(accountId) || accountId.Length > 450))
+            throw new BusinessException("Identificatorul contului nu este valid.");
+        return new()
+        {
+            Id = snapshot.Id,
+            OwnerHash = owner,
+            AccountId = accountId,
+            AccountLinkedAt = accountId is null ? null : now,
+            CartId = snapshot.CartId,
+            Customer = snapshot.Customer.Normalize(),
+            Lines = snapshot.Lines.ToList(),
+            Currency = snapshot.Currency,
+            CreatedAt = now
+        };
+    }
     public void LinkAccount(string accountId, DateTimeOffset now)
     {
         if (string.IsNullOrWhiteSpace(accountId) || accountId.Length > 450)

@@ -13,7 +13,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Interfață Angular pentru asociere explicită și istoricul contului, cu paginare și protecție la schimbarea sesiunii.
 - [x] API separat pentru coșul contului: transfer explicit din browser, acces din două sesiuni și versiuni concurente.
 - [x] Interfață Angular pentru coșul contului: transfer confirmat, editarea selecției, consultarea/ștergerea ciornei și recitire după conflicte.
-- [ ] Pregătirea/confirmarea comenzilor pentru coșul contului, adăugarea directă din catalog și editarea datelor PF/PJ în cont.
+- [x] API pentru pregătirea/confirmarea comenzilor din coșul contului, cu rezervări și istoric privat.
+- [ ] Interfața de pregătire/confirmare pe cont, adăugarea directă din catalog și editarea datelor PF/PJ în cont.
 - [ ] Confirmarea e-mailului și recuperarea parolei.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.

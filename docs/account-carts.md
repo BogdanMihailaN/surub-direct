@@ -44,6 +44,24 @@ Sesiunea se reverifică la focus, iar componentele cu date de cont sunt eliminat
 
 Produsele adăugate din catalog și pagina `/cos` folosesc în continuare coșul anonim. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea selecțiilor și adăugarea directă din catalog în coșul contului nu sunt implementate. Formularul de editare a datelor PF/PJ rămâne în coșul anonim; în cont există consultarea și ștergerea ciornei copiate.
 
-Pregătirea/confirmarea comenzilor din coșul contului rămân de implementat; interfața anunță această limită și nu expune acțiuni inexistente. Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
+API-ul de pregătire/confirmare a comenzilor din coșul contului este implementat (secțiunea de mai jos); conectarea lui la interfața Angular urmează. Interfața anunță această limită și nu expune încă acțiunile de pregătire. Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
 
 Checkout-ul comercial rămâne dezactivat. Datele sunt demonstrative, iar `noindex` rămâne activ.
+
+## API de pregătire și comandă pe cont — 30 octombrie 2026
+
+Rutele de mai jos sunt sub `/api/v1/ordering/account/cart/preparation`. Toate necesită sesiune Identity și parametrul `expectedAccountId`; mutațiile cer CSRF Identity. Sunt disponibile numai în Development și răspund fără cache, inclusiv prin acces direct la Ordering.
+
+| Metodă și sufix | Comportament |
+| --- | --- |
+| POST | Pregătește selecția folosind `requestId`, `cartId`, `version`; revalidează Catalog, creează snapshot-ul și planul de rezervare atomic. |
+| GET | Citește snapshot-ul și starea rezervării/comenzii pentru coșul contului; 204 dacă nu există pregătire. |
+| POST `/{id}/cancel` | Cere eliberarea rezervării; după starea terminală, repetarea detașează pregătirea și păstrează selecția/ciorna. |
+| POST `/{id}/confirm` | Cere confirmarea demonstrativă și consumul rezervării, idempotent după identificatorul pregătirii. |
+| POST `/{id}/complete` | Încheie fluxul după confirmare/eșec/anulare; golește selecția și ciorna numai după confirmare sau anulare, păstrând istoricul. |
+
+Comanda primește AccountId și AccountLinkedAt chiar la crearea intenției de confirmare, în aceeași tranzacție cu planul. Apare direct în istoricul contului, inclusiv în starea Confirming sau Failed, și nu este expusă istoricului anonim. Nu necesită asociere manuală ulterioară.
+
+Repository-urile verifică atât identificatorul intern al coșului, cât și AccountId. Apelurile anonime folosesc obligatoriu AccountId null; chiar cunoașterea identificatorului intern nu permite citirea, anularea sau confirmarea unui coș de cont. Handler-ele de cont rezolvă coșul după identitatea validată, fără acceptarea unui owner hash din cerere.
+
+Logica de recalculare și construire a pregătirii este comună fluxurilor anonim și autentificat. Inventory rămâne proprietarul stocului; coordonatorul și Outbox/Inbox existente păstrează idempotenta consumului/eliberării. Confirmarea ori anularea în curs blochează încheierea prematură. La confirmare eșuată, selecția și datele clientului rămân disponibile pentru corectare; comanda eșuată rămâne în istoricul contului.

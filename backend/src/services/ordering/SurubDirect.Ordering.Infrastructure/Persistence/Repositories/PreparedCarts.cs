@@ -7,10 +7,10 @@ using SurubDirect.Ordering.Domain;
 namespace SurubDirect.Ordering.Infrastructure;
 internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
 {
-    public async Task<PreparedCartDto?> Read(string owner, CancellationToken ct)
+    public async Task<PreparedCartDto?> Read(string owner, CancellationToken ct, string? accountId = null)
     {
         await using var tx = await db.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead, ct);
-        var cart = await db.Carts.AsNoTracking().SingleOrDefaultAsync(x => x.OwnerHash == owner, ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
+        var cart = await db.Carts.AsNoTracking().SingleOrDefaultAsync(x => x.OwnerHash == owner && x.AccountId == accountId, ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
         cart.EnsureActive(DateTimeOffset.UtcNow);
         if (cart.PreparedId is not Guid id)
             return null;
@@ -21,11 +21,11 @@ internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
         return PreparedCartProjection.Map(snapshot, plan, order);
     }
 
-    public async Task<PreparedCartDto> Save(string owner, PreparedCart snapshot, ReservationPlan plan, CancellationToken ct)
+    public async Task<PreparedCartDto> Save(string owner, PreparedCart snapshot, ReservationPlan plan, CancellationToken ct, string? accountId = null)
     {
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
-        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
+        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} AND "AccountId" IS NOT DISTINCT FROM {accountId} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
         cart.EnsureActive(DateTimeOffset.UtcNow);
         if (cart.Id != snapshot.CartId)
             throw new BusinessException("Coșul s-a modificat.", 409);
@@ -47,11 +47,11 @@ internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
         return PreparedCartProjection.Map(snapshot, plan);
     }
 
-    public async Task Cancel(string owner, Guid id, CancellationToken ct)
+    public async Task Cancel(string owner, Guid id, CancellationToken ct, string? accountId = null)
     {
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
-        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
+        var cart = await db.Carts.FromSqlInterpolated($"""SELECT * FROM ordering."Carts" WHERE "OwnerHash"={owner} AND "AccountId" IS NOT DISTINCT FROM {accountId} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Coșul nu este accesibil.", 401);
         if (cart.PreparedId is null)
         {
             await tx.CommitAsync(ct);

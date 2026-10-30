@@ -1,6 +1,6 @@
 # Starea implementării
 
-Actualizat la 29 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 30 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
 
@@ -78,7 +78,7 @@ Actualizat la 29 octombrie 2026. Proiect de dezvoltare locală, cu servicii sepa
 
 ## Limite și etapele următoare
 
-- Coșul anonim demonstrativ este persistent pe server. API-ul și interfața din Contul meu permit transfer explicit, editarea selecției și acces din două sesiuni; pregătirea comenzilor pentru acest coș urmează. Curățarea coșurilor expirate fără legături comerciale este implementată, cu simulare implicită. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; compensarea integrală demonstrativă este implementată; activarea comercială și retururile urmează.
+- Coșul anonim demonstrativ este persistent pe server. API-ul și interfața din Contul meu permit transfer explicit, editarea selecției și acces din două sesiuni; API-ul de pregătire/confirmare este implementat, iar conectarea lui la Angular urmează. Curățarea coșurilor expirate fără legături comerciale este implementată, cu simulare implicită. Comenzile demonstrative sunt implementate; comenzile comerciale, checkout-ul, retururile, plățile, curierul și facturarea nu sunt activate/implementate. Rezervările, expirările și legarea la ciorna clientului există în fluxul demonstrativ; consumul este legat la confirmarea demonstrativă; compensarea integrală demonstrativă este implementată; activarea comercială și retururile urmează.
 - RabbitMQ este implementat pentru rezultatele rezervărilor Inventory → Ordering, cu Outbox/Inbox, retry și dead-letter. Comenzile rămân prin HTTP. Monitorizarea și reluarea individuală sunt implementate; alertele locale și retenția selectivă sunt implementate. Extinderea la celelalte evenimente și operarea în producție rămân în backlog.
 - Identity folosește validarea la distanță a cookie-ului, nu OAuth/OIDC. API-urile administrative depind de disponibilitatea Identity. Sunt necesare TLS intern, rotație de credențiale, MFA și gestionarea cheilor înainte de producție.
 - Catalog depinde sincron de Inventory pentru răspunsul agregat. Nu există cache/proiecție de disponibilitate, circuit breaker sau orchestrator de producție.
@@ -121,3 +121,7 @@ Ordering implementează un coș separat pe cont, cu creare/citire, selecție, ci
 ## Coșul contului în Angular — 30 octombrie 2026
 
 Pagina Contul meu afișează coșul contului, permite creare/reîncepere explicită, modificarea cantităților, eliminarea articolelor, recalcularea prețurilor și consultarea/ștergerea ciornei copiate. Transferul din browser confirmă contul și selecția, cu copierea datelor clientului debifată implicit. Răspunsurile pierdute/conflictele recitesc starea fără repetarea mutației; schimbarea sesiunii și notificările din alt tab elimină datele vechi. Pagina `/cos` și adăugarea din catalog rămân anonime; transferul cere un coș de cont gol. Pregătirea comenzilor din coșul contului urmează. [Flux și limite](account-carts.md).
+
+## API pentru rezervări și comenzi pe cont — 30 octombrie 2026
+
+Coșul contului are endpoint-uri de pregătire, citire, anulare, confirmare demonstrativă și încheiere a fluxului. Snapshot-ul și planul folosesc regulile existente de recalculare/rezervare; confirmarea creează comanda deja asociată contului. Identitatea contului este verificată și în repository-uri, separând accesul anonim chiar dacă un identificator intern este cunoscut. Istoricul contului păstrează rezultatele, iar eșecurile de confirmare păstrează selecția pentru corectare. Interfața Angular de pregătire pe cont urmează. [Protocol](account-carts.md).

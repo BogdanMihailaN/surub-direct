@@ -15,6 +15,11 @@ public static class OrderingModule
         services.AddScoped<ReplaceAccountCartHandler>();
         services.AddScoped<SaveAccountCartCustomerHandler>();
         services.AddScoped<ImportGuestCartHandler>();
+        services.AddScoped<PrepareAccountCartHandler>();
+        services.AddScoped<GetAccountPreparationHandler>();
+        services.AddScoped<CancelAccountPreparationHandler>();
+        services.AddScoped<ConfirmAccountOrderHandler>();
+        services.AddScoped<CompleteAccountOrderHandler>();
         services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
         services.AddScoped<IExpiredCartCleanup, ExpiredCartCleanup>();
         services.AddScoped<CreateCartHandler>();
