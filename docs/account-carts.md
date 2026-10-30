@@ -30,8 +30,20 @@ Transferul refuză o sursă goală/pregătită, o destinație nevidă/pregătit�
 
 Crearea inițială este serializată printr-un advisory lock tranzacțional pe cont, suplimentar indexului unic. Editările sunt serializate pe rând și verifică versiunea, astfel încât două dispozitive nu se suprascriu. Expirarea este de 30 de zile, fără prelungire implicită la citire. Reînceperea unui coș expirat este explicită; o pregătire activă o blochează. Curățarea periodică existentă poate elimina coșurile expirate după perioada de grație numai dacă nu au pregătiri sau comenzi.
 
+## Interfața Angular — 30 octombrie 2026
+
+Pagina `/cont` afișează coșul contului după verificarea sesiunii. Permite creare, reîncărcare, schimbarea cantităților, eliminarea articolelor și consultarea prețurilor estimate prin recalcularea publică Ordering. Datele clientului copiate pot fi consultate și șterse separat. Reînceperea după expirare cere confirmare explicită.
+
+Transferul afișează e-mailul contului destinație și selecția browserului înainte de confirmare. Copierea datelor clientului/adreselor este debifată implicit. Renunțarea nu trimite nicio mutație. Lipsa unei destinații create, un coș de cont nevid, o pregătire sau o eroare de citire blochează transferul.
+
+După orice mutație sunt recitite ambele coșuri. Un răspuns pierdut sau un conflict nu repetă automat salvarea: interfața afișează explicația și starea recitită. Transferul invalidează și coșul anonim din antet și notifică celelalte taburi. Notificările localStorage conțin doar un semnal aleator, fără produse, identificatori de cont sau date personale. Dacă stocarea browserului este restricționată, verificarea versiunilor pe server rămâne autoritativă.
+
+Sesiunea se reverifică la focus, iar componentele cu date de cont sunt eliminate la reverificare/deconectare. Răspunsurile dintr-o instanță distrusă sau invalidate de alt tab nu pot restaura datele afișate. Fiecare cerere de cont trimite `expectedAccountId`. Erorile celor două coșuri sunt independente și nu sunt afișate ca selecții goale.
+
 ## Limite și continuare
 
-Această etapă implementează **API-ul**, nu schimbă magazinul Angular. Pagina `/cos` folosește în continuare coșul anonim. Urmează interfața de alegere/transfer explicit, recitirea pe dispozitive și conectarea pregătirii/confirmării comenzilor la coșul contului, cu păstrarea izolării după logout. Nu sunt expuse încă operații de pregătire pentru coșul contului. Nu există sincronizare push/WebSocket; actualizările se recitesc prin API și conflictele se detectează prin versiune.
+Produsele adăugate din catalog și pagina `/cos` folosesc în continuare coșul anonim. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea selecțiilor și adăugarea directă din catalog în coșul contului nu sunt implementate. Formularul de editare a datelor PF/PJ rămâne în coșul anonim; în cont există consultarea și ștergerea ciornei copiate.
+
+Pregătirea/confirmarea comenzilor din coșul contului rămân de implementat; interfața anunță această limită și nu expune acțiuni inexistente. Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
 
 Checkout-ul comercial rămâne dezactivat. Datele sunt demonstrative, iar `noindex` rămâne activ.

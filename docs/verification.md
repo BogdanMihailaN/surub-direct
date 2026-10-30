@@ -385,3 +385,13 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - **2 scenarii API Playwright trecute**: noul flux de coș al contului și regresia înregistrării fără privilegii administrative. Sunt verificate sesiunea, CSRF Identity și contul așteptat prin gateway și direct pe Ordering, absența cookie-ului anonim pentru coșul contului, transferul și refuzul repetării, accesul din a doua sesiune, conflictul de versiune, izolarea altui cont și refuzul accesului după logout.
 - Nu există schimbări ale sursei Angular; buildurile Angular nu au fost repetate. Interfața existentă continuă să folosească coșul anonim. Pregătirea comenzilor din coșul contului și interfața de transfer rămân de implementat.
 - Aplicațiile pornite pentru testare sunt oprite la final; automatizarea rămâne oprită.
+
+## Interfața coșului de cont — 30 octombrie 2026
+
+- `npm run build`: builduri de producție storefront (browser + SSR) și admin trecute, cu TypeScript și template-uri strict verificate.
+- **25 de scenarii Playwright distincte trecute**, în rulările acestei etape: 6 noi pentru coșul de cont, 7 regresii pentru cont/istoric, 8 pentru persistența/reverificarea coșului anonim și 4 pentru catalog.
+- Testul pe servicii reale acoperă crearea coșului în UI, transferul confirmat cu ciornă PF și copiere debifată implicit, răspuns HTTP pierdut după commit, golirea sursei și actualizarea antetului, persistență după reload, acces din al doilea browser fără cookie anonim, refuzul unei versiuni vechi, ștergerea datelor clientului și eliminarea articolului, apoi deconectare.
+- Testele controlate acoperă erori independente fără rezultate fals goale, renunțare fără mutație, cont schimbat între selecție și confirmare, răspuns de citire invalidat din alt tab, conflict de editare și reîncepere după expirare numai cu confirmare. Confirmările primesc focus pentru navigarea cu tastatura.
+- Au fost corectați selectori de test prea largi: textul explicativ despre coșul gol și suprapunerea temporară a mesajelor de salvare/sincronizare. Scenariile afectate au fost reluate cu succes.
+- Afișarea la 390 px a fost verificată vizual și prin măsurarea viewport-ului, fără depășire orizontală. Screenshot privat: `work/account-cart-mobile.png` (exclus din Git).
+- Nu sunt modificări backend sau de schemă; suita backend nu a fost repetată. Pregătirea/confirmarea comenzilor din coșul contului rămân în backlog. Aplicațiile de test sunt oprite la final; automatizarea rămâne oprită.

@@ -5,8 +5,8 @@
     Cont demonstrativ. Confirmarea e-mailului și recuperarea parolei nu sunt încă disponibile.
   </p>
   <p class="intro">
-    Coșul activ rămâne în acest browser. Comenzile încheiate pot fi asociate explicit contului.
-    Folosește date de test.
+    Poți transfera explicit coșul browserului în cont și poți asocia comenzile încheiate. Folosește
+    date de test.
   </p>
   @if (store.status() === 'loading') {
     <p role="status">Se verifică sesiunea…</p>
@@ -34,6 +34,7 @@
     </div>
   }
   @if (store.status() === 'authenticated' && store.session(); as session) {
+    <sd-account-cart [session]="session" />
     <sd-account-orders [session]="session" />
   }
   @if (store.status() === 'guest') {

@@ -6,7 +6,7 @@ import { CartSelection } from '../models/cart-selection.model';
 import { StoredCart } from '../models/stored-cart.model';
 import { CartPersistenceApi } from '../data-access/cart-persistence-api.service';
 import { CART_STORAGE_KEY, parseCart } from '../data-access/cart-storage';
-const CHANGE_KEY = 'surub-direct.cart.changed';
+import { CART_CHANGE_KEY } from '../data-access/cart-change-key';
 @Injectable({ providedIn: 'root' })
 export class CartStore {
   private readonly api = inject(CartPersistenceApi);
@@ -32,7 +32,7 @@ export class CartStore {
     afterNextRender(() => {
       void this.reload();
       const sync = (event: StorageEvent) => {
-        if (event.key === CHANGE_KEY) {
+        if (event.key === CART_CHANGE_KEY) {
           this.invalidate('Coșul a fost modificat în alt tab. Reîncarcă pentru a continua.');
         }
       };
@@ -63,14 +63,15 @@ export class CartStore {
     this.canRestart.set(false);
     this.error.set(message);
   }
-  revalidate() {
+  revalidate(notifyOthers = false) {
+    if (notifyOthers) this.notify();
     this.invalidate('Coșul trebuie reverificat. Reîncarcă pentru a continua.');
     // An in-flight mutation may still commit. Keep it locked until an explicit reload.
     if (!this.busy()) void this.reload();
   }
   private notify() {
     try {
-      localStorage.setItem(CHANGE_KEY, crypto.randomUUID());
+      localStorage.setItem(CART_CHANGE_KEY, crypto.randomUUID());
     } catch {
       /* Server persistence remains available. */
     }

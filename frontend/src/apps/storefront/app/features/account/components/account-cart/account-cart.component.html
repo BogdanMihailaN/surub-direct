@@ -1,0 +1,184 @@
+<section class="cart" aria-labelledby="account-cart-title" [attr.aria-busy]="state.busy()">
+  <h2 id="account-cart-title">Coșul contului</h2>
+  <p>
+    Selecția salvată aici este disponibilă când te autentifici pe alt dispozitiv. Folosește
+    „Reîncarcă coșurile” pentru a vedea modificările recente.
+  </p>
+  <p>
+    Produsele adăugate din catalog ajung în <a routerLink="/cos">coșul browserului</a>. Le poți
+    transfera aici numai când coșul contului este gol. Pregătirea comenzilor din acest coș nu este
+    încă disponibilă.
+  </p>
+  <button type="button" (click)="state.load(session().id)" [disabled]="state.busy()">
+    Reîncarcă coșurile
+  </button>
+  @if (state.busy()) {
+    <p role="status">Sincronizăm coșurile…</p>
+  }
+  @if (state.error()) {
+    <p role="alert" class="error">{{ state.error() }}</p>
+  }
+  @if (state.notice()) {
+    <p role="status" class="notice">{{ state.notice() }}</p>
+  }
+  @if (state.stale()) {
+    <p>Conținutul trebuie reconfirmat de server.</p>
+  } @else {
+    @if (state.accountError()) {
+      <p role="alert" class="error">Coșul contului: {{ state.accountError() }}</p>
+    }
+    @if (state.accountStatus() === 'expired') {
+      <button type="button" (click)="selectRestart()" [disabled]="state.busy()">
+        Începe un coș de cont nou
+      </button>
+    }
+    @if (state.accountStatus() === 'ready' && !state.account()) {
+      <p>Nu ai creat încă un coș pentru acest cont.</p>
+      <button type="button" (click)="state.create()" [disabled]="state.busy()">
+        Creează coșul contului
+      </button>
+    }
+    @if (state.account(); as cart) {
+      <p>Valabil până la {{ cart.expiresAt | date: 'dd.MM.yyyy' }}.</p>
+      @for (line of cart.lines; track line.offerId) {
+        <sd-cart-line
+          [selection]="line"
+          [detail]="detail(line.offerId)"
+          [disabled]="state.locked()"
+          (changed)="state.set($event)"
+          (removed)="state.remove($event)"
+        />
+      } @empty {
+        <p>Coșul contului este gol.</p>
+      }
+      @if (cart.preparedId) {
+        <p>Există o pregătire activă. Editarea și transferul sunt blocate.</p>
+      }
+      @if (pricing.error()) {
+        <p role="alert" class="error">{{ pricing.error() }}</p>
+      }
+      @if (pricing.quote(); as quote) {
+        @if (quote.grossTotal !== null) {
+          <p>
+            Total estimat:
+            <strong>{{ quote.grossTotal | number: '1.2-2' }} {{ quote.currency }} cu TVA</strong>.
+            Transportul nu este inclus.
+          </p>
+        }
+      }
+      @if (cart.customer; as customer) {
+        <details>
+          <summary>Datele clientului salvate în coș</summary>
+          <p>{{ customer.fullName }} · {{ customer.email }} · {{ customer.phone }}</p>
+          @if (customer.companyName) {
+            <p>
+              {{ customer.companyName }} · {{ customer.taxId }} · {{ customer.registrationNumber }}
+            </p>
+          }
+          <p>
+            Livrare: {{ customer.shippingAddress.street }}, {{ customer.shippingAddress.city }},
+            {{ customer.shippingAddress.county }}, {{ customer.shippingAddress.postalCode }},
+            {{ customer.shippingAddress.country }}
+          </p>
+          @if (customer.billingSameAsShipping) {
+            <p>Facturare la aceeași adresă.</p>
+          }
+          @if (customer.billingAddress; as address) {
+            <p>
+              Facturare: {{ address.street }}, {{ address.city }}, {{ address.county }},
+              {{ address.postalCode }}, {{ address.country }}
+            </p>
+          }
+          <button type="button" (click)="state.clearCustomer()" [disabled]="state.locked()">
+            Șterge datele clientului din cont
+          </button>
+        </details>
+      }
+    }
+    <div class="browser-cart">
+      <h3>Transfer din coșul browserului</h3>
+      @if (state.browserError()) {
+        <p role="alert" class="error">Coșul browserului: {{ state.browserError() }}</p>
+      }
+      @if (state.browserReady()) {
+        @if (state.browser()?.lines?.length) {
+          <p>{{ state.browser()!.lines.length }} ambalaje distincte în coșul browserului.</p>
+          @if (state.browser()?.preparedId) {
+            <p>Finalizează sau anulează pregătirea din coșul browserului înainte de transfer.</p>
+          }
+          @if (state.account()?.lines?.length) {
+            <p>
+              Coșul contului conține deja produse. Transferul nu le suprascrie și nu îmbină
+              selecțiile.
+            </p>
+          }
+          <button type="button" (click)="selectTransfer()" [disabled]="!state.canTransfer()">
+            Transferă în cont
+          </button>
+        } @else {
+          <p>Coșul browserului este gol.</p>
+        }
+      }
+    </div>
+  }
+  @if (state.transfer(); as selected) {
+    <div
+      #confirmation
+      class="confirmation"
+      tabindex="-1"
+      role="group"
+      aria-label="Confirmare transfer coș"
+    >
+      <h3>Confirmă contul destinație</h3>
+      <p>
+        Transferi {{ selected.source.lines.length }} ambalaje distincte în contul
+        <strong>{{ session().email }}</strong
+        >. Coșul browserului va fi golit, inclusiv de datele clientului. Comenzile vechi nu sunt
+        mutate.
+      </p>
+      @for (line of selected.source.lines; track line.offerId) {
+        <p>{{ line.productSlug }} · {{ line.packs }} ambalaje</p>
+      }
+      @if (selected.source.customer) {
+        <label
+          ><input
+            type="checkbox"
+            [ngModel]="includeCustomer()"
+            (ngModelChange)="includeCustomer.set($event)"
+          />
+          Copiază și datele clientului și adresele în cont</label
+        >
+      }
+      <button
+        type="button"
+        (click)="state.confirmTransfer(includeCustomer())"
+        [disabled]="state.busy()"
+      >
+        Confirmă transferul
+      </button>
+      <button type="button" (click)="state.transfer.set(null)" [disabled]="state.busy()">
+        Renunță la transfer
+      </button>
+    </div>
+  }
+  @if (state.restarting()) {
+    <div
+      #confirmation
+      class="confirmation"
+      tabindex="-1"
+      role="group"
+      aria-label="Confirmare reîncepere coș"
+    >
+      <p>
+        Începi un coș gol pentru {{ session().email }}. Selecția și datele clientului din coșul
+        expirat vor fi eliminate.
+      </p>
+      <button type="button" (click)="state.restart()" [disabled]="state.busy()">
+        Confirmă coșul nou
+      </button>
+      <button type="button" (click)="state.restarting.set(false)" [disabled]="state.busy()">
+        Renunță
+      </button>
+    </div>
+  }
+</section>
