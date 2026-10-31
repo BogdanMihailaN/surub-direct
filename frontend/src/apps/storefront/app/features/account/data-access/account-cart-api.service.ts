@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { ApiClient } from '@shared/http/api-client.service';
 import { StoredCart } from '../../cart/models/stored-cart.model';
 import { CartSelection } from '../../cart/models/cart-selection.model';
+import { CustomerDraft } from '../../cart/models/customer-draft.model';
 @Injectable({ providedIn: 'root' })
 export class AccountCartApi {
   private readonly api = inject(ApiClient);
@@ -26,11 +27,11 @@ export class AccountCartApi {
       lines,
     });
   }
-  clearCustomer(accountId: string, cart: StoredCart) {
+  saveCustomer(accountId: string, cart: StoredCart, customer: CustomerDraft | null) {
     return this.api.write<StoredCart>('PUT', this.path(accountId, '/customer'), {
       cartId: cart.id,
       version: cart.version,
-      customer: null,
+      customer,
     });
   }
   transfer(accountId: string, source: StoredCart, target: StoredCart, includeCustomer: boolean) {

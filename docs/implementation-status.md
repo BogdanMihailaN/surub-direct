@@ -129,3 +129,7 @@ Coșul contului are endpoint-uri de pregătire, citire, anulare, confirmare demo
 ## Pregătirea comenzilor pe cont în Angular — 30 octombrie 2026
 
 Interfața permite rezervare, snapshot cu total și date de livrare, anulare, confirmare explicită pentru contul afișat și încheierea fluxului. Actualizarea stării este periodică și manuală. Răspunsurile pierdute sunt recuperate prin recitire, iar schimbările de sesiune/tab elimină starea veche. Comenzile confirmate golesc coșul la cerere; confirmările eșuate păstrează selecția. Adăugarea directă din catalog și editarea datelor PF/PJ pe cont rămân în backlog.
+
+## Date PF/PJ în coșul contului — 31 octombrie 2026
+
+Datele clientului pot fi editate direct în cont: persoană fizică sau firmă, adresă de livrare și adresă de facturare separată. Formularul și validările sunt reutilizate cu coșul anonim, iar API/state rămân separate. Conflictele și răspunsurile incerte recitesc starea fără suprascriere automată. Adăugarea directă din catalog în coșul contului rămâne următoarea etapă.

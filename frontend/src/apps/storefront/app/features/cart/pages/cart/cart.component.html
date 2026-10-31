@@ -63,7 +63,12 @@
         >
       </aside>
     }
-    <sd-customer-form />
+    <sd-customer-form
+      [customer]="cart.customer()"
+      [locked]="cart.locked()"
+      [error]="cart.customerError()"
+      [persist]="saveCustomer"
+    />
     <sd-preparation />
     <p>Comenzile comerciale vor fi disponibile după finalizarea magazinului.</p>
   }

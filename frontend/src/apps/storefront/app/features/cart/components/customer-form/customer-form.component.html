@@ -1,11 +1,11 @@
-<section aria-labelledby="customer-heading">
-  <h2 id="customer-heading">Pregătirea comenzii</h2>
+<section [attr.aria-labelledby]="headingId()">
+  <h2 [id]="headingId()">{{ heading() }}</h2>
   <p>
     Completează date fictive pentru verificarea formularului. Salvarea păstrează o ciornă; nu
     trimite o comandă.
   </p>
   <form [formGroup]="form" (ngSubmit)="save()">
-    <fieldset [disabled]="cart.locked()">
+    <fieldset [disabled]="locked()">
       <legend>Datele clientului</legend>
       <label
         >Tip client<select formControlName="customerType">
@@ -53,11 +53,11 @@
           (6 cifre).
         </p>
       }
-      @if (cart.customerError()) {
-        <p role="alert">{{ cart.customerError() }}</p>
+      @if (error()) {
+        <p role="alert">{{ error() }}</p>
       }
       <button type="submit">Salvează ciorna</button>
-      @if (cart.customer()) {
+      @if (customer()) {
         <button type="button" (click)="clear()">Șterge datele clientului</button>
       }
     </fieldset>
@@ -65,7 +65,7 @@
   @if (message()) {
     <p role="status">{{ message() }}</p>
   }
-  @if (cart.customer(); as customer) {
+  @if (customer(); as customer) {
     <aside aria-label="Date salvate">
       <h3>Date salvate pentru verificare</h3>
       <p>{{ customer.fullName }} · {{ customer.email }} · {{ customer.phone }}</p>

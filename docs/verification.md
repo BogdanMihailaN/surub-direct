@@ -414,3 +414,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Rularea inițială a regresiei de transfer a întâlnit HTTP 429 după suite succesive; trace-ul confirmă limitarea cererilor. Reluarea separată a trecut integral, fără modificarea limitelor aplicației sau a testului.
 - Afișarea la 390 px a fost verificată vizual și prin măsurarea viewport-ului, fără depășire orizontală. Screenshot privat: `work/account-preparation-mobile.png`, exclus din Git.
 - Fără schimbări backend sau de schemă; suita backend nu a fost repetată în această etapă. Aplicațiile de test sunt oprite la final; automatizarea rămâne oprită. Checkout-ul comercial rămâne dezactivat.
+
+## Editarea datelor PF/PJ în coșul contului — 31 octombrie 2026
+
+- `npm run build`: storefront (browser + SSR) și admin compilate pentru producție în directorul proiectului, cu verificările stricte păstrate.
+- **18 scenarii Playwright distincte trecute**: 4 noi pentru formularul pe cont, fluxul real extins din două browsere, 3 pentru ciorna anonimă, 5 pentru coșul contului și 5 pentru pregătirea/confirmarea pe cont.
+- Fluxul real verifică salvarea unei firme cu CUI și adresă de facturare separată, citirea din alt browser, revenirea la PF/facturare la livrare și eliminarea datelor firmei/adresei separate. Testele controlate acoperă validarea fără scriere, răspuns pierdut, conflict cu o versiune nouă, renunțare, invalidare din alt tab și blocarea editării unui coș pregătit.
+- Formularul este reutilizat prin inputs și funcție de salvare, fără injectarea store-ului anonim. API-ul de cont folosește versiunea coșului, contul așteptat și CSRF Identity.
+- Screenshot-ul mobil la 390 px a fost inspectat vizual și viewport-ul verificat fără depășire orizontală: `work/account-customer-mobile.png`, exclus din Git.
+- Nu sunt modificări backend sau de schemă, deci suita backend nu a fost repetată. Aplicațiile de test sunt oprite la final. Automatizarea și checkout-ul comercial rămân oprite.

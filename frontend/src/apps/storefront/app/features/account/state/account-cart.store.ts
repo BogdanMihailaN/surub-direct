@@ -9,6 +9,7 @@ import { CartStore } from '../../cart/state/cart.store';
 import { AccountCartApi } from '../data-access/account-cart-api.service';
 import { CartTransferSelection } from '../models/cart-transfer-selection';
 import { AccountPreparationApi } from '../data-access/account-preparation-api.service';
+import { CustomerDraft } from '../../cart/models/customer-draft.model';
 const CHANGE_KEY = 'surub-direct.account-cart.changed';
 @Injectable()
 export class AccountCartStore {
@@ -152,6 +153,7 @@ export class AccountCartStore {
         );
       else this.notice.set(message);
       await this.refresh(generation);
+      return !failure && generation === this.generation && this.accountStatus() === 'ready';
     } finally {
       this.busy.set(false);
     }
@@ -214,11 +216,23 @@ export class AccountCartStore {
       'Articolul a fost eliminat.',
     );
   }
+  async saveCustomer(customer: CustomerDraft | null): Promise<boolean> {
+    const cart = this.account();
+    if (!cart || this.locked()) return false;
+    return (
+      (await this.mutate(
+        () => this.api.saveCustomer(this.accountId, cart, customer),
+        customer
+          ? 'Datele clientului au fost salvate în coșul contului.'
+          : 'Datele clientului au fost șterse din coșul contului.',
+      )) ?? false
+    );
+  }
   clearCustomer() {
     const cart = this.account();
     if (!cart || this.locked() || !cart.customer) return;
     return this.mutate(
-      () => this.api.clearCustomer(this.accountId, cart),
+      () => this.api.saveCustomer(this.accountId, cart, null),
       'Datele clientului au fost șterse din coșul contului.',
     );
   }

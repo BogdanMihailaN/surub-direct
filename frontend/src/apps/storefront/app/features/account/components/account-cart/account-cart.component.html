@@ -65,6 +65,24 @@
           </p>
         }
       }
+      <button
+        type="button"
+        (click)="editingCustomer.set(!editingCustomer())"
+        [disabled]="state.locked()"
+      >
+        {{
+          editingCustomer() ? 'Renunță la editarea datelor' : 'Editează datele PF/PJ și adresele'
+        }}
+      </button>
+      @if (editingCustomer()) {
+        <sd-customer-form
+          [customer]="cart.customer"
+          [locked]="state.locked()"
+          [persist]="saveCustomer"
+          heading="Datele clientului pentru coșul contului"
+          headingId="account-customer-heading"
+        />
+      }
       <sd-account-preparation [session]="session()" />
       @if (cart.customer; as customer) {
         <details>

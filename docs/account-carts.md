@@ -42,7 +42,7 @@ Sesiunea se reverifică la focus, iar componentele cu date de cont sunt eliminat
 
 ## Limite și continuare
 
-Produsele adăugate din catalog și pagina `/cos` folosesc în continuare coșul anonim. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea selecțiilor și adăugarea directă din catalog în coșul contului nu sunt implementate. Formularul de editare a datelor PF/PJ rămâne în coșul anonim; în cont există consultarea și ștergerea ciornei copiate.
+Produsele adăugate din catalog și pagina `/cos` folosesc în continuare coșul anonim. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea selecțiilor și adăugarea directă din catalog în coșul contului nu sunt implementate. Formularul PF/PJ este disponibil și în cont, cu adrese de livrare și facturare, consultare și ștergere.
 
 API-ul și interfața de pregătire/confirmare a comenzilor din coșul contului sunt implementate (secțiunile de mai jos). Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
 
@@ -72,4 +72,10 @@ Secțiunea Coșul contului permite pregătirea selecției cu datele clientului s
 
 Starea rezervării se recitește la cinci secunde cât pagina este vizibilă, cu actualizare manuală disponibilă. Erorile ascund acțiunile bazate pe snapshot-ul vechi. Răspunsurile incerte la mutații declanșează recitirea coșului și pregătirii, fără retransmitere automată. Modificările din alt tab și distrugerea componentei invalidează citirile în curs și confirmarea selectată.
 
-După eliberarea rezervării se poate relua editarea. Încheierea unei comenzi confirmate golește coșul; după confirmare eșuată se păstrează selecția și datele clientului. Editarea directă a datelor PF/PJ pe cont și adăugarea din catalog pe cont rămân de implementat; momentan datele se pot copia explicit la transferul din browser. Fluxul rămâne demonstrativ, fără plăți, livrare sau facturare.
+După eliberarea rezervării se poate relua editarea. Încheierea unei comenzi confirmate golește coșul; după confirmare eșuată se păstrează selecția și datele clientului. Datele PF/PJ pot fi editate direct în cont sau copiate explicit la transferul din browser. Adăugarea directă din catalog pe cont rămâne de implementat. Fluxul rămâne demonstrativ, fără plăți, livrare sau facturare.
+
+## Editarea datelor clientului — 31 octombrie 2026
+
+Butonul „Editează datele PF/PJ și adresele” deschide formularul reutilizat din coșul anonim. Componenta primește datele, blocarea și funcția de salvare, fără dependență de un store sau API. Validările PF/PJ și adreselor rămân comune; trecerea la persoană fizică elimină câmpurile firmei, iar facturarea la livrare elimină adresa de facturare separată.
+
+Salvarea folosește versiunea coșului și contul așteptat, cu CSRF Identity. După mutație, inclusiv răspuns pierdut sau conflict, se recitește starea serverului fără retrimitere automată; editorul se închide și utilizatorul poate verifica datele salvate înainte de o nouă editare. Renunțarea nu scrie nimic. Coșurile pregătite și starea invalidată din alt tab blochează editarea.

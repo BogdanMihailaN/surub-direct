@@ -1,7 +1,6 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, input, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CartStore } from '../../state/cart.store';
 import { createCustomerForm } from '../../forms/customer-form.factory';
 import { CustomerDraft } from '../../models/customer-draft.model';
 import { CustomerAddressForm } from '../customer-address/customer-address.component';
@@ -12,7 +11,12 @@ import { CustomerAddressForm } from '../customer-address/customer-address.compon
   styleUrl: './customer-form.component.scss',
 })
 export class CustomerForm {
-  readonly cart = inject(CartStore);
+  readonly customer = input<CustomerDraft | null>(null);
+  readonly locked = input(false);
+  readonly error = input('');
+  readonly persist = input.required<(customer: CustomerDraft | null) => Promise<boolean>>();
+  readonly heading = input('Pregătirea comenzii');
+  readonly headingId = input('customer-heading');
   readonly form = createCustomerForm();
   readonly message = signal('');
   readonly attempted = signal(false);
@@ -25,7 +29,7 @@ export class CustomerForm {
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.updateFields());
     effect(() => {
-      const customer = this.cart.customer();
+      const customer = this.customer();
       if (!this.form.dirty) this.fill(customer);
     });
   }
@@ -56,7 +60,7 @@ export class CustomerForm {
     const value = this.form.getRawValue();
     if (
       this.form.invalid ||
-      this.cart.locked() ||
+      this.locked() ||
       (value.customerType === 'company' && (!value.companyName.trim() || !value.taxId.trim()))
     ) {
       this.form.markAllAsTouched();
@@ -69,14 +73,15 @@ export class CustomerForm {
       registrationNumber: value.customerType === 'company' ? value.registrationNumber : null,
       billingAddress: value.billingSameAsShipping ? null : value.billingAddress,
     };
-    if (await this.cart.saveCustomer(customer)) {
-      this.fill(this.cart.customer());
+    if (await this.persist()(customer)) {
+      this.fill(customer);
       this.attempted.set(false);
       this.message.set('Datele au fost salvate în ciornă. Nu a fost trimisă nicio comandă.');
     }
   }
   async clear() {
-    if (await this.cart.saveCustomer(null)) {
+    if (this.locked()) return;
+    if (await this.persist()(null)) {
       this.fill(null);
       this.attempted.set(false);
       this.message.set('Datele clientului au fost șterse.');

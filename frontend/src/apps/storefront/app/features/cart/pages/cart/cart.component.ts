@@ -8,6 +8,7 @@ import { Title } from '@angular/platform-browser';
 import { CartStore } from '../../state/cart.store';
 import { CartQuoteStore } from '../../state/cart-quote.store';
 import { CartLine } from '../../components/cart-line/cart-line.component';
+import { CustomerDraft } from '../../models/customer-draft.model';
 @Component({
   selector: 'sd-cart',
   imports: [RouterLink, DecimalPipe, DatePipe, CartLine, CustomerForm, Preparation, DemoOrders],
@@ -17,6 +18,7 @@ import { CartLine } from '../../components/cart-line/cart-line.component';
 })
 export class CartPage {
   readonly cart = inject(CartStore);
+  readonly saveCustomer = (customer: CustomerDraft | null) => this.cart.saveCustomer(customer);
   readonly pricing = inject(CartQuoteStore);
   constructor() {
     inject(Title).setTitle('Coș demonstrativ | Șurub Direct');

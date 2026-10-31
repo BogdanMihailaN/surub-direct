@@ -127,7 +127,35 @@ test('real account cart transfers a draft, survives reload and rejects a stale e
       otherCart.getByRole('alert').filter({ hasText: 'Nu putem confirma operațiunea' }),
     ).toBeVisible();
     await expect(otherCart.locator('sd-cart-line input')).toHaveValue('3');
+    await account.getByRole('button', { name: 'Editează datele PF/PJ și adresele' }).click();
+    const editor = account.locator('sd-customer-form');
+    await editor.getByLabel('Tip client').selectOption('company');
+    await editor.getByLabel('Denumire firmă').fill('Firma Demo SRL');
+    await editor.getByLabel('CUI', { exact: true }).fill('RO12345678');
+    await editor.getByLabel('Număr registrul comerțului (opțional)').fill('J40/123/2020');
+    await editor.getByLabel('Adresa de facturare este aceeași').uncheck();
+    const billing = editor.getByRole('group', { name: 'Adresă de facturare', exact: true });
+    await billing.getByLabel('Stradă și număr').fill('Strada Facturare 2');
+    await billing.getByLabel('Localitate').fill('Cluj-Napoca');
+    await billing.getByLabel('Județ / sector').fill('Cluj');
+    await billing.getByLabel('Cod poștal').fill('400001');
+    await editor.getByRole('button', { name: 'Salvează ciorna' }).click();
+    await expect(editor).toHaveCount(0);
+    await expect(
+      account.getByRole('status').filter({ hasText: 'Datele clientului au fost salvate' }),
+    ).toBeVisible();
+    await otherPage.reload();
+    await otherCart.locator('summary').click();
+    await expect(otherCart).toContainText('Firma Demo SRL');
+    await expect(otherCart).toContainText('Strada Facturare 2');
+    await account.getByRole('button', { name: 'Editează datele PF/PJ și adresele' }).click();
+    await editor.getByLabel('Tip client').selectOption('person');
+    await editor.getByLabel('Adresa de facturare este aceeași').check();
+    await editor.getByRole('button', { name: 'Salvează ciorna' }).click();
+    await expect(editor).toHaveCount(0);
     await account.locator('summary').click();
+    await expect(account.locator('details')).not.toContainText('Firma Demo SRL');
+    await expect(account.locator('details')).not.toContainText('Strada Facturare 2');
     await account.getByRole('button', { name: 'Șterge datele clientului din cont' }).click();
     await expect(account.locator('details')).toHaveCount(0);
     await account.getByRole('button', { name: 'Elimină', exact: true }).click();

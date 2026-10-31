@@ -15,7 +15,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Interfață Angular pentru coșul contului: transfer confirmat, editarea selecției, consultarea/ștergerea ciornei și recitire după conflicte.
 - [x] API pentru pregătirea/confirmarea comenzilor din coșul contului, cu rezervări și istoric privat.
 - [x] Interfața de pregătire/confirmare pe cont, cu anulare, recuperarea răspunsurilor incerte și reluare după eșec.
-- [ ] Adăugarea directă din catalog în coșul contului și editarea datelor PF/PJ în cont.
+- [x] Editarea datelor PF/PJ și a adreselor de livrare/facturare în coșul contului.
+- [ ] Adăugarea directă din catalog în coșul contului.
 - [ ] Confirmarea e-mailului și recuperarea parolei.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.

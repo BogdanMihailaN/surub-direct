@@ -17,9 +17,19 @@ import { AccountCartStore } from '../../state/account-cart.store';
 import { CartLine } from '../../../cart/components/cart-line/cart-line.component';
 import { CartQuoteStore } from '../../../cart/state/cart-quote.store';
 import { AccountPreparation } from '../account-preparation/account-preparation.component';
+import { CustomerForm } from '../../../cart/components/customer-form/customer-form.component';
+import { CustomerDraft } from '../../../cart/models/customer-draft.model';
 @Component({
   selector: 'sd-account-cart',
-  imports: [AccountPreparation, CartLine, FormsModule, RouterLink, DatePipe, DecimalPipe],
+  imports: [
+    CustomerForm,
+    AccountPreparation,
+    CartLine,
+    FormsModule,
+    RouterLink,
+    DatePipe,
+    DecimalPipe,
+  ],
   providers: [AccountCartStore, CartQuoteStore],
   templateUrl: './account-cart.component.html',
   styleUrl: './account-cart.component.scss',
@@ -27,6 +37,12 @@ import { AccountPreparation } from '../account-preparation/account-preparation.c
 export class AccountCart {
   readonly session = input.required<AccountSession>();
   readonly state = inject(AccountCartStore);
+  readonly editingCustomer = signal(false);
+  readonly saveCustomer = async (customer: CustomerDraft | null) => {
+    const saved = await this.state.saveCustomer(customer);
+    this.editingCustomer.set(false);
+    return saved;
+  };
   readonly pricing = inject(CartQuoteStore);
   readonly includeCustomer = signal(false);
   private readonly injector = inject(Injector);
