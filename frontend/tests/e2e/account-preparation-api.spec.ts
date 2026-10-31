@@ -28,6 +28,7 @@ const customer = {
 };
 test('account preparation releases or consumes stock once and keeps order history private across devices', async ({
   playwright,
+  browser,
 }) => {
   test.setTimeout(120000);
   const admin = await playwright.request.newContext();
@@ -35,6 +36,8 @@ test('account preparation releases or consumes stock once and keeps order histor
   const otherDevice = await playwright.request.newContext();
   const stranger = await playwright.request.newContext();
   let productPath = '';
+  const ui = await browser.newContext();
+  const secondUi = await browser.newContext();
   try {
     await loginAdmin(admin, gateway);
     const create = async (path: string, data: object) => {
@@ -146,17 +149,20 @@ test('account preparation releases or consumes stock once and keeps order histor
     }
     const prep = cartUrl + '/preparation';
     const read = async () => await (await owner.get(prep + query)).json();
-    expect(
-      (
-        await write(owner, prep + query, { requestId: id, cartId: cart.id, version: cart.version })
-      ).status(),
-    ).toBe(200);
+    await ui.addCookies((await owner.storageState()).cookies);
+    const page = await ui.newPage();
+    await page.goto('http://127.0.0.1:4200/cont');
+    const section = page.getByRole('region', { name: 'Rezervarea coșului de cont' });
+    await section.getByRole('button', { name: 'Pregătește coșul contului' }).click();
+    await expect(section.getByRole('status')).toHaveText('Stoc rezervat', { timeout: 25000 });
+    id = (await read()).id;
     await expect.poll(async () => (await read()).status, { timeout: 25000 }).toBe('Active');
     const stock = async () => (await (await admin.get(gateway + productPath)).json()).stock[0];
     expect(await stock()).toMatchObject({ onHand: 100, reserved: 10, available: 90 });
-    expect((await write(owner, prep + '/' + id + '/cancel' + query)).status()).toBe(204);
+    await section.getByRole('button', { name: 'Anulează rezervarea contului' }).click();
     await expect.poll(async () => (await read()).status, { timeout: 25000 }).toBe('Released');
-    expect((await write(owner, prep + '/' + id + '/cancel' + query)).status()).toBe(204);
+    await section.getByRole('button', { name: 'Reia editarea coșului de cont' }).click();
+    await expect(section.getByRole('button', { name: 'Pregătește coșul contului' })).toBeEnabled();
     expect(await stock()).toMatchObject({ onHand: 100, reserved: 0, available: 100 });
     cart = await (await owner.get(cartUrl + query)).json();
     expect(cart.preparedId).toBeNull();
@@ -174,9 +180,24 @@ test('account preparation releases or consumes stock once and keeps order histor
     expect(
       (await otherDevice.storageState()).cookies.some((c) => c.name === 'SurubDirect.Cart'),
     ).toBe(false);
-    const confirmed = await write(otherDevice, prep + '/' + id + '/confirm' + query);
-    expect(confirmed.status()).toBe(200);
-    const number = (await confirmed.json()).number;
+    await secondUi.addCookies((await otherDevice.storageState()).cookies);
+    const secondPage = await secondUi.newPage();
+    await secondPage.goto('http://127.0.0.1:4200/cont');
+    const secondSection = secondPage.getByRole('region', { name: 'Rezervarea coșului de cont' });
+    await secondSection.getByRole('button', { name: 'Continuă la confirmare' }).click();
+    await expect(
+      secondSection.getByRole('group', { name: 'Confirmare comandă pe cont' }),
+    ).toContainText(email);
+    await secondPage.setViewportSize({ width: 390, height: 844 });
+    expect(
+      await secondPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+    ).toBe(true);
+    await secondSection.screenshot({ path: '../work/account-preparation-mobile.png' });
+    await secondSection.getByRole('button', { name: 'Confirmă comanda contului' }).click();
+    await expect(secondSection.getByRole('status')).toHaveText('Comandă confirmată', {
+      timeout: 25000,
+    });
+    const number = (await read()).orderNumber;
     expect((await (await write(owner, prep + '/' + id + '/confirm' + query)).json()).number).toBe(
       number,
     );
@@ -188,7 +209,8 @@ test('account preparation releases or consumes stock once and keeps order histor
     expect(
       (await (await owner.get(gateway + '/api/v1/ordering/demo-orders')).json()).items,
     ).toEqual([]);
-    expect((await write(otherDevice, prep + '/' + id + '/complete' + query)).status()).toBe(204);
+    await secondSection.getByRole('button', { name: 'Golește coșul finalizat' }).click();
+    await expect(secondPage.getByText('Coșul contului este gol.', { exact: true })).toBeVisible();
     expect((await write(owner, prep + '/' + id + '/complete' + query)).status()).toBe(204);
     cart = await (await owner.get(cartUrl + query)).json();
     expect(cart.lines).toEqual([]);
@@ -200,6 +222,8 @@ test('account preparation releases or consumes stock once and keeps order histor
   } finally {
     if (productPath)
       expect((await adminWrite(admin, gateway, productPath + '/archive')).ok()).toBe(true);
+    await ui.close();
+    await secondUi.close();
     await Promise.all([
       admin.dispose(),
       owner.dispose(),

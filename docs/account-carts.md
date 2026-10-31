@@ -44,7 +44,7 @@ Sesiunea se reverifică la focus, iar componentele cu date de cont sunt eliminat
 
 Produsele adăugate din catalog și pagina `/cos` folosesc în continuare coșul anonim. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea selecțiilor și adăugarea directă din catalog în coșul contului nu sunt implementate. Formularul de editare a datelor PF/PJ rămâne în coșul anonim; în cont există consultarea și ștergerea ciornei copiate.
 
-API-ul de pregătire/confirmare a comenzilor din coșul contului este implementat (secțiunea de mai jos); conectarea lui la interfața Angular urmează. Interfața anunță această limită și nu expune încă acțiunile de pregătire. Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
+API-ul și interfața de pregătire/confirmare a comenzilor din coșul contului sunt implementate (secțiunile de mai jos). Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
 
 Checkout-ul comercial rămâne dezactivat. Datele sunt demonstrative, iar `noindex` rămâne activ.
 
@@ -65,3 +65,11 @@ Comanda primește AccountId și AccountLinkedAt chiar la crearea intenției de c
 Repository-urile verifică atât identificatorul intern al coșului, cât și AccountId. Apelurile anonime folosesc obligatoriu AccountId null; chiar cunoașterea identificatorului intern nu permite citirea, anularea sau confirmarea unui coș de cont. Handler-ele de cont rezolvă coșul după identitatea validată, fără acceptarea unui owner hash din cerere.
 
 Logica de recalculare și construire a pregătirii este comună fluxurilor anonim și autentificat. Inventory rămâne proprietarul stocului; coordonatorul și Outbox/Inbox existente păstrează idempotenta consumului/eliberării. Confirmarea ori anularea în curs blochează încheierea prematură. La confirmare eșuată, selecția și datele clientului rămân disponibile pentru corectare; comanda eșuată rămâne în istoricul contului.
+
+## Interfața rezervărilor pe cont — 30 octombrie 2026
+
+Secțiunea Coșul contului permite pregătirea selecției cu datele clientului salvate, consultarea snapshot-ului de prețuri și adresei, anularea rezervării și confirmarea demonstrativă. Confirmarea afișează explicit contul și totalul și permite renunțarea înaintea mutației. Comanda se păstrează automat în istoricul contului; istoricul are buton propriu de actualizare.
+
+Starea rezervării se recitește la cinci secunde cât pagina este vizibilă, cu actualizare manuală disponibilă. Erorile ascund acțiunile bazate pe snapshot-ul vechi. Răspunsurile incerte la mutații declanșează recitirea coșului și pregătirii, fără retransmitere automată. Modificările din alt tab și distrugerea componentei invalidează citirile în curs și confirmarea selectată.
+
+După eliberarea rezervării se poate relua editarea. Încheierea unei comenzi confirmate golește coșul; după confirmare eșuată se păstrează selecția și datele clientului. Editarea directă a datelor PF/PJ pe cont și adăugarea din catalog pe cont rămân de implementat; momentan datele se pot copia explicit la transferul din browser. Fluxul rămâne demonstrativ, fără plăți, livrare sau facturare.

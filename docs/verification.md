@@ -405,3 +405,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 
 - Rularea finală Playwright: **5/5 scenarii trecute** (API pe cont și cele 4 regresii de pregătire/comenzi anonime). Regresiile de browser folosesc buildurile de producție Angular existente, servite local cu proxy către gateway. Încercările anterioare au întâlnit Chromium lipsă, servicii/infrastructură oprite și un timeout la afișarea eliberării; după refacerea mediului, toate cele cinci scenarii au trecut împreună.
 - `git diff --check` și scanarea modificărilor pentru secrete locale au trecut. Aplicațiile pornite pentru verificare au fost oprite la final; PostgreSQL și RabbitMQ rămân disponibile local.
+
+## Interfața de pregătire și confirmare pe cont — 31 octombrie 2026
+
+- `npm run build`: storefront (browser + SSR) și admin compilate pentru producție, cu verificările stricte TypeScript/template. Citirile dependențelor locale au blocat compilarea inițială. Verificarea a folosit o copie temporară a surselor și `npm ci` cu același lockfile; identitatea surselor a fost verificată, iar buildurile au fost copiate în `frontend/dist`. Nu s-au modificat dependențele sau lockfile-ul.
+- **23 scenarii Playwright distincte trecute**: 5 noi pentru pregătirea pe cont, fluxul real extins de rezervare/comandă, 5 regresii de coș pe cont, 4 de autentificare, 3 de istoric, 4 de catalog și transferul real din două browsere.
+- Testele noi verifică răspunsuri pierdute după pregătire și confirmare fără retransmitere automată, renunțarea înainte de confirmare, rezervare indisponibilă fără acțiuni vechi, anularea cu păstrarea selecției, refuzul contului schimbat, invalidarea din alt tab și reluarea după confirmare eșuată. Fluxul real verifică rezervarea/anularea în UI și confirmarea dintr-un al doilea browser, consum unic și istoricul privat.
+- Rularea inițială a regresiei de transfer a întâlnit HTTP 429 după suite succesive; trace-ul confirmă limitarea cererilor. Reluarea separată a trecut integral, fără modificarea limitelor aplicației sau a testului.
+- Afișarea la 390 px a fost verificată vizual și prin măsurarea viewport-ului, fără depășire orizontală. Screenshot privat: `work/account-preparation-mobile.png`, exclus din Git.
+- Fără schimbări backend sau de schemă; suita backend nu a fost repetată în această etapă. Aplicațiile de test sunt oprite la final; automatizarea rămâne oprită. Checkout-ul comercial rămâne dezactivat.

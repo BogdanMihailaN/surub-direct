@@ -8,10 +8,12 @@ import { CartSelection } from '../../cart/models/cart-selection.model';
 import { CartStore } from '../../cart/state/cart.store';
 import { AccountCartApi } from '../data-access/account-cart-api.service';
 import { CartTransferSelection } from '../models/cart-transfer-selection';
+import { AccountPreparationApi } from '../data-access/account-preparation-api.service';
 const CHANGE_KEY = 'surub-direct.account-cart.changed';
 @Injectable()
 export class AccountCartStore {
   private readonly api = inject(AccountCartApi);
+  private readonly preparationApi = inject(AccountPreparationApi);
   private readonly browserApi = inject(CartPersistenceApi);
   private readonly browserCart = inject(CartStore);
   private accountId = '';
@@ -153,6 +155,21 @@ export class AccountCartStore {
     } finally {
       this.busy.set(false);
     }
+  }
+  prepare() {
+    const cart = this.account();
+    if (!cart || this.locked() || !cart.customer || !cart.lines.length) return;
+    return this.mutate(
+      () => this.preparationApi.prepare(this.accountId, cart),
+      'Pregătirea a fost solicitată.',
+    );
+  }
+  preparationAction(id: string, action: 'cancel' | 'confirm' | 'complete') {
+    if (this.account()?.preparedId !== id || this.accountStatus() !== 'ready') return;
+    return this.mutate(
+      () => this.preparationApi.act(this.accountId, id, action),
+      'Operațiunea a fost înregistrată. Actualizează istoricul comenzilor pentru rezultat.',
+    );
   }
   create() {
     if (this.locked() || this.account()) return;

@@ -16,9 +16,10 @@ import { AccountSession } from '../../models/account-session';
 import { AccountCartStore } from '../../state/account-cart.store';
 import { CartLine } from '../../../cart/components/cart-line/cart-line.component';
 import { CartQuoteStore } from '../../../cart/state/cart-quote.store';
+import { AccountPreparation } from '../account-preparation/account-preparation.component';
 @Component({
   selector: 'sd-account-cart',
-  imports: [CartLine, FormsModule, RouterLink, DatePipe, DecimalPipe],
+  imports: [AccountPreparation, CartLine, FormsModule, RouterLink, DatePipe, DecimalPipe],
   providers: [AccountCartStore, CartQuoteStore],
   templateUrl: './account-cart.component.html',
   styleUrl: './account-cart.component.scss',

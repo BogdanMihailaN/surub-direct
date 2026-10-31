@@ -1,0 +1,118 @@
+<section aria-label="Rezervarea coșului de cont">
+  <h3>Comandă demonstrativă pe cont</h3>
+  <p>Nu inițiază plăți, livrări sau facturi. Folosește date fictive.</p>
+  @if (!cart.account()?.preparedId) {
+    @if (state.enabled()) {
+      <p>Reverificăm prețurile și rezervăm temporar stocul pentru selecția salvată.</p>
+      <button
+        (click)="cart.prepare()"
+        [disabled]="cart.locked() || !cart.account()?.customer || !cart.account()?.lines?.length"
+      >
+        Pregătește coșul contului
+      </button>
+      @if (!cart.account()?.customer) {
+        <p>
+          Pentru pregătire sunt necesare datele clientului. Momentan le poți copia la transferul din
+          coșul browserului.
+        </p>
+      }
+    } @else {
+      <p>Pregătirea nu este disponibilă momentan.</p>
+    }
+  } @else {
+    @if (state.snapshot(); as p) {
+      <h4 role="status">{{ labels[p.status] }}</h4>
+      @for (line of p.lines; track line.offerId) {
+        <p>
+          {{ line.productName }} · {{ line.offerLabel }} × {{ line.packs }} —
+          {{ line.grossTotal | number: '1.2-2' }} {{ p.currency }}
+        </p>
+      }
+      <strong
+        >Total demonstrativ: {{ p.grossTotal | number: '1.2-2' }} {{ p.currency }} cu TVA</strong
+      >
+      <p>Transportul nu este inclus. Date verificate la {{ p.checkedAt | date: 'HH:mm:ss' }}.</p>
+      <p>Client: {{ p.customer.fullName }} · {{ p.customer.email }}</p>
+      <p>
+        Livrare: {{ p.customer.shippingAddress.street }}, {{ p.customer.shippingAddress.city }},
+        {{ p.customer.shippingAddress.county }}, {{ p.customer.shippingAddress.postalCode }}
+      </p>
+      @if (p.status === 'Active') {
+        <p>Rezervat până la {{ p.remoteExpiresAt | date: 'HH:mm:ss' }}.</p>
+      }
+      @if (p.orderNumber) {
+        <p>
+          Comandă: <strong>{{ p.orderNumber }}</strong
+          >. Apare în istoricul acestui cont; folosește actualizarea istoricului.
+        </p>
+      }
+      @if (p.status === 'Active' && !p.confirmationRequested && !p.cancellationRequested) {
+        <button
+          (click)="selectConfirm()"
+          [disabled]="cart.busy() || cart.stale() || state.loading()"
+        >
+          Continuă la confirmare
+        </button>
+        @if (confirming() === p.id) {
+          <div
+            #confirmation
+            tabindex="-1"
+            role="group"
+            aria-label="Confirmare comandă pe cont"
+            class="confirmation"
+          >
+            <p>
+              Confirmi pentru <strong>{{ session().email }}</strong> totalul de
+              {{ p.grossTotal | number: '1.2-2' }} {{ p.currency }}. Confirmarea scade stocul
+              demonstrativ.
+            </p>
+            <button (click)="confirm()" [disabled]="cart.busy() || cart.stale() || state.loading()">
+              Confirmă comanda contului
+            </button>
+            <button (click)="confirming.set(null)">Renunță la confirmare</button>
+          </div>
+        }
+      }
+      @if (p.confirmationRequested) {
+        @if (p.status === 'Consumed' || p.status === 'Restored') {
+          <button
+            (click)="cart.preparationAction(p.id, 'complete')"
+            [disabled]="cart.busy() || cart.stale()"
+          >
+            Golește coșul finalizat
+          </button>
+        } @else if (p.status === 'Expired' || p.status === 'Released') {
+          <p role="alert">Confirmarea a eșuat. Selecția și datele clientului vor fi păstrate.</p>
+          <button
+            (click)="cart.preparationAction(p.id, 'complete')"
+            [disabled]="cart.busy() || cart.stale()"
+          >
+            Reia coșul după eșec
+          </button>
+        } @else {
+          <p>Așteptăm rezultatul operațiunii asupra stocului.</p>
+        }
+      } @else if (p.status === 'Released' || p.status === 'Expired') {
+        <button
+          (click)="cart.preparationAction(p.id, 'cancel')"
+          [disabled]="cart.busy() || cart.stale()"
+        >
+          Reia editarea coșului de cont
+        </button>
+      } @else if (p.status !== 'Consumed') {
+        <button
+          (click)="cart.preparationAction(p.id, 'cancel')"
+          [disabled]="cart.busy() || cart.stale() || p.cancellationRequested"
+        >
+          Anulează rezervarea contului
+        </button>
+      }
+    }
+    <button (click)="refresh()" [disabled]="cart.busy() || cart.stale() || state.loading()">
+      Actualizează rezervarea contului
+    </button>
+  }
+  @if (state.error()) {
+    <p role="alert">{{ state.error() }}</p>
+  }
+</section>

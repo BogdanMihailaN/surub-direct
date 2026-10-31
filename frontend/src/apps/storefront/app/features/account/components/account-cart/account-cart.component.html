@@ -6,8 +6,7 @@
   </p>
   <p>
     Produsele adăugate din catalog ajung în <a routerLink="/cos">coșul browserului</a>. Le poți
-    transfera aici numai când coșul contului este gol. Pregătirea comenzilor din acest coș nu este
-    încă disponibilă.
+    transfera aici numai când coșul contului este gol.
   </p>
   <button type="button" (click)="state.load(session().id)" [disabled]="state.busy()">
     Reîncarcă coșurile
@@ -66,6 +65,7 @@
           </p>
         }
       }
+      <sd-account-preparation [session]="session()" />
       @if (cart.customer; as customer) {
         <details>
           <summary>Datele clientului salvate în coș</summary>
