@@ -1,11 +1,14 @@
 using System.Text.Json;
+using SurubDirect.Identity.Infrastructure.Accounts.Mail;
 using SurubDirect.Identity.Application.Abstractions;
 namespace SurubDirect.Identity.Infrastructure.Accounts;
-public sealed class LocalAccountMail(string directory, bool enabled) : IAccountMail
+public sealed class LocalAccountMail(string directory, bool enabled, AccountMailComposer? composer) : IAccountMail
 {
     public async Task Save(string kind, string email, string userId, string token)
     {
-        if (!enabled) throw new InvalidOperationException("Local account mail is restricted to Development.");
+        if (!enabled || composer is null) throw new InvalidOperationException("Local account mail is restricted to Development.");
+        var content = composer.Compose(kind, userId, token);
+        var createdAt = DateTimeOffset.UtcNow;
         if (OperatingSystem.IsWindows()) Directory.CreateDirectory(directory);
         else Directory.CreateDirectory(directory, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         var options = new FileStreamOptions { Mode = FileMode.CreateNew, Access = FileAccess.Write, Share = FileShare.None };
@@ -15,7 +18,7 @@ public sealed class LocalAccountMail(string directory, bool enabled) : IAccountM
         try
         {
             await using (var file = new FileStream(temporary, options))
-                await JsonSerializer.SerializeAsync(file, new { kind, email, userId, token, createdAt = DateTimeOffset.UtcNow, expiresAt = DateTimeOffset.UtcNow.AddHours(2) });
+                await JsonSerializer.SerializeAsync(file, new { kind, email, userId, token, createdAt, expiresAt = createdAt.AddHours(2), subject = content.Subject, textBody = content.TextBody, htmlBody = content.HtmlBody, actionUrl = content.ActionUrl });
             File.Move(temporary, path);
         }
         catch

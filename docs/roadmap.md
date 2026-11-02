@@ -21,7 +21,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Adăugarea directă din catalog în coșul contului, cu destinație și cantitate confirmate explicit.
 - [x] API demonstrativ de confirmare e-mail și resetare parolă, cu mesaje locale private și revocarea sesiunilor.
 - [x] Interfața Angular de solicitare/confirmare e-mail și resetare parolă, cu token în fragment URL și validare.
-- [ ] Conectarea la un furnizor de e-mail și configurarea livrării mesajelor.
+- [x] Mesaje locale cu subiect, text/HTML și linkuri complete configurabile, validate și testate în browser.
+- [ ] Conectarea la un furnizor de e-mail și configurarea livrării mesajelor — amânată explicit de utilizator la 2 noiembrie 2026; rămânem momentan la mesaje locale.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.
 

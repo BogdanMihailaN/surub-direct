@@ -158,3 +158,7 @@ Identity are portul `Application/Abstractions/ICustomerAccounts` și handler-ul 
 ## Istoricul în pagina contului
 
 `features/account/components/account-orders` compune confirmarea și două instanțe ale listei prezentationale `order-history-list`. `AccountOrdersStore` deține paginarea separată, selecția, erorile și reverificarea rezultatului; `AccountOrdersApi` deține HTTP. Modelele existente DemoOrder/DemoOrderPage sunt reutilizate din feature-ul cart. Pagina contului gestionează ciclul de viață al componentelor după sesiune. Testele UI izolate sunt în `account-order-history.spec.ts`; fluxul real extinde scenariul demo-orders.
+
+## Mesajele de recuperare
+
+Identity.Infrastructure/Accounts/Mail separă `AccountMailComposer` și `AccountMailContent` de adaptorul `LocalAccountMail`. Originea configurată este validată la compunerea serviciilor Development; API-ul nu construiește linkuri din cererile primite. Testele pentru codificare și configurație sunt în Unit/Identity/AccountMailComposerTests; scenariul browser folosește linkurile produse efectiv de backend.

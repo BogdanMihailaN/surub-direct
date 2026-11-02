@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using SurubDirect.Identity.Application.Abstractions;
 using SurubDirect.Identity.Application.Features.Recovery;
 using SurubDirect.Identity.Infrastructure.Accounts;
+using SurubDirect.Identity.Infrastructure.Accounts.Mail;
 using SurubDirect.Identity.Infrastructure;
 using SurubDirect.ServiceDefaults.Security;
 
@@ -13,7 +14,10 @@ public static class ServiceRegistration
     {
         builder.Services.AddStoreIdentity(builder.Configuration.GetConnectionString("Identity") ?? throw new InvalidOperationException("Configure ConnectionStrings__Identity."));
         builder.Services.AddScoped<IAccountRecovery, AccountRecovery>();
-        builder.Services.AddSingleton<IAccountMail>(new LocalAccountMail(builder.Configuration["AccountMail:Directory"] ?? Path.Combine(Path.GetTempPath(), "surub-direct-account-mail"), builder.Environment.IsDevelopment()));
+        var mailComposer = builder.Environment.IsDevelopment()
+            ? new AccountMailComposer(builder.Configuration["AccountMail:StorefrontOrigin"] ?? "http://localhost:4200", true)
+            : null;
+        builder.Services.AddSingleton<IAccountMail>(new LocalAccountMail(builder.Configuration["AccountMail:Directory"] ?? Path.Combine(Path.GetTempPath(), "surub-direct-account-mail"), builder.Environment.IsDevelopment(), mailComposer));
         builder.Services.AddScoped<RequestEmailConfirmationHandler>();
         builder.Services.AddScoped<RequestPasswordResetHandler>();
         builder.Services.AddScoped<ConfirmEmailHandler>();

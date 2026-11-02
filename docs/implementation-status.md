@@ -148,3 +148,7 @@ Identity oferă solicitare/confirmare e-mail și solicitare/aplicare resetare pa
 ## Interfața de recuperare a contului — 2 noiembrie 2026
 
 Angular include solicitarea mesajelor, confirmarea e-mailului și resetarea parolei. Tokenul este citit din fragmentul linkului, eliminat din URL și trimis numai prin POST cu CSRF. Confirmarea este explicită, parolele sunt validate/șterse după trimitere, iar răspunsurile incerte nu declanșează retransmitere. Fluxul complet este demonstrativ cu mesaje locale private; furnizorul de e-mail și activarea livrării rămân în backlog.
+
+## Mesaje de recuperare pregătite pentru integrare — 2 noiembrie 2026
+
+Mesajele private locale includ subiect, text, HTML și link complet generat dintr-o origine configurată și validată. Tokenurile sunt codificate în fragment, fără dependență de Host-ul cererii. Composer-ul este separat de stocare; adaptorul furnizorului extern și livrarea efectivă rămân de implementat după alegerea serviciului.

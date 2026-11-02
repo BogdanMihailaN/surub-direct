@@ -27,24 +27,23 @@ test('customer requests local messages, confirms email and resets password in th
     await page.goto('/cont');
     await page.getByRole('link', { name: 'Recuperează parola sau confirmă e-mailul' }).click();
     await page.getByLabel('Operațiune').selectOption('email');
-    await page.getByLabel('Adresa de e-mail').fill(email);
+    await page.getByRole('textbox', { name: 'Adresa de e-mail', exact: true }).fill(email);
     await page.getByRole('button', { name: 'Solicită mesajul' }).click();
     await expect(page.getByRole('status')).toContainText('Dacă adresa corespunde');
     const confirmation = message('confirm-email');
-    await page.goto(
-      '/cont/confirma-email#' +
-        new URLSearchParams({ userId: confirmation.userId, token: confirmation.token }),
-    );
+    expect(confirmation.textBody).toContain(confirmation.actionUrl);
+    expect(confirmation.subject).toContain('Confirmă');
+    await page.goto(confirmation.actionUrl);
     await page.getByRole('button', { name: 'Confirmă adresa', exact: true }).click();
     await expect(page.getByRole('status')).toContainText('Adresa de e-mail a fost confirmată');
     await page.getByRole('link', { name: 'Solicită un mesaj nou' }).click();
-    await page.getByLabel('Adresa de e-mail').fill(email);
+    await page.getByRole('textbox', { name: 'Adresa de e-mail', exact: true }).fill(email);
     await page.getByRole('button', { name: 'Solicită mesajul' }).click();
     await expect(page.getByRole('status')).toContainText('Dacă adresa corespunde');
     const reset = message('reset-password');
-    await page.goto(
-      '/cont/reseteaza-parola#' + new URLSearchParams({ userId: reset.userId, token: reset.token }),
-    );
+    expect(reset.textBody).toContain(reset.actionUrl);
+    expect(reset.subject).toContain('Resetează');
+    await page.goto(reset.actionUrl);
     await page.getByLabel('Parola nouă', { exact: true }).fill(replacement);
     await page.getByLabel('Repetă parola nouă', { exact: true }).fill(replacement);
     await page.getByRole('button', { name: 'Schimbă parola' }).click();

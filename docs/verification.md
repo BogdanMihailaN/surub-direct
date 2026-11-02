@@ -457,3 +457,10 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - `python3 scripts/dev.py check-migrations`: toate cele șase contexte fără modificări de model restante. Nu s-au creat migrații și nu s-au mutat date.
 - Playwright: 14 scenarii trecute pe API-urile repornite și buildurile Angular existente: catalog, admin, imagini, import CSV, variante/ambalaje și administrare mesagerie. Sunt verificate inclusiv prețurile și protecția autentificare/CSRF.
 - Frontend-ul nu a fost modificat. Prima încercare a testelor .NET în sandbox a fost oprită din cauza restricțiilor de socket MSBuild; rularea cu permisiunile necesare a trecut.
+
+## Mesaje locale de recuperare cu linkuri complete — 2 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 351 teste .NET și 10 teste Python trecute după pornirea Docker Desktop. Prima rulare a compilat, dar testele de integrare au eșuat deoarece Docker era oprit.
+- 11 cazuri noi verifică originea configurată, interzicerea URL-urilor cu credențiale/cale/query/fragment, excepția HTTP loopback în Development, tipul operației și păstrarea tokenurilor opace în fragment.
+- Playwright `account-recovery-api.spec.ts`: trecut; `account-recovery-browser.spec.ts`: trecut după corectarea selectorului ambiguu al câmpului e-mail din test. Scenariul folosește direct `actionUrl` generat de backend pentru confirmare și resetare, apoi verifică revocarea sesiunii și autentificarea cu parola nouă.
+- Codul frontend nu a fost modificat; au fost folosite buildurile existente. Nicio expediere externă, migrare DB sau activare comercială.
