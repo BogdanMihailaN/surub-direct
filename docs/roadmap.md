@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Etape de pregătire internă demonstrativă și istoric administrativ, protejate la concurență/replay/anulare.
+
 - [x] Consolidarea proiectelor Pricing/Store în straturile Catalogului, cu păstrarea schemelor și migrațiilor.
 
 - [x] Servicii independente .NET cu Clean Architecture și gateway YARP; baze/credențiale separate.

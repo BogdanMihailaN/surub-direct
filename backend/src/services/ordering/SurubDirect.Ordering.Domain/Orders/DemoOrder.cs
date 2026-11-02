@@ -14,6 +14,8 @@ public sealed class DemoOrder
     public DateTimeOffset? AccountLinkedAt { get; private set; }
     public Guid CartId { get; private set; }
     public string Status { get; private set; } = "Confirming";
+    public string ProcessingStatus { get; private set; } = "Pending";
+    public long ProcessingVersion { get; private set; }
     public CustomerDraft Customer { get; private set; } = null!;
     public List<PreparedCartLine> Lines { get; private set; } = [];
     public string Currency { get; private set; } = "";
@@ -53,6 +55,27 @@ public sealed class DemoOrder
             throw new BusinessException("Doar comenzile confirmate sau anulate pot fi asociate contului.", 409);
         AccountId = accountId;
         AccountLinkedAt = now;
+    }
+
+    public OrderProcessingChange ChangeProcessing(Guid operationId, long expectedVersion, string target, string reason, string actor, DateTimeOffset now)
+    {
+        reason = reason.Trim();
+        if (operationId == Guid.Empty || expectedVersion < 0 || reason.Length is < 3 or > 500
+            || string.IsNullOrWhiteSpace(actor) || actor.Length > 200)
+            throw new BusinessException("Operația și un motiv de 3–500 caractere sunt obligatorii.");
+        if (Status != "Confirmed")
+            throw new BusinessException("Doar comenzile confirmate pot fi pregătite.", 409);
+        if (expectedVersion != ProcessingVersion)
+            throw new BusinessException("Pregătirea comenzii s-a modificat. Actualizează detaliile.", 409);
+        if (ProcessingVersion >= 1000)
+            throw new BusinessException("Limita schimbărilor demonstrative a fost atinsă.", 409);
+        if (!((ProcessingStatus == "Pending" && target == "Processing")
+            || (ProcessingStatus == "Processing" && target == "Ready")
+            || (ProcessingStatus == "Ready" && target == "Processing")))
+            throw new BusinessException("Tranziția de pregătire nu este permisă.", 409);
+        var change = new OrderProcessingChange(Id, operationId, ++ProcessingVersion, ProcessingStatus, target, reason, actor, now);
+        ProcessingStatus = target;
+        return change;
     }
 
     public void Cancel(string reason, string actor, DateTimeOffset now)

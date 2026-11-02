@@ -46,6 +46,8 @@ public static class OrderingModule
         services.AddScoped<ListAdminOrdersHandler>();
         services.AddScoped<GetAdminOrderHandler>();
         services.AddScoped<CancelDemoOrderHandler>();
+        services.AddScoped<ChangeOrderProcessingHandler>();
+        services.AddScoped<IOrderProcessing, OrderProcessing>();
         services.AddScoped<ReservationInbox>();
         services.AddScoped<FailedMessageStore>();
         services.TryAddSingleton<TimeProvider>(TimeProvider.System);

@@ -7,6 +7,8 @@ import { OrderDetail } from '../models/order-detail.model';
 export class SalesOrdersStore {
   private readonly api = inject(SalesOrdersApi);
   readonly cancelling = signal(false);
+  readonly processing = signal(false);
+  readonly processingError = signal('');
   readonly cancelError = signal('');
   readonly data = signal<OrderPage | null>(null);
   readonly detail = signal<OrderDetail | null>(null);
@@ -42,7 +44,7 @@ export class SalesOrdersStore {
   }
   async cancel(reason: string) {
     const id = this.selected();
-    if (!id || this.cancelling()) return;
+    if (!id || this.cancelling() || this.processing()) return;
     this.cancelling.set(true);
     this.cancelError.set('');
     try {
@@ -55,7 +57,24 @@ export class SalesOrdersStore {
       this.cancelling.set(false);
     }
   }
+  async changeProcessing(change: { target: string; reason: string }) {
+    const detail = this.detail();
+    if (!detail || this.processing() || this.cancelling() || detail.order.status !== 'Confirmed') return;
+    const id = detail.order.id;
+    const sequence = this.detailSequence;
+    this.processing.set(true);
+    this.processingError.set('');
+    try {
+      await this.api.changeProcessing(id, detail.processing.version, change.target, change.reason, crypto.randomUUID());
+    } catch (e) {
+      if (sequence === this.detailSequence) this.processingError.set(errorMessage(e) + ' Starea este recitită; operația nu este retrimisă automat.');
+    } finally {
+      if (this.selected() === id) await this.select(id);
+      this.processing.set(false);
+    }
+  }
   async select(id: string) {
+    if (this.selected() !== id) this.processingError.set('');
     const sequence = ++this.detailSequence;
     this.selected.set(id);
     this.detail.set(null);

@@ -27,7 +27,9 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
         if (order is null)
             return null;
         var plan = await db.ReservationPlans.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Starea confirmării nu este disponibilă.", 503);
+        var history = await db.OrderProcessingChanges.AsNoTracking().Where(x => x.OrderId == id).OrderBy(x => x.Version)
+            .Select(x => new OrderProcessingChangeDto(x.OperationId, x.Version, x.FromStatus, x.ToStatus, x.Reason, x.Actor, x.CreatedAt)).ToListAsync(ct);
         await tx.CommitAsync(ct);
-        return new(DemoOrderProjection.Map(order), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt);
+        return new(DemoOrderProjection.Map(order), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt, new(order.ProcessingStatus, order.ProcessingVersion, history));
     }
 }

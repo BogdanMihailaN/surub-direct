@@ -464,3 +464,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - 11 cazuri noi verifică originea configurată, interzicerea URL-urilor cu credențiale/cale/query/fragment, excepția HTTP loopback în Development, tipul operației și păstrarea tokenurilor opace în fragment.
 - Playwright `account-recovery-api.spec.ts`: trecut; `account-recovery-browser.spec.ts`: trecut după corectarea selectorului ambiguu al câmpului e-mail din test. Scenariul folosește direct `actionUrl` generat de backend pentru confirmare și resetare, apoi verifică revocarea sesiunii și autentificarea cu parola nouă.
 - Codul frontend nu a fost modificat; au fost folosite buildurile existente. Nicio expediere externă, migrare DB sau activare comercială.
+
+## Pregătirea internă a comenzilor — 2 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 354 teste .NET și 10 teste Python trecute. Testele PostgreSQL noi acoperă replay concurent, păstrarea operatorului inițial, versiuni depășite, tranziții invalide, revenirea la pregătire și blocarea schimbărilor după anulare.
+- Builduri Angular de producție pentru storefront (browser/SSR) și admin trecute.
+- Migrarea `OrderProcessingHistory` generată, revizuită și aplicată local după backup privat Ordering. Verificarea EF pentru Ordering nu raportează diferențe de model restante.
+- Playwright `admin-sales-orders.spec.ts` și `order-cancellation.spec.ts`: 4 scenarii trecute. Sunt verificate salvarea urmată de răspuns pierdut fără replay automat, istoricul, conflictul de versiune, accesul/CSRF direct și prin gateway și restituirea stocului la anulare.
+- Prima rulare browser a întâmpinat timeouturi înaintea verificării procesării; logurile au avut o pauză de aproximativ 15 minute. Reluarea cu Mac-ul menținut activ pe durata testelor a trecut în 24,7 secunde. Nu au fost relaxate aserțiunile sau timeouturile.
+- Captura mobilă a fost inspectată: formularul și auditul se încadrează, fără depășirea viewportului. Capturile rămân în work, excluse din Git.

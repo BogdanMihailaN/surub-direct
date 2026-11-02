@@ -141,6 +141,29 @@ test('admin filters orders, reads immutable customer details and recovers read f
     await expect(detail).toContainText('RO123456');
     await expect(detail).toContainText('Strada Facturare 2');
     await expect(detail).toContainText('Total cu TVA: 42,35 RON');
+    const processing = page.getByRole('region', { name: 'Pregătirea comenzii', exact: true });
+    await expect(processing).toContainText('În așteptare');
+    await processing.getByLabel('Motivul schimbării etapei').fill('Verificare produse pentru ambalare');
+    await processing.getByLabel('Confirm schimbarea etapei acestei comenzi').check();
+    let processingWrites = 0;
+    await page.route('**/api/v1/admin/sales-orders/' + prepared.id + '/processing', async route => {
+      processingWrites++;
+      const response = await route.fetch();
+      expect(response.status()).toBe(204);
+      await route.abort('failed');
+    }, { times: 1 });
+    await processing.getByRole('button', { name: 'Începe pregătirea' }).click();
+    await expect(processing.getByRole('button', { name: 'Marchează pregătită' })).toBeVisible();
+    await expect(processing.locator('article')).toHaveCount(1);
+    expect(processingWrites).toBe(1);
+    const processingPath = '/api/v1/admin/sales-orders/' + prepared.id + '/processing';
+    expect((await write(processingPath, { operationId: crypto.randomUUID(), expectedVersion: 0, target: 'Ready', reason: 'Versiune veche' })).status()).toBe(409);
+    await processing.getByLabel('Motivul schimbării etapei').fill('Ambalarea a fost verificată');
+    await processing.getByLabel('Confirm schimbarea etapei acestei comenzi').check();
+    await processing.getByRole('button', { name: 'Marchează pregătită' }).click();
+    await expect(processing.getByRole('button', { name: 'Reia pregătirea' })).toBeVisible();
+    await expect(processing.locator('article')).toHaveCount(2);
+
     await page.getByLabel('Stare comandă', { exact: true }).selectOption('Failed');
     await page.getByRole('button', { name: 'Aplică filtrele' }).click();
     await expect(list).toContainText('Nu există comenzi');
@@ -210,9 +233,11 @@ test('administrative order reads require session through gateway and direct serv
   for (const origin of ['http://127.0.0.1:5099', 'http://127.0.0.1:5104']) {
     expect((await request.get(origin + path)).status()).toBe(401);
     expect((await request.get(origin + path + '/' + id)).status()).toBe(401);
+    expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(401);
   }
   await loginAdmin(request, 'http://127.0.0.1:5099');
   for (const origin of ['http://127.0.0.1:5099', 'http://127.0.0.1:5104']) {
+    expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(400);
     const response = await request.get(origin + path + '?status=Confirmed&page=1');
     expect(response.status()).toBe(200);
     expect(response.headers()['cache-control']).toBe('no-store');

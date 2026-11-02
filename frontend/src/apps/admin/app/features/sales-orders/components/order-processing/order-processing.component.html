@@ -1,0 +1,27 @@
+<section aria-label="Pregătirea comenzii">
+  <h3>Pregătire internă demonstrativă</h3>
+  <p>Etapă: <strong>{{ labels[data().status] }}</strong></p>
+  <p>Acest flux nu inițiază plata sau expedierea și nu modifică stocul.</p>
+  @if (editable()) {
+    <form (ngSubmit)="submit()">
+      <label for="processing-reason">Motivul schimbării etapei</label>
+      <textarea id="processing-reason" name="reason" [(ngModel)]="reason" minlength="3" maxlength="500" required [disabled]="busy()"></textarea>
+      <label><input type="checkbox" name="confirmed" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm schimbarea etapei acestei comenzi</label>
+      <button type="submit" [disabled]="busy() || !confirmed || reason.trim().length < 3">
+        {{ data().status === 'Pending' ? 'Începe pregătirea' : data().status === 'Processing' ? 'Marchează pregătită' : 'Reia pregătirea' }}
+      </button>
+    </form>
+  } @else {
+    <p>Pregătirea poate fi modificată numai pentru o comandă confirmată.</p>
+  }
+  <h4>Istoricul pregătirii</h4>
+  @for (change of data().history; track change.operationId) {
+    <article>
+      <strong>{{ labels[change.fromStatus] }} → {{ labels[change.toStatus] }}</strong>
+      <p>{{ change.reason }}</p>
+      <small>{{ change.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Operator: {{ change.actor }}</small>
+    </article>
+  } @empty {
+    <p>Nu există schimbări ale etapei de pregătire.</p>
+  }
+</section>

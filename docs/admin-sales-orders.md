@@ -1,6 +1,6 @@
 # Consultarea comenzilor în administrare
 
-Pagina „Comenzi” (`/comenzi`) afișează comenzile demonstrative create în Ordering. Este disponibilă în mediul Development. Include [anularea integrală demonstrativă și restituirea stocului](order-cancellation.md). Nu activează operații comerciale, plată, livrare sau facturare.
+Pagina „Comenzi” (`/comenzi`) afișează comenzile demonstrative create în Ordering. Este disponibilă în mediul Development. Include [pregătirea internă și istoricul etapelor](order-processing.md), precum și [anularea integrală demonstrativă și restituirea stocului](order-cancellation.md). Nu activează operații comerciale, plată, livrare sau facturare.
 
 ## Lista și detaliile
 

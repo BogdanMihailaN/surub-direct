@@ -15,6 +15,7 @@
   @if (state.cancelError()) {
     <p role="alert">{{ state.cancelError() }}</p>
   }
+  @if (state.processingError()) { <p role="alert">{{ state.processingError() }}</p> }
   <div class="layout">
     <aside>
       @if (state.data(); as data) {
@@ -41,9 +42,11 @@
       }
       @if (state.detail(); as detail) {
         <sd-sales-order-detail [data]="detail" />
+        <sd-order-processing [data]="detail.processing" [editable]="detail.order.status === 'Confirmed'"
+          [busy]="state.processing() || state.cancelling()" (changed)="state.changeProcessing($event)" />
         @if (detail.order.status === 'Confirmed') {
           @for (id of [detail.order.id]; track id) {
-            <sd-order-cancellation [busy]="state.cancelling()" (cancelled)="state.cancel($event)" />
+            <sd-order-cancellation [busy]="state.cancelling() || state.processing()" (cancelled)="state.cancel($event)" />
           }
         }
       } @else if (!state.selected()) {

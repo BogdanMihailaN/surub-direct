@@ -162,3 +162,7 @@ Identity are portul `Application/Abstractions/ICustomerAccounts` și handler-ul 
 ## Mesajele de recuperare
 
 Identity.Infrastructure/Accounts/Mail separă `AccountMailComposer` și `AccountMailContent` de adaptorul `LocalAccountMail`. Originea configurată este validată la compunerea serviciilor Development; API-ul nu construiește linkuri din cererile primite. Testele pentru codificare și configurație sunt în Unit/Identity/AccountMailComposerTests; scenariul browser folosește linkurile produse efectiv de backend.
+
+## Pregătirea internă a comenzilor
+
+Ordering.Domain/Orders conține regulile din DemoOrder și înregistrarea OrderProcessingChange. Application separă portul IOrderProcessing și handler-ul ChangeOrderProcessing; Infrastructure are repository și configurație EF distincte. API are cerere și endpoint proprii. Angular sales-orders compune componenta order-processing, cu model, acces API și stare separate. Istoricul este inclus doar în detaliul administrativ.
