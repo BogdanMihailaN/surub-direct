@@ -1,6 +1,6 @@
 # Starea implementării
 
-Actualizat la 31 octombrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 2 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
 
@@ -133,3 +133,7 @@ Interfața permite rezervare, snapshot cu total și date de livrare, anulare, co
 ## Date PF/PJ în coșul contului — 31 octombrie 2026
 
 Datele clientului pot fi editate direct în cont: persoană fizică sau firmă, adresă de livrare și adresă de facturare separată. Formularul și validările sunt reutilizate cu coșul anonim, iar API/state rămân separate. Conflictele și răspunsurile incerte recitesc starea fără suprascriere automată. Adăugarea directă din catalog în coșul contului rămâne următoarea etapă.
+
+## Adăugare din catalog în cont — 31 octombrie 2026
+
+Pagina produsului permite salvarea cantității direct în coșul contului, după confirmarea destinației și a eventualei înlocuiri a cantității existente. Coșul browserului rămâne separat. Fluxul tratează crearea explicită, limita de articole, expirarea, pregătirea activă, schimbarea sesiunii, conflictele și răspunsurile incerte fără retransmitere automată. Confirmarea e-mailului și recuperarea parolei rămân în backlog.

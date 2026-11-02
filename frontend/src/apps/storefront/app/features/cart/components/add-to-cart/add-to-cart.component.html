@@ -3,12 +3,13 @@
     >Număr ambalaje<input
       type="number"
       name="packs"
-      [(ngModel)]="packs"
+      [ngModel]="packs()"
+      (ngModelChange)="packs.set($event)"
       [min]="offer().minPacks"
       [step]="offer().packStep"
       [max]="available() / offer().unitsPerPack"
       required
-      [disabled]="cart.locked() || !priced()" /></label
+      [disabled]="!priced()" /></label
   ><button
     [disabled]="
       form.invalid ||
@@ -23,4 +24,6 @@
 @if (message()) {
   <p role="status">{{ message() }}</p>
 }
-<a routerLink="/cos">Vezi coșul</a>
+<p>Destinația butonului de mai sus: coșul browserului.</p>
+<a routerLink="/cos">Vezi coșul browserului</a>
+<sd-add-to-account [selection]="accountSelection()" />

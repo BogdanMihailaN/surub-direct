@@ -16,7 +16,7 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] API pentru pregătirea/confirmarea comenzilor din coșul contului, cu rezervări și istoric privat.
 - [x] Interfața de pregătire/confirmare pe cont, cu anulare, recuperarea răspunsurilor incerte și reluare după eșec.
 - [x] Editarea datelor PF/PJ și a adreselor de livrare/facturare în coșul contului.
-- [ ] Adăugarea directă din catalog în coșul contului.
+- [x] Adăugarea directă din catalog în coșul contului, cu destinație și cantitate confirmate explicit.
 - [ ] Confirmarea e-mailului și recuperarea parolei.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.

@@ -10,7 +10,7 @@ import { AccountCartApi } from '../data-access/account-cart-api.service';
 import { CartTransferSelection } from '../models/cart-transfer-selection';
 import { AccountPreparationApi } from '../data-access/account-preparation-api.service';
 import { CustomerDraft } from '../../cart/models/customer-draft.model';
-const CHANGE_KEY = 'surub-direct.account-cart.changed';
+import { ACCOUNT_CART_CHANGE_KEY as CHANGE_KEY } from '../data-access/account-cart-change-key';
 @Injectable()
 export class AccountCartStore {
   private readonly api = inject(AccountCartApi);

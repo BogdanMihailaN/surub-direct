@@ -5,8 +5,9 @@
     „Reîncarcă coșurile” pentru a vedea modificările recente.
   </p>
   <p>
-    Produsele adăugate din catalog ajung în <a routerLink="/cos">coșul browserului</a>. Le poți
-    transfera aici numai când coșul contului este gol.
+    Din pagina produsului poți alege „Adaugă în cont”. Produsele din
+    <a routerLink="/cos">coșul browserului</a> rămân separate; le poți transfera aici numai când
+    coșul contului este gol.
   </p>
   <button type="button" (click)="state.load(session().id)" [disabled]="state.busy()">
     Reîncarcă coșurile

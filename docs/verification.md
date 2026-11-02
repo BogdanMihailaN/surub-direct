@@ -423,3 +423,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Formularul este reutilizat prin inputs și funcție de salvare, fără injectarea store-ului anonim. API-ul de cont folosește versiunea coșului, contul așteptat și CSRF Identity.
 - Screenshot-ul mobil la 390 px a fost inspectat vizual și viewport-ul verificat fără depășire orizontală: `work/account-customer-mobile.png`, exclus din Git.
 - Nu sunt modificări backend sau de schemă, deci suita backend nu a fost repetată. Aplicațiile de test sunt oprite la final. Automatizarea și checkout-ul comercial rămân oprite.
+
+## Adăugare directă din catalog în cont — încheiat la 2 noiembrie 2026
+
+- `npm run build`: storefront (browser + SSR) și admin compilate pentru producție, cu verificările stricte TypeScript/template păstrate.
+- **19 scenarii Playwright trecute în rularea finală**: 7 scenarii controlate noi, un flux real de adăugare din catalog în două sesiuni, 5 regresii de coș pe cont, 2 de coș anonim și 4 de catalog. Rezultatul persistent al rulării a fost verificat după reluarea sesiunii.
+- Sunt acoperite confirmarea contului/cantității, renunțarea fără scriere, păstrarea celorlalte articole și a coșului anonim, crearea numai după confirmare, răspuns pierdut, conflict, cont schimbat, coș expirat/rezervat/indisponibil, sesiune absentă, invalidarea citirilor întârziate și crearea concurentă a unui coș populat.
+- Fluxul real adaugă întâi în coșul browserului, salvează o cantitate diferită în cont, modifică explicit oferta existentă și verifică rezultatul din al doilea browser. Coșul browserului rămâne neschimbat după operațiile pe cont.
+- Afișarea la 390 px a fost inspectată vizual și verificată fără depășirea viewport-ului. Screenshot privat: `work/account-add-offer-mobile.png`, exclus din Git.
+- Nu sunt modificări backend, de schemă sau de dependențe; suita backend nu a fost repetată. Aplicațiile de test sunt oprite. Automatizarea și checkout-ul comercial rămân oprite.

@@ -1,0 +1,36 @@
+<button type="button" (click)="select()" [disabled]="!selection() || state.busy()">
+  Adaugă în cont
+</button>
+@if (state.busy()) {
+  <p role="status">Verificăm coșul contului…</p>
+}
+@if (state.selected(); as selected) {
+  <div #confirmation tabindex="-1" role="group" aria-label="Confirmare adăugare în cont">
+    <p>
+      Cont: <strong>{{ selected.session.email }}</strong
+      >.
+    </p>
+    <p>
+      Cantitatea pentru această ofertă: <strong>{{ selected.line.packs }} ambalaje</strong>.
+    </p>
+    @if (existing(); as packs) {
+      <p>
+        Înlocuiește cantitatea existentă de {{ packs }} ambalaje. Celelalte produse sunt păstrate.
+      </p>
+    }
+    @if (!selected.cart) {
+      <p>Vom crea coșul contului înainte de salvare.</p>
+    }
+    <button type="button" (click)="state.confirm()" [disabled]="state.busy()">
+      Confirmă cantitatea în cont
+    </button>
+    <button type="button" (click)="state.invalidate()" [disabled]="state.busy()">Renunță</button>
+  </div>
+}
+@if (state.error()) {
+  <p role="alert">{{ state.error() }}</p>
+}
+@if (state.notice()) {
+  <p role="status">{{ state.notice() }}</p>
+}
+<a routerLink="/cont">Vezi coșul contului</a>

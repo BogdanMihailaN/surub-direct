@@ -42,7 +42,7 @@ Sesiunea se reverifică la focus, iar componentele cu date de cont sunt eliminat
 
 ## Limite și continuare
 
-Produsele adăugate din catalog și pagina `/cos` folosesc în continuare coșul anonim. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea selecțiilor și adăugarea directă din catalog în coșul contului nu sunt implementate. Formularul PF/PJ este disponibil și în cont, cu adrese de livrare și facturare, consultare și ștergere.
+Pagina produsului oferă destinații separate pentru coșul browserului și coșul contului; pagina `/cos` afișează în continuare coșul browserului. Transferul în cont este explicit și disponibil numai către un coș gol; îmbinarea automată a selecțiilor nu este implementată. Formularul PF/PJ este disponibil și în cont, cu adrese de livrare și facturare, consultare și ștergere.
 
 API-ul și interfața de pregătire/confirmare a comenzilor din coșul contului sunt implementate (secțiunile de mai jos). Nu există sincronizare push/WebSocket; actualizările se recitesc prin API la revenirea în pagină sau prin „Reîncarcă coșurile”, iar conflictele dintre dispozitive se detectează prin versiune.
 
@@ -72,10 +72,18 @@ Secțiunea Coșul contului permite pregătirea selecției cu datele clientului s
 
 Starea rezervării se recitește la cinci secunde cât pagina este vizibilă, cu actualizare manuală disponibilă. Erorile ascund acțiunile bazate pe snapshot-ul vechi. Răspunsurile incerte la mutații declanșează recitirea coșului și pregătirii, fără retransmitere automată. Modificările din alt tab și distrugerea componentei invalidează citirile în curs și confirmarea selectată.
 
-După eliberarea rezervării se poate relua editarea. Încheierea unei comenzi confirmate golește coșul; după confirmare eșuată se păstrează selecția și datele clientului. Datele PF/PJ pot fi editate direct în cont sau copiate explicit la transferul din browser. Adăugarea directă din catalog pe cont rămâne de implementat. Fluxul rămâne demonstrativ, fără plăți, livrare sau facturare.
+După eliberarea rezervării se poate relua editarea. Încheierea unei comenzi confirmate golește coșul; după confirmare eșuată se păstrează selecția și datele clientului. Datele PF/PJ pot fi editate direct în cont sau copiate explicit la transferul din browser. Adăugarea directă din catalog pe cont este disponibilă cu confirmare explicită. Fluxul rămâne demonstrativ, fără plăți, livrare sau facturare.
 
 ## Editarea datelor clientului — 31 octombrie 2026
 
 Butonul „Editează datele PF/PJ și adresele” deschide formularul reutilizat din coșul anonim. Componenta primește datele, blocarea și funcția de salvare, fără dependență de un store sau API. Validările PF/PJ și adreselor rămân comune; trecerea la persoană fizică elimină câmpurile firmei, iar facturarea la livrare elimină adresa de facturare separată.
 
 Salvarea folosește versiunea coșului și contul așteptat, cu CSRF Identity. După mutație, inclusiv răspuns pierdut sau conflict, se recitește starea serverului fără retrimitere automată; editorul se închide și utilizatorul poate verifica datele salvate înainte de o nouă editare. Renunțarea nu scrie nimic. Coșurile pregătite și starea invalidată din alt tab blochează editarea.
+
+## Adăugare directă din catalog — 31 octombrie 2026
+
+Fiecare ofertă din pagina produsului are opțiunea „Adaugă în cont”, folosind cantitatea introdusă. Înaintea oricărei scrieri se verifică sesiunea și se citește coșul. Confirmarea arată adresa contului, cantitatea dorită și cantitatea existentă care va fi înlocuită. Celelalte oferte și datele clientului sunt păstrate; nu se modifică sau transferă coșul browserului. Pentru un cont fără coș, crearea este inclusă explicit în confirmare.
+
+Coșurile expirate se reîncep doar din Contul meu; cele pregătite sau inaccesibile nu pot fi modificate din catalog. La conflict ori răspuns pierdut se recitește starea fără retransmiterea mutației și fără redirecționarea către coșul anonim. Crearea concurentă a unui coș populat cere o nouă verificare înainte de scriere. Schimbarea cantității, notificările din alt tab, revenirea ferestrei în focus și distrugerea componentei invalidează confirmarea și citirile vechi. API-ul verifică contul așteptat, versiunea și CSRF Identity.
+
+Contorul din antet și pagina `/cos` continuă să se refere la coșul browserului; coșul contului se consultă în `/cont`. Nu există comutare implicită a destinației după autentificare.

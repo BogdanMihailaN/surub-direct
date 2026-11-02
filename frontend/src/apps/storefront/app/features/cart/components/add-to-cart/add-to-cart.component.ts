@@ -1,11 +1,12 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Offer } from '@shared/models/offer.model';
 import { CartStore } from '../../state/cart.store';
+import { AddToAccount } from '../../../account/components/add-to-account/add-to-account.component';
 @Component({
   selector: 'sd-add-to-cart',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, AddToAccount],
   templateUrl: './add-to-cart.component.html',
   styleUrl: './add-to-cart.component.scss',
 })
@@ -16,11 +17,22 @@ export class AddToCart {
   readonly priced = input(false);
   readonly cart = inject(CartStore);
   readonly message = signal('');
-  packs = 1;
+  readonly packs = signal(1);
+  readonly accountSelection = computed(() => {
+    const o = this.offer(),
+      packs = this.packs();
+    return this.priced() &&
+      Number.isInteger(packs) &&
+      packs >= o.minPacks &&
+      (packs - o.minPacks) % o.packStep === 0 &&
+      packs * o.unitsPerPack <= this.available()
+      ? { productSlug: this.slug(), offerId: o.id, packs }
+      : null;
+  });
   constructor() {
     effect(() => {
       const o = this.offer();
-      this.packs = this.cart.items().find((x) => x.offerId === o.id)?.packs ?? o.minPacks;
+      this.packs.set(this.cart.items().find((x) => x.offerId === o.id)?.packs ?? o.minPacks);
     });
   }
   existing() {
@@ -31,13 +43,13 @@ export class AddToCart {
     if (
       form.invalid ||
       !this.priced() ||
-      !Number.isInteger(this.packs) ||
-      this.packs < o.minPacks ||
-      (this.packs - o.minPacks) % o.packStep !== 0 ||
-      this.packs * o.unitsPerPack > this.available()
+      !Number.isInteger(this.packs()) ||
+      this.packs() < o.minPacks ||
+      (this.packs() - o.minPacks) % o.packStep !== 0 ||
+      this.packs() * o.unitsPerPack > this.available()
     )
       return;
-    await this.cart.set({ productSlug: this.slug(), offerId: o.id, packs: this.packs });
+    await this.cart.set({ productSlug: this.slug(), offerId: o.id, packs: this.packs() });
     this.message.set(this.cart.error() || 'Cantitatea este în coș.');
   }
 }
