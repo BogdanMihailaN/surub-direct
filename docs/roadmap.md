@@ -18,7 +18,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Editarea datelor PF/PJ și a adreselor de livrare/facturare în coșul contului.
 - [x] Adăugarea directă din catalog în coșul contului, cu destinație și cantitate confirmate explicit.
 - [x] API demonstrativ de confirmare e-mail și resetare parolă, cu mesaje locale private și revocarea sesiunilor.
-- [ ] Interfața de confirmare e-mail/resetare parolă și conectarea la un furnizor de e-mail.
+- [x] Interfața Angular de solicitare/confirmare e-mail și resetare parolă, cu token în fragment URL și validare.
+- [ ] Conectarea la un furnizor de e-mail și configurarea livrării mesajelor.
 - [x] Furnizori, condiții SKU, comenzi de aprovizionare cu snapshot-uri și versiuni.
 - [x] Recepții parțiale cu jurnal persistent, retry manual și deduplicare Inventory.
 

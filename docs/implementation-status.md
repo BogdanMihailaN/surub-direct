@@ -141,3 +141,7 @@ Pagina produsului permite salvarea cantității direct în coșul contului, dup�
 ## API de confirmare e-mail și recuperare parolă — 2 noiembrie 2026
 
 Identity oferă solicitare/confirmare e-mail și solicitare/aplicare resetare parolă, numai în Development. Tokenurile expiră după două ore; resetarea revocă sesiunile existente prin verificarea security stamp la fiecare cerere. Mesajele sunt salvate în directorul privat `work/identity-mail`, fără expediere externă. Conturile Administrator sunt excluse. Interfața Angular și furnizorul de e-mail urmează; loginul demonstrativ nu impune încă adresa confirmată. [Protocol și limite](account-recovery.md).
+
+## Interfața de recuperare a contului — 2 noiembrie 2026
+
+Angular include solicitarea mesajelor, confirmarea e-mailului și resetarea parolei. Tokenul este citit din fragmentul linkului, eliminat din URL și trimis numai prin POST cu CSRF. Confirmarea este explicită, parolele sunt validate/șterse după trimitere, iar răspunsurile incerte nu declanșează retransmitere. Fluxul complet este demonstrativ cu mesaje locale private; furnizorul de e-mail și activarea livrării rămân în backlog.

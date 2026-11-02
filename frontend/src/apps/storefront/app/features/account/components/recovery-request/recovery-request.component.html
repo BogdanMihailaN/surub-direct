@@ -1,0 +1,22 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <fieldset [disabled]="busy()">
+    <legend>Solicită un mesaj pentru cont</legend>
+    <label
+      >Operațiune<select name="kind" [(ngModel)]="kind">
+        <option value="password">Recuperare parolă</option>
+        <option value="email">Confirmare e-mail</option>
+      </select></label
+    >
+    <label
+      >Adresa de e-mail<input
+        name="email"
+        type="email"
+        [(ngModel)]="email"
+        required
+        email
+        maxlength="254"
+        autocomplete="email"
+    /></label>
+    <button type="submit" [disabled]="form.invalid">Solicită mesajul</button>
+  </fieldset>
+</form>

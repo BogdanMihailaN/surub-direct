@@ -1,6 +1,6 @@
 # Confirmarea e-mailului și recuperarea parolei
 
-Etapă API demonstrativă — 2 noiembrie 2026. Interfața Angular și livrarea printr-un furnizor de e-mail urmează. Funcțiile sunt disponibile numai în Development; autentificarea demonstrativă nu impune încă e-mail confirmat.
+Flux demonstrativ API + Angular — 2 noiembrie 2026. Livrarea printr-un furnizor de e-mail urmează. Funcțiile sunt disponibile numai în Development; autentificarea demonstrativă nu impune încă e-mail confirmat.
 
 | Endpoint POST | Corp | Rezultat |
 |---|---|---|
@@ -18,3 +18,11 @@ Tokenurile ASP.NET Identity Data Protection expiră după două ore și sunt leg
 `scripts/dev.py` configurează `AccountMail__Directory` către `work/identity-mail`. Fiecare mesaj este un fișier JSON cu tipul operației, adresa, identificatorul utilizatorului, tokenul și momentele de creare/expirare. Fișierul se publică prin redenumire după scriere; directorul nou are permisiuni Unix 0700, fișierele 0600. Aceste date sunt sensibile, locale și excluse din Git. Nu există endpoint de citire a mesajelor, logare a tokenurilor sau expediere externă. În absența configurării, adaptorul Development folosește un director temporar local.
 
 Nu sunt modificări de schemă. Înainte de activarea comercială sunt necesare furnizorul de e-mail, URL-uri publice validate, persistența/rotația cheilor Data Protection, protecție anti-abuz distribuită, retenția mesajelor și decizia privind impunerea e-mailului confirmat. Răspunsurile generice nu reprezintă o garanție de timp constant sau de indisponibilitate uniformă a furnizorului.
+
+## Interfața Angular
+
+Pagina `/cont/recuperare`, accesibilă din Contul meu, solicită un mesaj de confirmare e-mail sau resetare parolă. Mesajul de succes rămâne generic pentru adrese existente/inexistente. Interfața precizează că expedierea e-mailurilor nu este încă activă.
+
+Linkurile de aplicare folosesc `/cont/confirma-email#userId=…&token=…` și `/cont/reseteaza-parola#userId=…&token=…`, cu valorile codificate prin `URLSearchParams`. Pentru testele locale, valorile provin din mesajul JSON privat; fișierele nu sunt expuse prin HTTP. Fragmentul nu este trimis serverului la GET și este eliminat imediat după citirea în browser. Tokenul rămâne doar în starea componentei, apoi este trimis în corpul POST cu CSRF și eliminat după succes/distrugere. Nu este păstrat în localStorage/sessionStorage.
+
+Deschiderea linkului nu execută automat mutația: confirmarea e-mailului cere apăsarea butonului, iar resetarea cere parola nouă și repetarea ei. Parolele sunt validate și șterse din formular imediat după trimitere. După succes formularul dispare și se oferă autentificarea; nu se creează automat o sesiune. Răspunsurile incerte nu repetă cererea automat. Reîncărcarea paginii după eliminarea fragmentului cere redeschiderea linkului complet sau solicitarea unui mesaj nou.

@@ -1,13 +1,12 @@
 <section class="account" aria-labelledby="account-title" [attr.aria-busy]="store.busy()">
   <span class="eyebrow">ȘURUB DIRECT</span>
   <h1 id="account-title">Contul meu</h1>
-  <p class="intro">
-    Cont demonstrativ. Confirmarea e-mailului și recuperarea parolei nu sunt încă disponibile.
-  </p>
+  <p class="intro">Cont demonstrativ. Livrarea mesajelor prin e-mail nu este încă activă.</p>
   <p class="intro">
     Poți transfera explicit coșul browserului în cont și poți asocia comenzile încheiate. Folosește
     date de test.
   </p>
+  <p><a routerLink="/cont/recuperare">Recuperează parola sau confirmă e-mailul</a></p>
   @if (store.status() === 'loading') {
     <p role="status">Se verifică sesiunea…</p>
   }

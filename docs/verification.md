@@ -440,3 +440,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Prima compilare a testelor a identificat o regulă xUnit de stil; rularea următoare a identificat o instanță EF duplicată în pregătirea testului de administrator. Ambele teste au fost corectate, iar suita finală a trecut integral. Regresia HTTP verifică acum directiva `no-store` independent de `no-cache` adăugat de revalidarea cookie-ului.
 - Fără modificări de schemă sau de sursă Angular; nu au fost necesare migrări sau builduri Angular. Mesajele locale din `work/identity-mail` sunt excluse din Git și nu sunt expediate extern.
 - `git diff --check` și scanarea modificărilor pentru secrete locale au trecut. Aplicațiile de test sunt oprite; automatizarea rămâne oprită. Interfața Angular și furnizorul de e-mail sunt încă în backlog.
+
+## Interfața de confirmare e-mail și resetare parolă — 2 noiembrie 2026
+
+- `npm run build`: storefront (browser + SSR) și admin compilate pentru producție, cu verificările stricte TypeScript/template păstrate.
+- **11 scenarii Playwright distincte trecute**: 6 scenarii controlate de recuperare, fluxul real complet și 4 regresii de autentificare/înregistrare. Fluxul real solicită mesajele locale din UI, confirmă e-mailul, resetează parola, verifică revocarea sesiunii/parolei vechi și autentificarea cu parola nouă.
+- Sunt acoperite confirmarea explicită, eliminarea tokenului din URL, lipsa tokenului din URL-urile cererilor HTTP, validarea parolelor, ștergerea lor după trimitere, linkuri incomplete/expirate, limitarea cererilor, răspuns pierdut fără retransmitere și ignorarea răspunsurilor după navigare.
+- Testele au detectat normalizarea caracterului `+` în fragment de către router; parserul păstrează acum corect acest caracter din token. Un selector de test a fost corectat pentru eticheta reală „Adresă e-mail”. Scenariile afectate au fost reluate cu succes.
+- Aspectul la 390 px a fost inspectat vizual, fără depășire orizontală: `work/account-recovery-mobile.png`, exclus din Git.
+- Nu sunt schimbări backend, de schemă sau de dependențe; suita backend nu a fost repetată. `git diff --check` și scanarea pentru secrete au trecut. Aplicațiile de test sunt oprite; automatizarea rămâne oprită. Expedierea e-mailurilor prin furnizor nu este activată.

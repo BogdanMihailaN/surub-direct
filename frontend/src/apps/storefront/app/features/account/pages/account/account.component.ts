@@ -4,9 +4,10 @@ import { AccountCart } from '../../components/account-cart/account-cart.componen
 import { AccountStore } from '../../state/account.store';
 import { AccountOrders } from '../../components/account-orders/account-orders.component';
 import { AccountForm } from '../../components/account-form/account-form.component';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'sd-account',
-  imports: [AccountForm, AccountOrders, AccountCart],
+  imports: [RouterLink, AccountForm, AccountOrders, AccountCart],
   providers: [AccountStore],
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss',

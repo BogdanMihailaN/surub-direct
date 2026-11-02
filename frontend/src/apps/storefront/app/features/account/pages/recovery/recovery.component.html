@@ -1,0 +1,44 @@
+<section aria-labelledby="recovery-heading">
+  <a routerLink="/cont">← Înapoi la Contul meu</a>
+  <h1 id="recovery-heading">{{ heading }}</h1>
+  <p>Funcție demonstrativă. Livrarea mesajelor prin e-mail nu este încă activă.</p>
+  @if (mode === 'request') {
+    <sd-recovery-request
+      [busy]="state.busy()"
+      (requested)="state.request($event.kind, $event.email)"
+    />
+  } @else if (!state.loaded()) {
+    <p role="status">Verificăm linkul…</p>
+  } @else if (!state.completed()) {
+    @if (state.link()) {
+      @if (mode === 'email') {
+        <p>
+          Confirmă doar dacă ai solicitat verificarea acestei adrese. Deschiderea linkului nu
+          modifică automat contul.
+        </p>
+        <button (click)="state.confirm()" [disabled]="state.busy()">Confirmă adresa</button>
+      } @else {
+        <sd-password-reset-form [busy]="state.busy()" (submitted)="state.reset($event)" />
+      }
+    } @else {
+      <p role="alert">
+        Link incomplet sau invalid. Deschide linkul complet din mesaj ori solicită unul nou.
+      </p>
+    }
+  }
+  @if (state.busy()) {
+    <p role="status">Procesăm solicitarea…</p>
+  }
+  @if (state.error()) {
+    <p role="alert" class="error">{{ state.error() }}</p>
+  }
+  @if (state.notice()) {
+    <p role="status" class="notice">{{ state.notice() }}</p>
+  }
+  @if (mode !== 'request') {
+    <p><a routerLink="/cont/recuperare">Solicită un mesaj nou</a></p>
+  }
+  @if (state.completed()) {
+    <p><a routerLink="/cont">Mergi la autentificare</a></p>
+  }
+</section>
