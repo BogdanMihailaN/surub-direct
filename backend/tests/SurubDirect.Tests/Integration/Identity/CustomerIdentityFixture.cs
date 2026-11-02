@@ -16,6 +16,7 @@ public sealed class CustomerIdentityFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer database = new PostgreSqlBuilder("postgres:17").Build();
     public WebApplication App { get; private set; } = null!;
+    public string MailDirectory { get; } = Path.Combine(Path.GetTempPath(), "surub-identity-tests-" + Guid.NewGuid().ToString("N"));
     public const string Password = "Test-customer-12345!";
     public async Task InitializeAsync()
     {
@@ -26,7 +27,8 @@ public sealed class CustomerIdentityFixture : IAsyncLifetime
         {
             ["ConnectionStrings:Identity"] = database.GetConnectionString(),
             ["ServiceKeys:Identity"] = new string('x', 40),
-            ["Logging:LogLevel:Default"] = "Warning"
+            ["Logging:LogLevel:Default"] = "Warning",
+            ["AccountMail:Directory"] = MailDirectory
         });
         builder.AddIdentityService();
         App = builder.Build();
@@ -47,5 +49,6 @@ public sealed class CustomerIdentityFixture : IAsyncLifetime
     {
         await App.DisposeAsync();
         await database.DisposeAsync();
+        if (Directory.Exists(MailDirectory)) Directory.Delete(MailDirectory, true);
     }
 }

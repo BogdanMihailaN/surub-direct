@@ -69,6 +69,7 @@ def environment(service=None):
     if service == 'catalog':
         env['Media__Root'] = str(ROOT / 'work/media/catalog')
     if service == 'identity':
+        env['AccountMail__Directory'] = str(ROOT / 'work/identity-mail')
         env['Admin__Email'] = config.get('ADMIN_EMAIL', '')
         env['Admin__Password'] = config.get('ADMIN_PASSWORD', '')
     if service in SERVICES and SERVICES[service][1]:

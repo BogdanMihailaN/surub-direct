@@ -432,3 +432,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Fluxul real adaugă întâi în coșul browserului, salvează o cantitate diferită în cont, modifică explicit oferta existentă și verifică rezultatul din al doilea browser. Coșul browserului rămâne neschimbat după operațiile pe cont.
 - Afișarea la 390 px a fost inspectată vizual și verificată fără depășirea viewport-ului. Screenshot privat: `work/account-add-offer-mobile.png`, exclus din Git.
 - Nu sunt modificări backend, de schemă sau de dependențe; suita backend nu a fost repetată. Aplicațiile de test sunt oprite. Automatizarea și checkout-ul comercial rămân oprite.
+
+## API de confirmare e-mail și resetare parolă — 2 noiembrie 2026
+
+- `python3 scripts/dev.py test`: **342 teste .NET și 10 teste Python trecute**, fără teste ignorate. Cele 7 teste noi verifică răspunsuri generice, tokenuri legate de utilizator/scop, expirare, refuzul reutilizării, resetări concurente, revocarea cookie-urilor și validării interne, excluderea administratorilor, CSRF, restricția Development, permisiuni private și limitarea cererilor.
+- **3 scenarii Playwright distincte trecute**: recuperare completă prin gateway și direct Identity, regresia coșului pe cont și înregistrare/autentificare fără acces administrativ. Resetarea refuză parola veche și invalidează sesiunea existentă; tokenurile nu apar în răspunsurile de solicitare.
+- Prima compilare a testelor a identificat o regulă xUnit de stil; rularea următoare a identificat o instanță EF duplicată în pregătirea testului de administrator. Ambele teste au fost corectate, iar suita finală a trecut integral. Regresia HTTP verifică acum directiva `no-store` independent de `no-cache` adăugat de revalidarea cookie-ului.
+- Fără modificări de schemă sau de sursă Angular; nu au fost necesare migrări sau builduri Angular. Mesajele locale din `work/identity-mail` sunt excluse din Git și nu sunt expediate extern.
+- `git diff --check` și scanarea modificărilor pentru secrete locale au trecut. Aplicațiile de test sunt oprite; automatizarea rămâne oprită. Interfața Angular și furnizorul de e-mail sunt încă în backlog.

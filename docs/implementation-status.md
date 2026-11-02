@@ -137,3 +137,7 @@ Datele clientului pot fi editate direct în cont: persoană fizică sau firmă, 
 ## Adăugare din catalog în cont — 31 octombrie 2026
 
 Pagina produsului permite salvarea cantității direct în coșul contului, după confirmarea destinației și a eventualei înlocuiri a cantității existente. Coșul browserului rămâne separat. Fluxul tratează crearea explicită, limita de articole, expirarea, pregătirea activă, schimbarea sesiunii, conflictele și răspunsurile incerte fără retransmitere automată. Confirmarea e-mailului și recuperarea parolei rămân în backlog.
+
+## API de confirmare e-mail și recuperare parolă — 2 noiembrie 2026
+
+Identity oferă solicitare/confirmare e-mail și solicitare/aplicare resetare parolă, numai în Development. Tokenurile expiră după două ore; resetarea revocă sesiunile existente prin verificarea security stamp la fiecare cerere. Mesajele sunt salvate în directorul privat `work/identity-mail`, fără expediere externă. Conturile Administrator sunt excluse. Interfața Angular și furnizorul de e-mail urmează; loginul demonstrativ nu impune încă adresa confirmată. [Protocol și limite](account-recovery.md).
