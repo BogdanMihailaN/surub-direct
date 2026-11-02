@@ -1,5 +1,5 @@
 using SurubDirect.Inventory.Contracts;
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Application;
 
 namespace SurubDirect.Tests;
 public sealed class TestStockReader(IInventoryReader inventory) : IStockReader

@@ -1,8 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SurubDirect.Catalog.Application;
 using SurubDirect.Catalog.Contracts;
-using SurubDirect.Pricing.Application;
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Application.Pricing;
 
 namespace SurubDirect.Catalog.Api.Bootstrap;
 internal static class DemoData

@@ -2,8 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SurubDirect.BuildingBlocks;
 using SurubDirect.Catalog.Application;
 using SurubDirect.Catalog.Contracts;
-using SurubDirect.Pricing.Application;
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Application.Pricing;
 using Xunit;
 namespace SurubDirect.Tests;
 public class ProductImagePersistenceTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>

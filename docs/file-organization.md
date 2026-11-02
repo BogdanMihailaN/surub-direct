@@ -9,8 +9,6 @@ surub-direct/
 │   │   ├── services/
 │   │   │   ├── catalog/
 │   │   │   │   ├── SurubDirect.Catalog.{Api,Application,Domain,Infrastructure,Contracts}/
-│   │   │   │   ├── SurubDirect.Pricing.{Application,Domain,Infrastructure,Contracts}/
-│   │   │   │   ├── SurubDirect.Store.{Application,Infrastructure}/
 │   │   │   │   └── SurubDirect.Catalog.Worker/
 │   │   │   ├── inventory/SurubDirect.Inventory.{Api,Application,Domain,Infrastructure,Contracts}/
 │   │   │   ├── identity/SurubDirect.Identity.{Api,Application,Infrastructure}/
@@ -45,6 +43,10 @@ Notația `{...}` abreviază directoarele reale, nu reprezintă un director liter
 
 Codul de producție se află exclusiv în `backend/src` și `frontend/src`; testele sunt în directoarele `tests` corespunzătoare. Serviciile nu au încă un nivel `src` interior. Configurațiile build-ului rămân la rădăcina backend-ului sau frontend-ului, iar cele comune întregului proiect rămân în rădăcina repository-ului.
 
+## Organizarea internă a Catalogului
+
+Serviciul are șase proiecte: Api, Application, Domain, Infrastructure, Contracts și Worker. Prețurile sunt în directoare Pricing în straturile existente; importul este în Application/Features/Imports și Infrastructure/Imports, iar citirea și publicarea produselor în Application/Features/Products. Nu există proiecte Store sau Pricing separate. CatalogDbContext și PricingDbContext păstrează schemele și istoricul lor; scanarea configurațiilor EF este filtrată per context. Migrațiile Pricing sunt în Infrastructure/Migrations/Pricing, cu namespace-ul istoric păstrat.
+
 ## Reguli backend
 
 O clasă, înregistrare, enumerare sau interfață principală per fișier. Domain conține regulile comerciale, fără framework-uri de persistență sau HTTP. Application organizează operațiile în `Features/<resursă>/<operație>`, cu handler și cerere proprii, plus porturi în `Abstractions`.
@@ -65,7 +67,7 @@ Nu creăm straturi goale pentru funcționalități neimplementate și nu împăr
 
 ## Administrarea ciclului de viață al produsului
 
-Operațiile sunt separate în `Catalog.Application/Features/Products/{UpdateProduct,ArchiveProduct,RestoreProduct}`, fiecare cu handler propriu și endpoint în `Catalog.Api/Endpoints/Administration/Catalog`. Regulile de editare și tranzițiile de stare sunt în `Catalog.Domain/Products/Product.cs`. Citirea administrativă după ID este compusă în `Store.Application/Features/GetAdminProduct`.
+Operațiile sunt separate în `Catalog.Application/Features/Products/{UpdateProduct,ArchiveProduct,RestoreProduct}`, fiecare cu handler propriu și endpoint în `Catalog.Api/Endpoints/Administration/Catalog`. Regulile de editare și tranzițiile de stare sunt în `Catalog.Domain/Products/Product.cs`. Citirea administrativă după ID este compusă în `Catalog.Application/Features/Products/GetAdminProduct`.
 
 În Angular, formularul de editare și confirmarea arhivării/restaurării sunt componente distincte (`product-edit-form`, `product-lifecycle`); pagina le compune, iar `CatalogAdminStore` păstrează starea operațiilor, filtrarea, paginarea și selecția. Testele de domeniu și PostgreSQL sunt în `Unit/ProductLifecycleTests.cs` și `Integration/ProductAdministrationTests.cs`.
 
@@ -89,7 +91,7 @@ Admin are feature-ul `product-images`: `image-upload-form`, `image-editor` și `
 
 ## Importul CSV
 
-`Store.Application/Features/Imports` compune operațiile Catalog și Pricing din același serviciu: parser CSV, citire de rânduri, construire de lot, handler de previzualizare și handler de salvare. Regulile comerciale reutilizează domeniile Catalog/Pricing. Portul `IProductImportRepository` este în `Abstractions/Imports`. `Store.Infrastructure/Imports` implementează citirea conflictelor și tranzacția comună celor două contexte EF, cu înregistrare DI separată; worker-ul nu primește aceste dependențe. Nicio referință spre alt serviciu.
+`Catalog.Application/Features/Imports` compune operațiile Catalog și Pricing din același serviciu: parser CSV, citire de rânduri, construire de lot, handler de previzualizare și handler de salvare. Regulile comerciale reutilizează domeniile Catalog/Pricing. Portul `IProductImportRepository` este în `Abstractions/Imports`. `Catalog.Infrastructure/Imports` implementează citirea conflictelor și tranzacția comună celor două contexte EF, cu înregistrare DI separată; worker-ul nu primește aceste dependențe. Nicio referință spre alt serviciu.
 
 API are câte un endpoint în `Administration/Imports`. Angular are feature-ul `product-import`, cu pagină de compoziție, componente `import-upload` și `import-preview`, API, stare și modele în directoare separate. Testele sunt în `Unit/Imports`, `Integration/Imports` și `frontend/tests/e2e/product-import.spec.ts`.
 

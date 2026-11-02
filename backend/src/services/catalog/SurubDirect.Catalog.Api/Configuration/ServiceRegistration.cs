@@ -1,7 +1,6 @@
 using SurubDirect.Catalog.Infrastructure;
-using SurubDirect.Store.Infrastructure;
-using SurubDirect.Pricing.Infrastructure;
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Infrastructure.Pricing;
+using SurubDirect.Catalog.Application;
 using SurubDirect.Catalog.Api.Clients;
 using SurubDirect.ServiceDefaults.Http;
 using SurubDirect.ServiceDefaults.Security;

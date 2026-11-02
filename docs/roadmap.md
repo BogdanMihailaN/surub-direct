@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Consolidarea proiectelor Pricing/Store în straturile Catalogului, cu păstrarea schemelor și migrațiilor.
+
 - [x] Servicii independente .NET cu Clean Architecture și gateway YARP; baze/credențiale separate.
 - [x] Catalog, variante, ambalaje, prețuri, taxonomie, imagini, import CSV și administrare.
 - [x] Identity: sesiune Administrator și CSRF, inclusiv direct pe servicii.

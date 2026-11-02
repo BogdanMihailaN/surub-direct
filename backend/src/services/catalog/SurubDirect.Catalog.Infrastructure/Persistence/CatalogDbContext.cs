@@ -18,6 +18,6 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options)
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasDefaultSchema("catalog");
-        builder.ApplyConfigurationsFromAssembly(typeof(CatalogDbContext).Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(CatalogDbContext).Assembly, t => t.Namespace == typeof(CatalogDbContext).Namespace);
     }
 }

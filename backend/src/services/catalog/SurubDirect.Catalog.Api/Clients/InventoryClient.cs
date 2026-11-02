@@ -1,5 +1,5 @@
 using SurubDirect.BuildingBlocks;
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Application;
 
 namespace SurubDirect.Catalog.Api.Clients;
 public sealed class InventoryClient(IHttpClientFactory clients) : IStockReader

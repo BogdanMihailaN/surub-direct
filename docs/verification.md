@@ -449,3 +449,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Testele au detectat normalizarea caracterului `+` în fragment de către router; parserul păstrează acum corect acest caracter din token. Un selector de test a fost corectat pentru eticheta reală „Adresă e-mail”. Scenariile afectate au fost reluate cu succes.
 - Aspectul la 390 px a fost inspectat vizual, fără depășire orizontală: `work/account-recovery-mobile.png`, exclus din Git.
 - Nu sunt schimbări backend, de schemă sau de dependențe; suita backend nu a fost repetată. `git diff --check` și scanarea pentru secrete au trecut. Aplicațiile de test sunt oprite; automatizarea rămâne oprită. Expedierea e-mailurilor prin furnizor nu este activată.
+
+## Consolidarea Catalog / Pricing / Store — 2 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 339 teste .NET și 10 teste Python trecute. Cele trei cazuri de arhitectură dedicate proiectelor eliminate au fost retrase; regulile Domain/Application continuă să verifice Catalogul consolidat.
+- Test suplimentar `CatalogPersistenceModelTests`: trecut; modelele au entități/scheme distincte, migrarea Pricing este descoperită numai de contextul său și ambele snapshot-uri corespund modelelor curente. Total verificat: 340 cazuri .NET.
+- `python3 scripts/dev.py check-migrations`: toate cele șase contexte fără modificări de model restante. Nu s-au creat migrații și nu s-au mutat date.
+- Playwright: 14 scenarii trecute pe API-urile repornite și buildurile Angular existente: catalog, admin, imagini, import CSV, variante/ambalaje și administrare mesagerie. Sunt verificate inclusiv prețurile și protecția autentificare/CSRF.
+- Frontend-ul nu a fost modificat. Prima încercare a testelor .NET în sandbox a fost oprită din cauza restricțiilor de socket MSBuild; rularea cu permisiunile necesare a trecut.

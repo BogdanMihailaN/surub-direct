@@ -30,19 +30,8 @@ public class ArchitectureTests
         Assert.DoesNotContain(gateway.Descendants("PackageReference"), p => p.Attribute("Include")!.Value.Contains("EntityFramework"));
     }
 
-    [Fact]
-    public void Store_application_has_no_framework_or_infrastructure_dependencies()
-    {
-        var xml = XDocument.Load(Path.Combine(BackendRoot(), "src/services/catalog/SurubDirect.Store.Application/SurubDirect.Store.Application.csproj"));
-        Assert.Empty(xml.Descendants("PackageReference"));
-        var allowed = new[] { "SurubDirect.Catalog.Application", "SurubDirect.Pricing.Domain", "SurubDirect.Pricing.Contracts" };
-        Assert.All(xml.Descendants("ProjectReference"), r =>
-            Assert.Contains(Path.GetFileNameWithoutExtension(r.Attribute("Include")!.Value), allowed));
-    }
-
     [Theory]
     [InlineData("Catalog")]
-    [InlineData("Pricing")]
     [InlineData("Inventory")]
     [InlineData("Purchasing")]
     [InlineData("Ordering")]
@@ -56,7 +45,6 @@ public class ArchitectureTests
 
     [Theory]
     [InlineData("Catalog")]
-    [InlineData("Pricing")]
     [InlineData("Inventory")]
     [InlineData("Purchasing")]
     [InlineData("Ordering")]

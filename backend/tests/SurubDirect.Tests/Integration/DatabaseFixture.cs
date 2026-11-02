@@ -4,10 +4,9 @@ using Npgsql;
 using SurubDirect.Inventory.Application;
 using Xunit;
 using SurubDirect.Catalog.Infrastructure;
-using SurubDirect.Pricing.Infrastructure;
+using SurubDirect.Catalog.Infrastructure.Pricing;
 using SurubDirect.Inventory.Infrastructure;
-using SurubDirect.Store.Application;
-using SurubDirect.Store.Infrastructure;
+using SurubDirect.Catalog.Application;
 
 namespace SurubDirect.Tests;
 public sealed class DatabaseFixture : IAsyncLifetime

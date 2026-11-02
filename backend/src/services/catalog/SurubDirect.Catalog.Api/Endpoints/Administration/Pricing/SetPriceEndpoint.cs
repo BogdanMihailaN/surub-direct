@@ -1,4 +1,4 @@
-using SurubDirect.Pricing.Application;
+using SurubDirect.Catalog.Application.Pricing;
 
 namespace SurubDirect.Catalog.Api.Endpoints;
 public static class SetPriceEndpoint

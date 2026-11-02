@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SurubDirect.BuildingBlocks;
 using SurubDirect.Catalog.Domain;
 using SurubDirect.Catalog.Infrastructure;
-using SurubDirect.Pricing.Domain;
-using SurubDirect.Pricing.Infrastructure;
-using SurubDirect.Store.Application.Imports;
+using SurubDirect.Catalog.Domain.Pricing;
+using SurubDirect.Catalog.Infrastructure.Pricing;
+using SurubDirect.Catalog.Application.Imports;
 using Xunit;
 namespace SurubDirect.Tests;
 public sealed class ProductImportTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>

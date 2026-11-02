@@ -5,10 +5,9 @@ using SurubDirect.BuildingBlocks;
 using SurubDirect.Catalog.Application;
 using SurubDirect.Catalog.Contracts;
 using SurubDirect.Catalog.Infrastructure;
-using SurubDirect.Pricing.Application;
+using SurubDirect.Catalog.Application.Pricing;
 using SurubDirect.Inventory.Application;
 using SurubDirect.Inventory.Contracts;
-using SurubDirect.Store.Application;
 
 namespace SurubDirect.Tests;
 public class DatabaseTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>

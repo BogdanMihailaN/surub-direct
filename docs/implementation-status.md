@@ -4,6 +4,9 @@ Actualizat la 2 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separ
 
 ## Implementat
 
+- Reorganizarea internă a Catalogului: Pricing și Store sunt integrate în cele șase proiecte Catalog, cu directoare granulare per responsabilitate. Contextele EF, schemele și identificatorii migrațiilor sunt păstrați; configurațiile celor două modele sunt izolate explicit. API-urile și tranzacția importului rămân compatibile.
+
+
 - Curățarea coșurilor anonime expirate fără pregătiri/comenzi asociate: perioadă de grație, simulare implicită, loturi concurente și evenimente operaționale fără date personale. [Detalii](expired-cart-cleanup.md).
 
 - Jurnal operațional comun local pentru Inventory/Ordering: JSON structurat, câmpuri permise, rotație limitată, permisiuni private și comandă de consultare. Activ la pornirea prin dev.py up; fără export extern. [Detalii](local-operational-logs.md).

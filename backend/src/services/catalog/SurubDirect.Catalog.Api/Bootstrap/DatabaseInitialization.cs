@@ -1,5 +1,5 @@
 using SurubDirect.Catalog.Infrastructure;
-using SurubDirect.Pricing.Infrastructure;
+using SurubDirect.Catalog.Infrastructure.Pricing;
 
 namespace SurubDirect.Catalog.Api.Bootstrap;
 public static class DatabaseInitialization

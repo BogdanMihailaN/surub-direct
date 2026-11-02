@@ -1,5 +1,5 @@
 using SurubDirect.BuildingBlocks;
-using SurubDirect.Store.Application.Imports;
+using SurubDirect.Catalog.Application.Imports;
 using Xunit;
 namespace SurubDirect.Tests;
 public sealed class CsvParserTests

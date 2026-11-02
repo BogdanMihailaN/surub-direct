@@ -4,9 +4,8 @@ using SurubDirect.Catalog.Application;
 using SurubDirect.Catalog.Contracts;
 using SurubDirect.Inventory.Application;
 using SurubDirect.Inventory.Contracts;
-using SurubDirect.Pricing.Application;
-using SurubDirect.Pricing.Contracts;
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Application.Pricing;
+using SurubDirect.Catalog.Contracts.Pricing;
 using Xunit;
 
 namespace SurubDirect.Tests;

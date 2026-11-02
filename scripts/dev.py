@@ -104,7 +104,7 @@ def main():
     elif command == 'e2e':
         run(['npm', 'exec', '--', 'playwright', 'test'], cwd=ROOT / 'frontend')
     elif command == 'check-migrations':
-        for module, owner, context in [('Catalog', 'catalog', 'CatalogDbContext'), ('Pricing', 'catalog', 'PricingDbContext'), ('Inventory', 'inventory', 'InventoryDbContext'), ('Identity', 'identity', 'StoreIdentityDbContext'), ('Purchasing', 'purchasing', 'PurchasingDbContext'), ('Ordering', 'ordering', 'OrderingDbContext')]:
+        for module, owner, context in [('Catalog', 'catalog', 'CatalogDbContext'), ('Catalog', 'catalog', 'PricingDbContext'), ('Inventory', 'inventory', 'InventoryDbContext'), ('Identity', 'identity', 'StoreIdentityDbContext'), ('Purchasing', 'purchasing', 'PurchasingDbContext'), ('Ordering', 'ordering', 'OrderingDbContext')]:
             project = f'backend/src/services/{owner}/SurubDirect.{module}.Infrastructure'
             run(['dotnet', 'ef', 'migrations', 'has-pending-model-changes', '--context', context, '--project', project, '--startup-project', SERVICES[owner][0]], owner)
 

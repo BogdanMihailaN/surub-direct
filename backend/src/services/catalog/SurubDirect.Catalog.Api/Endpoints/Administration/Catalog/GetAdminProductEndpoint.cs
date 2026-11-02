@@ -1,4 +1,4 @@
-using SurubDirect.Store.Application;
+using SurubDirect.Catalog.Application;
 
 namespace SurubDirect.Catalog.Api.Endpoints;
 public static class GetAdminProductEndpoint

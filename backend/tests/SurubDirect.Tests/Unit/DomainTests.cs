@@ -1,7 +1,7 @@
 using Xunit;
 using SurubDirect.BuildingBlocks;
 using SurubDirect.Catalog.Domain;
-using SurubDirect.Pricing.Domain;
+using SurubDirect.Catalog.Domain.Pricing;
 using SurubDirect.Inventory.Domain;
 
 namespace SurubDirect.Tests;

@@ -1,4 +1,4 @@
-using SurubDirect.Store.Application.Imports;
+using SurubDirect.Catalog.Application.Imports;
 namespace SurubDirect.Catalog.Api.Endpoints;
 public static class CommitImportEndpoint
 {

@@ -41,7 +41,7 @@ flowchart LR
 
 Fiecare bază are utilizator propriu, fără drept de conectare la bazele celorlalte servicii. Instanța PostgreSQL locală este comună pentru economie de resurse; separarea este la nivel de baze și permisiuni. Se pot muta pe instanțe separate fără schimbări în domeniu.
 
-Pricing rămâne parte a serviciului Catalog. Proiectele Pricing separate reprezintă organizarea internă și păstrează migrațiile existente, nu un serviciu suplimentar. Store.Application este compoziția internă a Catalogului: nu mai încarcă infrastructura Inventory. Ordering conține Domain/Application/Infrastructure/Contracts pentru validarea și recalcularea coșului, cu persistența selecției anonime în baza proprie.
+Pricing rămâne parte a serviciului Catalog. Prețurile sunt organizate în directoare Pricing din straturile Catalog.Domain/Application/Contracts/Infrastructure. Nu există proiecte Pricing sau Store separate; cele două contexte EF păstrează schemele și istoricul migrațiilor, cu scanare separată a configurațiilor în biblioteca comună. Catalog.Application este compoziția internă a Catalogului: nu mai încarcă infrastructura Inventory. Ordering conține Domain/Application/Infrastructure/Contracts pentru validarea și recalcularea coșului, cu persistența selecției anonime în baza proprie.
 
 ## Comunicarea și erorile
 
@@ -95,7 +95,7 @@ Citirea publică este permisă numai produselor publicate; citirea administrativ
 
 ## Importul CSV — 19 octombrie 2026
 
-Importul este o operație a serviciului Catalog, care deține și Pricing. `Store.Application` coordonează validarea prin entitățile de domeniu, iar `Store.Infrastructure` implementează portul de persistență. Adaptorul deschide o conexiune și o tranzacție PostgreSQL partajate de CatalogDbContext și PricingDbContext; commit-ul se face numai după ambele salvări. Contextele sunt private operației de import și sunt eliberate la final, inclusiv după rollback. Nu există acces la baza Inventory sau tranzacție distribuită.
+Importul este o operație a serviciului Catalog, care deține și Pricing. `Catalog.Application` coordonează validarea prin entitățile de domeniu, iar `Catalog.Infrastructure` implementează portul de persistență. Adaptorul deschide o conexiune și o tranzacție PostgreSQL partajate de CatalogDbContext și PricingDbContext; commit-ul se face numai după ambele salvări. Contextele sunt private operației de import și sunt eliberate la final, inclusiv după rollback. Nu există acces la baza Inventory sau tranzacție distribuită.
 
 Previzualizarea nu persistă nimic și nu rezervă coduri. Salvarea reconstruiește și revalidează lotul; constrângerile unice din bază protejează și intervalul dintre validare și commit. O reîncercare după un import reușit este respinsă, fără dublarea înregistrărilor. Nu există încă jurnal/idempotency key persistent al importului. Limitele de 1 MB/500 de rânduri păstrează procesarea sincronă; un flux asincron pentru fișiere mari rămâne în afara acestei etape. [Format și comportament](product-import.md).
 
