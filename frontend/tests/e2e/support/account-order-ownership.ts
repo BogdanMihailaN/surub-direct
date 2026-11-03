@@ -54,6 +54,8 @@ export async function assertAccountOrderOwnership(
     expect(Object.keys(publicOrder.paymentSummary).sort()).toEqual(['amount', 'currency', 'status']);
     expect(Object.keys(publicOrder.shipment).sort()).toEqual(['reference', 'status']);
     expect(publicOrder.shipment.status).toBe(paymentStatus === 'Refunded' ? 'Delivered' : 'NotStarted');
+    expect(Object.keys(publicOrder.return).sort()).toEqual(['restoredAt', 'status']);
+    expect(publicOrder.return.status).toBe(paymentStatus === 'Refunded' ? 'Restored' : 'NotRequested');
     const paymentLabel = paymentStatus === 'Refunded' ? 'Rambursată integral' : 'Neinițiată';
     await page.goto(origin + '/cont');
     const browserOrders = page.getByRole('region', {
@@ -81,6 +83,7 @@ export async function assertAccountOrderOwnership(
     await expect(accountOrders.getByRole('heading', { name: number, exact: true })).toBeVisible();
     await expect(accountOrders.getByRole('region', { name: 'Starea plății simulate' })).toContainText(paymentLabel);
     await expect(accountOrders).toContainText('Nu au loc încasări sau rambursări de bani reali.');
+    if (paymentStatus === 'Refunded') await expect(accountOrders.getByRole('region', { name: 'Starea returului demo' })).toContainText('Stoc restituit');
     await expect(accountOrders.getByRole('region', { name: 'Starea expedierii demo' })).toContainText(paymentStatus === 'Refunded' ? 'Livrată' : 'Necreată');
     await page.setViewportSize({ width: 390, height: 844 });
     await accountOrders.getByText('Detalii ' + number, { exact: true }).click();

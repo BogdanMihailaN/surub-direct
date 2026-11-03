@@ -36,3 +36,5 @@ Istoricul browserului și istoricul contului includ `paymentSummary` cu numai `s
 Citirea paginii încarcă numai simulările comenzilor deja filtrate după proprietar, într-o singură interogare suplimentară și în aceeași tranzacție RepeatableRead. Asocierea la cont păstrează rezumatul și elimină accesul din istoricul anonim. Confirmarea repetată și răspunsul anulării returnează starea persistentă, fără a o reseta la Neinițiată. Rezumatul nu oferă operații de plată clientului; numai administratorul operează simulatorul local.
 
 După expediere sau livrare, anularea cu restituire de stoc este blocată chiar după rambursare. Vezi [expedierea demonstrativă](demo-shipping.md).
+
+Returul integral demonstrativ după livrare este acum disponibil prin fluxul separat descris în [demo-returns.md](demo-returns.md). Acesta nu deblochează anularea după expediere și nu rambursează automat plata.

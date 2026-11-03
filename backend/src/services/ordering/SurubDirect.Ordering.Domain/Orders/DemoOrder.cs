@@ -16,6 +16,9 @@ public sealed class DemoOrder
     public string Status { get; private set; } = "Confirming";
     public string ProcessingStatus { get; private set; } = "Pending";
     public long ProcessingVersion { get; private set; }
+    public string ReturnStatus { get; private set; } = "NotRequested";
+    public long ReturnVersion { get; private set; }
+    public DateTimeOffset? ReturnRestoredAt { get; private set; }
     public string ShipmentStatus { get; private set; } = "NotStarted";
     public string? ShipmentReference { get; private set; }
     public long ShipmentVersion { get; private set; }
@@ -107,6 +110,25 @@ public sealed class DemoOrder
         return change;
     }
 
+    public ReturnChange ChangeReturn(Guid operationId, long expectedVersion, string target, string reason, string actor, DateTimeOffset now)
+    {
+        reason = reason.Trim();
+        if (operationId == Guid.Empty || expectedVersion < 0 || reason.Length is < 3 or > 500
+            || string.IsNullOrWhiteSpace(actor) || actor.Length > 200)
+            throw new BusinessException("Operația și motivul de 3–500 caractere sunt obligatorii.");
+        if (Status != "Confirmed" || ShipmentStatus != "Delivered")
+            throw new BusinessException("Returul demonstrativ acceptă numai comenzi livrate.", 409);
+        if (expectedVersion != ReturnVersion)
+            throw new BusinessException("Returul s-a modificat. Actualizează comanda.", 409);
+        if (!((ReturnStatus == "NotRequested" && target == "Requested")
+            || (ReturnStatus == "Requested" && target is "Approved" or "Rejected")
+            || (ReturnStatus == "Approved" && target == "Restoring")))
+            throw new BusinessException("Tranziția de retur nu este permisă.", 409);
+        var change = new ReturnChange(Id, operationId, ++ReturnVersion, ReturnStatus, target, reason, actor, now);
+        ReturnStatus = target;
+        return change;
+    }
+
     public void Cancel(string reason, string actor, DateTimeOffset now)
     {
         reason = reason.Trim();
@@ -133,6 +155,12 @@ public sealed class DemoOrder
     {
         if (plan.Id != Id || !plan.ConfirmationRequested)
             throw new BusinessException("Planul nu confirmă această comandă.", 409);
+        if (ReturnStatus == "Restoring" && plan.Status == "Restored" && plan.RestorationRequested)
+        {
+            ReturnStatus = "Restored";
+            ReturnRestoredAt = now;
+            return;
+        }
         if (Status == "Cancelling" && plan.Status == "Restored")
         {
             Status = "Cancelled";

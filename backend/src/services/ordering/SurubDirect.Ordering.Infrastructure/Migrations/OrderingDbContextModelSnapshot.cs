@@ -89,6 +89,19 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.Property<long>("ProcessingVersion")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTimeOffset?>("ReturnRestoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReturnStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("NotRequested");
+
+                    b.Property<long>("ReturnVersion")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("Sequence")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
@@ -337,6 +350,48 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.ToTable("ReservationPlans", "ordering");
                 });
 
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.ReturnChange", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FromStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrderId", "OperationId");
+
+                    b.HasIndex("OrderId", "Version")
+                        .IsUnique();
+
+                    b.ToTable("ReturnChanges", "ordering");
+                });
+
             modelBuilder.Entity("SurubDirect.Ordering.Domain.ShipmentChange", b =>
                 {
                     b.Property<Guid>("OrderId")
@@ -550,6 +605,15 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulationEvent", b =>
                 {
                     b.HasOne("SurubDirect.Ordering.Domain.PaymentSimulation", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.ReturnChange", b =>
+                {
+                    b.HasOne("SurubDirect.Ordering.Domain.DemoOrder", null)
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)

@@ -1,0 +1,26 @@
+<section aria-label="Retur integral demonstrativ">
+  <h3>Retur integral demonstrativ</h3>
+  <p>Se returnează toate produsele comenzii. Rambursarea se operează separat în simulatorul de plăți.</p>
+  <p role="status">Retur: <strong>{{ labels[data().status] }}</strong></p>
+  @if (editable() && (data().status === 'NotRequested' || data().status === 'Requested' || data().status === 'Approved')) {
+    <label for="return-reason">Motivul operației de retur</label>
+    <textarea id="return-reason" [(ngModel)]="reason" maxlength="500" [disabled]="busy()"></textarea>
+    <label><input type="checkbox" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm operația de retur integral</label>
+    @if (data().status === 'Approved') {
+      <label><input type="checkbox" [(ngModel)]="restockConfirmed" [disabled]="busy()" /> Confirm primirea tuturor produselor în cantitățile originale și în stare revandabilă</label>
+      <p>Nu confirma pentru produse lipsă sau deteriorate. Restituirea stocului este integrală și nu poate fi repetată.</p>
+      <button [disabled]="busy() || !confirmed || !restockConfirmed || reason.trim().length < 3" (click)="submit('Restoring')">Confirmă primirea și restituie stocul</button>
+    } @else if (data().status === 'Requested') {
+      <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Approved')">Aprobă returul integral</button>
+      <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Rejected')">Respinge returul</button>
+    } @else {
+      <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Requested')">Înregistrează solicitarea de retur</button>
+    }
+  } @else if (data().status === 'NotRequested') { <p>Returul este disponibil numai pentru comenzile livrate.</p> }
+  @if (data().status === 'Restoring') { <p>Se așteaptă confirmarea Inventory. Actualizează detaliile; nu repeta recepția.</p> }
+  @if (data().restoredAt) { <p>Stoc confirmat restituit: {{ data().restoredAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p> }
+  <h4>Istoricul returului</h4>
+  @for (entry of data().history; track entry.operationId) {
+    <article><strong>{{ labels[entry.fromStatus] }} → {{ labels[entry.toStatus] }}</strong><p>{{ entry.reason }}</p><small>{{ entry.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Operator: {{ entry.actor }}</small></article>
+  } @empty { <p>Nu există operații de retur.</p> }
+</section>

@@ -7,6 +7,8 @@ import { OrderDetail } from '../models/order-detail.model';
 export class SalesOrdersStore {
   private readonly api = inject(SalesOrdersApi);
   readonly cancelling = signal(false);
+  readonly returning = signal(false);
+  readonly returnError = signal('');
   readonly shipping = signal(false);
   readonly shippingError = signal('');
   readonly processing = signal(false);
@@ -48,7 +50,7 @@ export class SalesOrdersStore {
   }
   async cancel(reason: string) {
     const id = this.selected();
-    if (!id || this.cancelling() || this.processing() || this.simulatingPayment() || this.shipping() || this.blocksCancellation()) return;
+    if (!id || this.cancelling() || this.processing() || this.simulatingPayment() || this.shipping() || this.returning() || this.blocksCancellation()) return;
     this.cancelling.set(true);
     this.cancelError.set('');
     try {
@@ -61,9 +63,25 @@ export class SalesOrdersStore {
       this.cancelling.set(false);
     }
   }
+  async changeReturn(change: { target: string; reason: string; restockConfirmed: boolean }) {
+    const detail = this.detail();
+    if (!detail || this.processing() || this.cancelling() || this.simulatingPayment() || this.shipping() || this.returning() || detail.order.status !== 'Confirmed') return;
+    const id = detail.order.id;
+    const sequence = this.detailSequence;
+    this.returning.set(true);
+    this.returnError.set('');
+    try {
+      await this.api.changeReturn(id, detail.return.version, change.target, change.reason, crypto.randomUUID(), change.restockConfirmed);
+    } catch (e) {
+      if (sequence === this.detailSequence) this.returnError.set(errorMessage(e) + ' Starea este recitită; operația nu este retrimisă automat.');
+    } finally {
+      if (this.selected() === id) await this.select(id);
+      this.returning.set(false);
+    }
+  }
   async changeShipment(change: { target: string; reason: string }) {
     const detail = this.detail();
-    if (!detail || this.processing() || this.cancelling() || this.simulatingPayment() || this.shipping() || detail.order.status !== 'Confirmed') return;
+    if (!detail || this.processing() || this.cancelling() || this.simulatingPayment() || this.shipping() || this.returning() || detail.order.status !== 'Confirmed') return;
     const id = detail.order.id;
     const sequence = this.detailSequence;
     this.shipping.set(true);
@@ -79,7 +97,7 @@ export class SalesOrdersStore {
   }
   async changeProcessing(change: { target: string; reason: string }) {
     const detail = this.detail();
-    if (!detail || this.processing() || this.cancelling() || this.simulatingPayment() || this.shipping() || detail.order.status !== 'Confirmed') return;
+    if (!detail || this.processing() || this.cancelling() || this.simulatingPayment() || this.shipping() || this.returning() || detail.order.status !== 'Confirmed') return;
     const id = detail.order.id;
     const sequence = this.detailSequence;
     this.processing.set(true);
@@ -99,7 +117,7 @@ export class SalesOrdersStore {
   }
   async simulatePayment(change: { action: string; reason: string }) {
     const detail = this.detail();
-    if (!detail || this.simulatingPayment() || this.shipping() || this.processing() || this.cancelling() || detail.order.status !== 'Confirmed') return;
+    if (!detail || this.simulatingPayment() || this.shipping() || this.returning() || this.processing() || this.cancelling() || detail.order.status !== 'Confirmed') return;
     const id = detail.order.id;
     const sequence = this.detailSequence;
     this.simulatingPayment.set(true);
@@ -114,6 +132,7 @@ export class SalesOrdersStore {
     }
   }
   async select(id: string) {
+    if (this.selected() !== id) this.returnError.set('');
     if (this.selected() !== id) this.shippingError.set('');
     if (this.selected() !== id) this.paymentError.set('');
     if (this.selected() !== id) this.processingError.set('');

@@ -172,3 +172,7 @@ Comenzile `backup` și `verify-backup` salvează și verifică cele cinci baze a
 ## Expediere demonstrativă — 3 noiembrie 2026
 
 Administrarea permite crearea expedierii pentru o comandă pregătită cu transport, apoi marcarea expedierii (cu plată simulată Paid) și livrării. Audit persistent, replay idempotent și protecție la concurență cu rambursarea/anularea. Clientul vede numai starea și referința demo. Anularea după expediere nu restituie stoc; returul rămâne separat. [Protocol și limite](demo-shipping.md).
+
+## Retur integral demonstrativ — 3 noiembrie 2026
+
+Ordering permite înregistrarea și aprobarea/respingerea unui retur integral pentru o comandă livrată. Confirmarea primirii tuturor produselor revandabile declanșează intenția persistentă de restituire prin Inventory; starea finală apare numai după confirmare. Audit administrativ separat de rezumatul clientului; rambursarea rămâne independentă. Retururile parțiale, produsele deteriorate și fluxurile comerciale nu sunt implementate. [Protocol și limite](demo-returns.md).

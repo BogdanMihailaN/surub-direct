@@ -34,10 +34,13 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
             .Select(x => new PaymentSimulationEventDto(x.OperationId, x.AttemptId, x.Version, x.Action, x.FromStatus, x.ToStatus, x.Reason, x.Actor, x.CreatedAt)).ToListAsync(ct);
         var shipmentHistory = await db.ShipmentChanges.AsNoTracking().Where(x => x.OrderId == id).OrderBy(x => x.Version)
             .Select(x => new ShipmentChangeDto(x.OperationId, x.Version, x.FromStatus, x.ToStatus, x.Reason, x.Actor, x.CreatedAt)).ToListAsync(ct);
+        var returnHistory = await db.ReturnChanges.AsNoTracking().Where(x => x.OrderId == id).OrderBy(x => x.Version)
+            .Select(x => new ReturnChangeDto(x.OperationId, x.Version, x.FromStatus, x.ToStatus, x.Reason, x.Actor, x.CreatedAt)).ToListAsync(ct);
+        var orderReturn = new OrderReturnDto(order.ReturnStatus, order.ReturnVersion, order.ReturnRestoredAt, returnHistory);
         var shipment = new ShipmentDto(order.ShipmentStatus, order.ShipmentReference, order.ShipmentVersion, shipmentHistory);
         var paymentDto = new PaymentSimulationDto(payment?.Status ?? "NotStarted", payment?.Version ?? 0, payment?.AttemptId,
             payment?.Amount ?? DemoOrderProjection.Map(order, payment).GrossTotal, payment?.Currency ?? order.Currency, paymentHistory);
         await tx.CommitAsync(ct);
-        return new(DemoOrderProjection.Map(order, payment), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt, new(order.ProcessingStatus, order.ProcessingVersion, history), paymentDto, shipment);
+        return new(DemoOrderProjection.Map(order, payment), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt, new(order.ProcessingStatus, order.ProcessingVersion, history), paymentDto, shipment, orderReturn);
     }
 }

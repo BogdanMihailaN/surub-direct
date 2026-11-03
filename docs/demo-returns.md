@@ -1,0 +1,29 @@
+# Retur integral demonstrativ
+
+Flux administrativ local pentru comenzile Confirmed cu expedierea Delivered. Nu activează retururi comerciale, nu emite documente fiscale și nu încasează/rambursează bani reali. Nu este un formular public de solicitare a returului.
+
+## Etape
+
+Nesolicitat → Solicitat → Aprobat sau Respins. Aprobarea și respingerea nu modifică stocul. Respingerea este terminală în această versiune; o cerere nouă sau redeschiderea nu sunt implementate.
+
+Din Aprobat, administratorul poate confirma primirea integrală numai dacă toate produsele au ajuns în cantitățile originale și sunt revandabile. Interfața cere motiv, confirmarea operației și confirmarea explicită a primirii/stării produselor. API-ul cere `restockConfirmed: true`. Produsele lipsă, deteriorate sau retururile parțiale nu sunt suportate și nu trebuie înregistrate prin această operație.
+
+Confirmarea salvează atomic auditul, starea Restoring și intenția de restituire a planului original. Stocul nu este actualizat direct de Ordering. Coordonatorul existent solicită restaurarea consumului original în Inventory, cu aceeași cheie de rezervare. Inventory păstrează jurnalul și deduplică restituirea integrală. Rezultatul se reconciliază prin HTTP sau Inbox; până la confirmare se afișează „Restituire stoc în curs”, nu un succes presupus. O dependență indisponibilă păstrează intenția și mecanismul existent de retry.
+
+După rezultatul autorizat Restored, Ordering afișează Stoc restituit și data confirmării. Reconcilierea repetată nu schimbă data. Comanda rămâne Confirmed și expedierea Delivered; returul are stare separată. Planul este terminal și nu mai inițiază alte restituiri.
+
+Rambursarea este independentă: aprobarea sau primirea returului nu modifică plata simulată. Restituirea stocului nu cere ca rambursarea să fi avut deja loc. Anularea comenzii rămâne interzisă după expediere, inclusiv după retur.
+
+## API și persistență
+
+`POST /api/v1/admin/sales-orders/{id}/return` primește operationId, expectedVersion, target (Requested/Approved/Rejected/Restoring), reason și restockConfirmed. Sesiunea Administrator și CSRF sunt verificate inclusiv direct pe Ordering; modificările sunt disponibile numai în Development. Operatorul provine din sesiune, iar răspunsurile sunt no-store.
+
+Migrarea DemoIntegralReturns adaugă ReturnStatus, ReturnVersion, ReturnRestoredAt pe DemoOrders și tabela ReturnChanges. Cheile unice deduplică operația și versiunea per comandă. Același lock ReservationPlans serializează plata, expedierea, anularea, returul și reconcilierea. Replay-ul exact confirmă rezultatul salvat, inclusiv după restituirea stocului, fără evenimente sau recepții suplimentare; alt conținut/versiune și tranzițiile invalide produc 409.
+
+Auditul conține solicitarea, decizia și confirmarea recepției cu motiv/operator/dată. Confirmarea finală Inventory este reflectată separat în stare și ReturnRestoredAt, fără inventarea unui operator administrativ. Versiunea urmărește operațiile administratorului, nu livrările repetate ale rezultatului Inventory. Jurnalul Inventory folosește descrierea neutră „Restituire integrală coordonată de Ordering”; motivul de afaceri se consultă în auditul comenzii după referința OrderId.
+
+Clientul vede numai starea și data restituirii în istoricul propriu, inclusiv după asocierea la cont. Auditul administrativ nu este expus. La răspuns pierdut, interfața recitește detaliul fără retransmitere automată; în starea Restoring, actualizarea detaliilor verifică progresul.
+
+## Restant
+
+Retururi parțiale, mai multe cereri per comandă, redeschidere/contestație, produse nerevandabile, control cantitativ pe linii, carantină, retur de la curier înainte de livrare, inițiere de către client, documente comerciale/fiscale și integrarea reală a rambursării. Această etapă nu reprezintă politica legală/comercială de retur a magazinului.

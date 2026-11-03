@@ -1,3 +1,4 @@
+import { OrderReturn } from './order-return.model';
 import { Shipment } from './shipment.model';
 import { PaymentSimulation } from './payment-simulation.model';
 import { DeliveryCharge } from '@shared/delivery/delivery-charge.model';
@@ -6,6 +7,7 @@ import { OrderSummary } from './order-summary.model';
 import { OrderCustomer } from './order-customer.model';
 import { OrderLine } from './order-line.model';
 export interface OrderDetail {
+  return: OrderReturn;
   shipment: Shipment;
   paymentSimulation: PaymentSimulation;
   processing: OrderProcessing;

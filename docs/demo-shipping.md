@@ -8,7 +8,7 @@ Tranzițiile sunt Necreată → Pregătită pentru expediere → Expediată → 
 
 Pentru marcarea Expediată, plata simulată trebuie să fie Paid. Aceasta este politica locală pentru simularea plății în avans, nu o politică comercială de ramburs. Livrarea poate fi înregistrată și după o rambursare simulată a unei comenzi deja expediate, deoarece cele două stări descriu operații distincte.
 
-După crearea expedierii nu se mai poate relua pregătirea internă. Înainte de expediere, anularea comenzii rămâne posibilă conform regulilor plății; nu există încă anulare separată a expedierii sau reambalare. După Expediată/Livrată, anularea cu restituire automată de stoc este interzisă chiar după rambursare. Returul comercial și recepția bunurilor returnate sunt fluxuri viitoare separate. Rambursarea nu restituie stoc.
+După crearea expedierii nu se mai poate relua pregătirea internă. Înainte de expediere, anularea comenzii rămâne posibilă conform regulilor plății; nu există încă anulare separată a expedierii sau reambalare. După Expediată/Livrată, anularea cu restituire automată de stoc este interzisă chiar după rambursare. Returul integral demonstrativ are un flux separat de recepție; retururile comerciale rămân restante. Rambursarea nu restituie stoc.
 
 ## Persistență și concurență
 
@@ -21,3 +21,5 @@ Interfața recitește starea după succes, conflict sau răspuns pierdut, fără
 ## Restant
 
 Integrare curier/sandbox, AWB/etichete reale, tracking extern, colete multiple, corectarea/anularea expedierii, livrare nereușită, ramburs și retururi. Nu există activare comercială sau expediere fizică.
+
+Returul integral demonstrativ după livrare este acum disponibil prin fluxul separat descris în [demo-returns.md](demo-returns.md). Acesta nu deblochează anularea după expediere și nu rambursează automat plata.

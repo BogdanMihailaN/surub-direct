@@ -1,3 +1,4 @@
+import { ReturnSummary } from '../../../cart/components/return-summary/return-summary.component';
 import { ShipmentSummary } from '../../../cart/components/shipment-summary/shipment-summary.component';
 import { PaymentSummaryComponent } from '../../../cart/components/payment-summary/payment-summary.component';
 import { DeliverySummary } from '@shared/delivery/delivery-summary.component';
@@ -7,7 +8,7 @@ import { DemoOrder } from '../../../cart/models/demo-order.model';
 import { DemoOrderPage } from '../../../cart/models/demo-order-page.model';
 @Component({
   selector: 'sd-order-history-list',
-  imports: [ShipmentSummary,PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
+  imports: [ReturnSummary,ShipmentSummary,PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
   templateUrl: './order-history-list.component.html',
   styleUrl: './order-history-list.component.scss',
 })

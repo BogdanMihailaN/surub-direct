@@ -32,4 +32,6 @@ Rezultatele consumului și restituirii sunt propagate și prin [RabbitMQ cu Outb
 
 Din 3 noiembrie 2026, anularea refuză cu 409 comenzile cu plată simulată Pending sau Paid. Se cere mai întâi încheierea încercării sau rambursarea simulată. Blocarea tranzacțională comună împiedică o inițiere nouă simultană cu anularea. Simulatorul nu produce rambursări reale. [Detalii](payment-simulation.md).
 
-Expedierea demonstrativă Shipped/Delivered blochează anularea, inclusiv după rambursare simulată. Returul fizic și restituirea stocului necesită un flux separat, încă neimplementat.
+Expedierea demonstrativă Shipped/Delivered blochează anularea, inclusiv după rambursare simulată. Returul și restituirea stocului folosesc fluxul separat de retur integral demonstrativ.
+
+Returul integral demonstrativ după livrare este acum disponibil prin fluxul separat descris în [demo-returns.md](demo-returns.md). Acesta nu deblochează anularea după expediere și nu rambursează automat plata.

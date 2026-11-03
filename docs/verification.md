@@ -523,3 +523,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright: 8 scenarii trecute în admin-sales-orders, order-cancellation și account-order-history. Fluxul real verifică creare cu răspuns pierdut fără replay automat, expediere/livrare, audit, versiune depășită, autentificare/CSRF direct și prin gateway, anulare interzisă după rambursarea unei comenzi expediate și rezumatul clientului după asocierea la cont.
 - Migrarea aditivă DemoShipmentHistory aplicată local după backup privat verificat al celor cinci baze. EF nu raportează diferențe de model restante. Încercarea inițială, cu Docker oprit, nu a aplicat migrarea.
 - Captura mobilă a contului a fost inspectată: starea Livrată și referința demo se încadrează în pagină. Fără curier, AWB real sau activare comercială.
+
+## Retur integral demonstrativ - 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 404 teste .NET si 18 teste Python trecute. Cele 7 cazuri noi acopera livrarea obligatorie, tranzitii invalide, receptia cu confirmare explicita, replay concurent, decizii concurente, respingere terminala si finalizare numai dupa rezultatul Inventory.
+- Dupa neutralizarea descrierii restituirii in jurnalul Inventory, cele 3 teste StockRestorationTests au fost reverificate cu succes.
+- Builduri Angular de productie storefront (browser/SSR) si admin trecute.
+- Playwright: 8 scenarii trecute in admin-sales-orders, order-cancellation si account-order-history. Returul prin servicii verifica stocul 65 inainte de receptie si 100 dupa confirmare, exact o miscare Restoration de 35 bucati, replay dupa raspuns pierdut, protectie CSRF/autentificare direct si prin gateway si rezumatul clientului dupa asocierea la cont.
+- Migrarea aditiva DemoIntegralReturns a fost aplicata dupa backup privat verificat. Prima aplicare a folosit un build care nu includea inca migrarea si a fost refuzata de EF; dupa recompilare, aplicarea si verificarea modelului au trecut, fara suprimarea protectiei PendingModelChanges.
+- Captura mobila a contului a fost inspectata: returul, expedierea si plata se afiseaza separat, fara depasirea viewportului. Fara rambursare reala sau activare comerciala.

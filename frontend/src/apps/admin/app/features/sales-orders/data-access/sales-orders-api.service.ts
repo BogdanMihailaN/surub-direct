@@ -13,6 +13,9 @@ export class SalesOrdersApi {
   cancel(id: string, reason: string) {
     return this.api.write('POST', this.root + '/' + encodeURIComponent(id) + '/cancel', { reason });
   }
+  changeReturn(id: string, expectedVersion: number, target: string, reason: string, operationId: string, restockConfirmed: boolean) {
+    return this.api.write('POST', this.root + '/' + encodeURIComponent(id) + '/return', { expectedVersion, target, reason, operationId, restockConfirmed });
+  }
   changeShipment(id: string, expectedVersion: number, target: string, reason: string, operationId: string) {
     return this.api.write('POST', this.root + '/' + encodeURIComponent(id) + '/shipment', { expectedVersion, target, reason, operationId });
   }

@@ -1,0 +1,5 @@
+@if (data(); as item) {
+  @if (item.status !== 'NotRequested') {
+    <section aria-label="Starea returului demo"><p>Retur integral demo: <strong>{{ labels[item.status] ?? 'Stare necunoscută' }}</strong></p><small>Rambursarea este separată de retur și de restituirea stocului.</small></section>
+  }
+}

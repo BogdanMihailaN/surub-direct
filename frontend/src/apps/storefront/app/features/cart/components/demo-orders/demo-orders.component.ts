@@ -1,3 +1,4 @@
+import { ReturnSummary } from '../return-summary/return-summary.component';
 import { ShipmentSummary } from '../shipment-summary/shipment-summary.component';
 import { PaymentSummaryComponent } from '../payment-summary/payment-summary.component';
 import { DeliverySummary } from '@shared/delivery/delivery-summary.component';
@@ -6,7 +7,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { DemoOrdersStore } from '../../state/demo-orders.store';
 @Component({
   selector: 'sd-demo-orders',
-  imports: [ShipmentSummary,PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
+  imports: [ReturnSummary,ShipmentSummary,PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
   providers: [DemoOrdersStore],
   templateUrl: './demo-orders.component.html',
   styleUrl: './demo-orders.component.scss',

@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Retur integral demonstrativ după livrare, aprobare/respingere, recepție explicită și restituire idempotentă prin Inventory; retururile parțiale/comerciale rămân restante.
+
 - [x] Expediere locală demonstrativă cu audit, rezumat pentru client și blocarea anulării după expediere; fără curier sau AWB real.
 
 - [x] Backup local privat pentru toate bazele active, manifest/checksum și exercițiu de restaurare în baze temporare. Recuperarea completă distribuită și operarea în producție rămân restante.
