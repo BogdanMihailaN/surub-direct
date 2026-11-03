@@ -5,6 +5,7 @@ using SurubDirect.Ordering.Application;
 using SurubDirect.Ordering.Domain;
 using SurubDirect.Ordering.Infrastructure;
 using Xunit;
+using SurubDirect.Ordering.Infrastructure.Delivery;
 
 namespace SurubDirect.Tests;
 public sealed class DemoDeliveryTests(ReservationCoordinatorFixture fixture) : IClassFixture<ReservationCoordinatorFixture>
@@ -29,14 +30,19 @@ public sealed class DemoDeliveryTests(ReservationCoordinatorFixture fixture) : I
             : await carts.SaveCustomer(owner, cart.Id, cart.Version, CustomerDraftSamples.Person(), default);
         var prepared = s.GetRequiredService<IPreparedCarts>();
         var command = new PrepareCart(Guid.NewGuid(), cart.Id, cart.Version, code);
+        IDeliveryRates rates = new TestDeliveryRates();
         Task<SurubDirect.Ordering.Contracts.PreparedCartDto> Prepare(PrepareCart request) => account
-            ? new PrepareAccountCartHandler(accounts, prepared, new(catalog)).Handle(accountId!, request, default)
-            : new PrepareCartHandler(carts, prepared, new(catalog)).Handle(owner, request, default);
+            ? new PrepareAccountCartHandler(accounts, prepared, new(catalog), rates).Handle(accountId!, request, default)
+            : new PrepareCartHandler(carts, prepared, new(catalog), rates).Handle(owner, request, default);
         Assert.Equal(400, (await Assert.ThrowsAsync<BusinessException>(() => Prepare(command with { DeliveryCode = "unknown" }))).Status);
         var snapshot = await Prepare(command);
         Assert.Equal(42.35m + gross, snapshot.GrossTotal);
         Assert.Equal(35m + net, snapshot.NetTotal);
         Assert.Equal(code, snapshot.Delivery!.Code);
+        rates = new ConfiguredDeliveryRates([]);
+        Assert.Equal(snapshot.Delivery, (await Prepare(command)).Delivery);
+        rates = new ConfiguredDeliveryRates([new() { Code = code, Label = "Tarif modificat", NetAmount = net + 5, GrossAmount = gross + 10 }]);
+        Assert.Equal(gross + 10, Assert.Single(new GetDeliveryOptionsHandler(rates).Handle()).GrossAmount);
         Assert.Equal(snapshot.Delivery, (await Prepare(command)).Delivery);
         Assert.Equal(409, (await Assert.ThrowsAsync<BusinessException>(() => Prepare(command with { DeliveryCode = null }))).Status);
         await s.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);

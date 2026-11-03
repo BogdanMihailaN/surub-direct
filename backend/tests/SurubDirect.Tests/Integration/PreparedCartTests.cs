@@ -28,7 +28,7 @@ public sealed class PreparedCartTests(OrderingCartFixture fixture) : IClassFixtu
         await using var scope = fixture.Services.CreateAsyncScope();
         var repo = scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>();
         var prepared = scope.ServiceProvider.GetRequiredService<IPreparedCarts>();
-        var handler = new PrepareCartHandler(repo, prepared, new(catalog));
+        var handler = new PrepareCartHandler(repo, prepared, new(catalog), new TestDeliveryRates());
         var command = new PrepareCart(Guid.NewGuid(), cart.Id, cart.Version);
         var snapshot = await handler.Handle(owner, command, default);
         Assert.Equal(42.35m, snapshot.GrossTotal);
@@ -55,7 +55,7 @@ public sealed class PreparedCartTests(OrderingCartFixture fixture) : IClassFixtu
         catalog.Missing = !unavailable;
         catalog.Unavailable = unavailable;
         await using var scope = fixture.Services.CreateAsyncScope();
-        var handler = new PrepareCartHandler(scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>(), scope.ServiceProvider.GetRequiredService<IPreparedCarts>(), new(catalog));
+        var handler = new PrepareCartHandler(scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>(), scope.ServiceProvider.GetRequiredService<IPreparedCarts>(), new(catalog), new TestDeliveryRates());
         var id = Guid.NewGuid();
         var error = await Assert.ThrowsAsync<BusinessException>(() => handler.Handle(owner, new(id, cart.Id, cart.Version), default));
         Assert.Equal(unavailable ? 503 : 409, error.Status);
@@ -80,7 +80,7 @@ public sealed class PreparedCartTests(OrderingCartFixture fixture) : IClassFixtu
         var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
         Assert.False(await db.ReservationPlans.AnyAsync(x => x.Id == id));
         var fresh = (await carts.Find(owner, default))!;
-        var result = await new PrepareCartHandler(carts, prepared, new(catalog)).Handle(owner, new(id, fresh.Id, fresh.Version), default);
+        var result = await new PrepareCartHandler(carts, prepared, new(catalog), new TestDeliveryRates()).Handle(owner, new(id, fresh.Id, fresh.Version), default);
         await prepared.Cancel(owner, id, default);
         Assert.Equal(id, (await carts.Find(owner, default))!.PreparedId);
         Assert.Equal("Cancelling", (await prepared.Read(owner, default))!.Status);
@@ -101,7 +101,7 @@ public sealed class PreparedCartTests(OrderingCartFixture fixture) : IClassFixtu
         async Task<bool> Prepare()
         {
             await using var scope = fixture.Services.CreateAsyncScope();
-            var handler = new PrepareCartHandler(scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>(), scope.ServiceProvider.GetRequiredService<IPreparedCarts>(), new(catalog));
+            var handler = new PrepareCartHandler(scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>(), scope.ServiceProvider.GetRequiredService<IPreparedCarts>(), new(catalog), new TestDeliveryRates());
             try
             {
                 await handler.Handle(owner, new(Guid.NewGuid(), cart.Id, cart.Version), default);
@@ -130,7 +130,7 @@ public sealed class PreparedCartTests(OrderingCartFixture fixture) : IClassFixtu
         var carts = scope.ServiceProvider.GetRequiredService<IShoppingCartRepository>();
         var prepared = scope.ServiceProvider.GetRequiredService<IPreparedCarts>();
         var id = Guid.NewGuid();
-        await new PrepareCartHandler(carts, prepared, new(catalog)).Handle(owner, new(id, cart.Id, cart.Version), default);
+        await new PrepareCartHandler(carts, prepared, new(catalog), new TestDeliveryRates()).Handle(owner, new(id, cart.Id, cart.Version), default);
         var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
         db.ChangeTracker.Clear();
         var plan = await db.ReservationPlans.SingleAsync(x => x.Id == id);

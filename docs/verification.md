@@ -482,3 +482,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright: 10 scenarii trecute în account-preparation-api, account-preparation-ui, admin-sales-orders și order-cancellation. Selecția transportului este verificată pe cont și în coșul anonim; cazul real arată 42,35 RON produse + 20 RON transport = 62,35 RON în pregătire și administrare.
 - Migrarea DemoDeliverySnapshots este aditivă, cu două coloane JSONB nullable; aplicată local după backup privat Ordering. Verificarea EF nu raportează modificări de model restante.
 - Captura administrativă mobilă a fost inspectată: costul separat și totalul se încadrează în pagină. Nu există expediere externă, plată sau activare comercială.
+
+## Tarife demonstrative configurabile — 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 361 teste .NET și 10 teste Python trecute după refactorizarea sursei de tarife.
+- Rulare focalizată după adăugarea testelor de configurare: 24 teste trecute (17 cazuri noi, 5 reguli de selecție și 2 fluxuri de snapshot extinse). Total distinct verificat: 378 cazuri .NET.
+- Sunt acoperite configurațiile invalide/duplicate/excesive, metodele dezactivate, lipsa unui tarif implicit, copierea read-only a configurației și înregistrarea Development/Production. Pregătirile anonime și pe cont păstrează tariful inițial la replay după schimbarea sau dezactivarea metodei.
+- Playwright: 7 scenarii trecute în account-preparation-ui și admin-sales-orders, pe serviciile repornite cu appsettings.Development.json. Tarifele configurate sunt afișate și incluse în totalul administrativ.
+- Fără modificări frontend sau de schemă; au fost folosite buildurile Angular existente. Fără activare comercială sau expediere externă.

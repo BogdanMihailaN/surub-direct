@@ -19,7 +19,7 @@ public sealed class AccountOrderTests(ReservationCoordinatorFixture fixture) : I
         cart = await carts.Replace(owner, cart.Id, cart.Version, [new("surub", catalog.First, 2)], default);
         cart = await carts.SaveCustomer(owner, cart.Id, cart.Version, CustomerDraftSamples.Person(), default);
         var id = Guid.NewGuid();
-        await new PrepareCartHandler(carts, services.GetRequiredService<IPreparedCarts>(), new(catalog)).Handle(owner, new(id, cart.Id, cart.Version), default);
+        await new PrepareCartHandler(carts, services.GetRequiredService<IPreparedCarts>(), new(catalog), new TestDeliveryRates()).Handle(owner, new(id, cart.Id, cart.Version), default);
         await services.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);
         await services.GetRequiredService<IDemoOrders>().Confirm(owner, id, default);
         await services.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);

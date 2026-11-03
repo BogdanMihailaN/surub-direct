@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Configurarea și dezactivarea metodelor de transport demonstrative, cu validare la pornire și păstrarea tarifelor din snapshot-uri.
+
 - [x] Metode și costuri de transport demonstrative, cu selecție la pregătire și snapshot în comandă; integrarea comercială a curierului rămâne restantă.
 
 - [x] Etape de pregătire internă demonstrativă și istoric administrativ, protejate la concurență/replay/anulare.

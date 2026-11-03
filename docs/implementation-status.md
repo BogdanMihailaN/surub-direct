@@ -4,6 +4,8 @@ Actualizat la 2 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separ
 
 ## Implementat
 
+- Metodele de transport demonstrative sunt configurabile în Ordering, cu validare la pornire și dezactivare explicită. Tarifele nu mai sunt fixate în Domain; snapshot-urile existente sunt păstrate după schimbări. Fără migrare sau integrare externă. [Configurare](demo-delivery.md).
+
 - Transport demonstrativ selectabil în pregătirea coșului anonim și de cont, cost calculat pe server și păstrat în snapshot/comandă, totaluri coerente în administrare și istoric. Tarife ilustrative; fără curier sau expediere. [Detalii](demo-delivery.md).
 
 - Pregătirea internă demonstrativă a comenzilor: în așteptare/în pregătire/pregătită, revenire motivată, istoric administrativ, versiuni concurente și operații idempotente. Fără plată sau expediere. [Reguli](order-processing.md).

@@ -39,6 +39,7 @@ public sealed class MessagingFixture : IAsyncLifetime
         services.AddLogging();
         services.AddInventory(postgres.GetConnectionString());
         services.AddOrderingPersistence(ordering);
+        services.AddSingleton<SurubDirect.Ordering.Application.IDeliveryRates>(new TestDeliveryRates());
         services.AddSingleton<IReservationInventory>(Remote);
         Services = services.BuildServiceProvider();
         await using var scope = Services.CreateAsyncScope();

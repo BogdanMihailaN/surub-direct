@@ -15,6 +15,7 @@ public sealed class OrderingCartFixture : IAsyncLifetime
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddOrderingPersistence(container.GetConnectionString());
+        services.AddSingleton<SurubDirect.Ordering.Application.IDeliveryRates>(new TestDeliveryRates());
         Services = services.BuildServiceProvider();
         await using var scope = Services.CreateAsyncScope();
         await scope.ServiceProvider.MigrateOrdering();

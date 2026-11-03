@@ -20,7 +20,7 @@ public sealed class AccountPreparationTests(ReservationCoordinatorFixture fixtur
         cart = await carts.Replace(account, new(cart.Id, cart.Version, [new("surub", catalog.First, 2), new("surub", catalog.Second, 3)]), default);
         cart = await carts.SaveCustomer(account, new(cart.Id, cart.Version, CustomerDraftSamples.Person()), default);
         var id = Guid.NewGuid();
-        var handler = new PrepareAccountCartHandler(carts, s.GetRequiredService<IPreparedCarts>(), new(catalog));
+        var handler = new PrepareAccountCartHandler(carts, s.GetRequiredService<IPreparedCarts>(), new(catalog), new TestDeliveryRates());
         var command = new PrepareCart(id, cart.Id, cart.Version);
         var snapshot = await handler.Handle(account, command, default);
         Assert.Equal(id, (await handler.Handle(account, command, default)).Id);

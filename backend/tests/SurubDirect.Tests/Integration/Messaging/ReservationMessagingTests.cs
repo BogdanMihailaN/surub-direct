@@ -32,7 +32,7 @@ public sealed class ReservationMessagingTests(MessagingFixture fixture) : IClass
         cart = await carts.Replace(owner, cart.Id, cart.Version, [new("surub", catalog.First, 2), new("surub", catalog.Second, 3)], default);
         cart = await carts.SaveCustomer(owner, cart.Id, cart.Version, CustomerDraftSamples.Person(), default);
         var id = Guid.NewGuid();
-        await new PrepareCartHandler(carts, s.GetRequiredService<IPreparedCarts>(), new(catalog)).Handle(owner, new(id, cart.Id, cart.Version), default);
+        await new PrepareCartHandler(carts, s.GetRequiredService<IPreparedCarts>(), new(catalog), new TestDeliveryRates()).Handle(owner, new(id, cart.Id, cart.Version), default);
         await s.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);
         await s.GetRequiredService<IDemoOrders>().Confirm(owner, id, default);
         var plan = (await s.GetRequiredService<IReservationPlans>().Read(id, default))!;

@@ -17,6 +17,7 @@ public sealed class ReservationCoordinatorFixture : IAsyncLifetime
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddOrderingPersistence(container.GetConnectionString());
+        services.AddSingleton<SurubDirect.Ordering.Application.IDeliveryRates>(new TestDeliveryRates());
         services.AddSingleton<IReservationInventory>(Remote);
         Services = services.BuildServiceProvider();
         await using var scope = Services.CreateAsyncScope();

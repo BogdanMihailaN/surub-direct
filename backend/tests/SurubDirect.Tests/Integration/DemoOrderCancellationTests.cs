@@ -19,7 +19,7 @@ public sealed class DemoOrderCancellationTests(ReservationCoordinatorFixture fix
         cart = await carts.Replace(owner, cart.Id, cart.Version, [new("surub", catalog.First, 2), new("surub", catalog.Second, 3)], default);
         cart = await carts.SaveCustomer(owner, cart.Id, cart.Version, CustomerDraftSamples.Person(), default);
         var id = Guid.NewGuid();
-        var handler = new PrepareCartHandler(carts, scope.ServiceProvider.GetRequiredService<IPreparedCarts>(), new(catalog));
+        var handler = new PrepareCartHandler(carts, scope.ServiceProvider.GetRequiredService<IPreparedCarts>(), new(catalog), new TestDeliveryRates());
         await handler.Handle(owner, new(id, cart.Id, cart.Version), default);
         await scope.ServiceProvider.GetRequiredService<ProcessReservationPlanHandler>().Handle(default);
         return (owner, id);
