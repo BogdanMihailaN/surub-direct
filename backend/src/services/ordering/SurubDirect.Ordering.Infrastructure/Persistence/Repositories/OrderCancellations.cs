@@ -12,6 +12,8 @@ internal sealed class OrderCancellations(OrderingDbContext db) : IOrderCancellat
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var plan = await db.ReservationPlans.FromSqlInterpolated($"""SELECT * FROM ordering."ReservationPlans" WHERE "Id"={id} FOR UPDATE""").SingleOrDefaultAsync(ct) ?? throw new BusinessException("Comanda nu există.", 404);
         var order = await db.DemoOrders.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Comanda nu există.", 404);
+        var payment = await db.PaymentSimulations.AsNoTracking().SingleOrDefaultAsync(x => x.OrderId == id, ct);
+        payment?.EnsureCancellationAllowed();
         var now = DateTimeOffset.UtcNow;
         order.Cancel(reason, actor, now);
         plan.Restore(now);

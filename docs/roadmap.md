@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Simulator administrativ local de plăți și rambursări integrale, cu audit și reguli de anulare. Utilizatorul a ales explicit simularea locală la 3 noiembrie 2026; integrarea procesatorului rămâne restantă.
+
 - [x] Configurarea și dezactivarea metodelor de transport demonstrative, cu validare la pornire și păstrarea tarifelor din snapshot-uri.
 
 - [x] Metode și costuri de transport demonstrative, cu selecție la pregătire și snapshot în comandă; integrarea comercială a curierului rămâne restantă.

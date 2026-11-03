@@ -29,7 +29,12 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
         var plan = await db.ReservationPlans.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Starea confirmării nu este disponibilă.", 503);
         var history = await db.OrderProcessingChanges.AsNoTracking().Where(x => x.OrderId == id).OrderBy(x => x.Version)
             .Select(x => new OrderProcessingChangeDto(x.OperationId, x.Version, x.FromStatus, x.ToStatus, x.Reason, x.Actor, x.CreatedAt)).ToListAsync(ct);
+        var payment = await db.PaymentSimulations.AsNoTracking().SingleOrDefaultAsync(x => x.OrderId == id, ct);
+        var paymentHistory = await db.PaymentSimulationEvents.AsNoTracking().Where(x => x.OrderId == id).OrderBy(x => x.Version)
+            .Select(x => new PaymentSimulationEventDto(x.OperationId, x.AttemptId, x.Version, x.Action, x.FromStatus, x.ToStatus, x.Reason, x.Actor, x.CreatedAt)).ToListAsync(ct);
+        var paymentDto = new PaymentSimulationDto(payment?.Status ?? "NotStarted", payment?.Version ?? 0, payment?.AttemptId,
+            payment?.Amount ?? DemoOrderProjection.Map(order).GrossTotal, payment?.Currency ?? order.Currency, paymentHistory);
         await tx.CommitAsync(ct);
-        return new(DemoOrderProjection.Map(order), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt, new(order.ProcessingStatus, order.ProcessingVersion, history));
+        return new(DemoOrderProjection.Map(order), ReservationPlanProjection.Map(plan), order.CancellationReason, order.CancelledBy, order.CancellationRequestedAt, order.CancelledAt, new(order.ProcessingStatus, order.ProcessingVersion, history), paymentDto);
     }
 }

@@ -27,3 +27,7 @@ Migrări: Inventory `StockRestorationLedger`; Ordering `DemoOrderCancellation`. 
 Sunt implementate numai anulări integrale ale comenzilor demonstrative confirmate, fără expediere sau plată. Retururile parțiale, rambursările și regulile comerciale după expediere rămân în backlog. Retry-ul persistent necesită monitorizare și intervenție controlată înainte de producție.
 
 Rezultatele consumului și restituirii sunt propagate și prin [RabbitMQ cu Outbox/Inbox](reservation-messaging.md), fără eliminarea reconcilierii HTTP.
+
+## Interacțiunea cu simulatorul de plăți
+
+Din 3 noiembrie 2026, anularea refuză cu 409 comenzile cu plată simulată Pending sau Paid. Se cere mai întâi încheierea încercării sau rambursarea simulată. Blocarea tranzacțională comună împiedică o inițiere nouă simultană cu anularea. Simulatorul nu produce rambursări reale. [Detalii](payment-simulation.md).

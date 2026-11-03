@@ -490,3 +490,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Sunt acoperite configurațiile invalide/duplicate/excesive, metodele dezactivate, lipsa unui tarif implicit, copierea read-only a configurației și înregistrarea Development/Production. Pregătirile anonime și pe cont păstrează tariful inițial la replay după schimbarea sau dezactivarea metodei.
 - Playwright: 7 scenarii trecute în account-preparation-ui și admin-sales-orders, pe serviciile repornite cu appsettings.Development.json. Tarifele configurate sunt afișate și incluse în totalul administrativ.
 - Fără modificări frontend sau de schemă; au fost folosite buildurile Angular existente. Fără activare comercială sau expediere externă.
+
+## Simulator local de plăți — 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 388 teste .NET și 10 teste Python trecute. Cele 10 cazuri noi verifică tranzițiile, suma cu transport, operații duplicate/concurente, rezultate întârziate, rambursarea terminală și concurența inițiere–anulare.
+- Builduri Angular de producție storefront (browser/SSR) și admin trecute.
+- Playwright `admin-sales-orders.spec.ts` și `order-cancellation.spec.ts`: 4 scenarii trecute, inclusiv răspuns pierdut după salvare, eșec/reîncercare/succes/rambursare, blocarea anulării în Pending/Paid și autentificare/CSRF direct și prin gateway.
+- Migrarea aditivă `PaymentSimulationLedger` aplicată local după backup privat Ordering (57.490 octeți); verificarea EF nu raportează diferențe de model restante. PostgreSQL și RabbitMQ au fost repornite pentru verificarea în browser.
+- Captura mobilă inspectată: simulatorul, suma și istoricul se încadrează în viewport. Nu există procesator extern, plăți reale sau activare comercială.

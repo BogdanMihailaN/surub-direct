@@ -8,6 +8,8 @@ export class SalesOrdersStore {
   private readonly api = inject(SalesOrdersApi);
   readonly cancelling = signal(false);
   readonly processing = signal(false);
+  readonly simulatingPayment = signal(false);
+  readonly paymentError = signal('');
   readonly processingError = signal('');
   readonly cancelError = signal('');
   readonly data = signal<OrderPage | null>(null);
@@ -44,7 +46,7 @@ export class SalesOrdersStore {
   }
   async cancel(reason: string) {
     const id = this.selected();
-    if (!id || this.cancelling() || this.processing()) return;
+    if (!id || this.cancelling() || this.processing() || this.simulatingPayment() || this.paymentBlocksCancellation()) return;
     this.cancelling.set(true);
     this.cancelError.set('');
     try {
@@ -59,7 +61,7 @@ export class SalesOrdersStore {
   }
   async changeProcessing(change: { target: string; reason: string }) {
     const detail = this.detail();
-    if (!detail || this.processing() || this.cancelling() || detail.order.status !== 'Confirmed') return;
+    if (!detail || this.processing() || this.cancelling() || this.simulatingPayment() || detail.order.status !== 'Confirmed') return;
     const id = detail.order.id;
     const sequence = this.detailSequence;
     this.processing.set(true);
@@ -73,7 +75,28 @@ export class SalesOrdersStore {
       this.processing.set(false);
     }
   }
+  paymentBlocksCancellation() {
+    const status = this.detail()?.paymentSimulation.status;
+    return status === 'Pending' || status === 'Paid';
+  }
+  async simulatePayment(change: { action: string; reason: string }) {
+    const detail = this.detail();
+    if (!detail || this.simulatingPayment() || this.processing() || this.cancelling() || detail.order.status !== 'Confirmed') return;
+    const id = detail.order.id;
+    const sequence = this.detailSequence;
+    this.simulatingPayment.set(true);
+    this.paymentError.set('');
+    try {
+      await this.api.simulatePayment(id, detail.paymentSimulation.version, change.action, change.reason, crypto.randomUUID());
+    } catch (e) {
+      if (sequence === this.detailSequence) this.paymentError.set(errorMessage(e) + ' Starea este recitită; operația nu este repetată automat.');
+    } finally {
+      if (this.selected() === id) await this.select(id);
+      this.simulatingPayment.set(false);
+    }
+  }
   async select(id: string) {
+    if (this.selected() !== id) this.paymentError.set('');
     if (this.selected() !== id) this.processingError.set('');
     const sequence = ++this.detailSequence;
     this.selected.set(id);

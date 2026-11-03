@@ -172,3 +172,7 @@ Ordering.Domain/Orders conține regulile din DemoOrder și înregistrarea OrderP
 Ordering.Domain/Delivery separă costul imuabil DeliveryCharge de regulile DeliverySelection. Application are proiecție și handler pentru opțiuni, Contracts are DTO separat, iar API are endpoint GET dedicat. PreparedCart și DemoOrder păstrează snapshot-ul în coloane JSONB nullable. Storefront/features/delivery separă selectorul, data-access și state; shared/delivery conține doar modelul și rezumatul reutilizat efectiv în storefront și admin.
 
 Tarifele provin din portul Application/Abstractions/Delivery/IDeliveryRates. Infrastructure/Delivery separă modelul configurației DeliveryRateSettings de adaptorul ConfiguredDeliveryRates. Api/Configuration/DeliveryRegistration compune configurarea Development; valorile ilustrative sunt în appsettings.Development.json. Domain nu depinde de configurarea ASP.NET și nu conține tarife fixe.
+
+## Simulatorul local de plăți
+
+Ordering.Domain/Payments separă PaymentSimulation de evenimentul imuabil PaymentSimulationEvent. Application are portul IPaymentSimulations și handler-ul SimulatePayment. Infrastructure are repository, două configurații EF și migrare dedicate. API separă cererea de endpoint. Angular sales-orders are modelul și componenta payment-simulation, cu TS/HTML/SCSS colocate; pagina compune panoul, iar SalesOrdersStore/API dețin operațiile și recitirea. Testele sunt separate în Unit, Integration și helper-ul browser support/payment-simulation.ts.

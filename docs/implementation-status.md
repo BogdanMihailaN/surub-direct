@@ -4,6 +4,8 @@ Actualizat la 2 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separ
 
 ## Implementat
 
+- Simulator local de plăți în administrare: inițiere, rezultat reușit/eșuat, reîncercare și rambursare integrală, cu sumă din snapshot, audit/idempotență și protecție la anulare concurentă. Fără procesator sau bani reali. [Detalii](payment-simulation.md).
+
 - Metodele de transport demonstrative sunt configurabile în Ordering, cu validare la pornire și dezactivare explicită. Tarifele nu mai sunt fixate în Domain; snapshot-urile existente sunt păstrate după schimbări. Fără migrare sau integrare externă. [Configurare](demo-delivery.md).
 
 - Transport demonstrativ selectabil în pregătirea coșului anonim și de cont, cost calculat pe server și păstrat în snapshot/comandă, totaluri coerente în administrare și istoric. Tarife ilustrative; fără curier sau expediere. [Detalii](demo-delivery.md).

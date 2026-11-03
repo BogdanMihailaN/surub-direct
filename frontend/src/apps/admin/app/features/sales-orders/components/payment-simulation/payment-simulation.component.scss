@@ -1,0 +1,5 @@
+section { border: 1px solid #cbd5d0; border-radius: 12px; padding: 1rem; margin-block: 1rem; }
+.form { display: grid; gap: .75rem; }
+textarea { width: 100%; box-sizing: border-box; min-height: 5rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+article { border-top: 1px solid #ddd; padding-block: .75rem; overflow-wrap: anywhere; }

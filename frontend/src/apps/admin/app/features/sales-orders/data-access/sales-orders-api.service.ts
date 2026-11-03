@@ -16,6 +16,9 @@ export class SalesOrdersApi {
   changeProcessing(id: string, expectedVersion: number, target: string, reason: string, operationId: string) {
     return this.api.write('POST', this.root + '/' + encodeURIComponent(id) + '/processing', { expectedVersion, target, reason, operationId });
   }
+  simulatePayment(id: string, expectedVersion: number, action: string, reason: string, operationId: string) {
+    return this.api.write('POST', this.root + '/' + encodeURIComponent(id) + '/payment-simulation', { expectedVersion, action, reason, operationId });
+  }
   detail(id: string) {
     return this.api.get<OrderDetail>(this.root + '/' + encodeURIComponent(id));
   }

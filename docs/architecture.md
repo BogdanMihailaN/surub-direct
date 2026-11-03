@@ -36,7 +36,7 @@ flowchart LR
 | Inventory | Recepții, corecții și ajustări idempotente, rezervări atomice/expirări, sold și jurnal paginat; verifică existența SKU prin Catalog | `surub_inventory`: inventory |
 | Identity | ASP.NET Identity, înregistrare demonstrativă clienți, autentificare, rol Administrator, cookie și CSRF | `surub_identity`: identity |
 | Purchasing | Furnizori, condiții de achiziție per SKU și comenzi de aprovizionare | `surub_purchasing`: furnizori, articole asociate, comenzi și linii |
-| Ordering | Persistența selecției și ciornei PF/PJ, recalculare prin Catalog HTTP; checkout dezactivat | `surub_ordering`: `ordering.Carts` |
+| Ordering | Coșuri anonime/pe cont, ciorne PF/PJ, pregătiri, coordonarea rezervărilor, comenzi demonstrative, anulare, pregătire internă și simulator local de plăți; checkout comercial dezactivat | `surub_ordering`: schema `ordering` |
 | Gateway | Rutare explicită, limitare trafic; fără baze sau referințe la serviciile comerciale | — |
 
 Fiecare bază are utilizator propriu, fără drept de conectare la bazele celorlalte servicii. Instanța PostgreSQL locală este comună pentru economie de resurse; separarea este la nivel de baze și permisiuni. Se pot muta pe instanțe separate fără schimbări în domeniu.

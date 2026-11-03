@@ -1,3 +1,4 @@
+import { verifyPaymentSimulation } from './support/payment-simulation';
 import { test, expect } from '@playwright/test';
 import { adminWrite, loginAdmin } from './support/admin-session';
 const shop = 'http://localhost:4200';
@@ -168,6 +169,7 @@ test('admin filters orders, reads immutable customer details and recovers read f
     await processing.getByRole('button', { name: 'Marchează pregătită' }).click();
     await expect(processing.getByRole('button', { name: 'Reia pregătirea' })).toBeVisible();
     await expect(processing.locator('article')).toHaveCount(2);
+    await verifyPaymentSimulation(page, prepared.id);
 
     await page.getByLabel('Stare comandă', { exact: true }).selectOption('Failed');
     await page.getByRole('button', { name: 'Aplică filtrele' }).click();
@@ -239,10 +241,12 @@ test('administrative order reads require session through gateway and direct serv
     expect((await request.get(origin + path)).status()).toBe(401);
     expect((await request.get(origin + path + '/' + id)).status()).toBe(401);
     expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(401);
+    expect((await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status()).toBe(401);
   }
   await loginAdmin(request, 'http://127.0.0.1:5099');
   for (const origin of ['http://127.0.0.1:5099', 'http://127.0.0.1:5104']) {
     expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(400);
+    expect((await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status()).toBe(400);
     const response = await request.get(origin + path + '?status=Confirmed&page=1');
     expect(response.status()).toBe(200);
     expect(response.headers()['cache-control']).toBe('no-store');

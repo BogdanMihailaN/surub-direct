@@ -156,6 +156,86 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.ToTable("OrderProcessingChanges", "ordering");
                 });
 
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulation", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid?>("AttemptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("PaymentSimulations", "ordering");
+                });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulationEvent", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("AttemptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FromStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrderId", "OperationId");
+
+                    b.HasIndex("OrderId", "Version")
+                        .IsUnique();
+
+                    b.ToTable("PaymentSimulationEvents", "ordering");
+                });
+
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PreparedCart", b =>
                 {
                     b.Property<Guid>("Id")
@@ -396,6 +476,24 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
             modelBuilder.Entity("SurubDirect.Ordering.Domain.OrderProcessingChange", b =>
                 {
                     b.HasOne("SurubDirect.Ordering.Domain.DemoOrder", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulation", b =>
+                {
+                    b.HasOne("SurubDirect.Ordering.Domain.DemoOrder", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulationEvent", b =>
+                {
+                    b.HasOne("SurubDirect.Ordering.Domain.PaymentSimulation", null)
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)

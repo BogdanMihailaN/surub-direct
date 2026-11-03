@@ -1,0 +1,35 @@
+<section aria-label="Simulator local de plăți">
+  <h3>Simulator local de plăți</h3>
+  <p>Nu se încasează și nu se rambursează bani reali. Nu introduce date de card.</p>
+  <p role="status">Plată simulată: <strong>{{ labels[data().status] }}</strong></p>
+  <p>Sumă din comandă, inclusiv transportul ales: <strong>{{ data().amount | number: '1.2-2' }} {{ data().currency }}</strong></p>
+  @if (editable() && data().status !== 'Refunded') {
+    <div class="form">
+      <label for="payment-simulation-reason">Motivul operației simulate</label>
+      <textarea id="payment-simulation-reason" [(ngModel)]="reason" maxlength="500" [disabled]="busy()"></textarea>
+      <label><input type="checkbox" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm operația simulată pentru această comandă și sumă</label>
+      <div class="actions">
+        @if (data().status === 'NotStarted' || data().status === 'Failed') {
+          <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Start')">Inițiază plata simulată</button>
+        } @else if (data().status === 'Pending') {
+          <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Succeed')">Simulează plata reușită</button>
+          <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Fail')">Simulează plata eșuată</button>
+        } @else if (data().status === 'Paid') {
+          <button [disabled]="busy() || !confirmed || reason.trim().length < 3" (click)="submit('Refund')">Simulează rambursarea integrală</button>
+        }
+      </div>
+    </div>
+  }
+  @if (data().status === 'Pending' || data().status === 'Paid') {
+    <p>Anularea comenzii este blocată până la încheierea simulării în curs sau rambursarea simulată.</p>
+  }
+  @if (data().status === 'Refunded') { <p>Simularea este încheiată. Comanda poate fi anulată separat.</p> }
+  <h4>Istoricul simulării</h4>
+  @for (entry of data().history; track entry.operationId) {
+    <article>
+      <strong>{{ labels[entry.fromStatus] }} → {{ labels[entry.toStatus] }}</strong>
+      <p>{{ entry.reason }}</p>
+      <small>{{ entry.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Operator: {{ entry.actor }}</small>
+    </article>
+  } @empty { <p>Nu există operații de plată simulate.</p> }
+</section>

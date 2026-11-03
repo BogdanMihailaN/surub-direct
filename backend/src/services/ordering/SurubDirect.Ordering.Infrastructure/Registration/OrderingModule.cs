@@ -48,6 +48,8 @@ public static class OrderingModule
         services.AddScoped<CancelDemoOrderHandler>();
         services.AddScoped<ChangeOrderProcessingHandler>();
         services.AddScoped<GetDeliveryOptionsHandler>();
+        services.AddScoped<SimulatePaymentHandler>();
+        services.AddScoped<IPaymentSimulations, PaymentSimulations>();
         services.AddScoped<IOrderProcessing, OrderProcessing>();
         services.AddScoped<ReservationInbox>();
         services.AddScoped<FailedMessageStore>();
