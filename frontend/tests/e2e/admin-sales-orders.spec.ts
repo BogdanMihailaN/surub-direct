@@ -1,3 +1,4 @@
+import { assertAccountOrderOwnership } from './support/account-order-ownership';
 import { verifyPaymentSimulation } from './support/payment-simulation';
 import { test, expect } from '@playwright/test';
 import { adminWrite, loginAdmin } from './support/admin-session';
@@ -29,7 +30,7 @@ const person = {
   },
 };
 test('admin filters orders, reads immutable customer details and recovers read failures', async ({
-  page,
+  page, browser, playwright,
 }) => {
   test.setTimeout(90000);
   await loginAdmin(page.request, admin);
@@ -227,6 +228,13 @@ test('admin filters orders, reads immutable customer details and recovers read f
     await page.request.post(shop + cartPath + '/preparation/' + prepared.id + '/complete', {
       headers,
     });
+    const customerPage = await page.context().newPage();
+    await customerPage.goto(shop + '/cos');
+    const summary = customerPage.getByRole('region', { name: 'Starea plății simulate', exact: true });
+    await expect(summary).toContainText('Rambursată integral');
+    await expect(summary).toContainText('62,35 RON');
+    await customerPage.close();
+    await assertAccountOrderOwnership(playwright, page.request, prepared.id, browser, 'Refunded');
   } finally {
     test.setTimeout(test.info().timeout + 15000);
     await write(productPath + '/archive');

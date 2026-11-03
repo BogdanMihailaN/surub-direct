@@ -1,10 +1,11 @@
+import { PaymentSummaryComponent } from '../payment-summary/payment-summary.component';
 import { DeliverySummary } from '@shared/delivery/delivery-summary.component';
 import { Component, afterNextRender, DestroyRef, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { DemoOrdersStore } from '../../state/demo-orders.store';
 @Component({
   selector: 'sd-demo-orders',
-  imports: [DeliverySummary, DatePipe, DecimalPipe],
+  imports: [PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
   providers: [DemoOrdersStore],
   templateUrl: './demo-orders.component.html',
   styleUrl: './demo-orders.component.scss',

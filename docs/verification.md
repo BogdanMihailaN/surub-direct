@@ -498,3 +498,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright `admin-sales-orders.spec.ts` și `order-cancellation.spec.ts`: 4 scenarii trecute, inclusiv răspuns pierdut după salvare, eșec/reîncercare/succes/rambursare, blocarea anulării în Pending/Paid și autentificare/CSRF direct și prin gateway.
 - Migrarea aditivă `PaymentSimulationLedger` aplicată local după backup privat Ordering (57.490 octeți); verificarea EF nu raportează diferențe de model restante. PostgreSQL și RabbitMQ au fost repornite pentru verificarea în browser.
 - Captura mobilă inspectată: simulatorul, suma și istoricul se încadrează în viewport. Nu există procesator extern, plăți reale sau activare comercială.
+
+## Rezumatul plății simulate în istoricul clientului — 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 388 teste .NET și 10 teste Python trecute. Cele două teste noi CustomerPaymentSummaryTests, adăugate după pornirea suitei, au trecut într-o rulare focalizată; total distinct verificat: 390 teste .NET.
+- Testele noi urmăresc toate stările plății, suma cu transport, absența auditului administrativ, izolarea proprietarilor anonimi/pe cont și păstrarea rambursării la anulare.
+- Builduri Angular de producție storefront (browser/SSR) și admin trecute.
+- Playwright: 8 scenarii distincte verificate în account-order-history, admin-sales-orders și demo-orders. Șapte au trecut în rularea grupată; ultimul a primit 429 din limita de trafic, înaintea validării parametrului page. Reluarea izolată a trecut fără modificarea aserțiunilor sau a limitelor.
+- Browserul real verifică rezumatul rambursat de 62,35 RON în coș, apoi în istoricul contului după asociere, precum și comanda fără simulare. Test separat pentru câmp absent: se afișează indisponibilitate, nu Neinițiată. Captura mobilă a istoricului a fost inspectată, fără depășirea viewportului.
+- Fără migrare de bază, furnizor extern sau activare comercială.

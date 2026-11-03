@@ -28,3 +28,9 @@ Interfața recitește detaliul după succes, conflict sau răspuns pierdut, făr
 ## Limite
 
 Acesta este un instrument administrativ demonstrativ, nu un adaptor de procesator. Integrarea reală necesită separat alegerea furnizorului, autorizare/captură, webhook-uri autentificate, reconciliere persistentă, idempotency la furnizor, politica rezervărilor și validare sandbox. Rezultatele reale nu vor fi acceptate din butoanele simulatorului sau din redirectul browserului. Nu există chei externe, apeluri către procesatori, notificări sau activare în producție.
+
+## Rezumatul clientului
+
+Istoricul browserului și istoricul contului includ `paymentSummary` cu numai `status`, `amount` și `currency`. Nu expun istoricul operațiilor, motive, operatori sau identificatorii încercărilor. Suma include transportul din comanda salvată. Lipsa unui registru de simulare este reprezentată explicit ca `NotStarted`; lipsa câmpului în interfață este afișată ca indisponibilitate, nu ca o stare presupusă.
+
+Citirea paginii încarcă numai simulările comenzilor deja filtrate după proprietar, într-o singură interogare suplimentară și în aceeași tranzacție RepeatableRead. Asocierea la cont păstrează rezumatul și elimină accesul din istoricul anonim. Confirmarea repetată și răspunsul anulării returnează starea persistentă, fără a o reseta la Neinițiată. Rezumatul nu oferă operații de plată clientului; numai administratorul operează simulatorul local.

@@ -10,6 +10,7 @@ export async function assertAccountOrderOwnership(
   original: APIRequestContext,
   id: string,
   browser: Browser,
+  paymentStatus = 'NotStarted',
 ) {
   const origin = 'http://localhost:4200';
   const path = '/api/v1/ordering/account/orders';
@@ -47,13 +48,18 @@ export async function assertAccountOrderOwnership(
       409,
     );
     const unclaimed = await (await owner.get(origin + '/api/v1/ordering/demo-orders')).json();
-    const number = unclaimed.items.find((order: { id: string }) => order.id === id).number;
+    const publicOrder = unclaimed.items.find((order: { id: string }) => order.id === id);
+    const number = publicOrder.number;
+    expect(publicOrder.paymentSummary).toEqual({ status: paymentStatus, amount: publicOrder.grossTotal, currency: 'RON' });
+    expect(Object.keys(publicOrder.paymentSummary).sort()).toEqual(['amount', 'currency', 'status']);
+    const paymentLabel = paymentStatus === 'Refunded' ? 'Rambursată integral' : 'Neinițiată';
     await page.goto(origin + '/cont');
     const browserOrders = page.getByRole('region', {
       name: 'Comenzile neasociate din browser',
       exact: true,
     });
     const accountOrders = page.getByRole('region', { name: 'Comenzile contului', exact: true });
+    await expect(browserOrders.getByRole('region', { name: 'Starea plății simulate' })).toContainText(paymentLabel);
     await browserOrders.getByRole('button', { name: 'Asociază ' + number, exact: true }).click();
     const confirmation = page.getByRole('region', { name: 'Confirmă asocierea', exact: true });
     await expect(confirmation).toContainText(email);
@@ -71,6 +77,8 @@ export async function assertAccountOrderOwnership(
     await page.unroute('**/api/v1/ordering/account/orders/*/claim?**');
     await page.reload();
     await expect(accountOrders.getByRole('heading', { name: number, exact: true })).toBeVisible();
+    await expect(accountOrders.getByRole('region', { name: 'Starea plății simulate' })).toContainText(paymentLabel);
+    await expect(accountOrders).toContainText('Nu au loc încasări sau rambursări de bani reali.');
     await page.setViewportSize({ width: 390, height: 844 });
     await accountOrders.getByText('Detalii ' + number, { exact: true }).click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

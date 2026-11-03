@@ -1,0 +1,9 @@
+<section aria-label="Starea plății simulate">
+  @if (data(); as payment) {
+    <p>Plată simulată: <strong>{{ labels[payment.status] ?? 'Stare necunoscută' }}</strong></p>
+    <p>Sumă demonstrativă: {{ payment.amount | number: '1.2-2' }} {{ payment.currency }}</p>
+  } @else {
+    <p>Starea plății simulate nu este disponibilă. Actualizează comenzile.</p>
+  }
+  <small>Simulare locală. Nu au loc încasări sau rambursări de bani reali.</small>
+</section>

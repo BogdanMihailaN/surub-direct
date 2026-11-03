@@ -1,3 +1,4 @@
+import { PaymentSummary } from './payment-summary.model';
 import { DeliveryCharge } from '@shared/delivery/delivery-charge.model';
 import { PreparedCart } from './prepared-cart.model';
 export interface DemoOrder {
@@ -7,6 +8,7 @@ export interface DemoOrder {
   createdAt: string;
   finalizedAt: string | null;
   delivery?: DeliveryCharge | null;
+  paymentSummary?: PaymentSummary;
   currency: string;
   netTotal: number;
   grossTotal: number;

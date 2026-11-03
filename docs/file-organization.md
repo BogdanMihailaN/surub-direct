@@ -176,3 +176,5 @@ Tarifele provin din portul Application/Abstractions/Delivery/IDeliveryRates. Inf
 ## Simulatorul local de plăți
 
 Ordering.Domain/Payments separă PaymentSimulation de evenimentul imuabil PaymentSimulationEvent. Application are portul IPaymentSimulations și handler-ul SimulatePayment. Infrastructure are repository, două configurații EF și migrare dedicate. API separă cererea de endpoint. Angular sales-orders are modelul și componenta payment-simulation, cu TS/HTML/SCSS colocate; pagina compune panoul, iar SalesOrdersStore/API dețin operațiile și recitirea. Testele sunt separate în Unit, Integration și helper-ul browser support/payment-simulation.ts.
+
+Rezumatul public al simulării folosește `Contracts/Payments/PaymentSummaryDto`, separat de DTO-ul administrativ cu audit. În storefront, `features/cart/components/payment-summary` este reutilizat de istoricul coșului și de istoricul din cont; modelul se află în `features/cart/models`.

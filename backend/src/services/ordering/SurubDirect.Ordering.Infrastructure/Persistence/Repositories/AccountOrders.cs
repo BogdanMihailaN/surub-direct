@@ -28,7 +28,10 @@ internal sealed class AccountOrders(OrderingDbContext db, TimeProvider time) : I
         var query = db.DemoOrders.AsNoTracking().Where(x => x.AccountId == accountId);
         var total = await query.CountAsync(ct);
         var items = await query.OrderByDescending(x => x.Sequence).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
+        var ids = items.Select(x => x.Id).ToArray();
+        var payments = await db.PaymentSimulations.AsNoTracking().Where(x => ids.Contains(x.OrderId)).ToDictionaryAsync(x => x.OrderId, ct);
+        var result = items.Select(x => DemoOrderProjection.Map(x, payments.GetValueOrDefault(x.Id))).ToArray();
         await tx.CommitAsync(ct);
-        return new(items.Select(DemoOrderProjection.Map).ToArray(), page, total, 25);
+        return new(result, page, total, 25);
     }
 }

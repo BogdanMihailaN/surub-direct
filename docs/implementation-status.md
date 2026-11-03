@@ -160,3 +160,7 @@ Angular include solicitarea mesajelor, confirmarea e-mailului și resetarea paro
 ## Mesaje de recuperare pregătite pentru integrare — 2 noiembrie 2026
 
 Mesajele private locale includ subiect, text, HTML și link complet generat dintr-o origine configurată și validată. Tokenurile sunt codificate în fragment, fără dependență de Host-ul cererii. Composer-ul este separat de stocare; adaptorul furnizorului extern și livrarea efectivă rămân de implementat după alegerea serviciului.
+
+## Rezumatul plății simulate pentru client — 3 noiembrie 2026
+
+Istoricul din coș și din Contul meu afișează starea și suma simulării, cu mențiune explicită că nu au loc operații cu bani reali. API-ul păstrează filtrarea după proprietar și oferă un contract minimal, separat de auditul administrativ. Asocierea la cont păstrează starea și retrage accesul anonim.

@@ -19,6 +19,6 @@ internal sealed class OrderCancellations(OrderingDbContext db) : IOrderCancellat
         plan.Restore(now);
         await db.SaveChangesAsync(ct);
         await tx.CommitAsync(ct);
-        return DemoOrderProjection.Map(order);
+        return DemoOrderProjection.Map(order, payment);
     }
 }

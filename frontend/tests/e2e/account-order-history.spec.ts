@@ -6,6 +6,7 @@ const order = (number: number) => ({
   createdAt: '2026-10-29T10:00:00Z',
   currency: 'RON',
   grossTotal: 12.1,
+  paymentSummary: { status: 'Paid', amount: 12.1, currency: 'RON' },
   netTotal: 10,
   finalizedAt: null,
   customer: {
@@ -28,6 +29,7 @@ const order = (number: number) => ({
       offerLabel: 'Cutie',
       packs: 1,
       grossTotal: 12.1,
+  paymentSummary: { status: 'Paid', amount: 12.1, currency: 'RON' },
     },
   ],
 });
@@ -142,4 +144,19 @@ test('confirmation binds displayed account and hides stale history after session
   await expect(page.getByRole('region', { name: 'Istoricul comenzilor', exact: true })).toHaveCount(
     0,
   );
+});
+
+test('missing payment summary is unavailable rather than an invented status', async ({ page }) => {
+  await session(page);
+  const item = { ...order(1), paymentSummary: undefined };
+  for (const kind of ['account/orders', 'demo-orders']) {
+    await page.route(`**/api/v1/ordering/${kind}?**`, route => route.fulfill({
+      json: { items: [item], page: 1, total: 1, pageSize: 25 },
+    }));
+  }
+  await page.goto('/cont');
+  const summaries = page.getByRole('region', { name: 'Starea plății simulate', exact: true });
+  await expect(summaries).toHaveCount(2);
+  await expect(summaries.first()).toContainText('nu este disponibilă');
+  await expect(summaries.first()).not.toContainText('Neinițiată');
 });

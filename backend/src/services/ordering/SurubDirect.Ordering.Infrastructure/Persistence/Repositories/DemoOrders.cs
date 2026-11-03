@@ -15,8 +15,9 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         var existing = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.OwnerHash == owner && x.AccountId == accountId, ct);
         if (existing is not null)
         {
+            var payment = await db.PaymentSimulations.AsNoTracking().SingleOrDefaultAsync(x => x.OrderId == id, ct);
             await tx.CommitAsync(ct);
-            return DemoOrderProjection.Map(existing);
+            return DemoOrderProjection.Map(existing, payment);
         }
 
         cart.EnsureActive(DateTimeOffset.UtcNow);
@@ -29,7 +30,7 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         db.DemoOrders.Add(order);
         await db.SaveChangesAsync(ct);
         await tx.CommitAsync(ct);
-        return DemoOrderProjection.Map(order);
+        return DemoOrderProjection.Map(order, null);
     }
 
     public async Task<DemoOrderPageDto> Read(string owner, int page, CancellationToken ct)
@@ -38,8 +39,11 @@ internal sealed class DemoOrders(OrderingDbContext db) : IDemoOrders
         var query = db.DemoOrders.AsNoTracking().Where(x => x.OwnerHash == owner && x.AccountId == null);
         var total = await query.CountAsync(ct);
         var items = await query.OrderByDescending(x => x.Sequence).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
+        var ids = items.Select(x => x.Id).ToArray();
+        var payments = await db.PaymentSimulations.AsNoTracking().Where(x => ids.Contains(x.OrderId)).ToDictionaryAsync(x => x.OrderId, ct);
+        var result = items.Select(x => DemoOrderProjection.Map(x, payments.GetValueOrDefault(x.Id))).ToArray();
         await tx.CommitAsync(ct);
-        return new(items.Select(DemoOrderProjection.Map).ToArray(), page, total, 25);
+        return new(result, page, total, 25);
     }
 
     public async Task Complete(string owner, Guid id, CancellationToken ct, string? accountId = null)
