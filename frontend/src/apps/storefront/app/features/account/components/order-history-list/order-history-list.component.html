@@ -27,6 +27,7 @@
               {{ line.grossTotal | number: '1.2-2' }} {{ order.currency }}
             </p>
           }
+          <sd-delivery-summary [delivery]="order.delivery" />
         </details>
         @if (allowClaim() && (order.status === 'Confirmed' || order.status === 'Cancelled')) {
           <button type="button" [disabled]="busy()" (click)="claim.emit(order)">

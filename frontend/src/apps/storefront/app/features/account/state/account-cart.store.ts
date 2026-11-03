@@ -158,11 +158,11 @@ export class AccountCartStore {
       this.busy.set(false);
     }
   }
-  prepare() {
+  prepare(deliveryCode: string | null = null) {
     const cart = this.account();
     if (!cart || this.locked() || !cart.customer || !cart.lines.length) return;
     return this.mutate(
-      () => this.preparationApi.prepare(this.accountId, cart),
+      () => this.preparationApi.prepare(this.accountId, cart, deliveryCode),
       'Pregătirea a fost solicitată.',
     );
   }

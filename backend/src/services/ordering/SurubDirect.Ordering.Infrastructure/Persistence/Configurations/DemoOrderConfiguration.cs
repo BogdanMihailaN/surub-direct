@@ -24,6 +24,9 @@ internal sealed class DemoOrderConfiguration : IEntityTypeConfiguration<DemoOrde
         b.Property(x => x.Status).HasMaxLength(20);
         b.HasIndex(x => new { x.OwnerHash, x.Sequence });
         b.Property(x => x.Currency).HasMaxLength(10);
+        b.Property(x => x.Delivery).HasColumnType("jsonb").HasConversion(
+            v => v == null ? null : JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => v == null ? null : JsonSerializer.Deserialize<DeliveryCharge>(v, (JsonSerializerOptions?)null));
         b.Property(x => x.Customer).HasColumnType("jsonb").HasConversion(v => JsonSerializer.Serialize(v, (JsonSerializerOptions? )null), v => JsonSerializer.Deserialize<CustomerDraft>(v, (JsonSerializerOptions? )null)!);
         b.Property(x => x.Lines).HasColumnType("jsonb").HasConversion(v => JsonSerializer.Serialize(v, (JsonSerializerOptions? )null), v => JsonSerializer.Deserialize<List<PreparedCartLine>>(v, (JsonSerializerOptions? )null)!).Metadata.SetValueComparer(new ValueComparer<List<PreparedCartLine>>((a, b) => a!.SequenceEqual(b!), v => v.Aggregate(0, (h, x) => HashCode.Combine(h, x.GetHashCode())), v => v.ToList()));
     }

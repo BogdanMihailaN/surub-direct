@@ -20,11 +20,11 @@ export class PreparationApi {
     );
     return { 'X-CART-CSRF': token.token };
   }
-  async prepare(cartId: string, version: number, requestId: string) {
+  async prepare(cartId: string, version: number, requestId: string, deliveryCode: string | null = null) {
     return firstValueFrom(
       this.http.post<PreparedCart>(
         this.path,
-        { cartId, version, requestId },
+        { cartId, version, requestId, deliveryCode },
         { headers: await this.headers() },
       ),
     );

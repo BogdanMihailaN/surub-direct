@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Metode și costuri de transport demonstrative, cu selecție la pregătire și snapshot în comandă; integrarea comercială a curierului rămâne restantă.
+
 - [x] Etape de pregătire internă demonstrativă și istoric administrativ, protejate la concurență/replay/anulare.
 
 - [x] Consolidarea proiectelor Pricing/Store în straturile Catalogului, cu păstrarea schemelor și migrațiilor.

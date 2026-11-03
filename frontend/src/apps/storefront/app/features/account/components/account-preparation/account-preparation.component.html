@@ -4,8 +4,9 @@
   @if (!cart.account()?.preparedId) {
     @if (state.enabled()) {
       <p>Reverificăm prețurile și rezervăm temporar stocul pentru selecția salvată.</p>
+      <sd-delivery-choice [selected]="deliveryCode" [disabled]="cart.locked()" (chosen)="deliveryCode = $event" />
       <button
-        (click)="cart.prepare()"
+        (click)="cart.prepare(deliveryCode)"
         [disabled]="cart.locked() || !cart.account()?.customer || !cart.account()?.lines?.length"
       >
         Pregătește coșul contului
@@ -31,7 +32,8 @@
       <strong
         >Total demonstrativ: {{ p.grossTotal | number: '1.2-2' }} {{ p.currency }} cu TVA</strong
       >
-      <p>Transportul nu este inclus. Date verificate la {{ p.checkedAt | date: 'HH:mm:ss' }}.</p>
+      <sd-delivery-summary [delivery]="p.delivery" />
+      <p>Date verificate la {{ p.checkedAt | date: 'HH:mm:ss' }}.</p>
       <p>Client: {{ p.customer.fullName }} · {{ p.customer.email }}</p>
       <p>
         Livrare: {{ p.customer.shippingAddress.street }}, {{ p.customer.shippingAddress.city }},

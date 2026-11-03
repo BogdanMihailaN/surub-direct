@@ -6,7 +6,8 @@
         Reverificăm datele salvate și rezervăm temporar stocul. Această acțiune nu trimite o comandă
         și nu inițiază o plată.
       </p>
-      <button [disabled]="cart.locked() || !cart.customer()" (click)="cart.prepare()">
+      <sd-delivery-choice [selected]="deliveryCode" [disabled]="cart.locked()" (chosen)="deliveryCode = $event" />
+      <button [disabled]="cart.locked() || !cart.customer()" (click)="cart.prepare(deliveryCode)">
         Pregătește și rezervă stocul
       </button>
       @if (!cart.customer()) {
@@ -25,7 +26,8 @@
         <strong
           >Total demonstrativ: {{ p.grossTotal | number: '1.2-2' }} {{ p.currency }} cu TVA</strong
         >
-        <p>Transportul nu este inclus. Date verificate la {{ p.checkedAt | date: 'HH:mm:ss' }}.</p>
+        <sd-delivery-summary [delivery]="p.delivery" />
+      <p>Date verificate la {{ p.checkedAt | date: 'HH:mm:ss' }}.</p>
         @if (p.status === 'Active') {
           <p>Termenul rezervării: {{ p.remoteExpiresAt | date: 'HH:mm:ss' }}.</p>
         }

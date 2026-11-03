@@ -1,3 +1,4 @@
+import { DeliveryCharge } from '@shared/delivery/delivery-charge.model';
 import { CustomerDraft } from './customer-draft.model';
 export interface PreparedCart {
   id: string;
@@ -17,6 +18,7 @@ export interface PreparedCart {
   checkedAt: string;
   deadline: string;
   remoteExpiresAt: string | null;
+  delivery?: DeliveryCharge | null;
   currency: string;
   netTotal: number;
   grossTotal: number;

@@ -19,8 +19,9 @@ export class AccountPreparationApi {
   read(accountId: string) {
     return this.api.get<PreparedCart | null>(this.path(accountId));
   }
-  prepare(accountId: string, cart: StoredCart) {
+  prepare(accountId: string, cart: StoredCart, deliveryCode: string | null = null) {
     return this.api.write<PreparedCart>('POST', this.path(accountId), {
+      deliveryCode,
       cartId: cart.id,
       version: cart.version,
       requestId: crypto.randomUUID(),

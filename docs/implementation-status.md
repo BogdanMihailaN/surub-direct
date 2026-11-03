@@ -4,6 +4,8 @@ Actualizat la 2 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separ
 
 ## Implementat
 
+- Transport demonstrativ selectabil în pregătirea coșului anonim și de cont, cost calculat pe server și păstrat în snapshot/comandă, totaluri coerente în administrare și istoric. Tarife ilustrative; fără curier sau expediere. [Detalii](demo-delivery.md).
+
 - Pregătirea internă demonstrativă a comenzilor: în așteptare/în pregătire/pregătită, revenire motivată, istoric administrativ, versiuni concurente și operații idempotente. Fără plată sau expediere. [Reguli](order-processing.md).
 
 - Reorganizarea internă a Catalogului: Pricing și Store sunt integrate în cele șase proiecte Catalog, cu directoare granulare per responsabilitate. Contextele EF, schemele și identificatorii migrațiilor sunt păstrați; configurațiile celor două modele sunt izolate explicit. API-urile și tranzacția importului rămân compatibile.

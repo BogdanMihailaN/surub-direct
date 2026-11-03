@@ -87,7 +87,8 @@
     >Total cu TVA: {{ data().order.grossTotal | number: '1.2-2' }}
     {{ data().order.currency }}</strong
   >
-  <p>Transportul nu este inclus. Nicio plată, livrare sau factură nu a fost inițiată.</p>
+  <sd-delivery-summary [delivery]="data().order.delivery" />
+  <p>Nicio plată, livrare sau factură nu a fost inițiată.</p>
   <details>
     <summary>Detalii procesare</summary>
     <p>Stare rezervare: {{ data().reservation.status }}</p>

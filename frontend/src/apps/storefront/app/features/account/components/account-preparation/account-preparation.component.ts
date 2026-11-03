@@ -1,3 +1,5 @@
+import { DeliveryChoice } from '../../../delivery/components/delivery-choice/delivery-choice.component';
+import { DeliverySummary } from '@shared/delivery/delivery-summary.component';
 import {
   afterNextRender,
   Component,
@@ -16,13 +18,14 @@ import { AccountCartStore } from '../../state/account-cart.store';
 import { AccountPreparationStore } from '../../state/account-preparation.store';
 @Component({
   selector: 'sd-account-preparation',
-  imports: [DatePipe, DecimalPipe],
+  imports: [DatePipe, DecimalPipe, DeliveryChoice, DeliverySummary],
   providers: [AccountPreparationStore],
   templateUrl: './account-preparation.component.html',
   styleUrl: './account-preparation.component.scss',
 })
 export class AccountPreparation {
   readonly session = input.required<AccountSession>();
+  deliveryCode: string | null = null;
   readonly cart = inject(AccountCartStore);
   readonly state = inject(AccountPreparationStore);
   readonly confirming = signal<string | null>(null);

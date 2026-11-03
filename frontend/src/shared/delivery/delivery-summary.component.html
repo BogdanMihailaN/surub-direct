@@ -1,0 +1,5 @@
+@if (delivery(); as d) {
+  <p>Transport demonstrativ inclus: {{ d.label }} — {{ d.grossAmount | number: '1.2-2' }} {{ d.currency }} cu TVA.</p>
+} @else {
+  <p>Transportul nu este inclus.</p>
+}

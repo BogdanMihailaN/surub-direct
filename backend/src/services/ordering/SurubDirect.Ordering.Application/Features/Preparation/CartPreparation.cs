@@ -12,7 +12,12 @@ internal sealed class CartPreparation(IPreparedCarts prepared, QuoteCartHandler 
         if (cart.Id != command.CartId)
             throw new BusinessException("Coșul s-a modificat.", 409);
         if (cart.PreparedId == command.RequestId)
-            return await prepared.Read(cart.OwnerHash, ct, cart.AccountId) ?? throw new BusinessException("Pregătire indisponibilă.", 409);
+        {
+            var existing = await prepared.Read(cart.OwnerHash, ct, cart.AccountId) ?? throw new BusinessException("Pregătire indisponibilă.", 409);
+            if (existing.Delivery?.Code != command.DeliveryCode)
+                throw new BusinessException("Pregătirea existentă folosește altă metodă de livrare.", 409);
+            return existing;
+        }
         if (cart.Version != command.Version || cart.PreparedId is not null)
             throw new BusinessException("Reîncarcă coșul înainte de pregătire.", 409);
         if (cart.Customer is null || cart.Lines.Count == 0)
@@ -23,7 +28,7 @@ internal sealed class CartPreparation(IPreparedCarts prepared, QuoteCartHandler 
         var grouped = current.Lines.GroupBy(x => x.VariantId!.Value).Select(g => new { Id = g.Key, Quantity = g.Sum(x => x.BaseUnits) }).ToArray();
         if (grouped.Any(x => x.Quantity > int.MaxValue))
             throw new BusinessException("Cantitatea cumulată pe SKU depășește limita.");
-        var snapshot = PreparedCart.Create(command.RequestId, cart, current.Lines.Select(x => new PreparedCartLine(x.OfferId, x.VariantId!.Value, x.ProductName, x.Sku, x.OfferLabel, x.Packs, x.UnitsPerPack, x.UnitNet!.Value, x.UnitGross!.Value, x.NetTotal!.Value, x.GrossTotal!.Value)).ToArray(), current.Currency, current.CheckedAt);
+        var snapshot = PreparedCart.Create(command.RequestId, cart, current.Lines.Select(x => new PreparedCartLine(x.OfferId, x.VariantId!.Value, x.ProductName, x.Sku, x.OfferLabel, x.Packs, x.UnitsPerPack, x.UnitNet!.Value, x.UnitGross!.Value, x.NetTotal!.Value, x.GrossTotal!.Value)).ToArray(), current.Currency, current.CheckedAt, command.DeliveryCode);
         var plan = ReservationPlan.Create(command.RequestId, command.RequestId, grouped.Select(x => new ReservationItem(x.Id, (int)x.Quantity)).ToArray(), DateTimeOffset.UtcNow);
         return await prepared.Save(cart.OwnerHash, snapshot, plan, ct, cart.AccountId);
     }

@@ -176,12 +176,12 @@ export class CartStore {
       this.busy.set(false);
     }
   }
-  async prepare() {
+  async prepare(deliveryCode: string | null = null) {
     if (this.locked() || !this.current || !this.customer()) return;
     this.busy.set(true);
     this.error.set('');
     try {
-      await this.preparationApi.prepare(this.current.id, this.current.version, crypto.randomUUID());
+      await this.preparationApi.prepare(this.current.id, this.current.version, crypto.randomUUID(), deliveryCode);
       this.accept(await this.api.read());
       this.notify();
     } catch (error) {

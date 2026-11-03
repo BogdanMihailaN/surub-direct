@@ -19,6 +19,7 @@ app.UseAuthorization();
 app.UseRateLimiter();
 CapabilitiesEndpoint.Map(app);
 QuoteCartEndpoint.Map(app);
+GetDeliveryOptionsEndpoint.Map(app);
 LivenessEndpoint.Map(app);
 ReadinessEndpoint.Map(app);
 GetCartTokenEndpoint.Map(app);

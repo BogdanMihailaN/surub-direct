@@ -32,6 +32,8 @@ internal sealed class PreparedCarts(OrderingDbContext db) : IPreparedCarts
         if (cart.PreparedId == snapshot.Id)
         {
             var existing = await db.PreparedCarts.AsNoTracking().SingleAsync(x => x.Id == snapshot.Id, ct);
+            if (existing.Delivery != snapshot.Delivery)
+                throw new BusinessException("Pregătirea existentă folosește alt transport.", 409);
             var current = await db.ReservationPlans.AsNoTracking().SingleAsync(x => x.Id == snapshot.Id, ct);
             await tx.CommitAsync(ct);
             return PreparedCartProjection.Map(existing, current);

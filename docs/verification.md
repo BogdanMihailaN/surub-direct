@@ -473,3 +473,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright `admin-sales-orders.spec.ts` și `order-cancellation.spec.ts`: 4 scenarii trecute. Sunt verificate salvarea urmată de răspuns pierdut fără replay automat, istoricul, conflictul de versiune, accesul/CSRF direct și prin gateway și restituirea stocului la anulare.
 - Prima rulare browser a întâmpinat timeouturi înaintea verificării procesării; logurile au avut o pauză de aproximativ 15 minute. Reluarea cu Mac-ul menținut activ pe durata testelor a trecut în 24,7 secunde. Nu au fost relaxate aserțiunile sau timeouturile.
 - Captura mobilă a fost inspectată: formularul și auditul se încadrează, fără depășirea viewportului. Capturile rămân în work, excluse din Git.
+
+## Transport demonstrativ în pregătiri și comenzi — 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 361 teste .NET și 10 teste Python trecute după pornirea Docker Desktop. Prima rulare a compilat, dar testele PostgreSQL nu au putut porni cu Docker oprit.
+- Cazurile noi verifică metode/monede/destinații invalide, transport neinclus distinct de gratuit, pregătirea anonimă și pe cont, conflictul la replay cu alt transport, totalurile net/brut, snapshot-ul în comandă, lista administrativă și păstrarea după golire/anulare.
+- Builduri Angular de producție storefront (browser/SSR) și admin trecute.
+- Playwright: 10 scenarii trecute în account-preparation-api, account-preparation-ui, admin-sales-orders și order-cancellation. Selecția transportului este verificată pe cont și în coșul anonim; cazul real arată 42,35 RON produse + 20 RON transport = 62,35 RON în pregătire și administrare.
+- Migrarea DemoDeliverySnapshots este aditivă, cu două coloane JSONB nullable; aplicată local după backup privat Ordering. Verificarea EF nu raportează modificări de model restante.
+- Captura administrativă mobilă a fost inspectată: costul separat și totalul se încadrează în pagină. Nu există expediere externă, plată sau activare comercială.

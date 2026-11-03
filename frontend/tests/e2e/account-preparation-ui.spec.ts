@@ -64,6 +64,7 @@ async function setup(page: Page) {
   await page.route('**/api/auth/me', (r) =>
     r.fulfill({ json: { id: 'account-one', email: 'demo@example.test', isAdmin: false } }),
   );
+  await page.route('**/api/v1/ordering/delivery-options', r => r.fulfill({ json: [{ code: 'demo-express', label: 'Livrare expres demonstrativă', currency: 'RON', netAmount: 24.79, grossAmount: 30 }] }));
   await page.route('**/api/auth/csrf', (r) => r.fulfill({ json: { token: 'csrf' } }));
   await page.route('**/api/v1/ordering/capabilities', (r) =>
     r.fulfill({ json: { preparationEnabled: true } }),
@@ -95,6 +96,9 @@ async function setup(page: Page) {
     if (state.changed)
       return r.fulfill({ status: 409, json: { detail: 'Contul autentificat s-a schimbat.' } });
     if (action === 'preparation') {
+      if (r.request().postDataJSON().deliveryCode === 'demo-express') {
+        state.prep = { ...state.prep, grossTotal: state.prep.grossTotal + 30, netTotal: state.prep.netTotal + 24.79, delivery: { code: 'demo-express', label: 'Livrare expres demonstrativă', currency: 'RON', netAmount: 24.79, grossAmount: 30 } };
+      }
       state.cart = { ...state.cart, preparedId: state.prep.id, version: 2 };
       return r.abort(); // Mutation committed; reply lost.
     }
@@ -126,8 +130,13 @@ test('lost preparation and confirmation responses reconcile without duplicate wr
   const state = await setup(page);
   await page.goto('/cont');
   const section = page.getByRole('region', { name: 'Rezervarea coșului de cont' });
+  await section.getByLabel('Metodă de livrare').selectOption('demo-express');
+  const sending = page.waitForRequest(r => r.method() === 'POST' && r.url().includes('/account/cart/preparation?'));
   await section.getByRole('button', { name: 'Pregătește coșul contului' }).click();
+  expect((await sending).postDataJSON().deliveryCode).toBe('demo-express');
   await expect(section.getByRole('status')).toHaveText('Stoc rezervat');
+  await expect(section).toContainText('Transport demonstrativ inclus: Livrare expres demonstrativă');
+  await expect(section).toContainText('42,10 RON');
   await expect(page.locator('sd-account-cart sd-cart-line input')).toBeDisabled();
   await section.getByRole('button', { name: 'Continuă la confirmare' }).click();
   const confirm = section.getByRole('group', { name: 'Confirmare comandă pe cont' });

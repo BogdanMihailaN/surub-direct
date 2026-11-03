@@ -18,6 +18,7 @@ public sealed class DemoOrder
     public long ProcessingVersion { get; private set; }
     public CustomerDraft Customer { get; private set; } = null!;
     public List<PreparedCartLine> Lines { get; private set; } = [];
+    public DeliveryCharge? Delivery { get; private set; }
     public string Currency { get; private set; } = "";
     public DateTimeOffset CreatedAt { get; private set; }
     public string? CancellationReason { get; private set; }
@@ -40,6 +41,7 @@ public sealed class DemoOrder
             Customer = snapshot.Customer.Normalize(),
             Lines = snapshot.Lines.ToList(),
             Currency = snapshot.Currency,
+            Delivery = snapshot.Delivery,
             CreatedAt = now
         };
     }

@@ -166,3 +166,7 @@ Identity.Infrastructure/Accounts/Mail separă `AccountMailComposer` și `Account
 ## Pregătirea internă a comenzilor
 
 Ordering.Domain/Orders conține regulile din DemoOrder și înregistrarea OrderProcessingChange. Application separă portul IOrderProcessing și handler-ul ChangeOrderProcessing; Infrastructure are repository și configurație EF distincte. API are cerere și endpoint proprii. Angular sales-orders compune componenta order-processing, cu model, acces API și stare separate. Istoricul este inclus doar în detaliul administrativ.
+
+## Transport demonstrativ
+
+Ordering.Domain/Delivery separă costul imuabil DeliveryCharge de politica DemoDeliveryRates. Application are proiecție și handler pentru opțiuni, Contracts are DTO separat, iar API are endpoint GET dedicat. PreparedCart și DemoOrder păstrează snapshot-ul în coloane JSONB nullable. Storefront/features/delivery separă selectorul, data-access și state; shared/delivery conține doar modelul și rezumatul reutilizat efectiv în storefront și admin.

@@ -111,9 +111,13 @@ test('admin filters orders, reads immutable customer details and recovers read f
     await page.goto(shop + '/cos');
     await expect(page.getByRole('heading', { name: 'Total cu TVA: 42,35 RON' })).toBeVisible();
     const prep = page.getByRole('region', { name: 'Rezervare demonstrativă' });
+    await prep.getByLabel('Metodă de livrare').selectOption('demo-standard');
     await page.getByRole('button', { name: 'Pregătește și rezervă stocul' }).click();
     await expect(prep.getByRole('status')).toHaveText('Stoc rezervat', { timeout: 20000 });
     const prepared = await (await page.request.get(shop + cartPath + '/preparation')).json();
+    expect(prepared.delivery.code).toBe('demo-standard');
+    expect(prepared.grossTotal).toBe(62.35);
+    await expect(prep).toContainText('Transport demonstrativ inclus');
     const confirmed = await page.request.post(
       shop + cartPath + '/preparation/' + prepared.id + '/confirm',
       { headers },
@@ -140,7 +144,8 @@ test('admin filters orders, reads immutable customer details and recovers read f
     await expect(detail).toContainText('Firma Demo');
     await expect(detail).toContainText('RO123456');
     await expect(detail).toContainText('Strada Facturare 2');
-    await expect(detail).toContainText('Total cu TVA: 42,35 RON');
+    await expect(detail).toContainText('Total cu TVA: 62,35 RON');
+    await expect(detail).toContainText('Livrare standard demonstrativă');
     const processing = page.getByRole('region', { name: 'Pregătirea comenzii', exact: true });
     await expect(processing).toContainText('În așteptare');
     await processing.getByLabel('Motivul schimbării etapei').fill('Verificare produse pentru ambalare');

@@ -10,10 +10,11 @@ public sealed class PreparedCart
     public int SourceVersion { get; private set; }
     public CustomerDraft Customer { get; private set; } = null!;
     public List<PreparedCartLine> Lines { get; private set; } = [];
+    public DeliveryCharge? Delivery { get; private set; }
     public string Currency { get; private set; } = "";
     public DateTimeOffset CheckedAt { get; private set; }
 
-    public static PreparedCart Create(Guid id, ShoppingCart cart, IReadOnlyList<PreparedCartLine> lines, string currency, DateTimeOffset checkedAt) => new()
+    public static PreparedCart Create(Guid id, ShoppingCart cart, IReadOnlyList<PreparedCartLine> lines, string currency, DateTimeOffset checkedAt, string? deliveryCode = null) => new()
     {
         Id = id,
         CartId = cart.Id,
@@ -21,6 +22,7 @@ public sealed class PreparedCart
         Customer = cart.Customer!.Normalize(),
         Lines = lines.ToList(),
         Currency = currency,
+        Delivery = DemoDeliveryRates.Select(deliveryCode, currency, cart.Customer!.ShippingAddress.Country),
         CheckedAt = checkedAt
     };
 }

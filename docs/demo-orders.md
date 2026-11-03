@@ -45,3 +45,7 @@ Interfața afișează separat confirmarea în curs, rezultatul confirmat și cel
 Retry-ul pentru rezultate incerte este persistent și fără abandon automat. Înainte de operare comercială sunt necesare monitorizare și intervenție controlată. Noindex și checkout dezactivat rămân obligatorii.
 
 Rezultatele consumului și restituirii sunt propagate și prin [RabbitMQ cu Outbox/Inbox](reservation-messaging.md), fără eliminarea reconcilierii HTTP.
+
+## Transport demonstrativ — 3 noiembrie 2026
+
+Pregătirile noi pot include o metodă de transport demonstrativă aleasă explicit. Costul este calculat pe server, salvat în snapshot și copiat în comandă; totalurile includ transportul ales. Lipsa selecției și înregistrările vechi păstrează transportul neinclus. Nu se inițiază o expediere. [Reguli și limite](demo-delivery.md).

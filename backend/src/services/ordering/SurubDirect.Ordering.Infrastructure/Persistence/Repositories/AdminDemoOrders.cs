@@ -17,7 +17,7 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
         var total = await query.CountAsync(ct);
         var items = await query.OrderByDescending(x => x.Sequence).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
         await tx.CommitAsync(ct);
-        return new(items.Select(x => new AdminOrderSummaryDto(x.Id, $"DEMO-{x.Sequence:D8}", x.Status, x.Customer.FullName, x.Currency, x.Lines.Sum(l => l.GrossTotal), x.CreatedAt)).ToArray(), total, page, 25);
+        return new(items.Select(x => new AdminOrderSummaryDto(x.Id, $"DEMO-{x.Sequence:D8}", x.Status, x.Customer.FullName, x.Currency, x.Lines.Sum(l => l.GrossTotal) + (x.Delivery?.GrossAmount ?? 0), x.CreatedAt)).ToArray(), total, page, 25);
     }
 
     public async Task<AdminOrderDetailDto?> Find(Guid id, CancellationToken ct)

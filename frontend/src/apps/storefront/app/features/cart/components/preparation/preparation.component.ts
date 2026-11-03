@@ -1,15 +1,18 @@
+import { DeliveryChoice } from '../../../delivery/components/delivery-choice/delivery-choice.component';
+import { DeliverySummary } from '@shared/delivery/delivery-summary.component';
 import { Component, afterNextRender, DestroyRef, effect, inject } from '@angular/core';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { CartStore } from '../../state/cart.store';
 import { PreparationStore } from '../../state/preparation.store';
 @Component({
   selector: 'sd-preparation',
-  imports: [DecimalPipe, DatePipe],
+  imports: [DecimalPipe, DatePipe, DeliveryChoice, DeliverySummary],
   providers: [PreparationStore],
   templateUrl: './preparation.component.html',
   styleUrl: './preparation.component.scss',
 })
 export class Preparation {
+  deliveryCode: string | null = null;
   readonly cart = inject(CartStore);
   readonly state = inject(PreparationStore);
   readonly labels = {

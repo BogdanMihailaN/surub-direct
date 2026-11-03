@@ -1,0 +1,18 @@
+<section aria-label="Transport demonstrativ">
+  <h3>Transport demonstrativ</h3>
+  <p>Tarife ilustrative pentru România, în RON. Nu se comandă o expediere reală.</p>
+  <label>Metodă de livrare
+    <select [ngModel]="selected() || ''" (ngModelChange)="choose($event)" [disabled]="disabled() || state.busy() || !!state.error()">
+      <option value="">Fără transport inclus — simulare</option>
+      @for (option of state.options(); track option.code) {
+        <option [value]="option.code">{{ option.label }} — {{ option.grossAmount | number: '1.2-2' }} {{ option.currency }} cu TVA</option>
+      }
+    </select>
+  </label>
+  <p>Costul ales se adaugă la total la pregătirea coșului. Verifică totalul înainte de confirmarea comenzii.</p>
+  @if (state.busy()) { <p role="status">Se încarcă metodele de livrare…</p> }
+  @if (state.error()) {
+    <p role="alert">Metodele de livrare sunt indisponibile: {{ state.error() }}</p>
+    <button type="button" (click)="state.load()" [disabled]="state.busy() || disabled()">Reîncearcă metodele de livrare</button>
+  }
+</section>

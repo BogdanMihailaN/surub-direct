@@ -26,7 +26,8 @@
                 {{ line.grossTotal | number: '1.2-2' }} {{ order.currency }}
               </p>
             }
-          </details>
+            <sd-delivery-summary [delivery]="order.delivery" />
+        </details>
         </article>
       } @empty {
         <p>Nu există comenzi demonstrative în acest browser.</p>

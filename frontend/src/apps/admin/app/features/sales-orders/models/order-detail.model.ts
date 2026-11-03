@@ -1,3 +1,4 @@
+import { DeliveryCharge } from '@shared/delivery/delivery-charge.model';
 import { OrderProcessing } from './order-processing.model';
 import { OrderSummary } from './order-summary.model';
 import { OrderCustomer } from './order-customer.model';
@@ -9,6 +10,7 @@ export interface OrderDetail {
   cancellationRequestedAt: string | null;
   cancelledAt: string | null;
   order: Omit<OrderSummary, 'customerName'> & {
+    delivery?: DeliveryCharge | null;
     finalizedAt: string | null;
     netTotal: number;
     customer: OrderCustomer;

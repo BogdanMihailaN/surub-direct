@@ -64,6 +64,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<string>("Delivery")
+                        .HasColumnType("jsonb");
+
                     b.Property<DateTimeOffset?>("FinalizedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -171,6 +174,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
                     b.Property<string>("Customer")
                         .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Delivery")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("Lines")

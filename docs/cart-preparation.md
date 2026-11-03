@@ -29,3 +29,7 @@ Pe durata pregătirii sunt blocate editarea articolelor și datelor clientului. 
 ## Limite
 
 Nu există comandă comercială, plată, transport, factură sau RabbitMQ. [Confirmarea demonstrativă](demo-orders.md), solicitată explicit după rezervare, creează comanda și declanșează consumul. O stare Consumed fără comandă rămâne blocată; pentru comanda confirmată există o acțiune separată de golire a coșului, care păstrează istoricul. Termenul coordonatorului este de 15 minute; expirarea Inventory și reconcilierea sunt descrise separat. Snapshot-urile abandonate și coșurile expirate necesită încă politici de retenție și curățare, inclusiv pentru backupuri. Datele sunt fictive, iar noindex rămâne activ.
+
+## Transport demonstrativ — 3 noiembrie 2026
+
+Pregătirile noi pot include o metodă de transport demonstrativă aleasă explicit. Costul este calculat pe server, salvat în snapshot și copiat în comandă; totalurile includ transportul ales. Lipsa selecției și înregistrările vechi păstrează transportul neinclus. Nu se inițiază o expediere. [Reguli și limite](demo-delivery.md).
