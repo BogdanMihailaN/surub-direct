@@ -129,3 +129,5 @@ RabbitMQ local: `python3 scripts/dev.py broker` după inițializarea bazei. [Flu
 Administrare: pagina **Mesagerie** oferă [monitorizare și reluare individuală cu audit](docs/messaging-administration.md).
 
 Jurnalele operaționale Inventory/Ordering se colectează local când pornești serviciile cu `python3 scripts/dev.py up`. Consultare: `python3 scripts/dev.py operations --service ordering --limit 20`. [Format, filtrare și limite](docs/local-operational-logs.md).
+
+Backup local pentru cele cinci baze: `python3 scripts/dev.py backup`. Verificarea integrității, exercițiul de restaurare izolat și limitele sunt descrise în [Backup și recuperare](docs/backups-and-recovery.md).

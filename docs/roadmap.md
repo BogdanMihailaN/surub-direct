@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Backup local privat pentru toate bazele active, manifest/checksum și exercițiu de restaurare în baze temporare. Recuperarea completă distribuită și operarea în producție rămân restante.
+
 - [x] Rezumatul plății simulate în istoricul clientului, anonim și pe cont, fără audit administrativ.
 
 - [x] Simulator administrativ local de plăți și rambursări integrale, cu audit și reguli de anulare. Utilizatorul a ales explicit simularea locală la 3 noiembrie 2026; integrarea procesatorului rămâne restantă.

@@ -12,6 +12,7 @@ from config import ROOT, SERVICES, environment
 from operations.collector import OperationalCollector
 from operations.reader import read_events
 from operations.streams import forward_output
+from backups.commands import create as create_backup, verify as verify_backup
 from tasks.broker import provision_broker
 from tasks.database import provision, migrate_legacy, verify_isolation
 
@@ -62,14 +63,25 @@ def serve_all():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=[*SERVICES, 'api', 'up', 'db', 'migrate-legacy', 'init', 'seed-demo', 'storefront', 'admin', 'build', 'test', 'e2e', 'check-migrations', 'verify-isolation', 'broker', 'operations'])
+    parser.add_argument('command', choices=[*SERVICES, 'api', 'up', 'db', 'migrate-legacy', 'init', 'seed-demo', 'storefront', 'admin', 'build', 'test', 'e2e', 'check-migrations', 'verify-isolation', 'broker', 'operations', 'backup', 'verify-backup'])
     parser.add_argument('--limit', type=int, default=100, help='Recent operational events (1–1000)')
     parser.add_argument('--service', choices=['inventory', 'ordering'], help='Filter operational events')
+    parser.add_argument('--backup-path', help='Completed local backup directory to verify')
     args = parser.parse_args()
+    if args.command == 'verify-backup' and not args.backup_path:
+        parser.error('verify-backup requires --backup-path')
+    if args.backup_path and args.command != 'verify-backup':
+        parser.error('--backup-path is only valid with verify-backup')
     if args.command == 'operations' and not 1 <= args.limit <= 1000:
         parser.error('--limit must be between 1 and 1000')
     command = 'gateway' if args.command == 'api' else args.command
-    if command == 'operations':
+    if command == 'backup':
+        print('Private backup saved:', create_backup().relative_to(ROOT))
+        print('Per-database snapshots; not a coordinated cross-service recovery point.')
+    elif command == 'verify-backup':
+        verify_backup(args.backup_path)
+        print('Five archive sizes, checksums and PostgreSQL archive indexes verified. No data restored.')
+    elif command == 'operations':
         events = read_events(ROOT / 'work/operations', args.limit, args.service)
         for event in events:
             print(json.dumps(event, ensure_ascii=False))
@@ -114,6 +126,9 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         pass
+    except (ValueError, OSError) as error:
+        print('Local operation failed:', str(error), file=sys.stderr)
+        sys.exit(1)
     except subprocess.CalledProcessError as error:
         # Do not print subprocess input: provisioning input can contain secrets.
         print('Command failed with exit code', error.returncode, file=sys.stderr)

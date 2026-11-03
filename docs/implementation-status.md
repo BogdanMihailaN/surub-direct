@@ -164,3 +164,7 @@ Mesajele private locale includ subiect, text, HTML și link complet generat dint
 ## Rezumatul plății simulate pentru client — 3 noiembrie 2026
 
 Istoricul din coș și din Contul meu afișează starea și suma simulării, cu mențiune explicită că nu au loc operații cu bani reali. API-ul păstrează filtrarea după proprietar și oferă un contract minimal, separat de auditul administrativ. Asocierea la cont păstrează starea și retrage accesul anonim.
+
+## Backup local și verificarea recuperării — 3 noiembrie 2026
+
+Comenzile `backup` și `verify-backup` salvează și verifică cele cinci baze active, cu fișiere private, manifest și publicare numai după succes. Testul de integrare explicit restaurează fiecare arhivă într-o bază temporară, sub rolul serviciului, apoi elimină baza testului. Consistența este per bază; resursele externe, brokerul, backupul offsite și recuperarea distribuită nu sunt acoperite. [Procedură și limite](backups-and-recovery.md).

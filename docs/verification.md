@@ -507,3 +507,10 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright: 8 scenarii distincte verificate în account-order-history, admin-sales-orders și demo-orders. Șapte au trecut în rularea grupată; ultimul a primit 429 din limita de trafic, înaintea validării parametrului page. Reluarea izolată a trecut fără modificarea aserțiunilor sau a limitelor.
 - Browserul real verifică rezumatul rambursat de 62,35 RON în coș, apoi în istoricul contului după asociere, precum și comanda fără simulare. Test separat pentru câmp absent: se afișează indisponibilitate, nu Neinițiată. Captura mobilă a istoricului a fost inspectată, fără depășirea viewportului.
 - Fără migrare de bază, furnizor extern sau activare comercială.
+
+## Backup și restaurare locală izolată — 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 390 teste .NET și 18 teste Python trecute. Cele 8 teste noi pentru backup acoperă permisiuni private, completitudine, corupere/trunchiere, manifest invalid, duplicate/căi nepermise, symlink-uri, erori de export/index și păstrarea copiilor anterioare.
+- `python3 scripts/dev.py backup` a creat o copie reală a celor cinci baze, iar `verify-backup` a validat dimensiunile, SHA-256 și indexurile PostgreSQL. Copiile rămân private în work/backups, excluse din Git.
+- Testul de integrare explicit `test_backup_restore`: trecut în 16,1 secunde. Cele cinci arhive au fost restaurate în tranzacții în baze temporare, cu tabele deținute de rolurile serviciilor. Bazele temporare au fost eliminate; bazele aplicației și legacy nu au fost restaurate sau șterse.
+- Fără modificări frontend sau schemă runtime; buildurile Angular și Playwright nu au fost repetate. Verificarea recuperării complete distribuite rămâne restantă.
