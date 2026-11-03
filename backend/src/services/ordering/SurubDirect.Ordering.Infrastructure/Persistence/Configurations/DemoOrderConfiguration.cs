@@ -10,6 +10,8 @@ internal sealed class DemoOrderConfiguration : IEntityTypeConfiguration<DemoOrde
     public void Configure(EntityTypeBuilder<DemoOrder> b)
     {
         b.ToTable("DemoOrders");
+        b.Property(x => x.ShipmentStatus).HasMaxLength(20).HasDefaultValue("NotStarted");
+        b.Property(x => x.ShipmentReference).HasMaxLength(40);
         b.Property(x => x.ProcessingStatus).HasMaxLength(20).HasDefaultValue("Pending");
         b.Property(x => x.CancellationReason).HasMaxLength(500);
         b.Property(x => x.CancelledBy).HasMaxLength(200);

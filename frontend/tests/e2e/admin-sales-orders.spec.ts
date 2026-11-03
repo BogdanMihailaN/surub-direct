@@ -233,6 +233,7 @@ test('admin filters orders, reads immutable customer details and recovers read f
     const summary = customerPage.getByRole('region', { name: 'Starea plății simulate', exact: true });
     await expect(summary).toContainText('Rambursată integral');
     await expect(summary).toContainText('62,35 RON');
+    await expect(customerPage.getByRole('region', { name: 'Starea expedierii demo' })).toContainText('Livrată');
     await customerPage.close();
     await assertAccountOrderOwnership(playwright, page.request, prepared.id, browser, 'Refunded');
   } finally {
@@ -250,11 +251,13 @@ test('administrative order reads require session through gateway and direct serv
     expect((await request.get(origin + path + '/' + id)).status()).toBe(401);
     expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(401);
     expect((await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status()).toBe(401);
+    expect((await request.post(origin + path + '/' + id + '/shipment', { data: {} })).status()).toBe(401);
   }
   await loginAdmin(request, 'http://127.0.0.1:5099');
   for (const origin of ['http://127.0.0.1:5099', 'http://127.0.0.1:5104']) {
     expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(400);
     expect((await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status()).toBe(400);
+    expect((await request.post(origin + path + '/' + id + '/shipment', { data: {} })).status()).toBe(400);
     const response = await request.get(origin + path + '?status=Confirmed&page=1');
     expect(response.status()).toBe(200);
     expect(response.headers()['cache-control']).toBe('no-store');

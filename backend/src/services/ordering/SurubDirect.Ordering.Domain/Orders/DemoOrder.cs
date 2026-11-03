@@ -16,6 +16,9 @@ public sealed class DemoOrder
     public string Status { get; private set; } = "Confirming";
     public string ProcessingStatus { get; private set; } = "Pending";
     public long ProcessingVersion { get; private set; }
+    public string ShipmentStatus { get; private set; } = "NotStarted";
+    public string? ShipmentReference { get; private set; }
+    public long ShipmentVersion { get; private set; }
     public CustomerDraft Customer { get; private set; } = null!;
     public List<PreparedCartLine> Lines { get; private set; } = [];
     public DeliveryCharge? Delivery { get; private set; }
@@ -67,6 +70,8 @@ public sealed class DemoOrder
             throw new BusinessException("Operația și un motiv de 3–500 caractere sunt obligatorii.");
         if (Status != "Confirmed")
             throw new BusinessException("Doar comenzile confirmate pot fi pregătite.", 409);
+        if (ShipmentStatus != "NotStarted")
+            throw new BusinessException("Pregătirea este închisă după crearea expedierii demonstrative.", 409);
         if (expectedVersion != ProcessingVersion)
             throw new BusinessException("Pregătirea comenzii s-a modificat. Actualizează detaliile.", 409);
         if (ProcessingVersion >= 1000)
@@ -77,6 +82,28 @@ public sealed class DemoOrder
             throw new BusinessException("Tranziția de pregătire nu este permisă.", 409);
         var change = new OrderProcessingChange(Id, operationId, ++ProcessingVersion, ProcessingStatus, target, reason, actor, now);
         ProcessingStatus = target;
+        return change;
+    }
+
+    public ShipmentChange ChangeShipment(Guid operationId, long expectedVersion, string target, string reason, string actor, string? paymentStatus, DateTimeOffset now)
+    {
+        reason = reason.Trim();
+        if (operationId == Guid.Empty || expectedVersion < 0 || reason.Length is < 3 or > 500
+            || string.IsNullOrWhiteSpace(actor) || actor.Length > 200)
+            throw new BusinessException("Operația și un motiv de 3–500 caractere sunt obligatorii.");
+        if (Status != "Confirmed" || ProcessingStatus != "Ready" || Delivery is null)
+            throw new BusinessException("Expedierea necesită o comandă confirmată, pregătită și cu transport selectat.", 409);
+        if (expectedVersion != ShipmentVersion)
+            throw new BusinessException("Expedierea s-a modificat. Actualizează comanda.", 409);
+        if (!((ShipmentStatus == "NotStarted" && target == "Ready")
+            || (ShipmentStatus == "Ready" && target == "Shipped")
+            || (ShipmentStatus == "Shipped" && target == "Delivered")))
+            throw new BusinessException("Tranziția de expediere nu este permisă.", 409);
+        if (target == "Shipped" && paymentStatus != "Paid")
+            throw new BusinessException("Expedierea demonstrativă necesită o plată simulată reușită.", 409);
+        var change = new ShipmentChange(Id, operationId, ++ShipmentVersion, ShipmentStatus, target, reason, actor, now);
+        ShipmentStatus = target;
+        ShipmentReference ??= $"DEMO-{Id:N}".ToUpperInvariant();
         return change;
     }
 
@@ -94,6 +121,8 @@ public sealed class DemoOrder
 
         if (Status != "Confirmed")
             throw new BusinessException("Doar o comandă confirmată poate fi anulată.", 409);
+        if (ShipmentStatus is "Shipped" or "Delivered")
+            throw new BusinessException("Comanda expediată nu poate fi anulată cu restituire automată de stoc. Este necesar un flux de retur.", 409);
         CancellationReason = reason;
         CancelledBy = actor;
         CancellationRequestedAt = now;

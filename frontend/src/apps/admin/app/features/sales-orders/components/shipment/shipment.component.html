@@ -1,0 +1,24 @@
+<section aria-label="Expediere demonstrativă">
+  <h3>Expediere demonstrativă</h3>
+  <p>Simulare locală, fără curier sau AWB real.</p>
+  <p role="status">Stare: <strong>{{ labels[data().status] }}</strong></p>
+  @if (data().reference) { <p class="reference">Referință demo: {{ data().reference }}</p> }
+  @if (editable() && data().status !== 'Delivered') {
+    <label for="shipment-reason">Motivul operației de expediere</label>
+    <textarea id="shipment-reason" [(ngModel)]="reason" maxlength="500" [disabled]="busy()"></textarea>
+    <label><input type="checkbox" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm operația de expediere demonstrativă</label>
+    <button [disabled]="busy() || !confirmed || reason.trim().length < 3 || (data().status === 'Ready' && !paid())" (click)="submit()">{{ actions[data().status] }}</button>
+    @if (data().status === 'Ready' && !paid()) { <p>Marcarea ca expediată necesită o plată simulată reușită.</p> }
+  } @else if (data().status === 'NotStarted') {
+    <p>Crearea necesită o comandă confirmată, pregătită și cu transport selectat.</p>
+  }
+  @if (data().status === 'Shipped' || data().status === 'Delivered') {
+    <p>Anularea cu restituire automată de stoc este blocată. Este necesar un flux separat de retur.</p>
+  }
+  <h4>Istoricul expedierii</h4>
+  @for (entry of data().history; track entry.operationId) {
+    <article><strong>{{ labels[entry.fromStatus] }} → {{ labels[entry.toStatus] }}</strong>
+      <p>{{ entry.reason }}</p><small>{{ entry.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Operator: {{ entry.actor }}</small>
+    </article>
+  } @empty { <p>Nu există operații de expediere.</p> }
+</section>

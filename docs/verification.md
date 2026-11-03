@@ -514,3 +514,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - `python3 scripts/dev.py backup` a creat o copie reală a celor cinci baze, iar `verify-backup` a validat dimensiunile, SHA-256 și indexurile PostgreSQL. Copiile rămân private în work/backups, excluse din Git.
 - Testul de integrare explicit `test_backup_restore`: trecut în 16,1 secunde. Cele cinci arhive au fost restaurate în tranzacții în baze temporare, cu tabele deținute de rolurile serviciilor. Bazele temporare au fost eliminate; bazele aplicației și legacy nu au fost restaurate sau șterse.
 - Fără modificări frontend sau schemă runtime; buildurile Angular și Playwright nu au fost repetate. Verificarea recuperării complete distribuite rămâne restantă.
+
+## Expediere demonstrativă — 3 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 397 teste .NET și 18 teste Python trecute. Prima încercare a întâmpinat Docker oprit; după pornirea dependențelor, suita completă a trecut.
+- Cele 7 cazuri noi verifică pregătirea/plata necesare, tranziții și versiuni invalide, referința stabilă, replay concurent, păstrarea operatorului, concurența rambursare–expediere și blocarea anulării după expediere chiar dacă plata a fost rambursată.
+- Builduri Angular de producție storefront (browser/SSR) și admin trecute.
+- Playwright: 8 scenarii trecute în admin-sales-orders, order-cancellation și account-order-history. Fluxul real verifică creare cu răspuns pierdut fără replay automat, expediere/livrare, audit, versiune depășită, autentificare/CSRF direct și prin gateway, anulare interzisă după rambursarea unei comenzi expediate și rezumatul clientului după asocierea la cont.
+- Migrarea aditivă DemoShipmentHistory aplicată local după backup privat verificat al celor cinci baze. EF nu raportează diferențe de model restante. Încercarea inițială, cu Docker oprit, nu a aplicat migrarea.
+- Captura mobilă a contului a fost inspectată: starea Livrată și referința demo se încadrează în pagină. Fără curier, AWB real sau activare comercială.

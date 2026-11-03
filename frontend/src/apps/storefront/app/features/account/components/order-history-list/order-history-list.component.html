@@ -9,7 +9,8 @@
         <h4>{{ order.number }}</h4>
         <p>{{ labels[order.status] }} · {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
         <p>{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} cu TVA</p>
-        <sd-payment-summary [data]="order.paymentSummary" />
+        <sd-shipment-summary [data]="order.shipment" />
+          <sd-payment-summary [data]="order.paymentSummary" />
           <details>
           <summary>Detalii {{ order.number }}</summary>
           <p>{{ order.customer.fullName }} · {{ order.customer.email }}</p>

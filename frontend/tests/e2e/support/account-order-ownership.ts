@@ -52,6 +52,8 @@ export async function assertAccountOrderOwnership(
     const number = publicOrder.number;
     expect(publicOrder.paymentSummary).toEqual({ status: paymentStatus, amount: publicOrder.grossTotal, currency: 'RON' });
     expect(Object.keys(publicOrder.paymentSummary).sort()).toEqual(['amount', 'currency', 'status']);
+    expect(Object.keys(publicOrder.shipment).sort()).toEqual(['reference', 'status']);
+    expect(publicOrder.shipment.status).toBe(paymentStatus === 'Refunded' ? 'Delivered' : 'NotStarted');
     const paymentLabel = paymentStatus === 'Refunded' ? 'Rambursată integral' : 'Neinițiată';
     await page.goto(origin + '/cont');
     const browserOrders = page.getByRole('region', {
@@ -79,6 +81,7 @@ export async function assertAccountOrderOwnership(
     await expect(accountOrders.getByRole('heading', { name: number, exact: true })).toBeVisible();
     await expect(accountOrders.getByRole('region', { name: 'Starea plății simulate' })).toContainText(paymentLabel);
     await expect(accountOrders).toContainText('Nu au loc încasări sau rambursări de bani reali.');
+    await expect(accountOrders.getByRole('region', { name: 'Starea expedierii demo' })).toContainText(paymentStatus === 'Refunded' ? 'Livrată' : 'Necreată');
     await page.setViewportSize({ width: 390, height: 844 });
     await accountOrders.getByText('Detalii ' + number, { exact: true }).click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

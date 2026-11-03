@@ -23,7 +23,7 @@
   @if (data().status === 'Pending' || data().status === 'Paid') {
     <p>Anularea comenzii este blocată până la încheierea simulării în curs sau rambursarea simulată.</p>
   }
-  @if (data().status === 'Refunded') { <p>Simularea este încheiată. Comanda poate fi anulată separat.</p> }
+  @if (data().status === 'Refunded') { <p>Simularea este încheiată. Anularea separată este posibilă numai înainte de expediere.</p> }
   <h4>Istoricul simulării</h4>
   @for (entry of data().history; track entry.operationId) {
     <article>

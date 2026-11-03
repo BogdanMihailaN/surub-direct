@@ -51,6 +51,8 @@ public static class OrderingModule
         services.AddScoped<SimulatePaymentHandler>();
         services.AddScoped<IPaymentSimulations, PaymentSimulations>();
         services.AddScoped<IOrderProcessing, OrderProcessing>();
+        services.AddScoped<IShipments, Shipments>();
+        services.AddScoped<ChangeShipmentHandler>();
         services.AddScoped<ReservationInbox>();
         services.AddScoped<FailedMessageStore>();
         services.TryAddSingleton<TimeProvider>(TimeProvider.System);

@@ -52,6 +52,7 @@ ListAdminOrdersEndpoint.Map(app);
 GetAdminOrderEndpoint.Map(app);
 CancelDemoOrderEndpoint.Map(app);
 ChangeOrderProcessingEndpoint.Map(app);
+ChangeShipmentEndpoint.Map(app);
 SimulatePaymentEndpoint.Map(app);
 GetBrokerStatusEndpoint.Map(app);
 GetMessagingStatusEndpoint.Map(app);

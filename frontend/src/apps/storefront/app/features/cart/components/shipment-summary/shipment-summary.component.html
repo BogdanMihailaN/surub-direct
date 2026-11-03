@@ -1,0 +1,7 @@
+<section aria-label="Starea expedierii demo">
+  @if (data(); as shipment) {
+    <p>Expediere demo: <strong>{{ labels[shipment.status] ?? 'Stare necunoscută' }}</strong></p>
+    @if (shipment.reference) { <p>Referință demo: {{ shipment.reference }}</p> }
+  } @else { <p>Starea expedierii nu este disponibilă. Actualizează comenzile.</p> }
+  <small>Simulare locală, fără curier sau AWB real.</small>
+</section>

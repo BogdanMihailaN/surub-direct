@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Expediere locală demonstrativă cu audit, rezumat pentru client și blocarea anulării după expediere; fără curier sau AWB real.
+
 - [x] Backup local privat pentru toate bazele active, manifest/checksum și exercițiu de restaurare în baze temporare. Recuperarea completă distribuită și operarea în producție rămân restante.
 
 - [x] Rezumatul plății simulate în istoricul clientului, anonim și pe cont, fără audit administrativ.

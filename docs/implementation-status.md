@@ -168,3 +168,7 @@ Istoricul din coș și din Contul meu afișează starea și suma simulării, cu 
 ## Backup local și verificarea recuperării — 3 noiembrie 2026
 
 Comenzile `backup` și `verify-backup` salvează și verifică cele cinci baze active, cu fișiere private, manifest și publicare numai după succes. Testul de integrare explicit restaurează fiecare arhivă într-o bază temporară, sub rolul serviciului, apoi elimină baza testului. Consistența este per bază; resursele externe, brokerul, backupul offsite și recuperarea distribuită nu sunt acoperite. [Procedură și limite](backups-and-recovery.md).
+
+## Expediere demonstrativă — 3 noiembrie 2026
+
+Administrarea permite crearea expedierii pentru o comandă pregătită cu transport, apoi marcarea expedierii (cu plată simulată Paid) și livrării. Audit persistent, replay idempotent și protecție la concurență cu rambursarea/anularea. Clientul vede numai starea și referința demo. Anularea după expediere nu restituie stoc; returul rămâne separat. [Protocol și limite](demo-shipping.md).

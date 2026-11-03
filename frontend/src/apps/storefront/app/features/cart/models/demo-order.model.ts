@@ -9,6 +9,7 @@ export interface DemoOrder {
   finalizedAt: string | null;
   delivery?: DeliveryCharge | null;
   paymentSummary?: PaymentSummary;
+  shipment?: { status: string; reference: string | null };
   currency: string;
   netTotal: number;
   grossTotal: number;

@@ -1,3 +1,4 @@
+import { ShipmentSummary } from '../../../cart/components/shipment-summary/shipment-summary.component';
 import { PaymentSummaryComponent } from '../../../cart/components/payment-summary/payment-summary.component';
 import { DeliverySummary } from '@shared/delivery/delivery-summary.component';
 import { Component, input, output } from '@angular/core';
@@ -6,7 +7,7 @@ import { DemoOrder } from '../../../cart/models/demo-order.model';
 import { DemoOrderPage } from '../../../cart/models/demo-order-page.model';
 @Component({
   selector: 'sd-order-history-list',
-  imports: [PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
+  imports: [ShipmentSummary,PaymentSummaryComponent, DeliverySummary, DatePipe, DecimalPipe],
   templateUrl: './order-history-list.component.html',
   styleUrl: './order-history-list.component.scss',
 })

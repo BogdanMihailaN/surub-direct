@@ -1,3 +1,4 @@
+import { verifyShipment } from './shipment';
 import { expect, Page } from '@playwright/test';
 import { adminWrite } from './admin-session';
 
@@ -33,6 +34,7 @@ export async function verifyPaymentSimulation(page: Page, orderId: string) {
   await act('Simulează plata reușită');
   await expect(panel.getByRole('status')).toContainText('Reușită');
   expect((await adminWrite(page.request, 'http://localhost:4201', '/api/v1/admin/sales-orders/' + orderId + '/cancel', { reason: 'Necesită rambursare' })).status()).toBe(409);
+  await verifyShipment(page, orderId);
   await act('Simulează rambursarea integrală');
   await expect(panel.getByRole('status')).toContainText('Rambursată integral');
   await expect(panel.locator('article')).toHaveCount(5);
@@ -43,4 +45,7 @@ export async function verifyPaymentSimulation(page: Page, orderId: string) {
   expect(detail.paymentSimulation.history[0].attemptId).not.toBe(detail.paymentSimulation.history[2].attemptId);
   expect(detail.order.status).toBe('Confirmed');
   expect(detail.reservation.status).toBe('Consumed');
+  expect(detail.shipment.status).toBe('Delivered');
+  await expect(cancellation.getByRole('button')).toBeDisabled();
+  expect((await adminWrite(page.request, 'http://localhost:4201', '/api/v1/admin/sales-orders/' + orderId + '/cancel', { reason: 'Expediere rambursată' })).status()).toBe(409);
 }

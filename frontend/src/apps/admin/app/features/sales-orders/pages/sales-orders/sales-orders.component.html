@@ -17,6 +17,7 @@
   }
   @if (state.processingError()) { <p role="alert">{{ state.processingError() }}</p> }
   @if (state.paymentError()) { <p role="alert">{{ state.paymentError() }}</p> }
+  @if (state.shippingError()) { <p role="alert">{{ state.shippingError() }}</p> }
   <div class="layout">
     <aside>
       @if (state.data(); as data) {
@@ -43,13 +44,16 @@
       }
       @if (state.detail(); as detail) {
         <sd-sales-order-detail [data]="detail" />
-        <sd-order-processing [data]="detail.processing" [editable]="detail.order.status === 'Confirmed'"
-          [busy]="state.processing() || state.cancelling() || state.simulatingPayment()" (changed)="state.changeProcessing($event)" />
+        <sd-order-processing [data]="detail.processing" [editable]="detail.order.status === 'Confirmed' && detail.shipment.status === 'NotStarted'"
+          [busy]="state.processing() || state.cancelling() || state.simulatingPayment() || state.shipping()" (changed)="state.changeProcessing($event)" />
         <sd-payment-simulation [data]="detail.paymentSimulation" [editable]="detail.order.status === 'Confirmed'"
-          [busy]="state.processing() || state.cancelling() || state.simulatingPayment()" (changed)="state.simulatePayment($event)" />
+          [busy]="state.processing() || state.cancelling() || state.simulatingPayment() || state.shipping()" (changed)="state.simulatePayment($event)" />
+        <sd-shipment [data]="detail.shipment" [editable]="detail.order.status === 'Confirmed' && detail.processing.status === 'Ready' && !!detail.order.delivery"
+          [paid]="detail.paymentSimulation.status === 'Paid'" [busy]="state.processing() || state.cancelling() || state.simulatingPayment() || state.shipping()"
+          (changed)="state.changeShipment($event)" />
         @if (detail.order.status === 'Confirmed') {
           @for (id of [detail.order.id]; track id) {
-            <sd-order-cancellation [busy]="state.cancelling() || state.processing() || state.simulatingPayment() || state.paymentBlocksCancellation()" (cancelled)="state.cancel($event)" />
+            <sd-order-cancellation [busy]="state.cancelling() || state.processing() || state.simulatingPayment() || state.shipping() || state.blocksCancellation()" (cancelled)="state.cancel($event)" />
           }
         }
       } @else if (!state.selected()) {

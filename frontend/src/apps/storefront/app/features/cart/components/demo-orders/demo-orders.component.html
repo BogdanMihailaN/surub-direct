@@ -17,6 +17,7 @@
             {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }} ·
             {{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} cu TVA
           </p>
+          <sd-shipment-summary [data]="order.shipment" />
           <sd-payment-summary [data]="order.paymentSummary" />
           <details>
             <summary>Produse și date salvate</summary>

@@ -180,3 +180,5 @@ Ordering.Domain/Payments separă PaymentSimulation de evenimentul imuabil Paymen
 Rezumatul public al simulării folosește `Contracts/Payments/PaymentSummaryDto`, separat de DTO-ul administrativ cu audit. În storefront, `features/cart/components/payment-summary` este reutilizat de istoricul coșului și de istoricul din cont; modelul se află în `features/cart/models`.
 
 Instrumentele de backup sunt în `scripts/backups`: validarea manifestului separată de comenzile PostgreSQL. Testele de corupere/întrerupere sunt în `backend/tests/SurubDirect.Tooling.Tests/Unit`, iar restaurarea explicită în baze temporare este în `Integration`. `scripts/dev.py` expune numai compoziția comenzilor.
+
+Expedierea este organizată în directoarele Shipping din Domain/Contracts/Application/Api, cu repository Shipments și configurație EF separată pentru ShipmentChanges. Admin are componenta shipment, model și acces API/state; storefront reutilizează shipment-summary între istoricul coșului și al contului.

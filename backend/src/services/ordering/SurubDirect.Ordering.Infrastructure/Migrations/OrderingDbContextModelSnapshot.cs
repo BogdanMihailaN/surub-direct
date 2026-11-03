@@ -95,6 +95,20 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Sequence"));
 
+                    b.Property<string>("ShipmentReference")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("ShipmentStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("NotStarted");
+
+                    b.Property<long>("ShipmentVersion")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -323,6 +337,48 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.ToTable("ReservationPlans", "ordering");
                 });
 
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.ShipmentChange", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FromStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrderId", "OperationId");
+
+                    b.HasIndex("OrderId", "Version")
+                        .IsUnique();
+
+                    b.ToTable("ShipmentChanges", "ordering");
+                });
+
             modelBuilder.Entity("SurubDirect.Ordering.Domain.ShoppingCart", b =>
                 {
                     b.Property<Guid>("Id")
@@ -494,6 +550,15 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulationEvent", b =>
                 {
                     b.HasOne("SurubDirect.Ordering.Domain.PaymentSimulation", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.ShipmentChange", b =>
+                {
+                    b.HasOne("SurubDirect.Ordering.Domain.DemoOrder", null)
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)

@@ -13,7 +13,7 @@ Stările sunt separate de confirmarea stocului și de pregătirea internă a com
 
 Fiecare acțiune cere un motiv de 3–500 caractere și confirmarea comenzii/sumei în interfață. Suma și moneda sunt copiate exclusiv din comanda salvată, incluzând transportul; request-ul nu acceptă sume sau operatori furnizați de client. Simulatorul nu modifică produsele, prețurile, stocul sau starea pregătirii.
 
-Anularea comenzii este blocată în stările În curs și Reușită. Se poate anula după un rezultat eșuat sau după rambursarea integrală simulată; restituirea stocului rămâne operația distinctă existentă. Inițierea simultană cu anularea are un singur câștigător. După anulare nu mai sunt permise operații noi de plată.
+Anularea comenzii este blocată în stările În curs și Reușită. Înainte de expediere, se poate anula după un rezultat eșuat sau după rambursarea integrală simulată; restituirea stocului rămâne operația distinctă existentă. Inițierea simultană cu anularea are un singur câștigător. După anulare nu mai sunt permise operații noi de plată.
 
 ## API, persistență și audit
 
@@ -34,3 +34,5 @@ Acesta este un instrument administrativ demonstrativ, nu un adaptor de procesato
 Istoricul browserului și istoricul contului includ `paymentSummary` cu numai `status`, `amount` și `currency`. Nu expun istoricul operațiilor, motive, operatori sau identificatorii încercărilor. Suma include transportul din comanda salvată. Lipsa unui registru de simulare este reprezentată explicit ca `NotStarted`; lipsa câmpului în interfață este afișată ca indisponibilitate, nu ca o stare presupusă.
 
 Citirea paginii încarcă numai simulările comenzilor deja filtrate după proprietar, într-o singură interogare suplimentară și în aceeași tranzacție RepeatableRead. Asocierea la cont păstrează rezumatul și elimină accesul din istoricul anonim. Confirmarea repetată și răspunsul anulării returnează starea persistentă, fără a o reseta la Neinițiată. Rezumatul nu oferă operații de plată clientului; numai administratorul operează simulatorul local.
+
+După expediere sau livrare, anularea cu restituire de stoc este blocată chiar după rambursare. Vezi [expedierea demonstrativă](demo-shipping.md).

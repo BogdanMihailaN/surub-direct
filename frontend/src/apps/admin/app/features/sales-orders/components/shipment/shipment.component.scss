@@ -1,0 +1,7 @@
+:host { display: block; }
+section { border: 1px solid #cad3c7; border-radius: 8px; padding: 1rem; margin-block: 1rem; }
+label, textarea { display: block; margin-block: .75rem; }
+textarea { box-sizing: border-box; width: 100%; min-height: 5rem; }
+article { border-top: 1px solid #cad3c7; padding-block: 1rem; }
+.reference, small { overflow-wrap: anywhere; }
+button { padding: .6rem; }
