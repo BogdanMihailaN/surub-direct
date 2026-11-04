@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Revenire la prima pagină când actualizarea golește o pagină ulterioară a listei administrative, cu filtre păstrate și erori de recitire explicite.
+
 - [x] Filtrarea administrativă după starea returului, combinată cu filtrele comenzii, cu paginare și actualizarea listei după decizie/recepție.
 
 - [x] Solicitarea returului integral din contul clientului, cu confirmarea contului/comenzii, CSRF, verificarea proprietarului și recuperare după răspuns pierdut.

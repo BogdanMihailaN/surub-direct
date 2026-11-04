@@ -184,3 +184,7 @@ Clientul poate cere un retur integral pentru o comandă proprie livrată, cu mot
 ## Filtrarea retururilor în administrare — 4 noiembrie 2026
 
 Lista comenzilor afișează starea returului și permite găsirea solicitărilor, aprobărilor și restituirilor în curs prin filtrare server-side înainte de paginare. După o operație de retur, lista este recitită cu filtrul curent. Interfața reutilizează etichetele stărilor în filtru, listă și detaliul returului. Fără migrare nouă.
+
+## Recuperarea paginării administrative — 4 noiembrie 2026
+
+Lista comenzilor revine la prima pagină când o actualizare găsește o pagină ulterioară goală, păstrând filtrele. Recitirea este limitată la o cerere suplimentară și păstrează protecția existentă față de răspunsurile depășite. Erorile retrag lista veche și permit reîncercare manuală. Schimbarea privește numai starea Angular; fără modificări de contract, migrare sau activare comercială.

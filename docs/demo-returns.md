@@ -43,3 +43,7 @@ Interfața recitește listele după succes/conflict/răspuns pierdut, fără ret
 Pagina Comenzi permite filtrarea după toate stările returului: Nesolicitat, Solicitat, Aprobat, Respins, Restituire stoc în curs și Stoc restituit. Filtrul se combină cu starea și numărul comenzii, se aplică pe server înainte de count/paginare și păstrează ordinea descrescătoare a numerelor comenzilor. Un filtru nou revine la pagina 1; paginarea și reîncărcarea păstrează filtrul ales.
 
 Endpoint-ul administrativ de listare acceptă parametrul opțional `returnStatus`. Absența sau valoarea goală păstrează comportamentul anterior; valorile necunoscute răspund 400. Fiecare rând include `returnStatus`, fără a încărca auditul returului în listă. După o operație administrativă de retur se recitesc detaliul și lista: aprobarea elimină comanda din filtrul Solicitat, dar păstrează detaliul selectat pentru verificare. Pentru schimbările făcute de alte sesiuni sau de reconciliere se folosește Actualizează lista.
+
+### Recuperarea paginii golite
+
+Dacă actualizarea listei găsește o pagină ulterioară fără comenzi (de exemplu, ultima solicitare de pe pagina 2 a fost aprobată), administrarea recitește o singură dată pagina 1 cu aceleași filtre. Detaliul selectat rămâne separat. Regula se aplică și actualizării manuale după operații efectuate în altă sesiune. Dacă recitirea eșuează, lista veche este retrasă și apare eroarea cu posibilitatea actualizării manuale; indisponibilitatea nu este afișată ca rezultat gol.

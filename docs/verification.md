@@ -548,3 +548,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright account-return-request si admin-sales-orders: 3 scenarii trecute in 43,4 secunde. Testul verifica selectarea solicitarii unui client, aprobarea prin UI, eliminarea din lista Requested, regasirea in Approved, detaliul pastrat si validarea filtrului direct/prin gateway.
 - Prima rulare browser s-a blocat la selectarea filtrului dupa eticheta; asocierea explicita prin aria-labelledby a eliminat ambiguitatea, fara cresterea timeouturilor sau relaxarea asertiunilor.
 - Captura mobila a listei filtrate a fost inspectata: campurile, starea returului si detaliile se incadreaza in viewport. Fara migrare sau activare comerciala.
+
+## Recuperarea paginării administrative — 4 noiembrie 2026
+
+- Buildurile Angular de producție pentru storefront și admin au trecut. Prima încercare în sandbox a eșuat la detectarea CPU în runtime-ul Sass/Dart; reluarea în afara sandboxului a trecut.
+- Playwright: 6 scenarii trecute în 55,4 secunde, în admin-order-pagination, account-return-request și admin-sales-orders.
+- Cele trei scenarii noi folosesc răspunsuri de listă controlate și autentificare reală: pagina ulterioară golită cu alte rezultate rămase, coada complet golită și eroare 503 la recitire urmată de recuperare manuală. Verifică pagina 1, păstrarea filtrului, numărul limitat de cereri și retragerea datelor vechi la eroare.
+- Regresia existentă verifică solicitarea/aprobarea reală a returului, comenzile administrative, autorizarea și accesul direct/prin gateway.
+- `git diff --check` fără erori. Backendul și schema nu au fost modificate; suita .NET nu a fost reluată pentru această etapă exclusiv frontend.

@@ -39,7 +39,13 @@ export class SalesOrdersStore {
     this.busy.set(true);
     this.error.set('');
     try {
-      const result = await this.api.list(this.status, this.number, page, this.returnStatus);
+      let result = await this.api.list(this.status, this.number, page, this.returnStatus);
+      if (sequence !== this.listSequence) return;
+      // A decision in this or another session can remove the last row of a later page.
+      // Re-read once from page one, keeping the filters and the same request sequence.
+      if (result.page > 1 && result.items.length === 0) {
+        result = await this.api.list(this.status, this.number, 1, this.returnStatus);
+      }
       if (sequence === this.listSequence) this.data.set(result);
     } catch (e) {
       if (sequence === this.listSequence) {
