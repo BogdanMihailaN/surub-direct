@@ -1,3 +1,4 @@
+import { returnLabels } from '../../models/return-labels';
 import { Component, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +9,7 @@ export class OrderReturnComponent {
   readonly editable = input(false);
   readonly busy = input(false);
   readonly changed = output<{ target: string; reason: string; restockConfirmed: boolean }>();
-  readonly labels: Record<string, string> = { NotRequested: 'Nesolicitat', Requested: 'Solicitat', Approved: 'Aprobat', Rejected: 'Respins', Restoring: 'Restituire stoc în curs', Restored: 'Stoc restituit' };
+  readonly labels = returnLabels;
   reason = '';
   confirmed = false;
   restockConfirmed = false;

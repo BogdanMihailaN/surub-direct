@@ -1,0 +1,1 @@
+export const returnLabels: Record<string, string> = { NotRequested: 'Nesolicitat', Requested: 'Solicitat', Approved: 'Aprobat', Rejected: 'Respins', Restoring: 'Restituire stoc în curs', Restored: 'Stoc restituit' };

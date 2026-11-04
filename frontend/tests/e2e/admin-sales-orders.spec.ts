@@ -268,6 +268,7 @@ test('administrative order reads require session through gateway and direct serv
     expect(response.headers()['cache-control']).toBe('no-store');
     expect((await request.get(origin + path + '/' + id)).status()).toBe(404);
     expect((await request.get(origin + path + '?status=unknown')).status()).toBe(400);
+    expect((await request.get(origin + path + '?returnStatus=unknown')).status()).toBe(400);
     expect((await request.get(origin + path + '?page=0')).status()).toBe(400);
     expect((await request.get(origin + path + '?number=invalid')).status()).toBe(400);
   }

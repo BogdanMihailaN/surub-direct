@@ -180,3 +180,7 @@ Ordering permite înregistrarea și aprobarea/respingerea unui retur integral pe
 ## Solicitarea returului din cont — 4 noiembrie 2026
 
 Clientul poate cere un retur integral pentru o comandă proprie livrată, cu motiv și confirmare explicită. API-ul fixează tranziția Requested, verifică proprietarul înainte de replay și detectează schimbarea contului. Aprobarea/recepția și rambursarea rămân separate. Formularul și state/API sunt organizate în feature-ul account, fără migrare nouă. [Protocol](demo-returns.md).
+
+## Filtrarea retururilor în administrare — 4 noiembrie 2026
+
+Lista comenzilor afișează starea returului și permite găsirea solicitărilor, aprobărilor și restituirilor în curs prin filtrare server-side înainte de paginare. După o operație de retur, lista este recitită cu filtrul curent. Interfața reutilizează etichetele stărilor în filtru, listă și detaliul returului. Fără migrare nouă.

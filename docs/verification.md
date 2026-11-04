@@ -540,3 +540,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright: 8 scenarii distincte trecute in account-return-request, account-order-history si admin-sales-orders. Sapte au trecut in rularea grupata; noul scenariu a trecut separat dupa corectarea testului, care solicita initial tokenul CSRF de la Ordering in loc de Identity prin gateway. O reluare intermediara a fost oprita de mediul local inchis; dupa repornirea serviciilor, scenariul complet a trecut in 19,9 secunde.
 - Sunt verificate cererea reala a clientului, confirmarea contului, lipsa CSRF si schimbarea contului, refuzul altui proprietar direct/prin gateway, raspuns pierdut fara retransmitere, un singur eveniment de audit, aprobarea ulterioara si pastrarea stocului/platii. Scenariul de conflict elimina formularul si actiunile vechi.
 - Captura mobila a contului a fost inspectata: returul Aprobat, plata si expedierea se afiseaza separat, fara depasirea viewportului. Fara migrare noua, expediere de e-mail sau activare comerciala.
+
+## Filtrarea administrativa a retururilor - 4 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 412 teste .NET si 18 teste Python trecute. Cele patru cazuri noi verifica toate starile, filtrarea inainte de count/paginare, ordinea determinista, combinarea cu numarul/starea comenzii, pagina goala si valorile nepermise.
+- Builduri Angular de productie storefront (browser/SSR) si admin trecute, inclusiv dupa corectarea etichetei accesibile a noului select.
+- Playwright account-return-request si admin-sales-orders: 3 scenarii trecute in 43,4 secunde. Testul verifica selectarea solicitarii unui client, aprobarea prin UI, eliminarea din lista Requested, regasirea in Approved, detaliul pastrat si validarea filtrului direct/prin gateway.
+- Prima rulare browser s-a blocat la selectarea filtrului dupa eticheta; asocierea explicita prin aria-labelledby a eliminat ambiguitatea, fara cresterea timeouturilor sau relaxarea asertiunilor.
+- Captura mobila a listei filtrate a fost inspectata: campurile, starea returului si detaliile se incadreaza in viewport. Fara migrare sau activare comerciala.

@@ -1,4 +1,4 @@
-<form (ngSubmit)="applied.emit({ status, number })">
+<form (ngSubmit)="applied.emit({ status, number, returnStatus })">
   <label
     >Număr comandă<input
       name="number"
@@ -17,5 +17,11 @@
       <option value="Failed">Confirmare nereușită</option>
     </select></label
   >
+  <label><span id="return-status-label">Stare retur</span>
+    <select name="returnStatus" [(ngModel)]="returnStatus" aria-labelledby="return-status-label">
+      <option value="">Toate stările returului</option>
+      @for (option of returnOptions; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+    </select>
+  </label>
   <button type="submit" [disabled]="busy()">Aplică filtrele</button>
 </form>

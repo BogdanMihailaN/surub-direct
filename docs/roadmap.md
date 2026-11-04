@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Filtrarea administrativă după starea returului, combinată cu filtrele comenzii, cu paginare și actualizarea listei după decizie/recepție.
+
 - [x] Solicitarea returului integral din contul clientului, cu confirmarea contului/comenzii, CSRF, verificarea proprietarului și recuperare după răspuns pierdut.
 
 - [x] Retur integral demonstrativ după livrare, aprobare/respingere, recepție explicită și restituire idempotentă prin Inventory; retururile parțiale/comerciale rămân restante.

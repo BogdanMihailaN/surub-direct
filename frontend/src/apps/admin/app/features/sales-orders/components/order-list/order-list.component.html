@@ -4,6 +4,7 @@
     <button [attr.aria-pressed]="selected() === order.id" (click)="chosen.emit(order.id)">
       <strong>{{ order.number }}</strong
       ><span>{{ labels[order.status] }}</span
+      ><span>Retur: {{ returnLabels[order.returnStatus] ?? 'Stare indisponibilă' }}</span
       ><span>{{ order.customerName }}</span
       ><span
         >{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} ·

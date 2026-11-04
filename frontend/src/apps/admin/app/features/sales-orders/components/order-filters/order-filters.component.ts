@@ -1,3 +1,4 @@
+import { returnLabels } from '../../models/return-labels';
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -8,7 +9,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class OrderFilters {
   readonly busy = input(false);
-  readonly applied = output<{ status: string; number: string }>();
+  readonly applied = output<{ status: string; number: string; returnStatus: string }>();
+  readonly returnOptions = Object.entries(returnLabels);
+  returnStatus = '';
   status = '';
   number = '';
 }

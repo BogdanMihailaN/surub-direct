@@ -1,3 +1,4 @@
+import { returnLabels } from '../../models/return-labels';
 import { Component, input, output } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { OrderPage } from '../../models/order-page.model';
@@ -14,5 +15,6 @@ export class OrderList {
   readonly busy = input(false);
   readonly chosen = output<string>();
   readonly paged = output<number>();
+  readonly returnLabels = returnLabels;
   readonly labels = orderLabels;
 }

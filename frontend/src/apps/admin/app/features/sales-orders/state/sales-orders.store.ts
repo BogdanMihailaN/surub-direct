@@ -23,11 +23,13 @@ export class SalesOrdersStore {
   readonly error = signal('');
   readonly detailError = signal('');
   readonly selected = signal<string | null>(null);
+  private returnStatus = '';
   private status = '';
   private number = '';
   private listSequence = 0;
   private detailSequence = 0;
-  filter(status: string, number: string) {
+  filter(status: string, number: string, returnStatus = '') {
+    this.returnStatus = returnStatus;
     this.status = status;
     this.number = number;
     return this.load(1);
@@ -37,7 +39,7 @@ export class SalesOrdersStore {
     this.busy.set(true);
     this.error.set('');
     try {
-      const result = await this.api.list(this.status, this.number, page);
+      const result = await this.api.list(this.status, this.number, page, this.returnStatus);
       if (sequence === this.listSequence) this.data.set(result);
     } catch (e) {
       if (sequence === this.listSequence) {
@@ -76,6 +78,7 @@ export class SalesOrdersStore {
       if (sequence === this.detailSequence) this.returnError.set(errorMessage(e) + ' Starea este recitită; operația nu este retrimisă automat.');
     } finally {
       if (this.selected() === id) await this.select(id);
+      await this.load();
       this.returning.set(false);
     }
   }

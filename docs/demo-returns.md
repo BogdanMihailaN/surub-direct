@@ -37,3 +37,9 @@ Din Contul meu, numai comenzile Confirmed, Delivered și cu retur NotRequested a
 Portul de client permite exclusiv tranziția inițială Requested, fără parametri pentru aprobare, recepție, cantități sau rambursare. Actorul auditului este generat pe server ca customer:<accountId>. Replay-ul identic confirmă operația deja salvată și după aprobarea administrativă, fără a redeschide returul sau a modifica stocul/plata. Alt conținut sau o cerere nouă după prima tranziție răspunde 409.
 
 Interfața recitește listele după succes/conflict/răspuns pierdut, fără retransmitere automată. Datele și formularul sunt recreate la schimbarea contului afișat; contul confirmat este trimis explicit pentru a detecta și schimbarea sesiunii între afișare și POST. Eșecul citirii retrage acțiunile vechi. Cererea este demonstrativă și nu definește politica comercială ori legală de retur.
+
+## Lista administrativă de retururi
+
+Pagina Comenzi permite filtrarea după toate stările returului: Nesolicitat, Solicitat, Aprobat, Respins, Restituire stoc în curs și Stoc restituit. Filtrul se combină cu starea și numărul comenzii, se aplică pe server înainte de count/paginare și păstrează ordinea descrescătoare a numerelor comenzilor. Un filtru nou revine la pagina 1; paginarea și reîncărcarea păstrează filtrul ales.
+
+Endpoint-ul administrativ de listare acceptă parametrul opțional `returnStatus`. Absența sau valoarea goală păstrează comportamentul anterior; valorile necunoscute răspund 400. Fiecare rând include `returnStatus`, fără a încărca auditul returului în listă. După o operație administrativă de retur se recitesc detaliul și lista: aprobarea elimină comanda din filtrul Solicitat, dar păstrează detaliul selectat pentru verificare. Pentru schimbările făcute de alte sesiuni sau de reconciliere se folosește Actualizează lista.

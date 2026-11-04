@@ -5,11 +5,14 @@ using SurubDirect.Ordering.Contracts;
 namespace SurubDirect.Ordering.Application;
 public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
 {
-    public Task<AdminOrderPageDto> Handle(string? status, string? number, int page, CancellationToken ct)
+    public Task<AdminOrderPageDto> Handle(string? status, string? number, int page, CancellationToken ct, string? returnStatus = null)
     {
         status = string.IsNullOrWhiteSpace(status) ? null : status.Trim();
         if (page is < 1 or > 100000 || status is not (null or "Confirming" or "Confirmed" or "Failed" or "Cancelling" or "Cancelled"))
             throw new BusinessException("Filtrul sau pagina nu sunt valide.");
+        returnStatus = string.IsNullOrWhiteSpace(returnStatus) ? null : returnStatus.Trim();
+        if (returnStatus is not (null or "NotRequested" or "Requested" or "Approved" or "Rejected" or "Restoring" or "Restored"))
+            throw new BusinessException("Starea returului nu este validă.");
         long? sequence = null;
         if (!string.IsNullOrWhiteSpace(number))
         {
@@ -21,6 +24,6 @@ public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
             sequence = parsed;
         }
 
-        return orders.Read(status, sequence, page, ct);
+        return orders.Read(status, sequence, page, ct, returnStatus);
     }
 }

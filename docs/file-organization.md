@@ -186,3 +186,5 @@ Expedierea este organizată în directoarele Shipping din Domain/Contracts/Appli
 Retururile folosesc directoare Returns în Domain/Application/Contracts/Api, repository OrderReturns și configurația EF ReturnChangeConfiguration. Admin compune order-return, cu API/state separate; storefront reutilizează return-summary în istoricul anonim și de cont. Inventory păstrează restituirea prin protocolul existent, fără referințe între proiectele serviciilor.
 
 Solicitarea returului de către client folosește use case-ul RequestAccountReturn și portul IAccountReturnRequests, distincte de mutațiile administratorului. Componenta account/return-request conține doar formularul; AccountOrdersStore și AccountOrdersApi gestionează selecția, trimiterea și recitirea.
+
+Etichetele administrative ale retururilor sunt centralizate în sales-orders/models/return-labels.ts, reutilizate de order-filters, order-list și order-return. Filtrarea rămâne în handlerul ListAdminOrders și repository-ul AdminDemoOrders.
