@@ -32,7 +32,17 @@
       </button>
     </section>
   }
+  @if (state.returnSelection(); as selection) {
+    @for (id of [selection.order.id]; track id) {
+      <div #returnConfirmation tabindex="-1">
+        <sd-return-request [order]="selection.order" [email]="session().email" [busy]="state.busy()"
+          (submitted)="state.requestReturn(session().id, $event)" (cancelled)="state.returnSelection.set(null)" />
+      </div>
+    }
+  }
   <sd-order-history-list
+    [allowReturn]="!state.busy()"
+    (returnRequested)="selectReturn($event)"
     title="Comenzile contului"
     [result]="state.account()"
     [error]="state.accountError()"

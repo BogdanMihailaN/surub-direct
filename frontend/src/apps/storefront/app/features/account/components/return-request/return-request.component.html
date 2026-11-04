@@ -1,0 +1,13 @@
+<section aria-label="Solicitare retur integral">
+  <h3>Retur integral pentru {{ order().number }}</h3>
+  <p>Cont: <strong>{{ email() }}</strong></p>
+  <p>Solicitarea privește toate produsele comenzii și va fi verificată de magazin. Nu inițiază automat rambursarea sau restituirea stocului.</p>
+  <p>Flux demonstrativ. Retururile parțiale și produsele deteriorate nu sunt gestionate prin acest formular.</p>
+  <form (ngSubmit)="submit()">
+    <label for="customer-return-reason">Motivul returului integral</label>
+    <textarea id="customer-return-reason" name="reason" [(ngModel)]="reason" minlength="3" maxlength="500" required [disabled]="busy()"></textarea>
+    <label><input type="checkbox" name="confirmed" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm comanda, contul și solicitarea de retur integral</label>
+    <button type="submit" [disabled]="busy() || !confirmed || reason.trim().length < 3">Trimite solicitarea de retur</button>
+    <button type="button" [disabled]="busy()" (click)="cancelled.emit()">Renunță la solicitare</button>
+  </form>
+</section>

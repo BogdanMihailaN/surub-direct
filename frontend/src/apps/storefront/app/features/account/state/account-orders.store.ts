@@ -14,6 +14,7 @@ export class AccountOrdersStore {
   readonly notice = signal('');
   readonly busy = signal(false);
   readonly selected = signal<DemoOrder | null>(null);
+  readonly returnSelection = signal<{ order: DemoOrder; accountId: string } | null>(null);
   private accountPage = 1;
   private browserPage = 1;
   private async refresh(accountId: string) {
@@ -33,6 +34,7 @@ export class AccountOrdersStore {
   async load(accountId: string, kind?: 'account' | 'browser', page = 1) {
     if (this.busy()) return;
     this.selected.set(null);
+    this.returnSelection.set(null);
     this.error.set('');
     this.notice.set('');
     if (!accountId) {
@@ -50,16 +52,49 @@ export class AccountOrdersStore {
   }
   select(order: DemoOrder) {
     if (!this.busy() && this.account() && ['Confirmed', 'Cancelled'].includes(order.status)) {
+      this.returnSelection.set(null);
       this.selected.set(order);
       this.error.set('');
       this.notice.set('');
     }
+  }
+  selectReturn(order: DemoOrder, accountId: string) {
+    if (this.busy() || !accountId || !this.account()?.items.some(item => item.id === order.id)
+        || order.status !== 'Confirmed' || order.shipment?.status !== 'Delivered' || order.return?.status !== 'NotRequested') return;
+    this.selected.set(null);
+    this.error.set(''); this.notice.set('');
+    this.returnSelection.set({ order, accountId });
+  }
+  async requestReturn(accountId: string, reason: string) {
+    const selection = this.returnSelection();
+    if (!selection || this.busy() || reason.trim().length < 3 || reason.trim().length > 500) return;
+    this.returnSelection.set(null);
+    if (selection.accountId !== accountId) {
+      this.error.set('Contul s-a schimbat. Reîncarcă istoricul și confirmă din nou solicitarea.');
+      return;
+    }
+    this.busy.set(true); this.error.set(''); this.notice.set('');
+    try {
+      try {
+        await this.api.requestReturn(selection.order.id, selection.accountId, crypto.randomUUID(), reason.trim());
+        this.notice.set('Solicitarea de retur a fost trimisă pentru verificare.');
+      } catch (e) {
+        this.error.set(errorMessage(e) + ' Istoricul este recitit; solicitarea nu este retrimisă automat.');
+      }
+      await this.refresh(selection.accountId);
+      const status = this.account()?.items.find(item => item.id === selection.order.id)?.return?.status;
+      if (this.error() && status && status !== 'NotRequested') {
+        this.error.set('');
+        this.notice.set('Starea returului a fost reverificată. Consultă rezultatul din istoric.');
+      }
+    } finally { this.busy.set(false); }
   }
   async confirm(accountId: string) {
     const order = this.selected();
     if (!order || this.busy() || !accountId) return;
     this.busy.set(true);
     this.selected.set(null);
+    this.returnSelection.set(null);
     this.error.set('');
     this.notice.set('');
     try {

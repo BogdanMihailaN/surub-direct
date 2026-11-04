@@ -532,3 +532,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Playwright: 8 scenarii trecute in admin-sales-orders, order-cancellation si account-order-history. Returul prin servicii verifica stocul 65 inainte de receptie si 100 dupa confirmare, exact o miscare Restoration de 35 bucati, replay dupa raspuns pierdut, protectie CSRF/autentificare direct si prin gateway si rezumatul clientului dupa asocierea la cont.
 - Migrarea aditiva DemoIntegralReturns a fost aplicata dupa backup privat verificat. Prima aplicare a folosit un build care nu includea inca migrarea si a fost refuzata de EF; dupa recompilare, aplicarea si verificarea modelului au trecut, fara suprimarea protectiei PendingModelChanges.
 - Captura mobila a contului a fost inspectata: returul, expedierea si plata se afiseaza separat, fara depasirea viewportului. Fara rambursare reala sau activare comerciala.
+
+## Solicitarea returului din cont - 4 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 408 teste .NET si 18 teste Python trecute dupa pornirea Docker. Cele patru cazuri noi verifica proprietarul, comenzile neasociate, livrarea obligatorie, replay concurent si replay dupa aprobarea administrativa, fara efect asupra stocului/platii.
+- Builduri Angular de productie storefront (browser/SSR) si admin trecute.
+- Playwright: 8 scenarii distincte trecute in account-return-request, account-order-history si admin-sales-orders. Sapte au trecut in rularea grupata; noul scenariu a trecut separat dupa corectarea testului, care solicita initial tokenul CSRF de la Ordering in loc de Identity prin gateway. O reluare intermediara a fost oprita de mediul local inchis; dupa repornirea serviciilor, scenariul complet a trecut in 19,9 secunde.
+- Sunt verificate cererea reala a clientului, confirmarea contului, lipsa CSRF si schimbarea contului, refuzul altui proprietar direct/prin gateway, raspuns pierdut fara retransmitere, un singur eveniment de audit, aprobarea ulterioara si pastrarea stocului/platii. Scenariul de conflict elimina formularul si actiunile vechi.
+- Captura mobila a contului a fost inspectata: returul Aprobat, plata si expedierea se afiseaza separat, fara depasirea viewportului. Fara migrare noua, expediere de e-mail sau activare comerciala.

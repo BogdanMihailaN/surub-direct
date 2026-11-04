@@ -160,3 +160,31 @@ test('missing payment summary is unavailable rather than an invented status', as
   await expect(summaries.first()).toContainText('nu este disponibilă');
   await expect(summaries.first()).not.toContainText('Neinițiată');
 });
+
+test('return request is bound to the displayed account and removes stale actions after a session conflict', async ({ page }) => {
+  await session(page);
+  const item = { ...order(1), shipment: { status: 'Delivered', reference: 'DEMO-TEST' }, return: { status: 'NotRequested', restoredAt: null } };
+  let changed = false;
+  let writes = 0;
+  await page.route('**/api/v1/ordering/account/orders?**', route => route.fulfill(changed
+    ? { status: 409, json: { detail: 'Contul autentificat s-a schimbat.' } }
+    : { json: { items: [item], page: 1, total: 1, pageSize: 25 } }));
+  await page.route('**/api/v1/ordering/demo-orders?**', route => route.fulfill({ json: { items: [], page: 1, total: 0, pageSize: 25 } }));
+  await page.route('**/api/v1/ordering/account/orders/*/return', route => {
+    expect(route.request().postDataJSON().expectedAccountId).toBe('account-A');
+    writes++;
+    changed = true;
+    return route.fulfill({ status: 409, json: { detail: 'Contul autentificat s-a schimbat.' } });
+  });
+  await page.goto('/cont');
+  await page.getByRole('button', { name: 'Solicită retur pentru DEMO-1', exact: true }).click();
+  const form = page.getByRole('region', { name: 'Solicitare retur integral', exact: true });
+  await expect(form).toContainText('account-a@example.test');
+  await form.getByLabel('Motivul returului integral').fill('Retur integral solicitat');
+  await form.getByLabel('Confirm comanda, contul și solicitarea de retur integral').check();
+  await form.getByRole('button', { name: 'Trimite solicitarea de retur' }).click();
+  await expect(page.getByRole('region', { name: 'Comenzile contului', exact: true }).getByRole('alert')).toContainText('s-a schimbat');
+  await expect(form).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Solicită retur pentru DEMO-1', exact: true })).toHaveCount(0);
+  expect(writes).toBe(1);
+});

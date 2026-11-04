@@ -12,6 +12,9 @@ export class AccountOrdersApi {
   browser(page: number) {
     return this.api.get<DemoOrderPage>(`/api/v1/ordering/demo-orders?page=${page}`);
   }
+  requestReturn(id: string, accountId: string, operationId: string, reason: string) {
+    return this.api.write<void>('POST', `/api/v1/ordering/account/orders/${encodeURIComponent(id)}/return`, { expectedAccountId: accountId, operationId, reason });
+  }
   claim(id: string, accountId: string) {
     return this.api.write<void>(
       'POST',

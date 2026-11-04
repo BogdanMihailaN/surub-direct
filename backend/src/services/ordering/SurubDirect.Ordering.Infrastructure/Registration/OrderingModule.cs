@@ -53,6 +53,8 @@ public static class OrderingModule
         services.AddScoped<IOrderProcessing, OrderProcessing>();
         services.AddScoped<IShipments, Shipments>();
         services.AddScoped<IOrderReturns, OrderReturns>();
+        services.AddScoped<IAccountReturnRequests, OrderReturns>();
+        services.AddScoped<RequestAccountReturnHandler>();
         services.AddScoped<ChangeReturnHandler>();
         services.AddScoped<ChangeShipmentHandler>();
         services.AddScoped<ReservationInbox>();

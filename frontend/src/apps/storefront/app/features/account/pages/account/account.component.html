@@ -34,7 +34,9 @@
   }
   @if (store.status() === 'authenticated' && store.session(); as session) {
     <sd-account-cart [session]="session" />
-    <sd-account-orders [session]="session" />
+    @for (accountId of [session.id]; track accountId) {
+      <sd-account-orders [session]="session" />
+    }
   }
   @if (store.status() === 'guest') {
     <div class="modes" aria-label="Acces cont">

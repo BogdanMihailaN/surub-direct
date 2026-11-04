@@ -184,3 +184,5 @@ Instrumentele de backup sunt în `scripts/backups`: validarea manifestului separ
 Expedierea este organizată în directoarele Shipping din Domain/Contracts/Application/Api, cu repository Shipments și configurație EF separată pentru ShipmentChanges. Admin are componenta shipment, model și acces API/state; storefront reutilizează shipment-summary între istoricul coșului și al contului.
 
 Retururile folosesc directoare Returns în Domain/Application/Contracts/Api, repository OrderReturns și configurația EF ReturnChangeConfiguration. Admin compune order-return, cu API/state separate; storefront reutilizează return-summary în istoricul anonim și de cont. Inventory păstrează restituirea prin protocolul existent, fără referințe între proiectele serviciilor.
+
+Solicitarea returului de către client folosește use case-ul RequestAccountReturn și portul IAccountReturnRequests, distincte de mutațiile administratorului. Componenta account/return-request conține doar formularul; AccountOrdersStore și AccountOrdersApi gestionează selecția, trimiterea și recitirea.

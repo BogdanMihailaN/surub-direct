@@ -1,3 +1,4 @@
+import { ReturnRequest } from '../return-request/return-request.component';
 import {
   afterNextRender,
   Component,
@@ -14,7 +15,7 @@ import { AccountOrdersStore } from '../../state/account-orders.store';
 import { OrderHistoryList } from '../order-history-list/order-history-list.component';
 @Component({
   selector: 'sd-account-orders',
-  imports: [OrderHistoryList, RouterLink],
+  imports: [ReturnRequest,OrderHistoryList, RouterLink],
   providers: [AccountOrdersStore],
   templateUrl: './account-orders.component.html',
   styleUrl: './account-orders.component.scss',
@@ -25,6 +26,11 @@ export class AccountOrders {
   select(order: DemoOrder) {
     this.state.select(order);
     afterNextRender(() => this.confirmation()?.nativeElement.focus(), { injector: this.injector });
+  }
+  private readonly returnConfirmation = viewChild<ElementRef<HTMLElement>>('returnConfirmation');
+  selectReturn(order: DemoOrder) {
+    this.state.selectReturn(order, this.session().id);
+    afterNextRender(() => this.returnConfirmation()?.nativeElement.focus(), { injector: this.injector });
   }
   readonly session = input.required<AccountSession>();
   readonly state = inject(AccountOrdersStore);

@@ -32,6 +32,9 @@
           }
           <sd-delivery-summary [delivery]="order.delivery" />
         </details>
+        @if (allowReturn() && order.status === 'Confirmed' && order.shipment?.status === 'Delivered' && order.return?.status === 'NotRequested') {
+          <button type="button" [disabled]="busy()" (click)="returnRequested.emit(order)">Solicită retur pentru {{ order.number }}</button>
+        }
         @if (allowClaim() && (order.status === 'Confirmed' || order.status === 'Cancelled')) {
           <button type="button" [disabled]="busy()" (click)="claim.emit(order)">
             Asociază {{ order.number }}

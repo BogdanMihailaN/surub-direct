@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Solicitarea returului integral din contul clientului, cu confirmarea contului/comenzii, CSRF, verificarea proprietarului și recuperare după răspuns pierdut.
+
 - [x] Retur integral demonstrativ după livrare, aprobare/respingere, recepție explicită și restituire idempotentă prin Inventory; retururile parțiale/comerciale rămân restante.
 
 - [x] Expediere locală demonstrativă cu audit, rezumat pentru client și blocarea anulării după expediere; fără curier sau AWB real.

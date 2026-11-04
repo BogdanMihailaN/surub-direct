@@ -17,6 +17,8 @@ export class OrderHistoryList {
   readonly result = input<DemoOrderPage | null>(null);
   readonly error = input('');
   readonly busy = input(false);
+  readonly allowReturn = input(false);
+  readonly returnRequested = output<DemoOrder>();
   readonly allowClaim = input(false);
   readonly pageChange = output<number>();
   readonly claim = output<DemoOrder>();

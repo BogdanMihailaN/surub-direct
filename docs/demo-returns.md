@@ -1,6 +1,6 @@
 # Retur integral demonstrativ
 
-Flux administrativ local pentru comenzile Confirmed cu expedierea Delivered. Nu activează retururi comerciale, nu emite documente fiscale și nu încasează/rambursează bani reali. Nu este un formular public de solicitare a returului.
+Flux administrativ local pentru comenzile Confirmed cu expedierea Delivered. Nu activează retururi comerciale, nu emite documente fiscale și nu încasează/rambursează bani reali. Clientul autentificat poate solicita returul integral din istoricul propriului cont; decizia și recepția rămân administrative.
 
 ## Etape
 
@@ -26,4 +26,14 @@ Clientul vede numai starea și data restituirii în istoricul propriu, inclusiv 
 
 ## Restant
 
-Retururi parțiale, mai multe cereri per comandă, redeschidere/contestație, produse nerevandabile, control cantitativ pe linii, carantină, retur de la curier înainte de livrare, inițiere de către client, documente comerciale/fiscale și integrarea reală a rambursării. Această etapă nu reprezintă politica legală/comercială de retur a magazinului.
+Retururi parțiale, mai multe cereri per comandă, redeschidere/contestație, produse nerevandabile, control cantitativ pe linii, carantină, retur de la curier înainte de livrare, documente comerciale/fiscale și integrarea reală a rambursării. Această etapă nu reprezintă politica legală/comercială de retur a magazinului.
+
+## Solicitare din contul clientului
+
+Din Contul meu, numai comenzile Confirmed, Delivered și cu retur NotRequested afișează butonul de solicitare. Formularul confirmă comanda și contul, cere un motiv de 3–500 caractere și descrie limitele returului integral. Comenzile anonime trebuie mai întâi asociate explicit contului prin fluxul existent.
+
+`POST /api/v1/ordering/account/orders/{id}/return` primește operationId, expectedAccountId și reason. Sesiunea autentificată, CSRF Identity și limitarea de trafic sunt verificate inclusiv direct pe Ordering. ExpectedAccountId este obligatoriu și trebuie să coincidă cu sesiunea; schimbarea contului răspunde 409. Repository-ul verifică proprietarul comenzii înainte de consultarea operației anterioare, inclusiv pentru replay; comenzile neasociate sau ale altui cont răspund 404.
+
+Portul de client permite exclusiv tranziția inițială Requested, fără parametri pentru aprobare, recepție, cantități sau rambursare. Actorul auditului este generat pe server ca customer:<accountId>. Replay-ul identic confirmă operația deja salvată și după aprobarea administrativă, fără a redeschide returul sau a modifica stocul/plata. Alt conținut sau o cerere nouă după prima tranziție răspunde 409.
+
+Interfața recitește listele după succes/conflict/răspuns pierdut, fără retransmitere automată. Datele și formularul sunt recreate la schimbarea contului afișat; contul confirmat este trimis explicit pentru a detecta și schimbarea sesiunii între afișare și POST. Eșecul citirii retrage acțiunile vechi. Cererea este demonstrativă și nu definește politica comercială ori legală de retur.

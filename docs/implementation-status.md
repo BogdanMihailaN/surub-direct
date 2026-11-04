@@ -176,3 +176,7 @@ Administrarea permite crearea expedierii pentru o comandă pregătită cu transp
 ## Retur integral demonstrativ — 3 noiembrie 2026
 
 Ordering permite înregistrarea și aprobarea/respingerea unui retur integral pentru o comandă livrată. Confirmarea primirii tuturor produselor revandabile declanșează intenția persistentă de restituire prin Inventory; starea finală apare numai după confirmare. Audit administrativ separat de rezumatul clientului; rambursarea rămâne independentă. Retururile parțiale, produsele deteriorate și fluxurile comerciale nu sunt implementate. [Protocol și limite](demo-returns.md).
+
+## Solicitarea returului din cont — 4 noiembrie 2026
+
+Clientul poate cere un retur integral pentru o comandă proprie livrată, cu motiv și confirmare explicită. API-ul fixează tranziția Requested, verifică proprietarul înainte de replay și detectează schimbarea contului. Aprobarea/recepția și rambursarea rămân separate. Formularul și state/API sunt organizate în feature-ul account, fără migrare nouă. [Protocol](demo-returns.md).
