@@ -192,7 +192,7 @@ test('admin filters orders, reads immutable customer details and recovers read f
       { times: 1 },
     );
     await page.getByRole('button', { name: 'Actualizează detaliile' }).click();
-    await expect(page.getByRole('alert')).toContainText('indisponibile');
+    await expect(page.getByRole('alert').filter({ hasText: 'Detaliile sunt indisponibile temporar.' })).toBeVisible();
     await expect(detail).toHaveCount(0);
     await page.getByRole('button', { name: 'Actualizează detaliile' }).click();
     await expect(detail).toContainText(number);
@@ -207,7 +207,7 @@ test('admin filters orders, reads immutable customer details and recovers read f
       { times: 1 },
     );
     await page.getByRole('button', { name: 'Actualizează lista' }).click();
-    await expect(page.getByRole('alert')).toContainText('Lista este indisponibilă');
+    await expect(page.getByRole('alert').filter({ hasText: 'Lista este indisponibilă temporar.' })).toBeVisible();
     await expect(list).toHaveCount(0);
     await page.getByRole('button', { name: 'Actualizează lista' }).click();
     await expect(list.getByRole('button')).toHaveCount(1);
@@ -269,6 +269,7 @@ test('administrative order reads require session through gateway and direct serv
     expect((await request.get(origin + path + '/' + id)).status()).toBe(404);
     expect((await request.get(origin + path + '?status=unknown')).status()).toBe(400);
     expect((await request.get(origin + path + '?returnStatus=unknown')).status()).toBe(400);
+    expect((await request.get(origin + path + '?paymentStatus=unknown')).status()).toBe(400);
     expect((await request.get(origin + path + '?page=0')).status()).toBe(400);
     expect((await request.get(origin + path + '?number=invalid')).status()).toBe(400);
   }

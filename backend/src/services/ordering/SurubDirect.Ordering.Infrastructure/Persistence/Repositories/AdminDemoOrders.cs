@@ -6,20 +6,25 @@ using SurubDirect.Ordering.Contracts;
 namespace SurubDirect.Ordering.Infrastructure;
 internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
 {
-    public async Task<AdminOrderPageDto> Read(string? status, long? sequence, int page, CancellationToken ct, string? returnStatus = null)
+    public async Task<AdminOrderPageDto> Read(string? status, long? sequence, int page, CancellationToken ct, string? returnStatus = null, string? paymentStatus = null)
     {
         await using var tx = await db.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead, ct);
-        var query = db.DemoOrders.AsNoTracking().AsQueryable();
+        var query = from order in db.DemoOrders.AsNoTracking()
+                    join payment in db.PaymentSimulations.AsNoTracking() on order.Id equals payment.OrderId into payments
+                    from payment in payments.DefaultIfEmpty()
+                    select new { Order = order, PaymentStatus = payment == null ? "NotStarted" : payment.Status };
         if (status is not null)
-            query = query.Where(x => x.Status == status);
+            query = query.Where(x => x.Order.Status == status);
         if (returnStatus is not null)
-            query = query.Where(x => x.ReturnStatus == returnStatus);
+            query = query.Where(x => x.Order.ReturnStatus == returnStatus);
+        if (paymentStatus is not null)
+            query = query.Where(x => x.PaymentStatus == paymentStatus);
         if (sequence is not null)
-            query = query.Where(x => x.Sequence == sequence);
+            query = query.Where(x => x.Order.Sequence == sequence);
         var total = await query.CountAsync(ct);
-        var items = await query.OrderByDescending(x => x.Sequence).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
+        var items = await query.OrderByDescending(x => x.Order.Sequence).Skip((page - 1) * 25).Take(25).ToListAsync(ct);
         await tx.CommitAsync(ct);
-        return new(items.Select(x => new AdminOrderSummaryDto(x.Id, $"DEMO-{x.Sequence:D8}", x.Status, x.Customer.FullName, x.Currency, x.Lines.Sum(l => l.GrossTotal) + (x.Delivery?.GrossAmount ?? 0), x.CreatedAt, x.ReturnStatus)).ToArray(), total, page, 25);
+        return new(items.Select(x => new AdminOrderSummaryDto(x.Order.Id, $"DEMO-{x.Order.Sequence:D8}", x.Order.Status, x.Order.Customer.FullName, x.Order.Currency, x.Order.Lines.Sum(l => l.GrossTotal) + (x.Order.Delivery?.GrossAmount ?? 0), x.Order.CreatedAt, x.Order.ReturnStatus, x.PaymentStatus)).ToArray(), total, page, 25);
     }
 
     public async Task<AdminOrderDetailDto?> Find(Guid id, CancellationToken ct)

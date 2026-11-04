@@ -188,3 +188,7 @@ Lista comenzilor afișează starea returului și permite găsirea solicitărilor
 ## Recuperarea paginării administrative — 4 noiembrie 2026
 
 Lista comenzilor revine la prima pagină când o actualizare găsește o pagină ulterioară goală, păstrând filtrele. Recitirea este limitată la o cerere suplimentară și păstrează protecția existentă față de răspunsurile depășite. Erorile retrag lista veche și permit reîncercare manuală. Schimbarea privește numai starea Angular; fără modificări de contract, migrare sau activare comercială.
+
+## Filtrarea plăților simulate în administrare — 4 noiembrie 2026
+
+Lista comenzilor include starea simulării de plată și filtrare combinată cu returul, numărul și starea comenzii. Permite identificarea retururilor cu stoc restituit și simulare Paid pentru operarea separată a rambursării. Comenzile fără simulare sunt incluse la NotStarted. După operații de plată, lista se recitește păstrând filtrele și protecțiile la răspuns pierdut. Fără migrare, procesator extern sau bani reali.

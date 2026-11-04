@@ -1,3 +1,4 @@
+import { paymentLabels } from '../../models/payment-labels';
 import { returnLabels } from '../../models/return-labels';
 import { Component, input, output } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -15,6 +16,7 @@ export class OrderList {
   readonly busy = input(false);
   readonly chosen = output<string>();
   readonly paged = output<number>();
+  readonly paymentLabels = paymentLabels;
   readonly returnLabels = returnLabels;
   readonly labels = orderLabels;
 }

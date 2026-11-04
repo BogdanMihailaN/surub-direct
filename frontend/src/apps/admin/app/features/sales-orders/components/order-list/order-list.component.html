@@ -5,6 +5,7 @@
       <strong>{{ order.number }}</strong
       ><span>{{ labels[order.status] }}</span
       ><span>Retur: {{ returnLabels[order.returnStatus] ?? 'Stare indisponibilă' }}</span
+      ><span>Plată simulată: {{ paymentLabels[order.paymentStatus] ?? 'Stare indisponibilă' }}</span
       ><span>{{ order.customerName }}</span
       ><span
         >{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} ·

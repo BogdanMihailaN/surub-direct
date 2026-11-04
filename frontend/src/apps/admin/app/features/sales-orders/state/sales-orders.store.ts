@@ -23,12 +23,14 @@ export class SalesOrdersStore {
   readonly error = signal('');
   readonly detailError = signal('');
   readonly selected = signal<string | null>(null);
+  private paymentStatus = '';
   private returnStatus = '';
   private status = '';
   private number = '';
   private listSequence = 0;
   private detailSequence = 0;
-  filter(status: string, number: string, returnStatus = '') {
+  filter(status: string, number: string, returnStatus = '', paymentStatus = '') {
+    this.paymentStatus = paymentStatus;
     this.returnStatus = returnStatus;
     this.status = status;
     this.number = number;
@@ -39,12 +41,12 @@ export class SalesOrdersStore {
     this.busy.set(true);
     this.error.set('');
     try {
-      let result = await this.api.list(this.status, this.number, page, this.returnStatus);
+      let result = await this.api.list(this.status, this.number, page, this.returnStatus, this.paymentStatus);
       if (sequence !== this.listSequence) return;
       // A decision in this or another session can remove the last row of a later page.
       // Re-read once from page one, keeping the filters and the same request sequence.
       if (result.page > 1 && result.items.length === 0) {
-        result = await this.api.list(this.status, this.number, 1, this.returnStatus);
+        result = await this.api.list(this.status, this.number, 1, this.returnStatus, this.paymentStatus);
       }
       if (sequence === this.listSequence) this.data.set(result);
     } catch (e) {
@@ -137,6 +139,7 @@ export class SalesOrdersStore {
       if (sequence === this.detailSequence) this.paymentError.set(errorMessage(e) + ' Starea este recitită; operația nu este repetată automat.');
     } finally {
       if (this.selected() === id) await this.select(id);
+      await this.load();
       this.simulatingPayment.set(false);
     }
   }

@@ -1,3 +1,4 @@
+import { paymentLabels } from '../../models/payment-labels';
 import { returnLabels } from '../../models/return-labels';
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,8 +10,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class OrderFilters {
   readonly busy = input(false);
-  readonly applied = output<{ status: string; number: string; returnStatus: string }>();
+  readonly applied = output<{ status: string; number: string; returnStatus: string; paymentStatus: string }>();
   readonly returnOptions = Object.entries(returnLabels);
+  readonly paymentOptions = Object.entries(paymentLabels);
+  paymentStatus = '';
   returnStatus = '';
   status = '';
   number = '';

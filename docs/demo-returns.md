@@ -47,3 +47,11 @@ Endpoint-ul administrativ de listare acceptă parametrul opțional `returnStatus
 ### Recuperarea paginii golite
 
 Dacă actualizarea listei găsește o pagină ulterioară fără comenzi (de exemplu, ultima solicitare de pe pagina 2 a fost aprobată), administrarea recitește o singură dată pagina 1 cu aceleași filtre. Detaliul selectat rămâne separat. Regula se aplică și actualizării manuale după operații efectuate în altă sesiune. Dacă recitirea eșuează, lista veche este retrasă și apare eroarea cu posibilitatea actualizării manuale; indisponibilitatea nu este afișată ca rezultat gol.
+
+### Identificarea rambursărilor simulate restante
+
+Filtrul „Stare plată simulată” se combină cu starea returului, starea și numărul comenzii. Pentru retururile recepționate cu stoc confirmat restituit și plata simulată încă nerambursată, alege „Stoc restituit” și „Reușită”. Aceasta este o selecție operațională demonstrativă, nu o decizie automată de rambursare sau o politică comercială.
+
+API-ul listei acceptă `paymentStatus`: NotStarted, Pending, Paid, Failed sau Refunded. Comenzile fără o înregistrare de simulare sunt incluse la NotStarted; o eroare de citire nu devine Neinițiată. Filtrele se aplică înainte de numărare și paginare, în aceeași citire consistentă. Lista include numai starea plății, fără auditul simulării.
+
+După o operație de plată simulată se recitesc detaliul și lista cu filtrele curente, inclusiv după răspuns pierdut, fără repetarea automată a operației. O rambursare confirmată elimină comanda din filtrul Paid; aceasta se poate regăsi la Refunded. Restituirea stocului și rambursarea rămân independente.

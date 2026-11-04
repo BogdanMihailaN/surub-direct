@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Filtrarea administrativă după plata simulată, combinată cu returul, pentru identificarea rambursărilor demo restante și actualizarea listei după simulare.
+
 - [x] Revenire la prima pagină când actualizarea golește o pagină ulterioară a listei administrative, cu filtre păstrate și erori de recitire explicite.
 
 - [x] Filtrarea administrativă după starea returului, combinată cu filtrele comenzii, cu paginare și actualizarea listei după decizie/recepție.

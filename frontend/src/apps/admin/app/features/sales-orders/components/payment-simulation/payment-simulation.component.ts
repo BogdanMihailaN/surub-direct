@@ -1,3 +1,4 @@
+import { paymentLabels } from '../../models/payment-labels';
 import { Component, input, output } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,9 +14,7 @@ export class PaymentSimulation {
   readonly editable = input(false);
   readonly busy = input(false);
   readonly changed = output<{ action: string; reason: string }>();
-  readonly labels: Record<string, string> = {
-    NotStarted: 'Neinițiată', Pending: 'În curs', Paid: 'Reușită', Failed: 'Eșuată', Refunded: 'Rambursată integral',
-  };
+  readonly labels = paymentLabels;
   reason = '';
   confirmed = false;
   submit(action: string) {

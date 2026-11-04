@@ -188,3 +188,5 @@ Retururile folosesc directoare Returns în Domain/Application/Contracts/Api, rep
 Solicitarea returului de către client folosește use case-ul RequestAccountReturn și portul IAccountReturnRequests, distincte de mutațiile administratorului. Componenta account/return-request conține doar formularul; AccountOrdersStore și AccountOrdersApi gestionează selecția, trimiterea și recitirea.
 
 Etichetele administrative ale retururilor sunt centralizate în sales-orders/models/return-labels.ts, reutilizate de order-filters, order-list și order-return. Filtrarea rămâne în handlerul ListAdminOrders și repository-ul AdminDemoOrders.
+
+Etichetele plăților simulate sunt definite în `sales-orders/models/payment-labels.ts` și reutilizate de filtru, listă și simulator. API-ul și actualizarea listei după simulare rămân în data-access/state. Testele de listare cu filtrare/paginare sunt în `Integration/AdminPaymentFilterTests.cs`; fluxul administrativ de rambursare după retur este în `frontend/tests/e2e/admin-refund-queue.spec.ts`.

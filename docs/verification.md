@@ -556,3 +556,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Cele trei scenarii noi folosesc răspunsuri de listă controlate și autentificare reală: pagina ulterioară golită cu alte rezultate rămase, coada complet golită și eroare 503 la recitire urmată de recuperare manuală. Verifică pagina 1, păstrarea filtrului, numărul limitat de cereri și retragerea datelor vechi la eroare.
 - Regresia existentă verifică solicitarea/aprobarea reală a returului, comenzile administrative, autorizarea și accesul direct/prin gateway.
 - `git diff --check` fără erori. Backendul și schema nu au fost modificate; suita .NET nu a fost reluată pentru această etapă exclusiv frontend.
+
+## Filtrarea plăților simulate și coada rambursărilor demo — 4 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 416 teste .NET și 18 teste Python trecute. Cele patru cazuri noi acoperă toate stările plății, absența simulării, filtre combinate, count/paginare/ordine, pagini goale și valori invalide.
+- Buildurile Angular de producție pentru storefront și admin au trecut.
+- Playwright: 7 scenarii distincte verificate în account-return-request, admin-order-pagination, admin-refund-queue și admin-sales-orders. Șase au trecut în rularea grupată; regresia administrativă a fost reluată cu succes după precizarea selectorului pentru eroarea de citire, deoarece două alerte valide puteau fi afișate simultan.
+- Scenariul nou operează un retur real demonstrativ până la Restored, îl găsește prin filtrele Restored + Paid și simulează rambursarea cu răspuns pierdut. Verifică dispariția din Paid, regăsirea la Refunded, un singur eveniment Refund și păstrarea stării returului/comenzii. Validarea filtrului este verificată direct pe Ordering și prin gateway.
+- Captura mobilă a fost inspectată: filtrul și rezumatul plății se încadrează în viewport. `git diff --check` fără erori. Fără migrare, bani reali sau integrare externă.
