@@ -204,3 +204,7 @@ API-ul administrativ poate înregistra, lista și aproba/respinge cereri pe ofer
 ## Recepția coordonată a retururilor parțiale — 5 noiembrie 2026
 
 Confirmarea administrativă a primirii cantităților aprobate salvează intenția persistentă, apoi worker-ul transmite bucățile agregate pe SKU către Inventory. Replay-ul folosește ID-ul cererii drept cheie a recepției; răspunsurile pierdute și eșecurile locale nu dublează stocul. Finalizarea cere confirmarea identității și cantităților, cu retry în caz de eroare. Plata și rezervarea integrală rămân neschimbate. Migrare aditivă; formularele, cererile clientului și rambursările parțiale rămân restante. [Protocol](partial-return-coordination.md).
+
+## Interfața administrativă a retururilor parțiale — 5 noiembrie 2026
+
+Detaliul comenzii permite selectarea ofertelor și ambalajelor disponibile pentru retur, creare cu confirmare, aprobare/respingere și recepția cantităților revandabile. Sunt afișate auditul, bucățile, progresul coordonării și data Inventory. Recuperarea după răspuns pierdut recitește datele fără retransmitere, iar erorile de citire retrag acțiunile vechi. Fără modificări backend sau migrare. Formularul clientului și filtrarea listei după cereri parțiale rămân restante. [Comportament](partial-return-admin-ui.md).

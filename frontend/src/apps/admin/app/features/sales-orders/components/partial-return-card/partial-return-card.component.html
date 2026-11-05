@@ -1,0 +1,30 @@
+<article>
+  <h4>Cerere {{ data().id }}</h4>
+  <p role="status">Stare: <strong>{{ labels[data().status] ?? 'Stare indisponibilă' }}</strong></p>
+  <ul>@for (line of data().lines; track line.offerId) {
+    <li>{{ line.productName }} · {{ line.sku }} · {{ line.offerLabel }}: {{ line.packs }} ambalaje × {{ line.unitsPerPack }} buc. = {{ line.quantity }} buc.</li>
+  }</ul>
+  <p>Solicitare: {{ data().reason }}</p>
+  <small>{{ data().createdAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Operator: {{ data().actor }}</small>
+  @if (data().decidedAt) { <p>Decizie: {{ data().decisionReason }}</p><small>{{ data().decidedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · {{ data().decidedBy }}</small> }
+  @if (data().receiptRequestedAt) { <p>Recepție: {{ data().receiptReason }}</p><small>{{ data().receiptRequestedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · {{ data().receivedBy }}</small> }
+  @if (data().status === 'Requested' || data().status === 'Approved') {
+    <label [for]="'partial-action-' + data().id">Motivul operației pentru această cerere</label>
+    <textarea [id]="'partial-action-' + data().id" [(ngModel)]="reason" maxlength="500" [disabled]="busy()"></textarea>
+    <label><input type="checkbox" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm operația pentru această cerere</label>
+    @if (data().status === 'Requested') {
+      <button [disabled]="!valid()" (click)="submit('Approved')">Aprobă cererea parțială</button>
+      <button [disabled]="!valid()" (click)="submit('Rejected')">Respinge cererea parțială</button>
+    } @else {
+      <label><input type="checkbox" [(ngModel)]="resalable" [disabled]="busy()" /> Confirm primirea tuturor cantităților acestei cereri în stare revandabilă</label>
+      <p>Nu confirma dacă lipsesc produse sau sunt deteriorate. Plata nu se rambursează prin această operație.</p>
+      <button [disabled]="!valid() || !resalable" (click)="submit('Receive')">Confirmă recepția parțială</button>
+    }
+  }
+  @if (data().status === 'Restoring') {
+    <p>Recepția stocului este în curs. Folosește Actualizează detaliile pentru rezultat; nu înregistra o altă recepție.</p>
+    @if (data().receiptError) { <p>{{ data().receiptError }}</p> }
+    <p>Încercări: {{ data().receiptAttempts }} · Următoarea: {{ data().nextReceiptAttemptAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
+  }
+  @if (data().inventoryReceivedAt) { <p>Stoc confirmat restituit: {{ data().inventoryReceivedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p> }
+</article>

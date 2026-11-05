@@ -590,3 +590,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Migrarea aditivă PartialReturnReceiptCoordination a fost aplicată după backup privat verificat; verificarea EF nu indică modificări nemigrate. `git diff --check` fără erori.
 - Codul Angular nu a fost modificat și buildurile nu au fost reluate. Funcționalitatea este disponibilă prin API-ul administrativ; formularele și cererile clientului rămân restante.
 - Lucrul a fost întrerupt înainte de backup de limita serviciului de aprobare; comanda respinsă nu a fost executată. După reluare, backupul, migrarea și verificarea completă prin API au fost finalizate.
+
+## Interfața administrativă pentru retururi parțiale — 5 noiembrie 2026
+
+- Buildurile Angular de producție storefront și admin au trecut, inclusiv după integrarea finală a blocării returului integral.
+- Playwright: 4 scenarii distincte trecute în admin-partial-return-ui, admin-sales-orders și account-return-request. Cele trei regresii existente au trecut în rularea grupată; scenariul nou a trecut separat în 16 secunde după adăugarea așteptării rezultatului filtrat înainte de selectarea comenzii (testul inițial găsea lista veche cu 25 de rânduri).
+- Fluxul nou verifică limitele ambalajelor, confirmările explicite, creare și recepție cu răspuns pierdut fără retransmitere, aprobarea, stoc restituit exact o dată, ascunderea returului integral, retragerea formularelor la eroare 503 de citire și recuperarea manuală. Respingerea unei cereri suplimentare eliberează selecția.
+- Captura mobilă a secțiunii a fost inspectată: selecția, rezumatele, auditul și datele recepției se încadrează în viewport. `git diff --check` fără erori.
+- Backendul și schema nu au fost modificate; suita .NET nu a fost reluată pentru această etapă de interfață. Nu sunt activate cereri parțiale din cont sau rambursări parțiale.

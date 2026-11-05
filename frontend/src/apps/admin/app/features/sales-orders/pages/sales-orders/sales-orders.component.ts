@@ -1,3 +1,4 @@
+import { PartialReturnsComponent } from '../../components/partial-returns/partial-returns.component';
 import { OrderReturnComponent } from '../../components/order-return/order-return.component';
 import { ShipmentComponent } from '../../components/shipment/shipment.component';
 import { PaymentSimulation } from '../../components/payment-simulation/payment-simulation.component';
@@ -10,7 +11,7 @@ import { OrderList } from '../../components/order-list/order-list.component';
 import { OrderDetail } from '../../components/order-detail/order-detail.component';
 @Component({
   selector: 'sd-sales-orders',
-  imports: [OrderReturnComponent,ShipmentComponent,OrderFilters, OrderList, OrderDetail, OrderCancellation, OrderProcessing, PaymentSimulation],
+  imports: [PartialReturnsComponent,OrderReturnComponent,ShipmentComponent,OrderFilters, OrderList, OrderDetail, OrderCancellation, OrderProcessing, PaymentSimulation],
   providers: [SalesOrdersStore],
   templateUrl: './sales-orders.component.html',
   styleUrl: './sales-orders.component.scss',

@@ -1,0 +1,6 @@
+form { display: grid; gap: .75rem; }
+.line { border-top: 1px solid #cad3c7; padding-block: .75rem; overflow-wrap: anywhere; }
+label { display: block; }
+textarea { width: 100%; min-height: 5rem; box-sizing: border-box; }
+input[type=number] { width: 7rem; padding: .5rem; }
+button { padding: .65rem; }

@@ -1,6 +1,6 @@
 # Cereri demonstrative de retur pe cantități în Ordering
 
-API administrativ disponibil numai în Development. Această etapă înregistrează și decide cereri; nu recepționează produse, nu modifică Inventory și nu rambursează plata. Recepția aprobată este disponibilă prin [fluxul coordonat](partial-return-coordination.md); interfețele urmează separat.
+API administrativ disponibil numai în Development. Această etapă înregistrează și decide cereri; nu recepționează produse, nu modifică Inventory și nu rambursează plata. Recepția aprobată este disponibilă prin [fluxul coordonat](partial-return-coordination.md); interfața administrativă este descrisă în [fluxul Angular](partial-return-admin-ui.md).
 
 ## Selecția și snapshot-ul
 
@@ -30,4 +30,4 @@ Crearea și decizia blochează cheia cererii și apoi ReservationPlans, folosind
 
 Migrarea aditivă PartialReturnRequests creează PartialReturns și PartialReturnLines în baza Ordering, cu relație la comanda originală și cheie unică per cerere/ofertă. Nu există acces la baza Inventory sau referințe la proiectele sale.
 
-Recepția explicită și retry/reconcilierea cu Inventory sunt implementate în [fluxul coordonat](partial-return-coordination.md). Selecția în interfețe, cererile clienților și rambursările parțiale rămân de implementat. Un retur aprobat aici nu reprezintă încă marfă primită sau bani rambursați. Nu este politica comercială/legală a magazinului.
+Recepția explicită și retry/reconcilierea cu Inventory sunt implementate în [fluxul coordonat](partial-return-coordination.md). Selecția administrativă este implementată în Angular; cererile clienților și rambursările parțiale rămân de implementat. Un retur aprobat aici nu reprezintă încă marfă primită sau bani rambursați. Nu este politica comercială/legală a magazinului.
