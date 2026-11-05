@@ -30,6 +30,8 @@ internal sealed class OrderReturns(OrderingDbContext db) : IOrderReturns, IAccou
             return;
         }
 
+        if (await db.PartialReturns.AnyAsync(x => x.OrderId == id && x.Status != "Rejected", ct))
+            throw new BusinessException("Există cereri de retur pe cantități active; returul integral ar dubla selecția.", 409);
         db.ReturnChanges.Add(order.ChangeReturn(operationId, expectedVersion, target, reason, actor, DateTimeOffset.UtcNow));
         if (target == "Restoring") plan.Restore(DateTimeOffset.UtcNow);
         await db.SaveChangesAsync(ct);

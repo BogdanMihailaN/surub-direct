@@ -183,6 +183,56 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.ToTable("OrderProcessingChanges", "ordering");
                 });
 
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.PartialReturnRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("DecidedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DecidedBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid?>("DecisionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DecisionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId", "Status");
+
+                    b.ToTable("PartialReturns", "ordering");
+                });
+
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulation", b =>
                 {
                     b.Property<Guid>("OrderId")
@@ -591,6 +641,60 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Ordering.Domain.PartialReturnRequest", b =>
+                {
+                    b.HasOne("SurubDirect.Ordering.Domain.DemoOrder", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsMany("SurubDirect.Ordering.Domain.PartialReturnLine", "Lines", b1 =>
+                        {
+                            b1.Property<Guid>("ReturnId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("OfferId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("OfferLabel")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<int>("Packs")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("ProductName")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<int>("Quantity")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Sku")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<int>("UnitsPerPack")
+                                .HasColumnType("integer");
+
+                            b1.Property<Guid>("VariantId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("ReturnId", "OfferId");
+
+                            b1.ToTable("PartialReturnLines", "ordering", t =>
+                                {
+                                    t.HasCheckConstraint("CK_PartialReturnLines_Quantity", "\"Packs\" > 0 AND \"UnitsPerPack\" > 0 AND \"Quantity\" > 0");
+                                });
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReturnId");
+                        });
+
+                    b.Navigation("Lines");
                 });
 
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulation", b =>

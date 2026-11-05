@@ -1,6 +1,6 @@
 # Starea implementării
 
-Actualizat la 2 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 5 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
 
@@ -196,3 +196,7 @@ Lista comenzilor include starea simulării de plată și filtrare combinată cu 
 ## Baza Inventory pentru retururi pe cantități — 4 noiembrie 2026
 
 Inventory poate recepționa cantități din consumul original printr-un contract intern idempotent, cu plafon cumulativ pe SKU, tranzacție atomică și protecție la concurență cu restituirea integrală. Jurnalul administrativ distinge recepțiile de retur. Migrare aditivă, fără schimbarea stării rezervării ori emiterea unui rezultat integral Restored. Conectarea Ordering și selecția în formulare rămân de implementat: retururile parțiale nu sunt încă disponibile utilizatorului. [Protocol și etape](partial-return-receipts.md).
+
+## Cereri de retur pe cantități în Ordering — 5 noiembrie 2026
+
+API-ul administrativ poate înregistra, lista și aproba/respinge cereri pe ofertele și ambalajele din snapshot-ul comenzii. Limitele sunt cumulative pentru cererile active, cu replay, audit și serializare față de returul integral. Respingerea eliberează selecția. Migrare aditivă; fără efect pe stoc/plată. Recepția coordonată cu Inventory, formularele și accesul clientului rămân de implementat. [Protocol](partial-return-requests.md).

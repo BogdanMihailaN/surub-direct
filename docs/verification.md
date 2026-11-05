@@ -573,3 +573,11 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Browserul verifică API-ul intern protejat, respingerea cheii greșite și inexistența rutei prin gateway, replay identic, conflict la alte cantități și blocarea restituirii integrale după recepție. Consumul de 12 și returul de 5 păstrează soldul la 93 după replay, cu o singură mișcare ReturnReceipt. Captura mobilă a jurnalului a fost inspectată.
 - Migrarea aditivă PartialReturnReceipts a fost aplicată după backup privat; verificarea arhivelor/checksumurilor și verificarea EF a modelului au trecut. `git diff --check` fără erori.
 - Această etapă implementează baza Inventory și jurnalul. Cererile pe linii în Ordering, coordonarea persistentă și formularele de retur parțial rămân restante; nu sunt activate operații comerciale.
+
+## Cereri administrative de retur pe cantități în Ordering — 5 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 439 teste .NET și 18 teste Python trecute, inclusiv la reluarea după adăugarea rutelor YARP. Cele 13 cazuri noi verifică snapshot-ul ambalajelor, selecții invalide, limite cumulative/concurență, replay, decizii și excluderea returului integral.
+- Playwright: 5 scenarii distincte trecute. Cele 3 regresii din account-return-request/admin-sales-orders au trecut în rularea grupată; cele 2 scenarii noi din admin-partial-return-requests au trecut la reluare în 21,4 secunde după completarea rutelor explicite YARP, omise inițial (404 prin gateway).
+- Sunt verificate sesiunea, rolul Administrator, CSRF direct/prin gateway, răspunsurile no-store, replay-ul înainte/după aprobare, plafonul pe ambalaje și păstrarea stocului consumat/plății Paid. Nu există recepție implicită la aprobare.
+- Migrarea aditivă PartialReturnRequests a fost aplicată după backup privat verificat; modelul EF nu are modificări nemigrate. `git diff --check` fără erori.
+- Codul Angular nu s-a schimbat; buildurile frontend nu au fost reluate. Cererile sunt disponibile prin API-ul administrativ, fără formular sau coordonator de recepție în această etapă.

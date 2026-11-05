@@ -6,6 +6,7 @@ public sealed class OrderingDbContext(DbContextOptions<OrderingDbContext> option
 {
     public DbSet<FailedReservationMessage> FailedReservationMessages => Set<FailedReservationMessage>();
     public DbSet<ReservationInboxEntry> ReservationInbox => Set<ReservationInboxEntry>();
+    public DbSet<PartialReturnRequest> PartialReturns => Set<PartialReturnRequest>();
     public DbSet<ReturnChange> ReturnChanges => Set<ReturnChange>();
     public DbSet<ShipmentChange> ShipmentChanges => Set<ShipmentChange>();
     public DbSet<OrderProcessingChange> OrderProcessingChanges => Set<OrderProcessingChange>();

@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] API administrativ Ordering pentru cereri de retur pe oferte/cantități și aprobare/respingere, cu limite cumulative și excluderea returului integral; recepția coordonată și interfețele rămân restante.
+
 - [x] Baza Inventory pentru recepții de retur pe cantități: idempotență, plafon cumulativ și jurnal; conectarea Ordering și formularele de retur parțial rămân restante.
 
 - [x] Filtrarea administrativă după plata simulată, combinată cu returul, pentru identificarea rambursărilor demo restante și actualizarea listei după simulare.
@@ -79,7 +81,7 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Colectare locală comună pentru alertele mesageriei și retenție, cu rotație și filtrare de metadate.
 - [ ] Colector de producție/notificări externe, politici pentru Inbox/erori nerezolvate și extinderea brokerului la celelalte fluxuri.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
-- [ ] Cereri și recepții de retur parțial în Ordering, coordonare persistentă cu Inventory și selecția cantităților în interfețe.
+- [ ] Recepții de retur parțial în Ordering, coordonare persistentă cu Inventory, cereri din cont și selecția cantităților în interfețe.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.
 - [ ] Validarea completă a fluxurilor comerciale, securității și operării; documentarea recuperării și backupurilor.
 
