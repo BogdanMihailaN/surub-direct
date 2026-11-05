@@ -19,6 +19,8 @@
             {{
               m.kind === 'Receipt'
                 ? 'Recepție'
+                : m.kind === 'ReturnReceipt'
+                  ? 'Recepție retur'
                 : m.kind === 'Correction'
                   ? 'Corecție recepție'
                   : m.kind === 'Restoration'

@@ -130,6 +130,31 @@ test('internal consumption is idempotent, protected and visible in the admin led
       true,
     );
     await panel.screenshot({ path: '../work/stock-consumption-mobile.png' });
+    const receiptPath = path + '/return-receipts/' + crypto.randomUUID();
+    const receipt = { orderId: reservation.orderId, lines: [{ variantId, quantity: 5 }] };
+    expect((await page.request.post(inventory + receiptPath, { data: receipt })).status()).toBe(401);
+    expect((await page.request.post(inventory + receiptPath, { data: receipt,
+      headers: { 'X-Service-Key': settings['INVENTORY_SERVICE_KEY'] } })).status()).toBe(401);
+    expect((await page.request.post('http://localhost:5099' + receiptPath, { headers, data: receipt })).status()).toBe(404);
+    const first = await page.request.post(inventory + receiptPath, { headers, data: receipt });
+    expect(first.status()).toBe(200);
+    expect(first.headers()['cache-control']).toBe('no-store');
+    const saved = await first.json();
+    const replay = await page.request.post(inventory + receiptPath, { headers, data: receipt });
+    expect(replay.status()).toBe(200);
+    expect(await replay.json()).toEqual(saved);
+    expect((await page.request.post(inventory + receiptPath, { headers,
+      data: { ...receipt, lines: [{ variantId, quantity: 6 }] } })).status()).toBe(409);
+    expect((await page.request.post(inventory + path + '/restore', { headers, data })).status()).toBe(409);
+    const afterReturn = await (await page.request.get(admin + root + '/movements')).json();
+    expect(afterReturn).toMatchObject({ onHand: 93, reserved: 0, total: 3 });
+    expect(afterReturn.items.filter((x: { kind: string }) => x.kind === 'ReturnReceipt')).toHaveLength(1);
+    await panel.getByRole('button', { name: 'Reîncarcă stocul', exact: true }).click();
+    await expect(panel).toContainText('În stoc: 93 buc.');
+    const returnRow = panel.getByRole('row').filter({ hasText: 'Recepție retur pe cantități' });
+    await expect(returnRow).toContainText('Recepție retur');
+    await expect(returnRow).toContainText('+5');
+    await panel.screenshot({ path: '../work/partial-return-ledger-mobile.png' });
   } finally {
     await page.request.post(inventory + path + '/release', {
       headers,

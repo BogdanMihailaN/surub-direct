@@ -192,3 +192,7 @@ Lista comenzilor revine la prima pagină când o actualizare găsește o pagină
 ## Filtrarea plăților simulate în administrare — 4 noiembrie 2026
 
 Lista comenzilor include starea simulării de plată și filtrare combinată cu returul, numărul și starea comenzii. Permite identificarea retururilor cu stoc restituit și simulare Paid pentru operarea separată a rambursării. Comenzile fără simulare sunt incluse la NotStarted. După operații de plată, lista se recitește păstrând filtrele și protecțiile la răspuns pierdut. Fără migrare, procesator extern sau bani reali.
+
+## Baza Inventory pentru retururi pe cantități — 4 noiembrie 2026
+
+Inventory poate recepționa cantități din consumul original printr-un contract intern idempotent, cu plafon cumulativ pe SKU, tranzacție atomică și protecție la concurență cu restituirea integrală. Jurnalul administrativ distinge recepțiile de retur. Migrare aditivă, fără schimbarea stării rezervării ori emiterea unui rezultat integral Restored. Conectarea Ordering și selecția în formulare rămân de implementat: retururile parțiale nu sunt încă disponibile utilizatorului. [Protocol și etape](partial-return-receipts.md).

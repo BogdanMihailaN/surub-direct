@@ -68,6 +68,27 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.ReturnReceipt", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("ReturnReceipts", "inventory");
+                });
+
             modelBuilder.Entity("SurubDirect.Inventory.Domain.StockAdjustment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -308,6 +329,41 @@ namespace SurubDirect.Inventory.Infrastructure.Migrations
                         .HasForeignKey("ReceiptId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SurubDirect.Inventory.Domain.ReturnReceipt", b =>
+                {
+                    b.HasOne("SurubDirect.Inventory.Domain.StockReservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsMany("SurubDirect.Inventory.Domain.ReturnReceiptLine", "Lines", b1 =>
+                        {
+                            b1.Property<Guid>("ReceiptId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("VariantId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Quantity")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("ReceiptId", "VariantId");
+
+                            b1.HasIndex("VariantId");
+
+                            b1.ToTable("ReturnReceiptLines", "inventory", t =>
+                                {
+                                    t.HasCheckConstraint("CK_ReturnReceiptLines_Quantity", "\"Quantity\" > 0");
+                                });
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReceiptId");
+                        });
+
+                    b.Navigation("Lines");
                 });
 
             modelBuilder.Entity("SurubDirect.Inventory.Domain.StockConsumption", b =>

@@ -88,6 +88,8 @@ internal sealed class StockReservations(InventoryDbContext db, TimeProvider cloc
         await Lock(id, ct);
         var current = await db.Reservations.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Rezervarea nu există.", 404);
         current.EnsureOrder(orderId);
+        if (await db.ReturnReceipts.AnyAsync(x => x.ReservationId == id, ct))
+            throw new BusinessException("O recepție de retur există deja; restituirea integrală ar dubla stocul.", 409);
         if (current.Restore())
         {
             var now = clock.GetUtcNow();

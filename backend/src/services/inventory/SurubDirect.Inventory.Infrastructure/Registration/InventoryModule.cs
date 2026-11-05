@@ -24,6 +24,8 @@ public static class InventoryModule
         s.AddScoped<IOutboxRetention, OutboxRetention>();
         s.AddScoped<IOutboxMonitor, OutboxMonitor>();
         s.AddScoped<GetOutboxStatusHandler>();
+        s.AddScoped<IReturnReceipts, ReturnReceipts>();
+        s.AddScoped<ReceiveReturnHandler>();
         s.AddScoped<IStockReservations, StockReservations>();
         s.AddScoped<ReserveStockHandler>();
         s.AddScoped<ReleaseStockHandler>();

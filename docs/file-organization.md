@@ -190,3 +190,5 @@ Solicitarea returului de către client folosește use case-ul RequestAccountRetu
 Etichetele administrative ale retururilor sunt centralizate în sales-orders/models/return-labels.ts, reutilizate de order-filters, order-list și order-return. Filtrarea rămâne în handlerul ListAdminOrders și repository-ul AdminDemoOrders.
 
 Etichetele plăților simulate sunt definite în `sales-orders/models/payment-labels.ts` și reutilizate de filtru, listă și simulator. API-ul și actualizarea listei după simulare rămân în data-access/state. Testele de listare cu filtrare/paginare sunt în `Integration/AdminPaymentFilterTests.cs`; fluxul administrativ de rambursare după retur este în `frontend/tests/e2e/admin-refund-queue.spec.ts`.
+
+Recepțiile de retur pe cantități sunt separate în Inventory: Domain/Returns, Application/Features/Returns/ReceiveReturn, contracte locale Contracts/Returns, repository și configurație EF proprii, endpoint intern separat. Testele se află în Unit/ReturnReceiptTests și Integration/PartialReturnReceiptTests; jurnalul este verificat și în scenariul browser stock-consumption.

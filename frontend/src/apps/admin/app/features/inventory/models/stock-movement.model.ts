@@ -1,7 +1,7 @@
 export interface StockMovement {
   id: string;
   originalReceiptId: string | null;
-  kind: 'Receipt' | 'Adjustment' | 'Correction' | 'Consumption' | 'Restoration';
+  kind: 'Receipt' | 'Adjustment' | 'Correction' | 'Consumption' | 'Restoration' | 'ReturnReceipt';
   quantity: number;
   reference: string;
   reason: string;
