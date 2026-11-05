@@ -210,6 +210,12 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<DateTimeOffset?>("InventoryReceivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("NextReceiptAttemptAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
@@ -217,6 +223,27 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<int>("ReceiptAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReceiptError")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid?>("ReceiptOperationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ReceiptReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset?>("ReceiptRequestedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReceivedBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -229,6 +256,8 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId", "Status");
+
+                    b.HasIndex("Status", "NextReceiptAttemptAt");
 
                     b.ToTable("PartialReturns", "ordering");
                 });

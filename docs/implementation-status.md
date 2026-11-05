@@ -200,3 +200,7 @@ Inventory poate recepționa cantități din consumul original printr-un contract
 ## Cereri de retur pe cantități în Ordering — 5 noiembrie 2026
 
 API-ul administrativ poate înregistra, lista și aproba/respinge cereri pe ofertele și ambalajele din snapshot-ul comenzii. Limitele sunt cumulative pentru cererile active, cu replay, audit și serializare față de returul integral. Respingerea eliberează selecția. Migrare aditivă; fără efect pe stoc/plată. Recepția coordonată cu Inventory, formularele și accesul clientului rămân de implementat. [Protocol](partial-return-requests.md).
+
+## Recepția coordonată a retururilor parțiale — 5 noiembrie 2026
+
+Confirmarea administrativă a primirii cantităților aprobate salvează intenția persistentă, apoi worker-ul transmite bucățile agregate pe SKU către Inventory. Replay-ul folosește ID-ul cererii drept cheie a recepției; răspunsurile pierdute și eșecurile locale nu dublează stocul. Finalizarea cere confirmarea identității și cantităților, cu retry în caz de eroare. Plata și rezervarea integrală rămân neschimbate. Migrare aditivă; formularele, cererile clientului și rambursările parțiale rămân restante. [Protocol](partial-return-coordination.md).

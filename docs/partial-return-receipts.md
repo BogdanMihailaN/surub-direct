@@ -1,6 +1,6 @@
 # Baza Inventory pentru retururi pe cantități
 
-Etapă tehnică pentru retururi parțiale. Fluxul de recepție din Ordering și formularele clientului/administratorului folosesc încă returul integral existent. Cererile administrative parțiale sunt disponibile prin API-ul Ordering, fără recepție coordonată încă. Acest endpoint nu trebuie apelat pentru retururile gestionate deja de acel flux: cele două moduri sunt exclusiv alternative pentru aceeași rezervare.
+Etapă tehnică pentru retururi parțiale. Ordering are acum [recepție coordonată](partial-return-coordination.md) pentru cererile administrative parțiale. Formularele clientului/administratorului folosesc încă returul integral existent. Acest endpoint nu trebuie apelat pentru retururile gestionate deja de acel flux: cele două moduri sunt exclusiv alternative pentru aceeași rezervare.
 
 ## Contract intern
 
@@ -21,7 +21,7 @@ Migrarea aditivă `PartialReturnReceipts` creează ReturnReceipts și ReturnRece
 ## Următoarele etape
 
 - Modelul cererilor și deciziilor administrative în Ordering este implementat în [etapa cererilor parțiale](partial-return-requests.md); formularele și accesul clientului rămân restante.
-- Aprobare și recepție explicită, intenție persistentă, retry/reconciliere pentru noul contract Inventory și protecție la concurență cu vechiul flux integral.
+- Aprobarea, recepția explicită și retry/reconcilierea sunt implementate prin API-ul Ordering; interfețele rămân restante.
 - Selecția produselor/cantităților în cont și administrare, rezumate și audit.
 - Produse deteriorate/carantină și rambursări parțiale separate. Simulatorul actual rambursează numai integral; nu se calculează implicit o rambursare din cantitățile recepționate.
 

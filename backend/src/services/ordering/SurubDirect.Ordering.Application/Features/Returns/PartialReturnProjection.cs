@@ -5,5 +5,5 @@ public static class PartialReturnProjection
 {
     public static PartialReturnDto Map(PartialReturnRequest r) => new(r.Id, r.OrderId, r.Status, r.Version, r.Reason, r.Actor, r.CreatedAt,
         r.Lines.Select(x => new PartialReturnLineDto(x.OfferId, x.VariantId, x.ProductName, x.Sku, x.OfferLabel, x.Packs, x.UnitsPerPack, x.Quantity)).ToArray(),
-        r.DecisionId, r.DecisionReason, r.DecidedBy, r.DecidedAt);
+        r.DecisionId, r.DecisionReason, r.DecidedBy, r.DecidedAt, r.ReceiptOperationId, r.ReceiptReason, r.ReceivedBy, r.ReceiptRequestedAt, r.InventoryReceivedAt, r.ReceiptAttempts, r.NextReceiptAttemptAt, r.ReceiptError);
 }

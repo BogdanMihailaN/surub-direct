@@ -23,6 +23,8 @@ public static class ServiceRegistration
         builder.Services.AddScoped<CartOwnerCookie>();
         ServiceKey.Required(builder.Configuration, "ServiceKeys:Coordinator");
         builder.Services.AddServiceHttp("inventory-reservations", builder.Configuration["Services:Inventory"] ?? "http://127.0.0.1:5102", ServiceKey.Required(builder.Configuration, "ServiceKeys:Reservations"));
+        builder.Services.AddScoped<IPartialReturnInventory, InventoryPartialReturnsClient>();
+        builder.Services.AddHostedService<PartialReturnReceiptWorker>();
         builder.Services.AddScoped<IReservationInventory, InventoryReservationsClient>();
         builder.Services.AddHostedService<ReservationCoordinatorWorker>();
         builder.Services.AddAntiforgery(o =>

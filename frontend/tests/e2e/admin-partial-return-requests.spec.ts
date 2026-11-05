@@ -3,7 +3,7 @@ import { adminWrite, loginAdmin } from './support/admin-session';
 import { createDeliveredReturnOrder } from './support/delivered-return-order';
 const origin = 'http://localhost:4201';
 
-test('partial return requests keep original packs, cap active selections and persist decisions without restoring stock', async ({ page }) => {
+test('partial returns preserve selection, approve without stock effects and receive selected quantities once', async ({ page }) => {
   test.setTimeout(120000);
   const order = await createDeliveredReturnOrder(page);
   const root = '/api/v1/admin/sales-orders/' + order.id;
@@ -40,22 +40,49 @@ test('partial return requests keep original packs, cap active selections and per
     expect(after.return.status).toBe('NotRequested');
     expect(after.paymentSimulation.status).toBe('Paid');
     expect(after.order.status).toBe('Confirmed');
+    const variant = saved.lines[0].variantId;
+    const movements = '/api/v1/admin/variants/' + variant + '/movements';
+    const beforeStock = await (await page.request.get(origin + movements)).json();
+    const receivePath = path + '/' + request.requestId + '/receive';
+    const receive = { operationId: crypto.randomUUID(), expectedVersion: 1, reason: 'Cantități primite și verificate', resalableConfirmed: true };
+    expect((await adminWrite(page.request, origin, receivePath, { ...receive, resalableConfirmed: false })).status()).toBe(400);
+    expect((await adminWrite(page.request, origin, receivePath, receive)).status()).toBe(204);
+    expect((await adminWrite(page.request, origin, receivePath, receive)).status()).toBe(204);
+    await expect.poll(async () => (await (await page.request.get(origin + path)).json())[0].status, { timeout: 30000 }).toBe('Restored');
+    const complete = (await (await page.request.get(origin + path)).json())[0];
+    expect(complete.inventoryReceivedAt).toBeTruthy();
+    expect(complete.version).toBe(2);
+    expect(complete.receiptAttempts).toBeGreaterThanOrEqual(1);
+    expect(complete.nextReceiptAttemptAt).toBeNull();
+    expect((await adminWrite(page.request, origin, receivePath, receive)).status()).toBe(204);
+    expect((await adminWrite(page.request, origin, decisionPath, decision)).status()).toBe(204);
+    expect((await adminWrite(page.request, origin, receivePath, { ...receive, operationId: crypto.randomUUID(), expectedVersion: 2 })).status()).toBe(409);
+    expect((await (await page.request.get(origin + path)).json())[0].inventoryReceivedAt).toBe(complete.inventoryReceivedAt);
+    const stock = await (await page.request.get(origin + movements)).json();
+    expect(stock.onHand).toBe(beforeStock.onHand + saved.lines[0].quantity);
+    expect(stock.items.filter((x: { kind: string; id: string }) => x.kind === 'ReturnReceipt' && x.id === request.requestId)).toHaveLength(1);
+    const finalOrder = await (await page.request.get(origin + root)).json();
+    expect(finalOrder.reservation.status).toBe('Consumed');
+    expect(finalOrder.paymentSimulation.status).toBe('Paid');
   } finally { await order.archive(); }
 });
 
 test('partial return administration enforces session role and CSRF through gateway and direct service', async ({ request, playwright }) => {
   const path = '/api/v1/admin/sales-orders/' + crypto.randomUUID() + '/partial-returns';
   const decisionPath = path + '/' + crypto.randomUUID() + '/decision';
+  const receivePath = path + '/' + crypto.randomUUID() + '/receive';
   const bases = ['http://localhost:5099', 'http://localhost:5104'];
   for (const base of bases) {
     expect((await request.get(base + path)).status()).toBe(401);
     expect((await request.post(base + path, { data: {} })).status()).toBe(401);
     expect((await request.post(base + decisionPath, { data: {} })).status()).toBe(401);
+    expect((await request.post(base + receivePath, { data: {} })).status()).toBe(401);
   }
   await loginAdmin(request, origin);
   for (const base of bases) {
     expect((await request.post(base + path, { data: {} })).status()).toBe(400);
     expect((await request.post(base + decisionPath, { data: {} })).status()).toBe(400);
+    expect((await request.post(base + receivePath, { data: {} })).status()).toBe(400);
     expect((await request.get(base + path)).status()).toBe(404);
   }
   const customer = await playwright.request.newContext();
@@ -66,7 +93,7 @@ test('partial return administration enforces session role and CSRF through gatew
     const csrf = await (await customer.get(origin + '/api/auth/csrf')).json();
     for (const base of bases) {
       expect((await customer.get(base + path)).status()).toBe(403);
-      for (const route of [path, decisionPath])
+      for (const route of [path, decisionPath, receivePath])
         expect((await customer.post(base + route, { data: {}, headers: { 'X-CSRF-TOKEN': csrf.token } })).status()).toBe(403);
     }
   } finally { await customer.dispose(); }

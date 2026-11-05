@@ -57,6 +57,7 @@ ChangeReturnEndpoint.Map(app);
 CreatePartialReturnEndpoint.Map(app);
 ListPartialReturnsEndpoint.Map(app);
 DecidePartialReturnEndpoint.Map(app);
+ReceivePartialReturnEndpoint.Map(app);
 RequestAccountReturnEndpoint.Map(app);
 SimulatePaymentEndpoint.Map(app);
 GetBrokerStatusEndpoint.Map(app);

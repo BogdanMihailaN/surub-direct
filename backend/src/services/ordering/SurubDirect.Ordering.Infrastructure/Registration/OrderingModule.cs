@@ -52,6 +52,9 @@ public static class OrderingModule
         services.AddScoped<IPaymentSimulations, PaymentSimulations>();
         services.AddScoped<IOrderProcessing, OrderProcessing>();
         services.AddScoped<IShipments, Shipments>();
+        services.AddScoped<IPartialReturnReceipts, PartialReturnReceipts>();
+        services.AddScoped<ReceivePartialReturnHandler>();
+        services.AddScoped<ProcessPartialReturnReceiptHandler>();
         services.AddScoped<IPartialReturns, PartialReturns>();
         services.AddScoped<RequestPartialReturnHandler>();
         services.AddScoped<ListPartialReturnsHandler>();

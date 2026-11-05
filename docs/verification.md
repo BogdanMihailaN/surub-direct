@@ -581,3 +581,12 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Sunt verificate sesiunea, rolul Administrator, CSRF direct/prin gateway, răspunsurile no-store, replay-ul înainte/după aprobare, plafonul pe ambalaje și păstrarea stocului consumat/plății Paid. Nu există recepție implicită la aprobare.
 - Migrarea aditivă PartialReturnRequests a fost aplicată după backup privat verificat; modelul EF nu are modificări nemigrate. `git diff --check` fără erori.
 - Codul Angular nu s-a schimbat; buildurile frontend nu au fost reluate. Cererile sunt disponibile prin API-ul administrativ, fără formular sau coordonator de recepție în această etapă.
+
+## Recepția coordonată a retururilor parțiale — 5 noiembrie 2026
+
+- `python3 scripts/dev.py test`: 456 teste .NET și 18 teste Python trecute. Cele 17 cazuri noi verifică confirmarea explicită/versiunea, replay-ul aprobării și recepției după finalizare, agregarea ofertelor pe SKU, răspunsuri Inventory nevalide, indisponibilitatea, concurența worker-elor și recuperarea după commit Inventory urmat de răspuns pierdut sau eroare locală.
+- Testele de coordonare folosesc baze separate Ordering și Inventory și verifică o singură mișcare de stoc la retry. Intenția rămâne Restoring până la confirmare, cu eroare generică și următoarea încercare persistente.
+- Playwright: 5 scenarii trecute în admin-partial-return-requests, admin-sales-orders și stock-consumption. Fluxul nou verifică recepția completă a cantităților selectate, confirmarea de revandabilitate, replay înainte/după finalizare, data stabilă, stocul crescut exact o dată și plata Paid păstrată. Drepturile și CSRF sunt verificate direct/prin gateway.
+- Migrarea aditivă PartialReturnReceiptCoordination a fost aplicată după backup privat verificat; verificarea EF nu indică modificări nemigrate. `git diff --check` fără erori.
+- Codul Angular nu a fost modificat și buildurile nu au fost reluate. Funcționalitatea este disponibilă prin API-ul administrativ; formularele și cererile clientului rămân restante.
+- Lucrul a fost întrerupt înainte de backup de limita serviciului de aprobare; comanda respinsă nu a fost executată. După reluare, backupul, migrarea și verificarea completă prin API au fost finalizate.

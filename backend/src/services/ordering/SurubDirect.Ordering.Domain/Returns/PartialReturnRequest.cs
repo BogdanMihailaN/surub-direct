@@ -11,6 +11,14 @@ public sealed class PartialReturnRequest
     public string Actor { get; private set; } = "";
     public DateTimeOffset CreatedAt { get; private set; }
     public List<PartialReturnLine> Lines { get; private set; } = [];
+    public Guid? ReceiptOperationId { get; private set; }
+    public string? ReceiptReason { get; private set; }
+    public string? ReceivedBy { get; private set; }
+    public DateTimeOffset? ReceiptRequestedAt { get; private set; }
+    public DateTimeOffset? InventoryReceivedAt { get; private set; }
+    public DateTimeOffset? NextReceiptAttemptAt { get; private set; }
+    public int ReceiptAttempts { get; private set; }
+    public string? ReceiptError { get; private set; }
     public Guid? DecisionId { get; private set; }
     public string? DecisionReason { get; private set; }
     public string? DecidedBy { get; private set; }
@@ -46,7 +54,7 @@ public sealed class PartialReturnRequest
             throw new BusinessException("Decizia și identificatorul operației nu sunt valide.");
         if (DecisionId == operationId)
         {
-            if (Version != expectedVersion + 1 || Status != target || DecisionReason != reason!.Trim() || DecidedBy != actor)
+            if (expectedVersion != 0 || (Status == "Rejected" ? "Rejected" : "Approved") != target || DecisionReason != reason!.Trim() || DecidedBy != actor)
                 throw new BusinessException("Identificatorul deciziei a fost folosit cu alt conținut.", 409);
             return;
         }
@@ -54,6 +62,38 @@ public sealed class PartialReturnRequest
             throw new BusinessException("Cererea s-a modificat. Actualizează retururile.", 409);
         Status = target; Version++;
         DecisionId = operationId; DecisionReason = reason!.Trim(); DecidedBy = actor; DecidedAt = Precision(now);
+    }
+    public void Receive(Guid operationId, long expectedVersion, string? reason, string actor, bool resalableConfirmed, DateTimeOffset now)
+    {
+        ValidateReason(reason, actor);
+        if (operationId == Guid.Empty || !resalableConfirmed)
+            throw new BusinessException("Confirmă primirea tuturor cantităților aprobate în stare revandabilă.");
+        if (ReceiptOperationId == operationId)
+        {
+            if (expectedVersion != 1 || ReceiptReason != reason!.Trim() || ReceivedBy != actor)
+                throw new BusinessException("Identificatorul recepției a fost folosit cu alt conținut.", 409);
+            return;
+        }
+        if (Status != "Approved" || expectedVersion != Version)
+            throw new BusinessException("Recepția necesită cererea aprobată și versiunea curentă.", 409);
+        Status = "Restoring"; Version++;
+        ReceiptOperationId = operationId; ReceiptReason = reason!.Trim(); ReceivedBy = actor;
+        ReceiptRequestedAt = Precision(now); NextReceiptAttemptAt = Precision(now);
+    }
+    public void ConfirmReceipt(DateTimeOffset inventoryReceivedAt)
+    {
+        if (Status != "Restoring" || inventoryReceivedAt == default)
+            throw new BusinessException("Confirmarea recepției nu este validă.", 409);
+        Status = "Restored"; InventoryReceivedAt = Precision(inventoryReceivedAt);
+        NextReceiptAttemptAt = null; ReceiptError = null;
+        ReceiptAttempts = (int)Math.Min(ReceiptAttempts + 1L, int.MaxValue);
+    }
+    public void ReceiptFailed(DateTimeOffset now)
+    {
+        if (Status != "Restoring") return;
+        ReceiptAttempts = (int)Math.Min(ReceiptAttempts + 1L, int.MaxValue);
+        ReceiptError = "Recepția Inventory nu este confirmată. Reîncercarea păstrează aceeași cheie.";
+        NextReceiptAttemptAt = Precision(now.AddSeconds(Math.Min(300, 5 * (long)ReceiptAttempts)));
     }
     private static DateTimeOffset Precision(DateTimeOffset value) => new(value.UtcTicks - value.UtcTicks % 10, TimeSpan.Zero);
     private static void ValidateReason(string? reason, string actor)
