@@ -604,3 +604,9 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 Au trecut 460 de teste .NET, 18 teste Python și buildurile Angular de producție pentru magazin și administrare. Cele patru teste backend noi acoperă proprietarul, verificarea înainte de replay, disponibilul comun cu administrarea și separarea rezumatului clientului de audit.
 
 Cele trei scenarii Playwright au trecut în 50,3 secunde. Clientul recuperează cererea salvată după pierderea răspunsului și vede cantitatea disponibilă și aprobarea ulterioară. Scenariul verifică și refuzul accesului din alt cont, inclusiv prin apel direct la Ordering. Am verificat afișarea formularului și a istoricului pe mobil la 390 px lățime.
+
+## Filtrul de retururi parțiale și precizia consumului de stoc — 6 noiembrie 2026
+
+Testul de integrare verifică paginarea a 27 de comenzi, numărarea unică pentru cereri multiple, combinarea cu plata și validarea stării. Scenariul de administrare verifică mutarea între liste la aprobare. Local au trecut 461 de teste .NET, 18 teste Python, patru scenarii Playwright și buildurile Angular pentru magazin și administrare.
+
+Două rulări consecutive ale workflow-ului GitHub au raportat valori diferite pentru EndedAt la consum și la recitirea din PostgreSQL. Inventory folosește acum precizia de o microsecundă la înregistrarea momentului consumului, astfel încât reluarea întoarce aceeași valoare.

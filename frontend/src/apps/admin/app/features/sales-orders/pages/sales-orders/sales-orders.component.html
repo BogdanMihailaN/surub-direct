@@ -3,7 +3,7 @@
   <p>Comenzi demonstrative. Plățile, livrarea și facturarea comercială nu sunt active.</p>
   <sd-sales-order-filters
     [busy]="state.busy()"
-    (applied)="state.filter($event.status, $event.number, $event.returnStatus, $event.paymentStatus)"
+    (applied)="state.filter($event.status, $event.number, $event.returnStatus, $event.paymentStatus, $event.partialReturnStatus)"
   />
   <button [disabled]="state.busy()" (click)="state.load()">Actualizează lista</button>
   @if (state.error()) {

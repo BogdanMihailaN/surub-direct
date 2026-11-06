@@ -5,7 +5,7 @@ using SurubDirect.Ordering.Contracts;
 namespace SurubDirect.Ordering.Application;
 public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
 {
-    public Task<AdminOrderPageDto> Handle(string? status, string? number, int page, CancellationToken ct, string? returnStatus = null, string? paymentStatus = null)
+    public Task<AdminOrderPageDto> Handle(string? status, string? number, int page, CancellationToken ct, string? returnStatus = null, string? paymentStatus = null, string? partialReturnStatus = null)
     {
         status = string.IsNullOrWhiteSpace(status) ? null : status.Trim();
         if (page is < 1 or > 100000 || status is not (null or "Confirming" or "Confirmed" or "Failed" or "Cancelling" or "Cancelled"))
@@ -16,6 +16,9 @@ public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
         paymentStatus = string.IsNullOrWhiteSpace(paymentStatus) ? null : paymentStatus.Trim();
         if (paymentStatus is not (null or "NotStarted" or "Pending" or "Paid" or "Failed" or "Refunded"))
             throw new BusinessException("Starea plății simulate nu este validă.");
+        partialReturnStatus = string.IsNullOrWhiteSpace(partialReturnStatus) ? null : partialReturnStatus.Trim();
+        if (partialReturnStatus is not (null or "Requested" or "Approved" or "Rejected" or "Restoring" or "Restored"))
+            throw new BusinessException("Starea cererii parțiale nu este validă.");
         long? sequence = null;
         if (!string.IsNullOrWhiteSpace(number))
         {
@@ -27,6 +30,6 @@ public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
             sequence = parsed;
         }
 
-        return orders.Read(status, sequence, page, ct, returnStatus, paymentStatus);
+        return orders.Read(status, sequence, page, ct, returnStatus, paymentStatus, partialReturnStatus);
     }
 }

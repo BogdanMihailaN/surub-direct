@@ -60,7 +60,8 @@ internal sealed class StockReservations(InventoryDbContext db, TimeProvider cloc
                 await End(current, ct);
             else
             {
-                current.Consume(now);
+                // PostgreSQL persists whole microseconds. The initial result must match a replay.
+                current.Consume(now.AddTicks(-(now.Ticks % 10)));
                 foreach (var line in current.Lines.OrderBy(x => x.VariantId))
                 {
                     var changed = await db.Database.ExecuteSqlInterpolatedAsync($"""UPDATE inventory."Balances" SET "OnHand" = "OnHand" - {line.Quantity}, "Reserved" = "Reserved" - {line.Quantity} WHERE "VariantId"={line.VariantId} AND "OnHand">={line.Quantity} AND "Reserved">={line.Quantity}""", ct);

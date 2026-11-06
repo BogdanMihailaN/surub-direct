@@ -6,8 +6,8 @@ import { OrderDetail } from '../models/order-detail.model';
 export class SalesOrdersApi {
   private readonly api = inject(ApiClient);
   private readonly root = '/api/v1/admin/sales-orders';
-  list(status: string, number: string, page: number, returnStatus = '', paymentStatus = '') {
-    const params = new URLSearchParams({ status, number, returnStatus, paymentStatus, page: String(page) });
+  list(status: string, number: string, page: number, returnStatus = '', paymentStatus = '', partialReturnStatus = '') {
+    const params = new URLSearchParams({ status, number, returnStatus, paymentStatus, partialReturnStatus, page: String(page) });
     return this.api.get<OrderPage>(this.root + '?' + params);
   }
   cancel(id: string, reason: string) {

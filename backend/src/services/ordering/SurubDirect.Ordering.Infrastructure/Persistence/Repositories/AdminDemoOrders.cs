@@ -6,7 +6,7 @@ using SurubDirect.Ordering.Contracts;
 namespace SurubDirect.Ordering.Infrastructure;
 internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
 {
-    public async Task<AdminOrderPageDto> Read(string? status, long? sequence, int page, CancellationToken ct, string? returnStatus = null, string? paymentStatus = null)
+    public async Task<AdminOrderPageDto> Read(string? status, long? sequence, int page, CancellationToken ct, string? returnStatus = null, string? paymentStatus = null, string? partialReturnStatus = null)
     {
         await using var tx = await db.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead, ct);
         var query = from order in db.DemoOrders.AsNoTracking()
@@ -19,6 +19,8 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
             query = query.Where(x => x.Order.ReturnStatus == returnStatus);
         if (paymentStatus is not null)
             query = query.Where(x => x.PaymentStatus == paymentStatus);
+        if (partialReturnStatus is not null)
+            query = query.Where(x => db.PartialReturns.Any(r => r.OrderId == x.Order.Id && r.Status == partialReturnStatus));
         if (sequence is not null)
             query = query.Where(x => x.Order.Sequence == sequence);
         var total = await query.CountAsync(ct);

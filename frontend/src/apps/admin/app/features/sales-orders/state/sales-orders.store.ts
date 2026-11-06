@@ -32,13 +32,15 @@ export class SalesOrdersStore {
   readonly error = signal('');
   readonly detailError = signal('');
   readonly selected = signal<string | null>(null);
+  private partialReturnStatus = '';
   private paymentStatus = '';
   private returnStatus = '';
   private status = '';
   private number = '';
   private listSequence = 0;
   private detailSequence = 0;
-  filter(status: string, number: string, returnStatus = '', paymentStatus = '') {
+  filter(status: string, number: string, returnStatus = '', paymentStatus = '', partialReturnStatus = '') {
+    this.partialReturnStatus = partialReturnStatus;
     this.paymentStatus = paymentStatus;
     this.returnStatus = returnStatus;
     this.status = status;
@@ -50,12 +52,12 @@ export class SalesOrdersStore {
     this.busy.set(true);
     this.error.set('');
     try {
-      let result = await this.api.list(this.status, this.number, page, this.returnStatus, this.paymentStatus);
+      let result = await this.api.list(this.status, this.number, page, this.returnStatus, this.paymentStatus, this.partialReturnStatus);
       if (sequence !== this.listSequence) return;
       // A decision in this or another session can remove the last row of a later page.
       // Re-read once from page one, keeping the filters and the same request sequence.
       if (result.page > 1 && result.items.length === 0) {
-        result = await this.api.list(this.status, this.number, 1, this.returnStatus, this.paymentStatus);
+        result = await this.api.list(this.status, this.number, 1, this.returnStatus, this.paymentStatus, this.partialReturnStatus);
       }
       if (sequence === this.listSequence) this.data.set(result);
     } catch (e) {

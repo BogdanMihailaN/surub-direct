@@ -10,9 +10,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class OrderFilters {
   readonly busy = input(false);
-  readonly applied = output<{ status: string; number: string; returnStatus: string; paymentStatus: string }>();
+  readonly applied = output<{ status: string; number: string; returnStatus: string; paymentStatus: string; partialReturnStatus: string }>();
   readonly returnOptions = Object.entries(returnLabels);
   readonly paymentOptions = Object.entries(paymentLabels);
+  partialReturnStatus = '';
+  readonly partialOptions = this.returnOptions.filter(([status]) => status !== 'NotRequested');
   paymentStatus = '';
   returnStatus = '';
   status = '';

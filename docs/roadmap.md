@@ -4,6 +4,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Filtrarea comenzilor după starea oricărei cereri de retur parțial, inclusiv pentru aprobare și recepție.
+
 - [x] Clientul poate solicita retururi parțiale din istoricul comenzilor proprii și poate urmări aprobarea și recepția.
 
 - [x] Interfață administrativă pentru selectarea, aprobarea/respingerea și recepția retururilor parțiale, cu audit și recuperare după răspuns pierdut.
@@ -87,7 +89,7 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Colectare locală comună pentru alertele mesageriei și retenție, cu rotație și filtrare de metadate.
 - [ ] Colector de producție/notificări externe, politici pentru Inbox/erori nerezolvate și extinderea brokerului la celelalte fluxuri.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
-- [ ] Filtrare administrativă pentru retururi parțiale, intervenție și alerte pentru recepții nereconciliate.
+- [ ] Intervenție și alerte pentru recepții parțiale nereconciliate.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.
 - [ ] Validarea completă a fluxurilor comerciale, securității și operării; documentarea recuperării și backupurilor.
 
