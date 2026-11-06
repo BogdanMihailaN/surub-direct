@@ -1,6 +1,6 @@
 # Starea implementării
 
-Actualizat la 5 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
+Actualizat la 6 noiembrie 2026. Proiect de dezvoltare locală, cu servicii separate; nu este un magazin pregătit pentru vânzare.
 
 ## Implementat
 
@@ -208,3 +208,7 @@ Confirmarea administrativă a primirii cantităților aprobate salvează intenț
 ## Interfața administrativă a retururilor parțiale — 5 noiembrie 2026
 
 Detaliul comenzii permite selectarea ofertelor și ambalajelor disponibile pentru retur, creare cu confirmare, aprobare/respingere și recepția cantităților revandabile. Sunt afișate auditul, bucățile, progresul coordonării și data Inventory. Recuperarea după răspuns pierdut recitește datele fără retransmitere, iar erorile de citire retrag acțiunile vechi. Fără modificări backend sau migrare. Formularul clientului și filtrarea listei după cereri parțiale rămân restante. [Comportament](partial-return-admin-ui.md).
+
+## Retururi parțiale din contul clientului — 6 noiembrie 2026
+
+Pentru o comandă proprie livrată, clientul poate selecta ambalajele disponibile și confirma contul, comanda și motivul solicitării. Cererile din cont și cele administrative consumă aceeași cantitate disponibilă. După un răspuns pierdut, formularul caută cererea după identificator în istoricul recitit. Aprobarea, recepția și auditul operațional sunt gestionate în administrare.

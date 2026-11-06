@@ -14,4 +14,4 @@ Cererea aprobată permite confirmarea recepției tuturor cantităților acelei c
 
 Mutațiile nu sunt retrimise automat după răspuns pierdut/conflict. Detaliul și lista cererilor sunt recitite; formularele se recreează din datele actuale. Dacă una dintre citiri eșuează, detaliul și formularele vechi sunt retrase, cu reîncercare manuală. Răspunsurile întârziate pentru o comandă selectată anterior nu înlocuiesc selecția curentă. Operațiile concurente din același detaliu sunt blocate pe durata mutației.
 
-Filtrele listei de comenzi după starea returului se referă în continuare la returul integral; o coadă/filtrare dedicată cererilor parțiale rămâne restantă. Clientul nu are încă formular pentru retur parțial. Rambursările parțiale, produsele deteriorate și recepția în tranșe rămân în backlog.
+Filtrele listei de comenzi după starea returului se referă în continuare la returul integral; o coadă/filtrare dedicată cererilor parțiale rămâne restantă. Clientul poate trimite cereri din istoricul contului. Rambursările parțiale, produsele deteriorate și recepția în tranșe rămân în backlog.

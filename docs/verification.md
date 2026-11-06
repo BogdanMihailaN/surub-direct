@@ -598,3 +598,9 @@ Monitorizarea are actualizare manuală. Publicarea confirmată nu reprezintă co
 - Fluxul nou verifică limitele ambalajelor, confirmările explicite, creare și recepție cu răspuns pierdut fără retransmitere, aprobarea, stoc restituit exact o dată, ascunderea returului integral, retragerea formularelor la eroare 503 de citire și recuperarea manuală. Respingerea unei cereri suplimentare eliberează selecția.
 - Captura mobilă a secțiunii a fost inspectată: selecția, rezumatele, auditul și datele recepției se încadrează în viewport. `git diff --check` fără erori.
 - Backendul și schema nu au fost modificate; suita .NET nu a fost reluată pentru această etapă de interfață. Nu sunt activate cereri parțiale din cont sau rambursări parțiale.
+
+## Retur parțial din contul clientului — 6 noiembrie 2026
+
+Au trecut 460 de teste .NET, 18 teste Python și buildurile Angular de producție pentru magazin și administrare. Cele patru teste backend noi acoperă proprietarul, verificarea înainte de replay, disponibilul comun cu administrarea și separarea rezumatului clientului de audit.
+
+Cele trei scenarii Playwright au trecut în 50,3 secunde. Clientul recuperează cererea salvată după pierderea răspunsului și vede cantitatea disponibilă și aprobarea ulterioară. Scenariul verifică și refuzul accesului din alt cont, inclusiv prin apel direct la Ordering. Am verificat afișarea formularului și a istoricului pe mobil la 390 px lățime.

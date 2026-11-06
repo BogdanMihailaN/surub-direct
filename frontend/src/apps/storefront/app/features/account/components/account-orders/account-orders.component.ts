@@ -1,3 +1,4 @@
+import { AccountPartialReturnsComponent } from '../account-partial-returns/account-partial-returns.component';
 import { ReturnRequest } from '../return-request/return-request.component';
 import {
   afterNextRender,
@@ -15,7 +16,7 @@ import { AccountOrdersStore } from '../../state/account-orders.store';
 import { OrderHistoryList } from '../order-history-list/order-history-list.component';
 @Component({
   selector: 'sd-account-orders',
-  imports: [ReturnRequest,OrderHistoryList, RouterLink],
+  imports: [AccountPartialReturnsComponent,ReturnRequest,OrderHistoryList, RouterLink],
   providers: [AccountOrdersStore],
   templateUrl: './account-orders.component.html',
   styleUrl: './account-orders.component.scss',

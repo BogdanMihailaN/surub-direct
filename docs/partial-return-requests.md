@@ -16,7 +16,7 @@ Cererea necesită o comandă Confirmed, Delivered, cu returul integral NotReques
 - `GET /api/v1/admin/sales-orders/{orderId}/partial-returns`: listează cererile cu audit, inclusiv cele respinse; pentru o comandă necunoscută răspunde 404.
 - `POST /api/v1/admin/sales-orders/{orderId}/partial-returns/{requestId}/decision`: primește operationId, expectedVersion, target (Approved/Rejected), reason și întoarce 204.
 
-Gateway-ul YARP are rute explicite pentru listare/creare și decizie, fără expunerea rutelor interne. Toate rutele cer sesiune Administrator, inclusiv direct pe Ordering. Mutațiile cer CSRF Identity. Operatorul provine exclusiv din sesiune; răspunsurile sunt no-store. Nu există încă endpoint de client pentru acest flux și auditul nu este expus istoricului public.
+Gateway-ul YARP are rute explicite pentru listare/creare și decizie, fără expunerea rutelor interne. Toate rutele cer sesiune Administrator, inclusiv direct pe Ordering. Mutațiile cer CSRF Identity. Operatorul provine exclusiv din sesiune; răspunsurile sunt no-store. Clientul are acces separat pentru comenzile proprii prin GET și POST la `/api/v1/ordering/account/orders/{id}/partial-returns`. Sesiunea și contul așteptat sunt verificate la fiecare apel. Rezumatul include ambalajele disponibile, liniile solicitate, starea și data recepției. Auditul complet este rezervat administratorului.
 
 ## Idempotență, decizii și concurență
 
@@ -30,4 +30,4 @@ Crearea și decizia blochează cheia cererii și apoi ReservationPlans, folosind
 
 Migrarea aditivă PartialReturnRequests creează PartialReturns și PartialReturnLines în baza Ordering, cu relație la comanda originală și cheie unică per cerere/ofertă. Nu există acces la baza Inventory sau referințe la proiectele sale.
 
-Recepția explicită și retry/reconcilierea cu Inventory sunt implementate în [fluxul coordonat](partial-return-coordination.md). Selecția administrativă este implementată în Angular; cererile clienților și rambursările parțiale rămân de implementat. Un retur aprobat aici nu reprezintă încă marfă primită sau bani rambursați. Nu este politica comercială/legală a magazinului.
+Recepția explicită și retry/reconcilierea cu Inventory sunt implementate în [fluxul coordonat](partial-return-coordination.md). Selecția administrativă este implementată în Angular; formularul clientului este disponibil în Contul meu. Rambursările parțiale rămân în backlog. Un retur aprobat aici nu reprezintă încă marfă primită sau bani rambursați. Nu este politica comercială/legală a magazinului.

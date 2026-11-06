@@ -1,0 +1,23 @@
+<section aria-label="Retururile parțiale ale comenzii" [attr.aria-busy]="state.busy()">
+  <h3>Retururi parțiale — {{ order().number }}</h3>
+  <p>Flux demonstrativ. Nu sunt inițiate plăți, rambursări sau transporturi reale.</p>
+  <button [disabled]="state.busy()" (click)="state.load(order().id, session().id)">Actualizează retururile parțiale</button>
+  <button [disabled]="state.busy()" (click)="closed.emit()">Închide retururile parțiale</button>
+  @if (state.busy()) { <p role="status">Se actualizează retururile…</p> }
+  @if (state.error()) { <p role="alert">{{ state.error() }}</p> }
+  @if (state.notice()) { <p role="status">{{ state.notice() }}</p> }
+  @if (state.data(); as data) {
+    @if (data.canRequest) {
+      <sd-account-partial-return-form [data]="data" [email]="session().email" [number]="order().number"
+        (submitted)="state.request(order().id, session().id, $event)" />
+    } @else { <p>Nu sunt disponibile cantități pentru o cerere nouă sau comanda are deja un retur integral început.</p> }
+    <h4>Istoricul cererilor parțiale</h4>
+    @for (request of data.items; track request.id) {
+      <article>
+        <p>Stare: <strong>{{ labels[request.status] ?? 'Stare indisponibilă' }}</strong> · {{ request.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+        <ul>@for (line of request.lines; track line.offerId) { <li>{{ line.productName }} · {{ line.offerLabel }}: {{ line.packs }} ambalaje, {{ line.quantity }} buc.</li> }</ul>
+        @if (request.inventoryReceivedAt) { <p>Stoc restituit la {{ request.inventoryReceivedAt | date: 'dd.MM.yyyy HH:mm' }}. Rambursarea este separată.</p> }
+      </article>
+    } @empty { <p>Nu există cereri parțiale pentru această comandă.</p> }
+  }
+</section>

@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using SurubDirect.BuildingBlocks;
 using SurubDirect.Ordering.Application;
 using SurubDirect.Ordering.Domain;
+using SurubDirect.Ordering.Contracts;
 namespace SurubDirect.Ordering.Infrastructure;
-internal sealed class PartialReturns(OrderingDbContext db, TimeProvider clock) : IPartialReturns
+internal sealed class PartialReturns(OrderingDbContext db, TimeProvider clock) : IPartialReturns, IAccountPartialReturns
 {
     private async Task<DemoOrder> LockOrder(Guid id, Guid requestId, CancellationToken ct)
     {
@@ -12,11 +13,16 @@ internal sealed class PartialReturns(OrderingDbContext db, TimeProvider clock) :
             ?? throw new BusinessException("Comanda nu există.", 404);
         return await db.DemoOrders.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Comanda nu există.", 404);
     }
-    public async Task<PartialReturnRequest> Request(Guid orderId, Guid requestId, IReadOnlyList<PartialReturnSelection>? lines, string? reason, string actor, CancellationToken ct)
+    public Task<PartialReturnRequest> Request(Guid orderId, Guid requestId, IReadOnlyList<PartialReturnSelection>? lines, string? reason, string actor, CancellationToken ct)
+        => RequestCore(orderId, requestId, lines, reason, actor, null, ct);
+    public Task<PartialReturnRequest> Request(string accountId, Guid orderId, Guid requestId, IReadOnlyList<PartialReturnSelection>? lines, string? reason, CancellationToken ct)
+        => RequestCore(orderId, requestId, lines, reason, "customer:" + accountId, accountId, ct);
+    private async Task<PartialReturnRequest> RequestCore(Guid orderId, Guid requestId, IReadOnlyList<PartialReturnSelection>? lines, string? reason, string actor, string? accountId, CancellationToken ct)
     {
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var order = await LockOrder(orderId, requestId, ct);
+        if (accountId is not null && order.AccountId != accountId) throw new BusinessException("Comanda nu este accesibilă.", 404);
         var candidate = PartialReturnRequest.Create(requestId, order, lines, reason, actor, clock.GetUtcNow());
         var previous = await db.PartialReturns.SingleOrDefaultAsync(x => x.Id == requestId, ct);
         if (previous is not null) { previous.EnsureSame(candidate); await tx.CommitAsync(ct); return previous; }
@@ -36,6 +42,19 @@ internal sealed class PartialReturns(OrderingDbContext db, TimeProvider clock) :
     {
         if (!await db.DemoOrders.AnyAsync(x => x.Id == orderId, ct)) throw new BusinessException("Comanda nu există.", 404);
         return await db.PartialReturns.AsNoTracking().Where(x => x.OrderId == orderId).OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Id).ToListAsync(ct);
+    }
+    public async Task<AccountPartialReturnsDto> Read(string accountId, Guid orderId, CancellationToken ct)
+    {
+        await using var tx = await db.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead, ct);
+        var order = await db.DemoOrders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == orderId && x.AccountId == accountId, ct)
+            ?? throw new BusinessException("Comanda nu este accesibilă.", 404);
+        var requests = await db.PartialReturns.AsNoTracking().Where(x => x.OrderId == orderId).OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Id).ToListAsync(ct);
+        var committed = requests.Where(x => x.Status != "Rejected").SelectMany(x => x.Lines).ToArray();
+        var offers = order.Lines.Select(line => new AccountReturnOfferDto(line.OfferId, line.ProductName, line.Sku, line.OfferLabel, line.Packs,
+            line.Packs - committed.Where(x => x.OfferId == line.OfferId).Sum(x => x.Packs), line.UnitsPerPack)).ToArray();
+        var canRequest = order.Status == "Confirmed" && order.ShipmentStatus == "Delivered" && order.ReturnStatus == "NotRequested" && requests.Count < 100 && offers.Any(x => x.AvailablePacks > 0);
+        await tx.CommitAsync(ct);
+        return new(canRequest, offers, requests.Select(AccountPartialReturnProjection.Map).ToArray());
     }
     public async Task Decide(Guid orderId, Guid requestId, Guid operationId, long expectedVersion, string? target, string? reason, string actor, CancellationToken ct)
     {

@@ -1,0 +1,17 @@
+<form (ngSubmit)="submit()" aria-label="Solicitare retur parțial">
+  <p>Comanda <strong>{{ number() }}</strong> · Contul <strong>{{ email() }}</strong></p>
+  <p>Selectează ambalaje întregi. Lasă 0 pentru produsele pe care le păstrezi. Cererea nu modifică stocul și nu rambursează plata.</p>
+  @for (offer of data().offers; track offer.offerId) {
+    <div class="offer">
+      <strong>{{ offer.productName }} · {{ offer.sku }}</strong>
+      <p>{{ offer.offerLabel }} · {{ offer.unitsPerPack }} buc./ambalaj · Cumpărate: {{ offer.purchasedPacks }} · Disponibile pentru retur: {{ offer.availablePacks }}</p>
+      <label [for]="'customer-packs-' + offer.offerId">Ambalaje de returnat — {{ offer.offerLabel }}</label>
+      <input [id]="'customer-packs-' + offer.offerId" [name]="offer.offerId" type="number" min="0" [max]="offer.availablePacks" step="1"
+        [disabled]="offer.availablePacks <= 0" [ngModel]="quantities[offer.offerId] ?? 0" (ngModelChange)="quantities[offer.offerId] = $event" />
+    </div>
+  }
+  <label for="customer-partial-reason">Motivul returului parțial</label>
+  <textarea id="customer-partial-reason" name="reason" [(ngModel)]="reason" maxlength="500"></textarea>
+  <label><input type="checkbox" name="confirmed" [(ngModel)]="confirmed" /> Confirm contul, comanda și cantitățile selectate</label>
+  <button type="submit" [disabled]="!valid()">Trimite cererea parțială</button>
+</form>

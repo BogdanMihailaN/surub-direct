@@ -40,7 +40,13 @@
       </div>
     }
   }
+  @if (state.partialSelection(); as order) {
+    @for (id of [order.id]; track id) {
+      <sd-account-partial-returns [order]="order" [session]="session()" (closed)="state.partialSelection.set(null)" />
+    }
+  }
   <sd-order-history-list
+    (partialRequested)="state.selectPartial($event)"
     [allowReturn]="!state.busy()"
     (returnRequested)="selectReturn($event)"
     title="Comenzile contului"

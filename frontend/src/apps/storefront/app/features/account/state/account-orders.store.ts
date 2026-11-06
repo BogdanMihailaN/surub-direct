@@ -13,6 +13,7 @@ export class AccountOrdersStore {
   readonly error = signal('');
   readonly notice = signal('');
   readonly busy = signal(false);
+  readonly partialSelection = signal<DemoOrder | null>(null);
   readonly selected = signal<DemoOrder | null>(null);
   readonly returnSelection = signal<{ order: DemoOrder; accountId: string } | null>(null);
   private accountPage = 1;
@@ -34,6 +35,7 @@ export class AccountOrdersStore {
   async load(accountId: string, kind?: 'account' | 'browser', page = 1) {
     if (this.busy()) return;
     this.selected.set(null);
+    this.partialSelection.set(null);
     this.returnSelection.set(null);
     this.error.set('');
     this.notice.set('');
@@ -53,15 +55,21 @@ export class AccountOrdersStore {
   select(order: DemoOrder) {
     if (!this.busy() && this.account() && ['Confirmed', 'Cancelled'].includes(order.status)) {
       this.returnSelection.set(null);
+      this.partialSelection.set(null);
       this.selected.set(order);
       this.error.set('');
       this.notice.set('');
     }
   }
+  selectPartial(order: DemoOrder) {
+    if (this.busy() || !this.account()?.items.some(x => x.id === order.id) || order.status !== 'Confirmed' || order.shipment?.status !== 'Delivered') return;
+    this.selected.set(null); this.returnSelection.set(null); this.partialSelection.set(order);
+  }
   selectReturn(order: DemoOrder, accountId: string) {
     if (this.busy() || !accountId || !this.account()?.items.some(item => item.id === order.id)
         || order.status !== 'Confirmed' || order.shipment?.status !== 'Delivered' || order.return?.status !== 'NotRequested') return;
     this.selected.set(null);
+    this.partialSelection.set(null);
     this.error.set(''); this.notice.set('');
     this.returnSelection.set({ order, accountId });
   }
@@ -94,6 +102,7 @@ export class AccountOrdersStore {
     if (!order || this.busy() || !accountId) return;
     this.busy.set(true);
     this.selected.set(null);
+    this.partialSelection.set(null);
     this.returnSelection.set(null);
     this.error.set('');
     this.notice.set('');
