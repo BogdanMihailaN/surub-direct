@@ -30,4 +30,4 @@ Crearea și decizia blochează cheia cererii și apoi ReservationPlans, folosind
 
 Migrarea aditivă PartialReturnRequests creează PartialReturns și PartialReturnLines în baza Ordering, cu relație la comanda originală și cheie unică per cerere/ofertă. Nu există acces la baza Inventory sau referințe la proiectele sale.
 
-Recepția explicită și retry/reconcilierea cu Inventory sunt implementate în [fluxul coordonat](partial-return-coordination.md). Selecția administrativă este implementată în Angular; formularul clientului este disponibil în Contul meu. Rambursările parțiale rămân în backlog. Un retur aprobat aici nu reprezintă încă marfă primită sau bani rambursați. Nu este politica comercială/legală a magazinului.
+Recepția explicită și retry/reconcilierea cu Inventory sunt implementate în [fluxul coordonat](partial-return-coordination.md). Selecția administrativă este implementată în Angular; formularul clientului este disponibil în Contul meu. Administratorul poate simula rambursarea produselor după recepție. Un retur aprobat aici nu reprezintă încă marfă primită sau bani rambursați. Nu este politica comercială/legală a magazinului.

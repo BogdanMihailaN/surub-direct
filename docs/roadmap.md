@@ -4,13 +4,16 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Funcționalități finalizate
 
+- [x] Rambursări simulate pentru cereri parțiale recepționate, sold disponibil și total rambursat în istoricul clientului.
+- [x] Lista recepțiilor în curs cu momentul confirmării și următoarea încercare programată.
+
 - [x] Filtrarea comenzilor după starea oricărei cereri de retur parțial, inclusiv pentru aprobare și recepție.
 
 - [x] Clientul poate solicita retururi parțiale din istoricul comenzilor proprii și poate urmări aprobarea și recepția.
 
 - [x] Interfață administrativă pentru selectarea, aprobarea/respingerea și recepția retururilor parțiale, cu audit și recuperare după răspuns pierdut.
 
-- [x] Recepția administrativă a cererii parțiale aprobate, coordonată persistent cu Inventory prin HTTP idempotent, cu retry și confirmarea cantităților. Interfețele și rambursarea parțială rămân restante.
+- [x] Recepția administrativă a cererii parțiale aprobate, coordonată persistent cu Inventory prin HTTP idempotent, cu retry și confirmarea cantităților.
 
 - [x] API administrativ Ordering pentru cereri de retur pe oferte/cantități și aprobare/respingere, cu limite cumulative și excluderea returului integral; recepția coordonată și interfețele rămân restante.
 

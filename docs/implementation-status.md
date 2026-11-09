@@ -212,3 +212,7 @@ Detaliul comenzii permite selectarea ofertelor și ambalajelor disponibile pentr
 ## Retururi parțiale din contul clientului — 6 noiembrie 2026
 
 Pentru o comandă proprie livrată, clientul poate selecta ambalajele disponibile și confirma contul, comanda și motivul solicitării. Cererile din cont și cele administrative consumă aceeași cantitate disponibilă. După un răspuns pierdut, formularul caută cererea după identificator în istoricul recitit. Aprobarea, recepția și auditul operațional sunt gestionate în administrare.
+
+## Rambursări parțiale simulate și urmărirea recepțiilor — 9 noiembrie 2026
+
+Administratorul vede suma produselor recepționate și poate confirma rambursarea din detaliul cererii. Clientul vede starea plății și totalul rambursat în istoricul comenzii. Simulatorul păstrează suma fiecărei operații și poate deconta ulterior soldul rămas. Lista comenzilor filtrate după restituirea în curs afișează fiecare recepție așteptată și momentul programat pentru reîncercare.

@@ -7,6 +7,8 @@ internal sealed class PaymentSimulationEventConfiguration : IEntityTypeConfigura
     public void Configure(EntityTypeBuilder<PaymentSimulationEvent> b)
     {
         b.ToTable("PaymentSimulationEvents");
+        b.Property(x => x.RefundAmount).HasPrecision(18, 2);
+        b.HasIndex(x => new { x.OrderId, x.PartialReturnId }).IsUnique();
         b.HasKey(x => new { x.OrderId, x.OperationId });
         b.HasIndex(x => new { x.OrderId, x.Version }).IsUnique();
         b.Property(x => x.Action).HasMaxLength(20);

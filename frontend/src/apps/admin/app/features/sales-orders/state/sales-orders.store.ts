@@ -135,7 +135,7 @@ export class SalesOrdersStore {
   }
   blocksCancellation() {
     const status = this.detail()?.paymentSimulation.status;
-    return status === 'Pending' || status === 'Paid' || ['Shipped', 'Delivered'].includes(this.detail()?.shipment.status ?? '');
+    return status === 'Pending' || status === 'Paid' || status === 'PartiallyRefunded' || ['Shipped', 'Delivered'].includes(this.detail()?.shipment.status ?? '');
   }
   async simulatePayment(change: { action: string; reason: string }) {
     const detail = this.detail();

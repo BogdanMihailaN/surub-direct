@@ -1,2 +1,2 @@
 namespace SurubDirect.Ordering.Contracts;
-public sealed record PaymentSummaryDto(string Status, decimal Amount, string Currency);
+public sealed record PaymentSummaryDto(string Status, decimal Amount, string Currency, decimal RefundedAmount);

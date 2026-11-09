@@ -279,6 +279,10 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
+                    b.Property<decimal>("PartialRefundTotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -321,10 +325,17 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<Guid?>("PartialReturnId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<decimal?>("RefundAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<string>("ToStatus")
                         .IsRequired()
@@ -335,6 +346,9 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("OrderId", "OperationId");
+
+                    b.HasIndex("OrderId", "PartialReturnId")
+                        .IsUnique();
 
                     b.HasIndex("OrderId", "Version")
                         .IsUnique();

@@ -11,6 +11,9 @@
         >{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} ·
         {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span
       >
+      @for (receipt of order.pendingReceipts; track receipt.requestId) {
+        <span>Retur {{ receipt.requestId }} · În așteptare din {{ receipt.requestedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Încercări: {{ receipt.attempts }} · Următoarea verificare: {{ receipt.nextAttemptAt | date: 'HH:mm:ss, dd.MM.yyyy' }}</span>
+      }
     </button>
   } @empty {
     <p>Nu există comenzi pentru filtrele alese.</p>

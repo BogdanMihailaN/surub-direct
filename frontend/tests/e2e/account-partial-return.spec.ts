@@ -66,6 +66,38 @@ test('owner requests selected packs, recovers a lost response and sees the admin
     await view.setViewportSize({ width: 390, height: 844 });
     expect(await view.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await panel.screenshot({ path: '../work/account-partial-return-mobile.png' });
+    const returnPath = adminPath + '/' + saved.id;
+    expect((await adminWrite(page.request, admin, returnPath + '/receive', {
+      operationId: crypto.randomUUID(), expectedVersion: 1, reason: 'Primire ambalaj returnat', resalableConfirmed: true,
+    })).status()).toBe(204);
+    await expect.poll(async () => (await (await page.request.get(admin + adminPath)).json())[0].status, { timeout: 30000 }).toBe('Restored');
+    await page.goto(admin + '/comenzi');
+    await page.getByLabel('Număr comandă', { exact: true }).fill(order.number);
+    await page.getByRole('button', { name: 'Aplică filtrele', exact: true }).click();
+    const queue = page.getByLabel('Lista comenzilor', { exact: true });
+    await expect(queue.getByRole('button')).toHaveCount(1);
+    await queue.getByRole('button').click();
+    const card = page.locator('sd-partial-return-card');
+    const refund = card.getByRole('button', { name: 'Simulează rambursarea produselor' });
+    await expect(refund).toBeDisabled();
+    await card.getByLabel('Motivul operației pentru această cerere').fill('Rambursare pentru ambalajul recepționat');
+    await card.getByLabel('Confirm operația pentru această cerere', { exact: true }).check();
+    await page.route('**' + returnPath + '/refund', async route => {
+      expect((await route.fetch()).status()).toBe(204);
+      await route.abort('failed');
+    }, { times: 1 });
+    await refund.click();
+    await expect(card).toContainText('Rambursare simulată înregistrată');
+    await expect(refund).toHaveCount(0);
+    const detail = await (await page.request.get(admin + '/api/v1/admin/sales-orders/' + order.id)).json();
+    const offer = detail.order.lines.find((x: { offerId: string }) => x.offerId === saved.lines[0].offerId);
+    expect(detail.paymentSimulation.refundedAmount).toBe(offer.unitGross);
+    expect(detail.paymentSimulation.history.filter((x: { partialReturnId: string }) => x.partialReturnId === saved.id)).toHaveLength(1);
+    await view.getByRole('button', { name: 'Actualizează istoricul', exact: true }).click();
+    const payment = view.getByRole('region', { name: 'Starea plății simulate' });
+    await expect(payment).toContainText('Rambursată parțial');
+    await expect(payment).toContainText('Total rambursat');
+    await payment.screenshot({ path: '../work/partial-refund-customer-mobile.png' });
     await adminWrite(customer, shop, '/api/auth/logout');
     const other = await register();
     const csrf = await (await customer.get(shop + '/api/auth/csrf')).json();

@@ -39,7 +39,7 @@ public sealed class CustomerPaymentSummaryTests(OrderingCartFixture fixture) : I
             Assert.DoesNotContain("Private audit reason", json);
             Assert.DoesNotContain("private-operator", json);
             using var summary = JsonDocument.Parse(JsonSerializer.Serialize(item.PaymentSummary));
-            Assert.Equal(new[] { "Amount", "Currency", "Status" }, summary.RootElement.EnumerateObject().Select(x => x.Name).Order().ToArray());
+            Assert.Equal(new[] { "Amount", "Currency", "RefundedAmount", "Status" }, summary.RootElement.EnumerateObject().Select(x => x.Name).Order().ToArray());
         }
         Assert.DoesNotContain((await accounts.Read("unrelated-account", 1, default)).Items, x => x.Id == order.Id);
         Assert.DoesNotContain((await anonymous.Read(new string('b', 64), 1, default)).Items, x => x.Id == order.Id);

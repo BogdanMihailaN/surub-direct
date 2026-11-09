@@ -23,6 +23,6 @@ Migrarea aditivă `PartialReturnReceipts` creează ReturnReceipts și ReturnRece
 - Modelul cererilor și deciziilor administrative în Ordering este implementat în [etapa cererilor parțiale](partial-return-requests.md); formularul clientului este disponibil în Contul meu.
 - Aprobarea, recepția explicită și retry/reconcilierea sunt implementate prin API-ul Ordering; interfața administrativă este disponibilă.
 - Selecția produselor și cantităților este disponibilă în cont și în administrare.
-- Produse deteriorate/carantină și rambursări parțiale separate. Simulatorul actual rambursează numai integral; nu se calculează implicit o rambursare din cantitățile recepționate.
+- Produse deteriorate/carantină și rambursări parțiale separate. Simulatorul permite rambursarea produselor recepționate la confirmarea administratorului.
 
 Nu activează un flux comercial, un formular de retur parțial sau rambursări reale.

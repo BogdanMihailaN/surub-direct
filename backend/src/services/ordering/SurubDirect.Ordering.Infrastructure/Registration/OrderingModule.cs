@@ -49,6 +49,7 @@ public static class OrderingModule
         services.AddScoped<ChangeOrderProcessingHandler>();
         services.AddScoped<GetDeliveryOptionsHandler>();
         services.AddScoped<SimulatePaymentHandler>();
+        services.AddScoped<RefundPartialReturnHandler>();
         services.AddScoped<IPaymentSimulations, PaymentSimulations>();
         services.AddScoped<IOrderProcessing, OrderProcessing>();
         services.AddScoped<IShipments, Shipments>();

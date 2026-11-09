@@ -15,7 +15,7 @@ export interface OrderDetail {
   cancelledBy: string | null;
   cancellationRequestedAt: string | null;
   cancelledAt: string | null;
-  order: Omit<OrderSummary, 'customerName' | 'returnStatus' | 'paymentStatus'> & {
+  order: Omit<OrderSummary, 'customerName' | 'returnStatus' | 'paymentStatus' | 'pendingReceipts'> & {
     delivery?: DeliveryCharge | null;
     finalizedAt: string | null;
     netTotal: number;

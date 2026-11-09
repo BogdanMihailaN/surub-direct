@@ -14,7 +14,7 @@ public sealed class ListAdminOrdersHandler(IAdminDemoOrders orders)
         if (returnStatus is not (null or "NotRequested" or "Requested" or "Approved" or "Rejected" or "Restoring" or "Restored"))
             throw new BusinessException("Starea returului nu este validă.");
         paymentStatus = string.IsNullOrWhiteSpace(paymentStatus) ? null : paymentStatus.Trim();
-        if (paymentStatus is not (null or "NotStarted" or "Pending" or "Paid" or "Failed" or "Refunded"))
+        if (paymentStatus is not (null or "NotStarted" or "Pending" or "Paid" or "PartiallyRefunded" or "Failed" or "Refunded"))
             throw new BusinessException("Starea plății simulate nu este validă.");
         partialReturnStatus = string.IsNullOrWhiteSpace(partialReturnStatus) ? null : partialReturnStatus.Trim();
         if (partialReturnStatus is not (null or "Requested" or "Approved" or "Rejected" or "Restoring" or "Restored"))

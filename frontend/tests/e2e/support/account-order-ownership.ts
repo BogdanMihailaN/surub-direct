@@ -50,8 +50,8 @@ export async function assertAccountOrderOwnership(
     const unclaimed = await (await owner.get(origin + '/api/v1/ordering/demo-orders')).json();
     const publicOrder = unclaimed.items.find((order: { id: string }) => order.id === id);
     const number = publicOrder.number;
-    expect(publicOrder.paymentSummary).toEqual({ status: paymentStatus, amount: publicOrder.grossTotal, currency: 'RON' });
-    expect(Object.keys(publicOrder.paymentSummary).sort()).toEqual(['amount', 'currency', 'status']);
+    expect(publicOrder.paymentSummary).toEqual({ status: paymentStatus, amount: publicOrder.grossTotal, refundedAmount: paymentStatus === 'Refunded' ? publicOrder.grossTotal : 0, currency: 'RON' });
+    expect(Object.keys(publicOrder.paymentSummary).sort()).toEqual(['amount', 'currency', 'refundedAmount', 'status']);
     expect(Object.keys(publicOrder.shipment).sort()).toEqual(['reference', 'status']);
     expect(publicOrder.shipment.status).toBe(paymentStatus === 'Refunded' ? 'Delivered' : 'NotStarted');
     expect(Object.keys(publicOrder.return).sort()).toEqual(['restoredAt', 'status']);

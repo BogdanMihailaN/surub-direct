@@ -2,6 +2,9 @@
   @if (data(); as payment) {
     <p>Plată simulată: <strong>{{ labels[payment.status] ?? 'Stare necunoscută' }}</strong></p>
     <p>Sumă demonstrativă: {{ payment.amount | number: '1.2-2' }} {{ payment.currency }}</p>
+    @if (payment.refundedAmount > 0) {
+      <p>Total rambursat: <strong>{{ payment.refundedAmount | number: '1.2-2' }} {{ payment.currency }}</strong></p>
+    }
   } @else {
     <p>Starea plății simulate nu este disponibilă. Actualizează comenzile.</p>
   }

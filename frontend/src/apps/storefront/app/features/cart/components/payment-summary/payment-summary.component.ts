@@ -11,6 +11,6 @@ export class PaymentSummaryComponent {
   readonly data = input<PaymentSummary>();
   readonly labels: Record<PaymentSummary['status'], string> = {
     NotStarted: 'Neinițiată', Pending: 'În curs', Paid: 'Reușită',
-    Failed: 'Eșuată', Refunded: 'Rambursată integral',
+    PartiallyRefunded: 'Rambursată parțial', Failed: 'Eșuată', Refunded: 'Rambursată integral',
   };
 }

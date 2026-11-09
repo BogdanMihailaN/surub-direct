@@ -9,11 +9,12 @@ Stările sunt separate de confirmarea stocului și de pregătirea internă a com
 - Neinițiată → În curs, prin inițiere explicită.
 - În curs → Reușită sau Eșuată, prin alegerea explicită a rezultatului.
 - Eșuată → În curs, cu o nouă încercare identificată separat.
-- Reușită → Rambursată integral. Rambursarea este terminală pentru simularea acelei comenzi; nu există rambursări parțiale sau o nouă plată după rambursare.
+- Reușită → Rambursată parțial la rambursarea produselor recepționate, dacă mai există sold.
+- Reușită sau Rambursată parțial → Rambursată integral când totalul rambursat ajunge la valoarea plății. Aceasta încheie simularea pentru comandă.
 
 Fiecare acțiune cere un motiv de 3–500 caractere și confirmarea comenzii/sumei în interfață. Suma și moneda sunt copiate exclusiv din comanda salvată, incluzând transportul; request-ul nu acceptă sume sau operatori furnizați de client. Simulatorul nu modifică produsele, prețurile, stocul sau starea pregătirii.
 
-Anularea comenzii este blocată în stările În curs și Reușită. Înainte de expediere, se poate anula după un rezultat eșuat sau după rambursarea integrală simulată; restituirea stocului rămâne operația distinctă existentă. Inițierea simultană cu anularea are un singur câștigător. După anulare nu mai sunt permise operații noi de plată.
+Anularea comenzii este blocată în stările În curs, Reușită și Rambursată parțial. Înainte de expediere, se poate anula după un rezultat eșuat sau după rambursarea integrală simulată; restituirea stocului rămâne operația distinctă existentă. Inițierea simultană cu anularea are un singur câștigător. După anulare nu mai sunt permise operații noi de plată.
 
 ## API, persistență și audit
 
@@ -31,10 +32,20 @@ Acesta este un instrument administrativ demonstrativ, nu un adaptor de procesato
 
 ## Rezumatul clientului
 
-Istoricul browserului și istoricul contului includ `paymentSummary` cu numai `status`, `amount` și `currency`. Nu expun istoricul operațiilor, motive, operatori sau identificatorii încercărilor. Suma include transportul din comanda salvată. Lipsa unui registru de simulare este reprezentată explicit ca `NotStarted`; lipsa câmpului în interfață este afișată ca indisponibilitate, nu ca o stare presupusă.
+Istoricul browserului și istoricul contului includ `paymentSummary` cu `status`, `amount`, `currency` și `refundedAmount`. Nu expun istoricul operațiilor, motive, operatori sau identificatorii încercărilor. Suma include transportul din comanda salvată. Lipsa unui registru de simulare este reprezentată explicit ca `NotStarted`; lipsa câmpului în interfață este afișată ca indisponibilitate, nu ca o stare presupusă.
 
 Citirea paginii încarcă numai simulările comenzilor deja filtrate după proprietar, într-o singură interogare suplimentară și în aceeași tranzacție RepeatableRead. Asocierea la cont păstrează rezumatul și elimină accesul din istoricul anonim. Confirmarea repetată și răspunsul anulării returnează starea persistentă, fără a o reseta la Neinițiată. Rezumatul nu oferă operații de plată clientului; numai administratorul operează simulatorul local.
 
 După expediere sau livrare, anularea cu restituire de stoc este blocată chiar după rambursare. Vezi [expedierea demonstrativă](demo-shipping.md).
 
 Returul integral demonstrativ după livrare este acum disponibil prin fluxul separat descris în [demo-returns.md](demo-returns.md). Acesta nu deblochează anularea după expediere și nu rambursează automat plata.
+
+## Rambursarea produselor recepționate
+
+În detaliul comenzii, administratorul poate confirma o rambursare simulată pentru o cerere parțială ajunsă la „Stoc restituit”. Suma reprezintă totalul ambalajelor recepționate înmulțite cu prețurile cu TVA salvate la comandă. Transportul se poate deconta ulterior prin operația pentru soldul rămas.
+
+Ordering primește operația la POST /api/v1/admin/sales-orders/{orderId}/partial-returns/{requestId}/refund. Solicitarea include identificatorul operației, versiunea plății afișate și motivul. Serviciul calculează suma, verifică plata și recepția și salvează totalul și evenimentul de audit în aceeași tranzacție. Același blocaj pe comandă serializează rambursările parțiale și integrale. O cheie unică limitează fiecare cerere de retur la o rambursare. Repetarea exactă a unei operații confirmate recuperează rezultatul.
+
+Starea plății devine PartiallyRefunded cât timp există sold și Refunded la acoperirea întregii sume. Pentru plățile rambursate integral înainte de această migrare, istoricul continuă să afișeze suma integrală drept total rambursat. Clientul vede starea și totalul în istoricul comenzii. Administratorul vede și suma fiecărei operații noi în jurnalul simulării.
+
+În lista Comenzi, filtrul „Stare retur parțial” → „Restituire stoc în curs” afișează pentru fiecare cerere în așteptare identificatorul, momentul primirii, numărul încercărilor și următoarea verificare programată. Detaliile provin din aceeași citire consistentă ca pagina de comenzi.

@@ -610,3 +610,11 @@ Cele trei scenarii Playwright au trecut în 50,3 secunde. Clientul recuperează 
 Testul de integrare verifică paginarea a 27 de comenzi, numărarea unică pentru cereri multiple, combinarea cu plata și validarea stării. Scenariul de administrare verifică mutarea între liste la aprobare. Local au trecut 461 de teste .NET, 18 teste Python, patru scenarii Playwright și buildurile Angular pentru magazin și administrare.
 
 Două rulări consecutive ale workflow-ului GitHub au raportat valori diferite pentru EndedAt la consum și la recitirea din PostgreSQL. Inventory folosește acum precizia de o microsecundă la înregistrarea momentului consumului, astfel încât reluarea întoarce aceeași valoare.
+
+## Rambursări parțiale simulate și recepții în așteptare — 9 noiembrie 2026
+
+Au trecut 464 de teste .NET și 18 teste Python prin `python3 scripts/dev.py test`, precum și buildurile Angular de producție pentru magazin și administrare. Testele noi verifică rambursarea o singură dată per retur, reluarea idempotentă, concurența cu rambursarea integrală, plafonul valoric și refuzul înainte de recepție.
+
+Șase scenarii Playwright distincte au trecut. Sunt acoperite rambursarea cu răspuns pierdut, suma vizibilă clientului, sesiunea/rolul/CSRF și afișarea mai multor recepții în așteptare pentru aceeași comandă. Cinci scenarii au trecut în rularea grupată. Scenariul de administrare a depășit timpul maxim la o cerere CSRF și a trecut la reluarea separată, împreună cu regresia de autorizare, în 34,5 secunde. Chromium a fost reinstalat înaintea rulării grupate deoarece executabilul lipsea din cache. Captura mobilă a rambursării din cont a fost inspectată.
+
+Migrarea aditivă PartialReturnRefunds a fost aplicată după backup privat verificat al celor cinci baze. Modelul EF nu are modificări nemigrate. Rambursarea parțială include produsele selectate la prețul original. Transportul rămâne în sold și poate fi inclus ulterior în rambursarea soldului rămas.

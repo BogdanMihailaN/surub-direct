@@ -5,6 +5,6 @@
     <sd-partial-return-create [lines]="detail().order.lines" [returns]="returns()" [busy]="busy()" (created)="created.emit($event)" />
   } @else { <p>Cereri noi sunt disponibile pentru comenzi livrate fără retur integral început, în limita a 100 de cereri.</p> }
   @for (request of returns(); track request.id) {
-    <sd-partial-return-card [data]="request" [busy]="busy()" (acted)="acted.emit($event)" />
+    <sd-partial-return-card [data]="request" [detail]="detail()" [busy]="busy()" (acted)="acted.emit($event)" />
   } @empty { <p>Nu există cereri parțiale.</p> }
 </section>

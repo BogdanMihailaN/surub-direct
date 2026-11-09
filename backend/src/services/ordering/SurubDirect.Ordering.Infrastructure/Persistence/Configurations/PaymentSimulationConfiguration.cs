@@ -7,6 +7,8 @@ internal sealed class PaymentSimulationConfiguration : IEntityTypeConfiguration<
     public void Configure(EntityTypeBuilder<PaymentSimulation> b)
     {
         b.ToTable("PaymentSimulations");
+        b.Property(x => x.PartialRefundTotal).HasPrecision(18, 2);
+        b.Ignore(x => x.RefundedAmount);
         b.HasKey(x => x.OrderId);
         b.Property(x => x.OrderId).ValueGeneratedNever();
         b.Property(x => x.Amount).HasPrecision(18, 2);

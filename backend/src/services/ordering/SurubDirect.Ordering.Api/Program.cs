@@ -58,6 +58,7 @@ CreatePartialReturnEndpoint.Map(app);
 ListPartialReturnsEndpoint.Map(app);
 DecidePartialReturnEndpoint.Map(app);
 ReceivePartialReturnEndpoint.Map(app);
+RefundPartialReturnEndpoint.Map(app);
 RequestAccountReturnEndpoint.Map(app);
 RequestAccountPartialReturnEndpoint.Map(app);
 GetAccountPartialReturnsEndpoint.Map(app);
