@@ -71,6 +71,7 @@ test('partial return administration enforces session role and CSRF through gatew
   const path = '/api/v1/admin/sales-orders/' + crypto.randomUUID() + '/partial-returns';
   const decisionPath = path + '/' + crypto.randomUUID() + '/decision';
   const receivePath = path + '/' + crypto.randomUUID() + '/receive';
+  const retryPath = path + '/' + crypto.randomUUID() + '/retry-receipt';
   const refundPath = path + '/' + crypto.randomUUID() + '/refund';
   const bases = ['http://localhost:5099', 'http://localhost:5104'];
   for (const base of bases) {
@@ -79,6 +80,7 @@ test('partial return administration enforces session role and CSRF through gatew
     expect((await request.post(base + decisionPath, { data: {} })).status()).toBe(401);
     expect((await request.post(base + receivePath, { data: {} })).status()).toBe(401);
     expect((await request.post(base + refundPath, { data: {} })).status()).toBe(401);
+    expect((await request.post(base + retryPath, { data: {} })).status()).toBe(401);
   }
   await loginAdmin(request, origin);
   for (const base of bases) {
@@ -86,6 +88,7 @@ test('partial return administration enforces session role and CSRF through gatew
     expect((await request.post(base + decisionPath, { data: {} })).status()).toBe(400);
     expect((await request.post(base + receivePath, { data: {} })).status()).toBe(400);
     expect((await request.post(base + refundPath, { data: {} })).status()).toBe(400);
+    expect((await request.post(base + retryPath, { data: {} })).status()).toBe(400);
     expect((await request.get(base + path)).status()).toBe(404);
   }
   const customer = await playwright.request.newContext();
@@ -96,7 +99,7 @@ test('partial return administration enforces session role and CSRF through gatew
     const csrf = await (await customer.get(origin + '/api/auth/csrf')).json();
     for (const base of bases) {
       expect((await customer.get(base + path)).status()).toBe(403);
-      for (const route of [path, decisionPath, receivePath, refundPath])
+      for (const route of [path, decisionPath, receivePath, refundPath, retryPath])
         expect((await customer.post(base + route, { data: {}, headers: { 'X-CSRF-TOKEN': csrf.token } })).status()).toBe(403);
     }
   } finally { await customer.dispose(); }

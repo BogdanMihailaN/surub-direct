@@ -108,4 +108,56 @@ public sealed class PartialReturnReceiptCoordinationTests(OrderingCartFixture or
         await Due(r); await Process(Remote);
         Assert.Equal("Restored", (await Read(r)).Status);
     }
+    [Fact]
+    public async Task Manual_retry_is_audited_idempotent_and_recovers_lost_remote_response_once()
+    {
+        var r = await Seed();
+        await Process(async (request, ct) => { await Remote(request, ct); throw new HttpRequestException("Lost response"); });
+        var operationId = Guid.NewGuid();
+        async Task Retry(long version = 2, string reason = "Inventory verificat")
+        {
+            await using var scope = ordering.Services.CreateAsyncScope();
+            await scope.ServiceProvider.GetRequiredService<IPartialReturnReceipts>().Retry(r.OrderId, r.Id, operationId, version, reason, "admin", default);
+        }
+        await Task.WhenAll(Retry(), Retry());
+        var pending = await Read(r);
+        Assert.Single(pending.ReceiptRetries); Assert.Equal(3, pending.Version);
+        Assert.Equal(r.ReceiptOperationId, pending.ReceiptOperationId);
+        Assert.Equal(r.Lines, pending.Lines);
+        Assert.Equal(1, pending.ReceiptAttempts);
+        Assert.Equal(409, (await Assert.ThrowsAsync<BusinessException>(() => Retry(reason: "Alt motiv"))).Status);
+        await using (var scope = ordering.Services.CreateAsyncScope())
+            Assert.Equal(409, (await Assert.ThrowsAsync<BusinessException>(() => scope.ServiceProvider.GetRequiredService<IPartialReturnReceipts>()
+                .Retry(r.OrderId, r.Id, Guid.NewGuid(), 3, "Prea devreme", "admin", default))).Status);
+        Assert.Equal(1, await Process(Remote));
+        await Retry();
+        var complete = await Read(r);
+        Assert.Equal("Restored", complete.Status); Assert.Single(complete.ReceiptRetries);
+        Assert.False(complete.ReceiptNeedsAttention);
+        await using var stockScope = inventory.Services.CreateAsyncScope();
+        var ledger = await stockScope.ServiceProvider.GetRequiredService<SurubDirect.Inventory.Application.IStockLedger>().Read(r.Lines[0].VariantId, 1, default);
+        Assert.Equal(90, ledger.OnHand); Assert.Single(ledger.Items, x => x.Kind == "ReturnReceipt");
+    }
+    [Fact]
+    public async Task Receipt_alert_appears_after_three_failures_and_clears_only_after_confirmation()
+    {
+        var r = await Seed();
+        for (var attempt = 1; attempt <= 3; attempt++)
+        {
+            await Due(r);
+            await Process((_, _) => throw new HttpRequestException("Unavailable"));
+            Assert.Equal(attempt >= 3, (await Read(r)).ReceiptNeedsAttention);
+        }
+        await using (var scope = ordering.Services.CreateAsyncScope())
+        {
+            var repo = scope.ServiceProvider.GetRequiredService<IPartialReturnReceipts>();
+            Assert.Equal(404, (await Assert.ThrowsAsync<BusinessException>(() => repo.Retry(Guid.NewGuid(), r.Id, Guid.NewGuid(), 2, "Verificare", "admin", default))).Status);
+            Assert.Equal(409, (await Assert.ThrowsAsync<BusinessException>(() => repo.Retry(r.OrderId, r.Id, Guid.NewGuid(), 1, "Verificare", "admin", default))).Status);
+            await repo.Retry(r.OrderId, r.Id, Guid.NewGuid(), 2, "Verificare", "admin", default);
+        }
+        Assert.True((await Read(r)).ReceiptNeedsAttention);
+        await Process(Remote);
+        Assert.False((await Read(r)).ReceiptNeedsAttention);
+    }
+
 }

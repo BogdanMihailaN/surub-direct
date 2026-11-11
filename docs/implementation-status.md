@@ -216,3 +216,7 @@ Pentru o comandă proprie livrată, clientul poate selecta ambalajele disponibil
 ## Rambursări parțiale simulate și urmărirea recepțiilor — 9 noiembrie 2026
 
 Administratorul vede suma produselor recepționate și poate confirma rambursarea din detaliul cererii. Clientul vede starea plății și totalul rambursat în istoricul comenzii. Simulatorul păstrează suma fiecărei operații și poate deconta ulterior soldul rămas. Lista comenzilor filtrate după restituirea în curs afișează fiecare recepție așteptată și momentul programat pentru reîncercare.
+
+## Intervenție la recepții parțiale — 11 noiembrie 2026
+
+Administratorul poate programa o reîncercare pentru o recepție care a eșuat, cu motiv și confirmare. Auditul păstrează operatorul, data și versiunea fiecărei intervenții. Reîncercarea folosește aceeași cheie Inventory și aceleași cantități. După trei încercări nereușite, detaliul cererii și lista recepțiilor în curs afișează o alertă până la confirmare. Există limită de o intervenție pe minut și 100 per cerere, fără oprirea retry-ului automat. Detalii în [intervenția la recepții](partial-return-intervention.md).

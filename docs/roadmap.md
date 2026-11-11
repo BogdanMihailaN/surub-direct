@@ -92,7 +92,7 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 - [x] Colectare locală comună pentru alertele mesageriei și retenție, cu rotație și filtrare de metadate.
 - [ ] Colector de producție/notificări externe, politici pentru Inbox/erori nerezolvate și extinderea brokerului la celelalte fluxuri.
 - [ ] Integrări de plăți, curier și facturare, cu verificări în mediile de test.
-- [ ] Intervenție și alerte pentru recepții parțiale nereconciliate.
+- [x] Intervenție administrativă cu audit și alerte în interfață pentru recepții parțiale nereconciliate.
 - [ ] Retururi și cerințele comerciale convenite pentru lansare.
 - [ ] Validarea completă a fluxurilor comerciale, securității și operării; documentarea recuperării și backupurilor.
 

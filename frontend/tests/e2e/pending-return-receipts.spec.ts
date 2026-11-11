@@ -7,7 +7,7 @@ test('admin sees every scheduled receipt on the matching order', async ({ page }
   await page.route('**/api/v1/admin/sales-orders?**', async route => {
     const filtered = new URL(route.request().url()).searchParams.get('partialReturnStatus') === 'Restoring';
     const pendingReceipts = ['retur-A', 'retur-B'].map((requestId, attempts) => ({
-      requestId, attempts, requestedAt: '2026-11-06T11:00:00Z', nextAttemptAt: '2026-11-06T11:05:00Z',
+      requestId, attempts, needsAttention: attempts === 1, requestedAt: '2026-11-06T11:00:00Z', nextAttemptAt: '2026-11-06T11:05:00Z',
     }));
     const items = filtered ? [{ id: 'order', number: 'DEMO-005', status: 'Confirmed', returnStatus: 'NotRequested',
       paymentStatus: 'Paid', pendingReceipts, customerName: 'Client', grossTotal: 44.20, currency: 'RON', createdAt: '2026-11-01T12:00:00Z' }] : [];
@@ -19,9 +19,10 @@ test('admin sees every scheduled receipt on the matching order', async ({ page }
   const row = page.getByLabel('Lista comenzilor', { exact: true }).getByRole('button');
   await expect(row).toHaveCount(1);
   for (const id of ['retur-A', 'retur-B']) {
-    const receipt = row.locator('span').filter({ hasText: id });
+    const receipt = row.locator('span').filter({ hasText: 'Retur ' + id + ' · În așteptare' });
     await expect(receipt).toContainText('În așteptare din 06.11.2026');
     await expect(receipt).toContainText('Următoarea verificare:');
   }
   await expect(row).toContainText('Încercări: 1');
+  await expect(row).toContainText('Necesită verificare · Retur retur-B');
 });

@@ -19,6 +19,8 @@ public sealed class PartialReturnRequest
     public DateTimeOffset? NextReceiptAttemptAt { get; private set; }
     public int ReceiptAttempts { get; private set; }
     public string? ReceiptError { get; private set; }
+    public List<ReceiptRetry> ReceiptRetries { get; private set; } = [];
+    public bool ReceiptNeedsAttention => Status == "Restoring" && ReceiptAttempts >= 3;
     public Guid? DecisionId { get; private set; }
     public string? DecisionReason { get; private set; }
     public string? DecidedBy { get; private set; }
@@ -79,6 +81,25 @@ public sealed class PartialReturnRequest
         Status = "Restoring"; Version++;
         ReceiptOperationId = operationId; ReceiptReason = reason!.Trim(); ReceivedBy = actor;
         ReceiptRequestedAt = Precision(now); NextReceiptAttemptAt = Precision(now);
+    }
+    public void RetryReceipt(Guid operationId, long expectedVersion, string? reason, string actor, DateTimeOffset now)
+    {
+        ValidateReason(reason, actor);
+        if (operationId == Guid.Empty || expectedVersion < 0)
+            throw new BusinessException("Identificatorul operației și versiunea sunt obligatorii.");
+        var previous = ReceiptRetries.SingleOrDefault(x => x.OperationId == operationId);
+        if (previous is not null)
+        {
+            if (previous.Version != expectedVersion + 1 || previous.Reason != reason!.Trim() || previous.Actor != actor)
+                throw new BusinessException("Identificatorul reîncercării a fost folosit cu alt conținut.", 409);
+            return;
+        }
+        if (Status != "Restoring" || ReceiptAttempts == 0 || Version != expectedVersion)
+            throw new BusinessException("Reîncercarea necesită o recepție neconfirmată și versiunea curentă.", 409);
+        if (ReceiptRetries.Count >= 100 || ReceiptRetries.Any(x => x.CreatedAt > now.AddMinutes(-1)))
+            throw new BusinessException("Așteaptă un minut între intervenții. Sunt permise cel mult 100 de intervenții pentru o recepție.", 409);
+        ReceiptRetries.Add(new(operationId, ++Version, reason!.Trim(), actor, Precision(now)));
+        NextReceiptAttemptAt = Precision(now);
     }
     public void ConfirmReceipt(DateTimeOffset inventoryReceivedAt)
     {

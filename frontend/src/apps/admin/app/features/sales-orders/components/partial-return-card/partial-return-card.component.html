@@ -8,13 +8,16 @@
   <small>{{ data().createdAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Operator: {{ data().actor }}</small>
   @if (data().decidedAt) { <p>Decizie: {{ data().decisionReason }}</p><small>{{ data().decidedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · {{ data().decidedBy }}</small> }
   @if (data().receiptRequestedAt) { <p>Recepție: {{ data().receiptReason }}</p><small>{{ data().receiptRequestedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · {{ data().receivedBy }}</small> }
-  @if (data().status === 'Requested' || data().status === 'Approved' || canRefund()) {
+  @if (data().status === 'Requested' || data().status === 'Approved' || canRefund() || (data().status === 'Restoring' && data().receiptAttempts > 0)) {
     <label [for]="'partial-action-' + data().id">Motivul operației pentru această cerere</label>
     <textarea [id]="'partial-action-' + data().id" [(ngModel)]="reason" maxlength="500" [disabled]="busy()"></textarea>
     <label><input type="checkbox" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirm operația pentru această cerere</label>
     @if (data().status === 'Requested') {
       <button [disabled]="!valid()" (click)="submit('Approved')">Aprobă cererea parțială</button>
       <button [disabled]="!valid()" (click)="submit('Rejected')">Respinge cererea parțială</button>
+    } @else if (data().status === 'Restoring') {
+      <p>Programează o nouă încercare cu aceeași cheie și aceleași cantități. Confirmarea va fi verificată automat.</p>
+      <button [disabled]="!valid()" (click)="submit('RetryReceipt')">Reîncearcă recepția</button>
     } @else if (canRefund()) {
       <p>Produse recepționate: <strong>{{ refundAmount() | number: '1.2-2' }} {{ detail().order.currency }}</strong>. Transportul se tratează separat.</p>
       <button [disabled]="!valid()" (click)="submit('Refund')">Simulează rambursarea produselor</button>
@@ -28,6 +31,10 @@
     <p>Recepția stocului este în curs. Folosește Actualizează detaliile pentru rezultat; nu înregistra o altă recepție.</p>
     @if (data().receiptError) { <p>{{ data().receiptError }}</p> }
     <p>Încercări: {{ data().receiptAttempts }} · Următoarea: {{ data().nextReceiptAttemptAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
+  }
+  @if (data().receiptNeedsAttention) { <p role="alert">Recepția necesită verificare după cel puțin trei încercări nereușite.</p> }
+  @for (retry of data().receiptRetries; track retry.operationId) {
+    <p>Reîncercare solicitată: {{ retry.reason }} · {{ retry.actor }} · {{ retry.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
   }
   @if (refund(); as entry) { <p>Rambursare simulată înregistrată: {{ entry.refundAmount | number: '1.2-2' }} {{ detail().order.currency }}</p> }
   @if (data().inventoryReceivedAt) { <p>Stoc confirmat restituit: {{ data().inventoryReceivedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p> }

@@ -5,6 +5,17 @@ using SurubDirect.Ordering.Domain;
 namespace SurubDirect.Ordering.Infrastructure;
 internal sealed class PartialReturnReceipts(OrderingDbContext db, TimeProvider clock) : IPartialReturnReceipts
 {
+    public async Task Retry(Guid orderId, Guid requestId, Guid operationId, long expectedVersion, string? reason, string actor, CancellationToken ct)
+    {
+        db.ChangeTracker.Clear();
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        // Same request lock as the worker: no Inventory call or order lock is needed.
+        var request = await db.PartialReturns.FromSqlInterpolated($"""SELECT * FROM ordering."PartialReturns" WHERE "Id"={requestId} AND "OrderId"={orderId} FOR UPDATE""").SingleOrDefaultAsync(ct)
+            ?? throw new BusinessException("Cererea nu există pentru această comandă.", 404);
+        request.RetryReceipt(operationId, expectedVersion, reason, actor, clock.GetUtcNow());
+        await db.SaveChangesAsync(ct);
+        await tx.CommitAsync(ct);
+    }
     public async Task Receive(Guid orderId, Guid requestId, Guid operationId, long expectedVersion, string? reason, string actor, bool resalableConfirmed, CancellationToken ct)
     {
         db.ChangeTracker.Clear();

@@ -737,7 +737,41 @@ namespace SurubDirect.Ordering.Infrastructure.Migrations
                                 .HasForeignKey("ReturnId");
                         });
 
+                    b.OwnsMany("SurubDirect.Ordering.Domain.ReceiptRetry", "ReceiptRetries", b1 =>
+                        {
+                            b1.Property<Guid>("ReturnId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("OperationId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Actor")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("Reason")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)");
+
+                            b1.Property<long>("Version")
+                                .HasColumnType("bigint");
+
+                            b1.HasKey("ReturnId", "OperationId");
+
+                            b1.ToTable("PartialReturnReceiptRetries", "ordering");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReturnId");
+                        });
+
                     b.Navigation("Lines");
+
+                    b.Navigation("ReceiptRetries");
                 });
 
             modelBuilder.Entity("SurubDirect.Ordering.Domain.PaymentSimulation", b =>

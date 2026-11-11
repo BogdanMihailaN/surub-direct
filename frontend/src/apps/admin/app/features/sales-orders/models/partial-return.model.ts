@@ -17,4 +17,6 @@ export interface PartialReturn {
   receiptAttempts: number;
   nextReceiptAttemptAt: string | null;
   receiptError: string | null;
+  receiptNeedsAttention: boolean;
+  receiptRetries: { operationId: string; version: number; reason: string; actor: string; createdAt: string }[];
 }

@@ -12,6 +12,7 @@
         {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span
       >
       @for (receipt of order.pendingReceipts; track receipt.requestId) {
+        @if (receipt.needsAttention) { <span>Necesită verificare · Retur {{ receipt.requestId }}</span> }
         <span>Retur {{ receipt.requestId }} · În așteptare din {{ receipt.requestedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Încercări: {{ receipt.attempts }} · Următoarea verificare: {{ receipt.nextAttemptAt | date: 'HH:mm:ss, dd.MM.yyyy' }}</span>
       }
     </button>

@@ -8,6 +8,16 @@ internal sealed class PartialReturnRequestConfiguration : IEntityTypeConfigurati
     {
         b.ToTable("PartialReturns"); b.HasKey(x => x.Id); b.Property(x => x.Id).ValueGeneratedNever();
         b.HasIndex(x => new { x.OrderId, x.Status });
+        b.Ignore(x => x.ReceiptNeedsAttention);
+        b.OwnsMany(x => x.ReceiptRetries, retries =>
+        {
+            retries.ToTable("PartialReturnReceiptRetries");
+            retries.WithOwner().HasForeignKey("ReturnId");
+            retries.HasKey("ReturnId", nameof(ReceiptRetry.OperationId));
+            retries.Property(x => x.OperationId).ValueGeneratedNever();
+            retries.Property(x => x.Reason).HasMaxLength(500);
+            retries.Property(x => x.Actor).HasMaxLength(200);
+        });
         b.HasIndex(x => new { x.Status, x.NextReceiptAttemptAt });
         b.Property(x => x.ReceiptReason).HasMaxLength(500);
         b.Property(x => x.ReceivedBy).HasMaxLength(200);

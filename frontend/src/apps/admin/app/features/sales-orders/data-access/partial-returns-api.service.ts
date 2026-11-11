@@ -12,7 +12,7 @@ export class PartialReturnsApi {
     return this.api.write<PartialReturn>('POST', this.path(orderId), { ...selection, requestId: crypto.randomUUID() });
   }
   act(orderId: string, action: PartialReturnAction) {
-    const operation = action.target === 'Refund' ? 'refund' : action.target === 'Receive' ? 'receive' : 'decision';
+    const operation = action.target === 'RetryReceipt' ? 'retry-receipt' : action.target === 'Refund' ? 'refund' : action.target === 'Receive' ? 'receive' : 'decision';
     return this.api.write('POST', this.path(orderId) + '/' + encodeURIComponent(action.id) + '/' + operation,
       { operationId: crypto.randomUUID(), expectedVersion: action.version, target: action.target,
         reason: action.reason, resalableConfirmed: action.resalableConfirmed });

@@ -1,3 +1,3 @@
 namespace SurubDirect.Ordering.Contracts;
 public sealed record PartialReturnDto(Guid Id, Guid OrderId, string Status, long Version, string Reason, string Actor, DateTimeOffset CreatedAt,
-    IReadOnlyList<PartialReturnLineDto> Lines, Guid? DecisionId, string? DecisionReason, string? DecidedBy, DateTimeOffset? DecidedAt, Guid? ReceiptOperationId, string? ReceiptReason, string? ReceivedBy, DateTimeOffset? ReceiptRequestedAt, DateTimeOffset? InventoryReceivedAt, int ReceiptAttempts, DateTimeOffset? NextReceiptAttemptAt, string? ReceiptError);
+    IReadOnlyList<PartialReturnLineDto> Lines, Guid? DecisionId, string? DecisionReason, string? DecidedBy, DateTimeOffset? DecidedAt, Guid? ReceiptOperationId, string? ReceiptReason, string? ReceivedBy, DateTimeOffset? ReceiptRequestedAt, DateTimeOffset? InventoryReceivedAt, int ReceiptAttempts, DateTimeOffset? NextReceiptAttemptAt, string? ReceiptError, bool ReceiptNeedsAttention, IReadOnlyList<ReceiptRetryDto> ReceiptRetries);

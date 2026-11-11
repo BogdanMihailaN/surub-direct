@@ -29,7 +29,7 @@ internal sealed class AdminDemoOrders(OrderingDbContext db) : IAdminDemoOrders
         var pending = partialReturnStatus == "Restoring"
             ? await db.PartialReturns.AsNoTracking().Where(x => pageIds.Contains(x.OrderId) && x.Status == "Restoring")
                 .OrderBy(x => x.ReceiptRequestedAt).ThenBy(x => x.Id)
-                .Select(x => new { x.OrderId, Receipt = new PendingReceiptDto(x.Id, x.ReceiptRequestedAt, x.NextReceiptAttemptAt, x.ReceiptAttempts) })
+                .Select(x => new { x.OrderId, Receipt = new PendingReceiptDto(x.Id, x.ReceiptRequestedAt, x.NextReceiptAttemptAt, x.ReceiptAttempts, x.ReceiptAttempts >= 3) })
                 .ToListAsync(ct)
             : [];
         var pendingByOrder = pending.ToLookup(x => x.OrderId, x => x.Receipt);

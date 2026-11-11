@@ -29,3 +29,5 @@ Rezervarea originală rămâne Consumed, comanda Confirmed și expedierea Delive
 Nu se emite evenimentul RabbitMQ integral Restored pentru o recepție parțială; confirmarea se recuperează prin HTTP idempotent. Erorile permanente rămân în Restoring cu retry; un flux separat de intervenție/rezolvare și alertele dedicate sunt restante. Nu corecta intenția prin schimbarea cheii sau prin ajustări manuale de stoc.
 
 Migrarea aditivă PartialReturnReceiptCoordination adaugă auditul recepției, rezultatul Inventory și câmpurile de retry. Interfața administrativă este disponibilă în [Angular](partial-return-admin-ui.md); clientul poate solicita cantități și urmări rezultatul în Contul meu.
+
+Intervenția administrativă cu audit și alertele după trei încercări nereușite sunt descrise în [intervenția la recepții](partial-return-intervention.md).

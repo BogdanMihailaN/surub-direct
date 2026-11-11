@@ -198,3 +198,5 @@ Recepțiile de retur pe cantități sunt separate în Inventory: Domain/Returns,
 Coordonarea recepției parțiale în Ordering are porturi separate IPartialReturnReceipts/IPartialReturnInventory, handler pentru confirmare și handler pentru procesare, repository dedicat, client HTTP cu DTO-uri locale și worker API. Auditul și starea recepției aparțin cererii parțiale. Testele de coordonare folosesc baze separate pentru Ordering și Inventory și verifică recuperarea după commit remote urmat de eroare locală.
 
 Interfața administrativă pentru retururi parțiale este împărțită în componentele partial-returns (compoziție), partial-return-create (selecție) și partial-return-card (decizie/recepție/audit), fiecare cu TS/HTML/SCSS colocate. Modelele și PartialReturnsApi sunt separate; SalesOrdersStore coordonează citirile și mutațiile pentru a păstra aceeași selecție și blocarea operațiilor concurente.
+
+Intervenția la recepții parțiale are endpoint, request și handler proprii. Auditul ReceiptRetry aparține cererii din Domain, cu DTO administrativ și mapare EF în configurația agregatului. Nu introduce un serviciu sau un contract comun între servicii.

@@ -55,6 +55,7 @@ public static class OrderingModule
         services.AddScoped<IShipments, Shipments>();
         services.AddScoped<IPartialReturnReceipts, PartialReturnReceipts>();
         services.AddScoped<ReceivePartialReturnHandler>();
+        services.AddScoped<RetryPartialReturnReceiptHandler>();
         services.AddScoped<ProcessPartialReturnReceiptHandler>();
         services.AddScoped<IAccountPartialReturns, PartialReturns>();
         services.AddScoped<GetAccountPartialReturnsHandler>();
