@@ -626,3 +626,7 @@ Au trecut 468 de teste .NET și 18 teste Python prin `python3 scripts/dev.py tes
 Buildurile Angular de producție au trecut. Cele cinci scenarii Playwright au trecut în 54,4 secunde și verifică recepțiile existente, sesiunea/rolul/CSRF pentru noua rută direct și prin gateway, alerta din listă și intervenția cu răspuns pierdut. Scenariul noii interfețe folosește un răspuns controlat pentru indisponibilitatea Inventory; persistența și recuperarea stocului sunt verificate de testele de integrare. Captura mobilă a formularului și istoricului a fost inspectată.
 
 Migrarea aditivă PartialReturnReceiptRetries a fost aplicată după verificarea celor cinci arhive de backup, a checksumurilor și a indexurilor PostgreSQL. Verificarea EF nu indică modificări nemigrate. `git diff --check` a trecut. Alertele sunt în administrare, fără expediere externă.
+
+Prima rulare GitHub Actions a acestei etape a identificat o citire inconsistentă la replay concurent. În PostgreSQL, un JOIN cu auditul putea păstra snapshot-ul anterior așteptării blocării, deși rândul părinte avea deja versiunea nouă. Repository-ul încarcă acum colecțiile prin interogări separate după obținerea blocării. Testul forțează două cereri să aștepte aceeași blocare pentru a reproduce condiția.
+
+După corecție, suita completă a trecut din nou cu 468 de teste .NET și 18 teste Python, inclusiv testul care forțează așteptarea concurentă a blocării.

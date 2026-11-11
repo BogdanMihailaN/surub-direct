@@ -10,7 +10,9 @@ internal sealed class PartialReturnReceipts(OrderingDbContext db, TimeProvider c
         db.ChangeTracker.Clear();
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         // Same request lock as the worker: no Inventory call or order lock is needed.
-        var request = await db.PartialReturns.FromSqlInterpolated($"""SELECT * FROM ordering."PartialReturns" WHERE "Id"={requestId} AND "OrderId"={orderId} FOR UPDATE""").SingleOrDefaultAsync(ct)
+        // Read owned audit rows in a fresh statement after the parent lock is acquired.
+        // A joined query can otherwise retain the pre-wait snapshot of a concurrent retry.
+        var request = await db.PartialReturns.FromSqlInterpolated($"""SELECT * FROM ordering."PartialReturns" WHERE "Id"={requestId} AND "OrderId"={orderId} FOR UPDATE""").AsSplitQuery().SingleOrDefaultAsync(ct)
             ?? throw new BusinessException("Cererea nu există pentru această comandă.", 404);
         request.RetryReceipt(operationId, expectedVersion, reason, actor, clock.GetUtcNow());
         await db.SaveChangesAsync(ct);

@@ -119,7 +119,25 @@ public sealed class PartialReturnReceiptCoordinationTests(OrderingCartFixture or
             await using var scope = ordering.Services.CreateAsyncScope();
             await scope.ServiceProvider.GetRequiredService<IPartialReturnReceipts>().Retry(r.OrderId, r.Id, operationId, version, reason, "admin", default);
         }
-        await Task.WhenAll(Retry(), Retry());
+        // Force both SQL statements to start before either can acquire the parent lock.
+        // This reproduces PostgreSQL's pre-wait snapshot of joined owned audit rows.
+        await using (var lockScope = ordering.Services.CreateAsyncScope())
+        {
+            var db = lockScope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+            await using var tx = await db.Database.BeginTransactionAsync();
+            await db.Database.ExecuteSqlInterpolatedAsync($"""SELECT 1 FROM ordering."PartialReturns" WHERE "Id"={r.Id} FOR UPDATE""");
+            var retries = new[] { Retry(), Retry() };
+            var blocked = 0;
+            for (var i = 0; i < 100 && blocked < 2; i++)
+            {
+                await db.Database.ExecuteSqlRawAsync("SELECT pg_stat_clear_snapshot()");
+                blocked = await db.Database.SqlQueryRaw<int>("""SELECT count(*)::int AS "Value" FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE '%PartialReturns%'""").SingleAsync();
+                if (blocked < 2) await Task.Delay(20);
+            }
+            await tx.CommitAsync();
+            await Task.WhenAll(retries);
+            Assert.Equal(2, blocked);
+        }
         var pending = await Read(r);
         Assert.Single(pending.ReceiptRetries); Assert.Equal(3, pending.Version);
         Assert.Equal(r.ReceiptOperationId, pending.ReceiptOperationId);
