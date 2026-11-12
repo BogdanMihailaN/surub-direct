@@ -16,7 +16,13 @@
       aria-label="Caută produse"
     /><button type="submit">Caută <span>→</span></button>
   </form>
+  <button class="filter-toggle secondary" type="button" [attr.aria-expanded]="filtersOpen()"
+    aria-controls="catalog-filters" (click)="filtersOpen.set(!filtersOpen())">
+    {{ filtersOpen() ? 'Închide filtrele' : 'Filtrează produsele' }}
+    @if (store.categoryName()) { <span> · {{ store.categoryName() }}</span> }
+  </button>
   <div class="catalog-layout">
+    <div id="catalog-filters" class="filter-panel" [class.open]="filtersOpen()">
     <sd-catalog-filters
       [categories]="store.taxonomy().categories"
       [categoryId]="store.activeCategoryId()"
@@ -27,9 +33,10 @@
       (changed)="store.filter($event)"
       (cleared)="store.reset()"
     />
-    <div class="results" aria-live="polite">
+    </div>
+    <div class="results" [attr.aria-busy]="store.loading()">
       @if (store.loading()) {
-        <div class="state">Se încarcă produsele…</div>
+        <sd-catalog-loading />
       } @else if (store.error()) {
         <div class="state error" role="alert">
           {{ store.error() }}<button class="secondary" (click)="store.retry()">Reîncearcă</button>

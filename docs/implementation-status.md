@@ -220,3 +220,7 @@ Administratorul vede suma produselor recepționate și poate confirma rambursare
 ## Intervenție la recepții parțiale — 11 noiembrie 2026
 
 Administratorul poate programa o reîncercare pentru o recepție care a eșuat, cu motiv și confirmare. Auditul păstrează operatorul, data și versiunea fiecărei intervenții. Reîncercarea folosește aceeași cheie Inventory și aceleași cantități. După trei încercări nereușite, detaliul cererii și lista recepțiilor în curs afișează o alertă până la confirmare. Există limită de o intervenție pe minut și 100 per cerere, fără oprirea retry-ului automat. Detalii în [intervenția la recepții](partial-return-intervention.md).
+
+## Finisare catalog și pagină produs — 12 noiembrie 2026
+
+Catalogul are texte mai lizibile, carduri cu ierarhie vizuală mai clară, filtre pliabile pe mobil și substituenți de încărcare care păstrează spațiul grilei. La lățimi de până la 420 px, produsele sunt afișate pe o coloană. Ofertele produsului devin carduri pe ecrane de până la 900 px, cu etichete pentru specificații și fără derulare laterală. Controalele de cantitate au dimensiuni potrivite pentru atingere. Navigarea spre catalog activează derularea la ancoră, iar preferința pentru mișcare redusă este respectată. Regulile comerciale, datele și separarea coșurilor rămân cele existente.

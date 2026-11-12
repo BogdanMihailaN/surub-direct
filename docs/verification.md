@@ -630,3 +630,11 @@ Migrarea aditivă PartialReturnReceiptRetries a fost aplicată după verificarea
 Prima rulare GitHub Actions a acestei etape a identificat o citire inconsistentă la replay concurent. În PostgreSQL, un JOIN cu auditul putea păstra snapshot-ul anterior așteptării blocării, deși rândul părinte avea deja versiunea nouă. Repository-ul încarcă acum colecțiile prin interogări separate după obținerea blocării. Testul forțează două cereri să aștepte aceeași blocare pentru a reproduce condiția.
 
 După corecție, suita completă a trecut din nou cu 468 de teste .NET și 18 teste Python, inclusiv testul care forțează așteptarea concurentă a blocării.
+
+## Finisarea catalogului și a ofertelor pe mobil — 12 noiembrie 2026
+
+Buildurile Angular de producție pentru magazin și administrare au trecut. Din cauza blocajelor de citire a dependențelor din Desktop, compilarea a folosit o copie exactă a surselor și configurațiilor, cu dependențe instalate prin npm ci din același lockfile într-un director temporar. Rezultatul a fost copiat în dist pentru verificarea locală. Chromium Headless a fost reinstalat deoarece lipsea din cache.
+
+Au trecut opt scenarii Playwright în catalog.spec.ts și cart.spec.ts, în 35,7 secunde. Sunt acoperite filtrele dimensionale, produsul, coșul și recuperarea erorilor, filtrele pliabile pe mobil, lipsa derulării orizontale, derularea spre catalog și substituenții de încărcare cu spațiu rezervat. Captura completă a produsului la 390 px a fost inspectată. Testele au folosit serviciile locale reale și buildurile de producție.
+
+Nu s-a modificat backendul. Nu s-a reluat suita .NET pentru această etapă. Finisarea contului și administrării, simplificarea destinației coșului și optimizarea solicitărilor taxonomiei rămân etape separate.

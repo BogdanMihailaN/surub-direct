@@ -1,36 +1,30 @@
-form {
-  display: grid;
-  gap: 0.5rem;
-  min-width: 145px;
-}
-label {
-  font-size: 0.8rem;
-}
+:host { display: block; }
+form { display: grid; gap: 12px; min-width: 145px; }
+label { font-size: 14px; color: #526148; }
 input {
   display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 0.5rem;
-  border: 1px solid #85917c;
-  border-radius: 4px;
+  margin-top: 6px;
+  padding: 12px;
+  min-height: 44px;
+  font-size: 16px;
+  border: 1px solid #b8c3b1;
+  border-radius: 8px;
+  background: #fff;
 }
 button {
+  min-height: 46px;
   background: #28422d;
   color: white;
   border: 0;
-  border-radius: 4px;
-  padding: 0.65rem;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: 600;
   cursor: pointer;
 }
-button:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-a {
-  display: block;
-  margin-top: 0.6rem;
-  color: #28422d;
-}
-p {
-  font-size: 0.8rem;
-}
+button:hover:not(:disabled) { background: #36573c; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+a { display: inline-block; margin-block: 8px; color: #28422d; font-size: 14px; text-underline-offset: 3px; }
+p { font-size: 13px; line-height: 1.5; color: #526148; }
+p[role='status'] { padding: 10px 12px; background: #edf4e8; border-radius: 8px; }

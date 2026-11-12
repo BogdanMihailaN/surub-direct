@@ -7,7 +7,7 @@
 }
 .product-card {
   border: 1px solid #e3e6dd;
-  border-radius: 5px;
+  border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
@@ -30,7 +30,7 @@
   position: absolute;
   top: 12px;
   left: 14px;
-  font-size: 8px;
+  font-size: 12px;
   color: #858e80;
   letter-spacing: 0.3px;
 }
@@ -38,7 +38,7 @@
   position: absolute;
   right: 10px;
   bottom: 8px;
-  font-size: 6px;
+  font-size: 10px;
   letter-spacing: 1px;
   color: #939c8e;
 }
@@ -46,24 +46,24 @@
   padding: 18px;
 }
 .sku {
-  font: 9px monospace;
+  font: 12px monospace;
   color: #8c9486;
   letter-spacing: 0.4px;
 }
 .card-content h3 {
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 650;
   margin: 9px 0;
   color: #303c2b;
   line-height: 1.4;
 }
 .variant-label {
-  font-size: 11px;
+  font-size: 14px;
   color: #89917f;
   margin: 0 0 15px;
 }
 .availability {
-  font-size: 9px;
+  font-size: 13px;
   color: #4e754a;
   display: flex;
   gap: 5px;
@@ -92,7 +92,7 @@
 .price-row small {
   display: block;
   color: #8c9487;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.8;
 }
 .price-row strong {
@@ -118,7 +118,7 @@
     padding: 12px;
   }
   .card-content h3 {
-    font-size: 12px;
+    font-size: 16px;
   }
   .product-art {
     height: 145px;
@@ -133,3 +133,10 @@
   height: 100%;
   object-fit: contain;
 }
+
+.sku { overflow-wrap: anywhere; }
+.variant-label, .category-tag, .price-row small { color: #5d6857; }
+.product-card:focus-visible { outline-offset: -3px; }
+.card-content { display: flex; flex-direction: column; min-height: 230px; }
+.price-row { margin-top: auto; }
+@media (prefers-reduced-motion: reduce) { .product-card { transition: none; } .product-card:hover { transform: none; } }

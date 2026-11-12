@@ -1,0 +1,12 @@
+:host { display: block; }
+p { color: #526148; margin: 5px 0 20px; font-size: 14px; }
+.placeholders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.card { border: 1px solid #e3e6dd; border-radius: 12px; overflow: hidden; background: white; }
+.image { height: 185px; background: #ecefe6; }
+.body { padding: 20px; min-height: 210px; }
+i { display: block; background: #ecefe6; height: 16px; border-radius: 4px; margin-bottom: 18px; width: 85%; }
+i:nth-child(2) { width: 60%; }
+i.price { width: 45%; height: 28px; margin-top: 36px; }
+@media (max-width: 1100px) { .placeholders { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .placeholders { gap: 12px; } .image { height: 145px; } .body { padding: 14px; } }
+@media (max-width: 420px) { .placeholders { grid-template-columns: 1fr; } }

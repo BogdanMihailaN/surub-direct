@@ -15,6 +15,7 @@
       </div>
     </div>
     <h2>Variante și ambalaje</h2>
+    <p class="selection-hint">Alege varianta și ambalajul potrivit. Prețurile afișate includ TVA.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -31,7 +32,7 @@
           @for (v of row.product.variants; track v.id) {
             @for (o of v.offers; track o.id) {
               <tr>
-                <td>
+                <td data-label="Variantă / SKU">
                   <strong>{{ v.label }}</strong
                   ><small>{{ v.sku }}</small>
                   @for (attribute of v.attributes; track attribute.attributeId) {
@@ -44,13 +45,13 @@
                     }
                   }
                 </td>
-                <td>
+                <td data-label="Material / finisaj">
                   {{ v.material }}<small>{{ v.finish }}</small>
                 </td>
-                <td>
+                <td data-label="Ambalaj">
                   {{ o.label }}<small>Minim {{ o.minPacks }} · pas {{ o.packStep }}</small>
                 </td>
-                <td>
+                <td data-label="Preț cu TVA">
                   @if (price(o.id); as p) {
                     <strong>{{ p.grossAmount | number: '1.2-2' }} lei</strong
                     ><small>{{ p.netAmount | number: '1.2-6' }} lei fără TVA</small
@@ -61,14 +62,14 @@
                     Preț indisponibil
                   }
                 </td>
-                <td>
+                <td data-label="Disponibilitate">
                   @if (available(v.id) >= o.unitsPerPack * o.minPacks) {
                     <span class="stock">{{ packs(available(v.id), o.unitsPerPack) }} ambalaje</span>
                   } @else {
                     <span>Fără stoc</span>
                   }
                 </td>
-                <td>
+                <td data-label="Coș demonstrativ">
                   <sd-add-to-cart
                     [slug]="row.product.slug"
                     [offer]="o"
