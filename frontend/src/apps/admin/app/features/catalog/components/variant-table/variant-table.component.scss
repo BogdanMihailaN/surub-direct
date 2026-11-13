@@ -1,32 +1,83 @@
 @use '../../styles/forms';
 .table-wrap {
-  overflow: auto;
+  overflow-x: auto;
 }
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 14px;
   text-align: left;
 }
 th {
-  font-size: 9px;
-  color: #899878;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
+  font-size: 12px;
+  color: #526148;
+  background: #f5f7f1;
+  font-weight: 600;
 }
 td,
 th {
-  padding: 12px 10px;
-  border-bottom: 1px solid #edf0e8;
+  padding: 16px 12px;
+  border-bottom: 1px solid #dce4d4;
+  vertical-align: top;
+}
+td {
+  overflow-wrap: anywhere;
 }
 td small {
   display: block;
-  font-size: 9px;
-  color: #8e9b7e;
-  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #526148;
+  margin-top: 6px;
 }
-
 td button {
   margin-top: 8px;
-  font-size: 11px;
+  font-size: 13px;
+  min-height: 44px;
+}
+@media (max-width: 1000px) {
+  table,
+  tbody {
+    display: block;
+  }
+  thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid #dce4d4;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  td {
+    display: block;
+    padding: 14px;
+    min-width: 0;
+  }
+  td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #526148;
+  }
+  td:first-child,
+  td[colspan] {
+    grid-column: 1 / -1;
+    background: #f5f7f1;
+  }
+}
+@media (max-width: 480px) {
+  tr {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

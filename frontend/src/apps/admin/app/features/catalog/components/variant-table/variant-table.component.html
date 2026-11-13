@@ -2,20 +2,20 @@
 <section class="panel">
   <h2>Variante, prețuri și disponibilitate</h2>
   <div class="table-wrap">
-    <table>
+    <table aria-label="Variante, prețuri și disponibilitate">
       <thead>
         <tr>
-          <th>SKU / Variantă</th>
-          <th>Ambalaj</th>
-          <th>Preț net</th>
-          <th>Stoc disponibil</th>
+          <th scope="col">SKU / Variantă</th>
+          <th scope="col">Ambalaj</th>
+          <th scope="col">Preț net</th>
+          <th scope="col">Stoc disponibil</th>
         </tr>
       </thead>
       <tbody>
         @for (v of row.product.variants; track v.id) {
           @if (v.offers.length === 0) {
             <tr>
-              <td>
+              <td data-label="SKU / Variantă">
                 {{ v.sku }}<small>{{ v.label }}</small>
                 @if (row.product.status !== 'Archived') {
                   <button
@@ -35,13 +35,13 @@
                   </button>
                 }
               </td>
-              <td colspan="2">Fără ambalaj configurat</td>
-              <td>{{ stock(v.id) }} buc.</td>
+              <td colspan="2" data-label="Ambalaj / preț">Fără ambalaj configurat</td>
+              <td data-label="Stoc disponibil">{{ stock(v.id) }} buc.</td>
             </tr>
           }
           @for (o of v.offers; track o.id) {
             <tr>
-              <td>
+              <td data-label="SKU / Variantă">
                 {{ v.sku }}<small>{{ v.label }}</small>
                 @if (row.product.status !== 'Archived') {
                   <button
@@ -61,7 +61,7 @@
                   </button>
                 }
               </td>
-              <td>
+              <td data-label="Ambalaj">
                 {{ o.label }}<small>{{ o.code }}</small>
                 <small
                   >{{ o.unitsPerPack }} buc. / ambalaj · minim {{ o.minPacks }} · pas
@@ -78,14 +78,14 @@
                   </button>
                 }
               </td>
-              <td>
+              <td data-label="Preț net">
                 @if (price(o.id); as p) {
                   {{ p.netAmount | number: '1.2-6' }} lei
                 } @else {
                   Lipsește prețul
                 }
               </td>
-              <td>{{ stock(v.id) }} buc.</td>
+              <td data-label="Stoc disponibil">{{ stock(v.id) }} buc.</td>
             </tr>
           }
         }

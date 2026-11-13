@@ -240,3 +240,7 @@ Pagina autentificată folosește lățimea de până la 1120 px și include navi
 ## Navigarea administrării și lista catalogului — 13 noiembrie 2026
 
 Navigarea principală are un rând propriu, secțiune activă cu contrast și aria-current, ținte de minimum 44 px și două coloane pe mobil. Lista produselor are titluri și metadate mai lizibile, selecție cu contur și aria-pressed, focus vizibil și câmpuri de filtrare de 16 px. Pe mobil filtrele rămân în pagină, iar lista are derulare proprie limitată la 240 px. Editorul primește un spațiu lateral de 300 px pe desktop și păstrează așezarea verticală pe mobil. Finisarea tabelelor și formularelor administrative rămâne o etapă separată.
+
+## Tabelul variantelor și formularele catalogului — 13 noiembrie 2026
+
+Tabelul administrativ are texte de 14 px, metadate de 12 px și antete cu contrast mai bun. Sub 1000 px, rândurile sunt prezentate ca fișe cu etichete pentru SKU, ambalaj, preț și stoc; sub 480 px au o singură coloană. Antetele tabelului au scope și tabelul are nume accesibil. Formularele catalogului folosesc panouri rotunjite, titluri mai mari, câmpuri de 16 px și butoane de minimum 44 px. Nu s-au modificat regulile de stoc, preț sau publicare.

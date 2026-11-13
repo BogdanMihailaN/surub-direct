@@ -664,3 +664,9 @@ Verificarea a folosit copia temporară a surselor/configurației cu dependențel
 Buildurile Angular de producție au trecut. După ajustarea textului de orientare pentru mobil, buildul admin a trecut din nou. Cele șase scenarii din admin.spec.ts și admin-order-pagination.spec.ts au trecut în rularea finală (9,8 secunde): fluxul real creare/editare/publicare/arhivare/restaurare cu păstrarea stocului, respingerea accesului anonim și a cererilor fără CSRF, validarea numerică și recuperarea paginării prin răspunsuri controlate. Testul verifică secțiunea activă accesibilă și lipsa derulării orizontale la 390 px. Capturile desktop și mobil au fost inspectate; captura mobilă finală așteaptă încărcarea listei. Produsele generate de scenariu sunt arhivate la final.
 
 S-au folosit sursele/configurațiile copiate în directorul temporar cu dependențele aceluiași lockfile pentru evitarea blocajelor de citire din Desktop. Nu există modificări backend și suita .NET nu a fost reluată local.
+
+## Tabelul variantelor și formularele catalogului — 13 noiembrie 2026
+
+Ambele builduri Angular de producție au trecut. Cele trei scenarii admin.spec.ts au trecut în 7,9 secunde, iar scenariul variant-offer-edit.spec.ts în 3,8 secunde. Sunt verificate fluxul complet al produsului, păstrarea stocului/prețului la editare, republicarea necesară după modificarea ambalajului, autentificarea/CSRF și validarea numerică. Testul administrativ verifică afișarea acțiunii de editare a ambalajului și lipsa derulării orizontale la 390 px. Capturile tabelului pe desktop/mobil și formularului de ambalaj pe mobil au fost inspectate.
+
+S-au utilizat serviciile locale și buildurile din copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat; suita .NET nu a fost reluată local.

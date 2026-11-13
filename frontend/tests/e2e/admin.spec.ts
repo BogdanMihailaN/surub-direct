@@ -77,6 +77,17 @@ test('administrator can create, edit, archive, restore and republish without los
   await receipt.getByLabel('Referință document').fill('TEST-' + token);
   await receipt.getByRole('button', { name: 'Înregistrează recepția' }).click();
   await expect(page.getByText('250 buc.', { exact: true })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  const variants = page.locator('sd-variant-table');
+  await expect(
+    variants.getByRole('button', { name: 'Editează ambalajul ' + sku + '-C100', exact: true }),
+  ).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await variants.screenshot({ path: '../work/admin-variants-mobile.png' });
+  await offer.screenshot({ path: '../work/admin-offer-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await variants.screenshot({ path: '../work/admin-variants-desktop.png' });
+
   await page.getByRole('button', { name: 'Publică produsul' }).click();
   await expect(page.getByText('Produs publicat în magazin.', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Editează produsul', exact: true }).click();
