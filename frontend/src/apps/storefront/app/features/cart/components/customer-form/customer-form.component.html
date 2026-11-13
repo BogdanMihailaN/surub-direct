@@ -7,33 +7,38 @@
   <form [formGroup]="form" (ngSubmit)="save()">
     <fieldset [disabled]="locked()">
       <legend>Datele clientului</legend>
-      <label
-        >Tip client<select formControlName="customerType">
-          <option value="person">Persoană fizică</option>
-          <option value="company">Firmă (PJ)</option>
-        </select></label
-      >
-      <label
-        >Nume complet / persoană de contact<input
-          formControlName="fullName"
-          maxlength="150"
-          autocomplete="off"
-      /></label>
-      <label
-        >Email<input type="email" formControlName="email" maxlength="254" autocomplete="off"
-      /></label>
-      <label
-        >Telefon<input type="tel" formControlName="phone" maxlength="30" autocomplete="off"
-      /></label>
-      @if (form.controls.customerType.value === 'company') {
-        <label>Denumire firmă<input formControlName="companyName" maxlength="200" /></label>
-        <label>CUI<input formControlName="taxId" maxlength="12" /></label>
+      <p class="required-hint">
+        Toate câmpurile sunt obligatorii, cu excepția celor marcate opțional.
+      </p>
+      <div class="contact-fields">
         <label
-          >Număr registrul comerțului (opțional)<input
-            formControlName="registrationNumber"
-            maxlength="40"
+          >Tip client<select formControlName="customerType">
+            <option value="person">Persoană fizică</option>
+            <option value="company">Firmă (PJ)</option>
+          </select></label
+        >
+        <label
+          >Nume complet / persoană de contact<input
+            formControlName="fullName"
+            maxlength="150"
+            autocomplete="off"
         /></label>
-      }
+        <label
+          >Email<input type="email" formControlName="email" maxlength="254" autocomplete="off"
+        /></label>
+        <label
+          >Telefon<input type="tel" formControlName="phone" maxlength="30" autocomplete="off"
+        /></label>
+        @if (form.controls.customerType.value === 'company') {
+          <label>Denumire firmă<input formControlName="companyName" maxlength="200" /></label>
+          <label>CUI<input formControlName="taxId" maxlength="12" /></label>
+          <label
+            >Număr registrul comerțului (opțional)<input
+              formControlName="registrationNumber"
+              maxlength="40"
+          /></label>
+        }
+      </div>
       <sd-customer-address [group]="form.controls.shippingAddress" label="Adresă de livrare" />
       <label class="check"
         ><input type="checkbox" formControlName="billingSameAsShipping" /> Adresa de facturare este
@@ -56,10 +61,14 @@
       @if (error()) {
         <p role="alert">{{ error() }}</p>
       }
-      <button type="submit">Salvează ciorna</button>
-      @if (customer()) {
-        <button type="button" (click)="clear()">Șterge datele clientului</button>
-      }
+      <div class="actions">
+        <button type="submit">Salvează ciorna</button>
+        @if (customer()) {
+          <button class="secondary" type="button" (click)="clear()">
+            Șterge datele clientului
+          </button>
+        }
+      </div>
     </fieldset>
   </form>
   @if (message()) {

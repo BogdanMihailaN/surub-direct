@@ -1,27 +1,57 @@
 fieldset {
-  border: 1px solid #ccd6c7;
-  border-radius: 6px;
-  padding: 1rem;
+  border: 1px solid #dce4d4;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0;
   display: grid;
-  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
   min-width: 0;
 }
 legend {
   font-weight: 600;
+  padding: 0 8px;
+  font-size: 18px;
 }
 label {
   display: grid;
-  gap: 0.3rem;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.street {
+  grid-column: 1 / -1;
 }
 input {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.65rem;
-  border: 1px solid #85917c;
-  border-radius: 4px;
+  padding: 12px;
+  min-height: 44px;
+  border: 1px solid #9da994;
+  border-radius: 8px;
   min-width: 0;
   font: inherit;
+  font-size: 16px;
+  color: #28422d;
+  background: white;
+}
+input:focus-visible {
+  outline: 3px solid #547745;
+  outline-offset: 3px;
+}
+input.ng-invalid.ng-touched {
+  border-color: #a33122;
 }
 p {
+  grid-column: 1 / -1;
   margin: 0;
+  color: #526148;
+  font-size: 14px;
+}
+@media (max-width: 600px) {
+  fieldset {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+    gap: 16px;
+  }
 }

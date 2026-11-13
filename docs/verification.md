@@ -646,3 +646,9 @@ Buildurile Angular de producție pentru magazin și administrare au trecut folos
 Au trecut toate cele șase scenarii Playwright din cart.spec.ts, cart-customer.spec.ts și account-add-offer-browser.spec.ts, în 17,2 secunde. Acestea verifică recalcularea prețurilor/stocului, recuperarea erorilor, persistența datelor PF/PJ, autorizarea și CSRF, separarea coșurilor și aspectul responsive. Testul de navigare verifică păstrarea rutei /cos, a cantității și derularea către datele de livrare. Prima verificare a identificat rezolvarea incorectă a ancorelor față de base href; legăturile folosesc acum RouterLink cu fragment. Capturile desktop și mobil au fost inspectate.
 
 Nu s-a modificat backendul; suita .NET nu a fost reluată local pentru această etapă.
+
+## Finisarea formularelor de livrare — 13 noiembrie 2026
+
+Au trecut buildurile de producție pentru magazin și administrare și nouă scenarii Playwright din cart-customer.spec.ts, account-customer.spec.ts și cart.spec.ts (12,2 secunde). Verificările includ coloanele pe desktop, așezarea verticală pe mobil, lipsa derulării orizontale, PF/PJ, facturarea distinctă, ștergerea datelor, autorizare/CSRF și recuperarea conflictelor sau răspunsurilor pierdute. Scenariile contului folosesc răspunsuri controlate; cele ale coșului anonim folosesc serviciile locale. Capturile desktop și mobil au fost inspectate.
+
+Compilarea a folosit sursele și configurația proiectului copiate în directorul temporar cu dependențe din același lockfile, pentru a evita blocajele dependențelor din Desktop. Backendul nu a fost modificat și suita .NET nu a fost reluată local.

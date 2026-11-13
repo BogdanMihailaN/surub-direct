@@ -1,60 +1,140 @@
 section {
-  border-top: 1px solid #ccd6c7;
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 20px;
+}
+h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+p {
+  line-height: 1.6;
+  color: #526148;
 }
 fieldset {
   border: 0;
   padding: 0;
+  margin: 24px 0 0;
   min-width: 0;
   display: grid;
-  gap: 1rem;
-  max-width: 650px;
+  gap: 20px;
 }
 legend {
   font-weight: 600;
-  padding-bottom: 1rem;
+  padding: 0 0 8px;
+  font-size: 18px;
+}
+.required-hint {
+  margin: 0;
+  font-size: 13px;
+}
+.contact-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
 }
 label {
   display: grid;
-  gap: 0.3rem;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
 }
 input,
 select {
   width: 100%;
   min-width: 0;
+  min-height: 44px;
   box-sizing: border-box;
   font: inherit;
-  padding: 0.65rem;
-  border: 1px solid #85917c;
-  border-radius: 4px;
+  font-size: 16px;
+  padding: 12px;
+  border: 1px solid #9da994;
+  border-radius: 8px;
+  background: #fff;
+  color: #28422d;
+}
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 3px solid #547745;
+  outline-offset: 3px;
+}
+input.ng-invalid.ng-touched {
+  border-color: #a33122;
 }
 .check {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 12px;
+  min-height: 44px;
+  cursor: pointer;
 }
 .check input {
-  width: auto;
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  flex: 0 0 20px;
+  accent-color: #28422d;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 button {
-  padding: 0.75rem 1rem;
+  min-height: 44px;
+  padding: 12px 20px;
   border: 1px solid #28422d;
   background: #28422d;
   color: white;
-  border-radius: 4px;
+  border-radius: 8px;
   font: inherit;
   cursor: pointer;
+}
+button.secondary {
+  background: white;
+  color: #28422d;
+  border-color: #9da994;
 }
 fieldset:disabled {
   opacity: 0.65;
 }
+fieldset:disabled button {
+  cursor: not-allowed;
+}
 aside {
-  background: #f1f4ee;
-  padding: 1rem;
-  margin-top: 1rem;
+  background: #f0f4eb;
+  border: 1px solid #dce4d4;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
   overflow-wrap: anywhere;
+}
+aside h3 {
+  margin-top: 0;
+}
+aside p:last-child {
+  margin-bottom: 0;
 }
 [role='alert'] {
   color: #a33122;
+  background: #fff4f0;
+  border-left: 3px solid #a33122;
+  padding: 12px 16px;
+  margin: 0;
+}
+[role='status'] {
+  padding: 12px 16px;
+  background: #f0f4eb;
+  border-radius: 8px;
+}
+@media (max-width: 600px) {
+  .contact-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .actions {
+    flex-direction: column;
+  }
+  button {
+    width: 100%;
+  }
 }

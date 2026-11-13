@@ -56,6 +56,14 @@ test('PF/PJ draft persists, supports distinct billing, clears personal fields an
   await expect(form.getByRole('status')).toContainText('Datele au fost salvate');
   await page.reload();
   await expect(form.getByLabel('Email', { exact: true })).toHaveValue(person.email);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const contactFields = form.locator('.contact-fields');
+  expect(
+    await contactFields.evaluate((el) => {
+      const fields = el.querySelectorAll('label');
+      return fields[1].getBoundingClientRect().left >= fields[0].getBoundingClientRect().right;
+    }),
+  ).toBe(true);
   await form.getByLabel('Tip client').selectOption('company');
   await form.getByLabel('Denumire firmă').fill('Firma Demonstrativă');
   await form.getByLabel('CUI', { exact: true }).fill('ro123456');
@@ -72,6 +80,14 @@ test('PF/PJ draft persists, supports distinct billing, clears personal fields an
   await expect(billing.getByLabel('Localitate')).toHaveValue('Cluj-Napoca');
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(
+    await contactFields.evaluate((el) => {
+      const fields = el.querySelectorAll('label');
+      return fields[1].getBoundingClientRect().top >= fields[0].getBoundingClientRect().bottom;
+    }),
+  ).toBe(true);
+  await form.getByLabel('Email', { exact: true }).focus();
+  await expect(form.getByLabel('Email', { exact: true })).toBeFocused();
   await form.screenshot({ path: '../work/customer-mobile.png' });
   expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain(person.email);
   expect(await page.evaluate(() => document.cookie)).not.toContain('SurubDirect.Cart=');

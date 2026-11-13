@@ -228,3 +228,7 @@ Catalogul are texte mai lizibile, carduri cu ierarhie vizuală mai clară, filtr
 ## Organizarea vizuală a coșului — 13 noiembrie 2026
 
 Coșul anonim are articole prezentate pe carduri, rezumat separat pe desktop și așezare verticală pe mobil. Componenta cart-summary separă totalurile, încărcarea, erorile și recalcularea de pagina de compoziție. Totalurile vechi nu sunt afișate în timpul recalculării sau după o eroare. Navigarea către produse, datele clientului și pregătire folosește ancore pe aceeași pagină. Coșul gol are acces direct la catalog. Mesajele de eroare la adăugare sunt distincte de confirmările reușite, iar controalele pentru coșul contului au ținte tactile mai mari. Confirmările și separarea coșurilor sunt păstrate.
+
+## Finisarea formularelor de livrare — 13 noiembrie 2026
+
+Formularul reutilizat în coșul anonim și în cont afișează datele de contact și adresele pe două coloane pe desktop și pe o coloană pe mobil. Câmpurile și butoanele au minimum 44 px înălțime, textul câmpurilor are 16 px, focusul tastaturii este vizibil, iar câmpurile invalide atinse au contur distinct. Salvarea și ștergerea datelor au stiluri diferite. Datele salvate și mesajele de validare au panouri lizibile. Regulile de validare, persistență și pregătire demonstrativă sunt păstrate.
