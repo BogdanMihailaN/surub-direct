@@ -658,3 +658,9 @@ Compilarea a folosit sursele și configurația proiectului copiate în directoru
 Buildurile Angular pentru magazin și administrare au trecut. Zece scenarii Playwright din account-order-history.spec.ts, account-cart-browser.spec.ts și account-customer.spec.ts au trecut în 14,4 secunde. Acoperă navigarea la istoricul comenzilor, lipsa derulării laterale la 390 px, deschiderea detaliilor, paginarea independentă, recuperarea erorilor, conflictele de sesiune și formularul clientului. Testul coșului folosește serviciile locale reale; testele istoricului și clientului folosesc răspunsuri controlate. Capturile desktop și mobil au fost inspectate; captura istoricului folosește o sesiune simulată, astfel că secțiunea coșului real afișează lipsa autentificării.
 
 Verificarea a folosit copia temporară a surselor/configurației cu dependențele aceluiași lockfile pentru evitarea blocajelor de citire din Desktop. Backendul nu s-a modificat; suita .NET nu a fost reluată local.
+
+## Navigarea administrării și lista catalogului — 13 noiembrie 2026
+
+Buildurile Angular de producție au trecut. După ajustarea textului de orientare pentru mobil, buildul admin a trecut din nou. Cele șase scenarii din admin.spec.ts și admin-order-pagination.spec.ts au trecut în rularea finală (9,8 secunde): fluxul real creare/editare/publicare/arhivare/restaurare cu păstrarea stocului, respingerea accesului anonim și a cererilor fără CSRF, validarea numerică și recuperarea paginării prin răspunsuri controlate. Testul verifică secțiunea activă accesibilă și lipsa derulării orizontale la 390 px. Capturile desktop și mobil au fost inspectate; captura mobilă finală așteaptă încărcarea listei. Produsele generate de scenariu sunt arhivate la final.
+
+S-au folosit sursele/configurațiile copiate în directorul temporar cu dependențele aceluiași lockfile pentru evitarea blocajelor de citire din Desktop. Nu există modificări backend și suita .NET nu a fost reluată local.

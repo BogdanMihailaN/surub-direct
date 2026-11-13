@@ -13,6 +13,20 @@ test('administrator can create, edit, archive, restore and republish without los
   await page.getByLabel('Adresă e-mail').fill(adminCredentials.email);
   await page.getByLabel('Parolă', { exact: true }).fill(adminCredentials.password);
   await page.getByRole('button', { name: 'Autentificare', exact: true }).click();
+  const navigation = page.getByRole('navigation', { name: 'Administrare', exact: true });
+  await expect(navigation.getByRole('link', { name: 'Produse', exact: true })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(page.getByRole('button', { name: 'Aplică filtrele' })).toBeEnabled();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByLabel('Caută produs sau SKU')).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Aprovizionare', exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: '../work/admin-polish-mobile.png', fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.screenshot({ path: '../work/admin-polish-desktop.png', fullPage: true });
+
   await page.getByRole('button', { name: '+ Produs', exact: true }).click();
   await page.getByLabel('Denumire produs').fill(name);
   await page.getByLabel('Adresă URL (slug)').fill('browser-' + token);

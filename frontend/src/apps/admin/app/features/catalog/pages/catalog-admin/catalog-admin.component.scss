@@ -1,7 +1,7 @@
 @use '../../styles/forms';
 .workspace {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px minmax(0, 1fr);
   min-height: calc(100vh - 75px);
 }
 .editor {
@@ -11,7 +11,7 @@
 }
 .status p {
   padding: 13px 18px;
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 4px;
 }
 .success {
@@ -35,7 +35,7 @@ h1 {
   margin: 12px 0 20px;
 }
 .badge {
-  font-size: 10px;
+  font-size: 12px;
   color: #63894d;
   background: #eaf2e2;
   padding: 5px 10px;
@@ -50,7 +50,7 @@ h1 {
   padding: 90px 20px;
 }
 .welcome p {
-  color: #859776;
+  color: #526148;
 }
 .welcome button {
   margin-top: 20px;

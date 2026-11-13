@@ -28,6 +28,7 @@
     @for (row of products(); track row.product.id) {
       <button
         [class.selected]="selectedId() === row.product.id"
+        [attr.aria-pressed]="selectedId() === row.product.id"
         (click)="selected.emit(row.product.id)"
         [disabled]="busy()"
       >

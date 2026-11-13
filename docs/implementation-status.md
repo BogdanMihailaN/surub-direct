@@ -236,3 +236,7 @@ Formularul reutilizat în coșul anonim și în cont afișează datele de contac
 ## Organizarea contului și istoricului — 13 noiembrie 2026
 
 Pagina autentificată folosește lățimea de până la 1120 px și include navigare către profil, coș și comenzi prin RouterLink cu fragment. Formularul de acces păstrează lățimea compactă. Istoricul prezintă fiecare comandă într-un card cu număr, dată, stare și total distincte; pe mobil totalul ocupă un rând separat. Detaliile rămân pliabile, paginarea este adaptată pentru atingere, iar listele goale au o prezentare distinctă. Asocierea, retururile și separarea istoricului contului de cel al browserului păstrează comportamentul existent.
+
+## Navigarea administrării și lista catalogului — 13 noiembrie 2026
+
+Navigarea principală are un rând propriu, secțiune activă cu contrast și aria-current, ținte de minimum 44 px și două coloane pe mobil. Lista produselor are titluri și metadate mai lizibile, selecție cu contur și aria-pressed, focus vizibil și câmpuri de filtrare de 16 px. Pe mobil filtrele rămân în pagină, iar lista are derulare proprie limitată la 240 px. Editorul primește un spațiu lateral de 300 px pe desktop și păstrează așezarea verticală pe mobil. Finisarea tabelelor și formularelor administrative rămâne o etapă separată.
