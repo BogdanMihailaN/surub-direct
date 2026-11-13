@@ -115,12 +115,35 @@ test('cart persists quantities, recalculates prices and stock, and never enables
     await page.getByRole('button', { name: 'Recalculează coșul' }).click();
     await expect(page.getByRole('heading', { name: 'Total cu TVA: 24,20 RON' })).toBeVisible();
     await page.setViewportSize({ width: 1440, height: 900 });
+    const summary = page.getByRole('complementary', { name: 'Rezumatul coșului' });
+    await expect(summary).toBeVisible();
+    const desktopLayout = await page.locator('.cart-layout').evaluate((el) => {
+      const items = el.querySelector('.items')!.getBoundingClientRect();
+      const total = el.querySelector('sd-cart-summary')!.getBoundingClientRect();
+      return total.left >= items.right;
+    });
+    expect(desktopLayout).toBe(true);
     await page.screenshot({ path: '../work/cart-desktop.png', fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
     ).toBeTruthy();
     await expect(page.getByRole('link', { name: 'Coș (1)', exact: true })).toBeVisible();
+    expect(
+      await page.locator('.cart-layout').evaluate((el) => {
+        const items = el.querySelector('.items')!.getBoundingClientRect();
+        const total = el.querySelector('sd-cart-summary')!.getBoundingClientRect();
+        return total.top >= items.bottom;
+      }),
+    ).toBe(true);
+    await page.getByRole('link', { name: '2 Date de livrare' }).click();
+    await expect(page).toHaveURL(/\/cos#cart-customer$/);
+    await expect(page.locator('sd-cart-line input')).toHaveValue('2');
+    await expect
+      .poll(() =>
+        page.locator('#cart-customer').evaluate((el) => Math.abs(el.getBoundingClientRect().top)),
+      )
+      .toBeLessThan(80);
     await page.screenshot({ path: '../work/cart-mobile.png', fullPage: true });
     expect(
       (await (await page.request.get(shop + '/api/v1/ordering/capabilities')).json())

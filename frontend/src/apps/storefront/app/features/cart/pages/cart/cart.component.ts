@@ -2,7 +2,7 @@ import { DemoOrders } from '../../components/demo-orders/demo-orders.component';
 import { Preparation } from '../../components/preparation/preparation.component';
 import { CustomerForm } from '../../components/customer-form/customer-form.component';
 import { Component, effect, inject } from '@angular/core';
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { CartSummary } from '../../components/cart-summary/cart-summary.component';
 import { RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { CartStore } from '../../state/cart.store';
@@ -11,7 +11,7 @@ import { CartLine } from '../../components/cart-line/cart-line.component';
 import { CustomerDraft } from '../../models/customer-draft.model';
 @Component({
   selector: 'sd-cart',
-  imports: [RouterLink, DecimalPipe, DatePipe, CartLine, CustomerForm, Preparation, DemoOrders],
+  imports: [RouterLink, CartSummary, CartLine, CustomerForm, Preparation, DemoOrders],
   providers: [CartQuoteStore],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss',

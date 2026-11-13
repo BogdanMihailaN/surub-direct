@@ -1,43 +1,72 @@
 article {
-  display: flex;
-  justify-content: space-between;
-  gap: 1.5rem;
-  border-bottom: 1px solid #dde5d8;
-  padding: 1.5rem 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  border: 1px solid #dde5d8;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  background: white;
   overflow-wrap: anywhere;
 }
 a {
   color: #28422d;
+  font-size: 18px;
   font-weight: 600;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+p {
+  font-size: 14px;
+  color: #526148;
+  line-height: 1.5;
+  margin: 10px 0;
+}
+strong {
+  display: block;
+  font-size: 20px;
+  margin-top: 16px;
 }
 form {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 10px;
   align-items: end;
-  max-width: 330px;
+  padding-top: 16px;
+  border-top: 1px solid #edf0e8;
 }
 label {
-  font-size: 0.85rem;
+  font-size: 13px;
+  color: #526148;
 }
 input {
   display: block;
-  width: 100px;
-  padding: 0.6rem;
+  width: 104px;
+  padding: 10px;
+  min-height: 44px;
+  font-size: 16px;
+  margin-top: 6px;
+  border: 1px solid #b8c3b1;
+  border-radius: 8px;
 }
 button {
-  padding: 0.65rem;
-  border: 1px solid #85917c;
-  border-radius: 4px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #9da994;
+  border-radius: 8px;
   background: white;
   color: #28422d;
-  cursor: pointer;
+}
+button[type='button'] {
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .issue {
   color: #a33122;
-}
-@media (max-width: 650px) {
-  article {
-    flex-direction: column;
-  }
+  padding: 10px;
+  border-radius: 6px;
+  background: #fff0eb;
 }

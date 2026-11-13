@@ -638,3 +638,11 @@ Buildurile Angular de producție pentru magazin și administrare au trecut. Din 
 Au trecut opt scenarii Playwright în catalog.spec.ts și cart.spec.ts, în 35,7 secunde. Sunt acoperite filtrele dimensionale, produsul, coșul și recuperarea erorilor, filtrele pliabile pe mobil, lipsa derulării orizontale, derularea spre catalog și substituenții de încărcare cu spațiu rezervat. Captura completă a produsului la 390 px a fost inspectată. Testele au folosit serviciile locale reale și buildurile de producție.
 
 Nu s-a modificat backendul. Nu s-a reluat suita .NET pentru această etapă. Finisarea contului și administrării, simplificarea destinației coșului și optimizarea solicitărilor taxonomiei rămân etape separate.
+
+## Organizarea vizuală a coșului — 13 noiembrie 2026
+
+Buildurile Angular de producție pentru magazin și administrare au trecut folosind o copie exactă a surselor și configurațiilor într-un director temporar, cu npm ci din lockfile-ul proiectului, pentru a evita blocajele de citire ale dependențelor din Desktop.
+
+Au trecut toate cele șase scenarii Playwright din cart.spec.ts, cart-customer.spec.ts și account-add-offer-browser.spec.ts, în 17,2 secunde. Acestea verifică recalcularea prețurilor/stocului, recuperarea erorilor, persistența datelor PF/PJ, autorizarea și CSRF, separarea coșurilor și aspectul responsive. Testul de navigare verifică păstrarea rutei /cos, a cantității și derularea către datele de livrare. Prima verificare a identificat rezolvarea incorectă a ancorelor față de base href; legăturile folosesc acum RouterLink cu fragment. Capturile desktop și mobil au fost inspectate.
+
+Nu s-a modificat backendul; suita .NET nu a fost reluată local pentru această etapă.

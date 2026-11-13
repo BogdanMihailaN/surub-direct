@@ -224,3 +224,7 @@ Administratorul poate programa o reîncercare pentru o recepție care a eșuat, 
 ## Finisare catalog și pagină produs — 12 noiembrie 2026
 
 Catalogul are texte mai lizibile, carduri cu ierarhie vizuală mai clară, filtre pliabile pe mobil și substituenți de încărcare care păstrează spațiul grilei. La lățimi de până la 420 px, produsele sunt afișate pe o coloană. Ofertele produsului devin carduri pe ecrane de până la 900 px, cu etichete pentru specificații și fără derulare laterală. Controalele de cantitate au dimensiuni potrivite pentru atingere. Navigarea spre catalog activează derularea la ancoră, iar preferința pentru mișcare redusă este respectată. Regulile comerciale, datele și separarea coșurilor rămân cele existente.
+
+## Organizarea vizuală a coșului — 13 noiembrie 2026
+
+Coșul anonim are articole prezentate pe carduri, rezumat separat pe desktop și așezare verticală pe mobil. Componenta cart-summary separă totalurile, încărcarea, erorile și recalcularea de pagina de compoziție. Totalurile vechi nu sunt afișate în timpul recalculării sau după o eroare. Navigarea către produse, datele clientului și pregătire folosește ancore pe aceeași pagină. Coșul gol are acces direct la catalog. Mesajele de eroare la adăugare sunt distincte de confirmările reușite, iar controalele pentru coșul contului au ținte tactile mai mari. Confirmările și separarea coșurilor sunt păstrate.

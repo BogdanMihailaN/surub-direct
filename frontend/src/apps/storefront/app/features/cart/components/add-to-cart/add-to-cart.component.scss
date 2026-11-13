@@ -1,6 +1,15 @@
-:host { display: block; }
-form { display: grid; gap: 12px; min-width: 145px; }
-label { font-size: 14px; color: #526148; }
+:host {
+  display: block;
+}
+form {
+  display: grid;
+  gap: 12px;
+  min-width: 145px;
+}
+label {
+  font-size: 14px;
+  color: #526148;
+}
 input {
   display: block;
   width: 100%;
@@ -23,8 +32,38 @@ button {
   font-weight: 600;
   cursor: pointer;
 }
-button:hover:not(:disabled) { background: #36573c; }
-button:disabled { opacity: .45; cursor: not-allowed; }
-a { display: inline-block; margin-block: 8px; color: #28422d; font-size: 14px; text-underline-offset: 3px; }
-p { font-size: 13px; line-height: 1.5; color: #526148; }
-p[role='status'] { padding: 10px 12px; background: #edf4e8; border-radius: 8px; }
+button:hover:not(:disabled) {
+  background: #36573c;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+a {
+  display: inline-block;
+  margin-block: 8px;
+  color: #28422d;
+  font-size: 14px;
+  text-underline-offset: 3px;
+}
+p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #526148;
+}
+p[role='status'] {
+  padding: 10px 12px;
+  background: #edf4e8;
+  border-radius: 8px;
+}
+
+p.error {
+  color: #a33122;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff0eb;
+}
+.destination {
+  margin: 8px 0 0;
+  font-size: 12px;
+}

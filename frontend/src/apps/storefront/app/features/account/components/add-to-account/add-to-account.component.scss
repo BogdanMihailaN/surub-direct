@@ -7,10 +7,11 @@
 button {
   display: block;
   font: inherit;
-  padding: 8px 10px;
+  padding: 10px 14px;
+  min-height: 44px;
   margin: 6px 0;
   border: 1px solid #536848;
-  border-radius: 5px;
+  border-radius: 8px;
   background: white;
   color: #334d30;
   cursor: pointer;
@@ -23,7 +24,7 @@ button:disabled {
   padding: 10px;
   margin: 12px 0;
   border: 2px solid #536848;
-  border-radius: 6px;
+  border-radius: 12px;
 }
 :focus-visible {
   outline: 3px solid #748b56;
@@ -35,4 +36,11 @@ p {
 }
 [role='alert'] {
   color: #8c2e20;
+}
+
+a {
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 8px;
+  text-underline-offset: 3px;
 }

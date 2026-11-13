@@ -22,8 +22,8 @@
   </button>
 </form>
 @if (message()) {
-  <p role="status">{{ message() }}</p>
+  <p [attr.role]="failed() ? 'alert' : 'status'" [class.error]="failed()">{{ message() }}</p>
 }
-<p>Destinația butonului de mai sus: coșul browserului.</p>
+<p class="destination">Se salvează în coșul acestui browser.</p>
 <a routerLink="/cos">Vezi coșul browserului</a>
 <sd-add-to-account [selection]="accountSelection()" />

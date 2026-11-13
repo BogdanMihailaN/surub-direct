@@ -17,6 +17,7 @@ export class AddToCart {
   readonly priced = input(false);
   readonly cart = inject(CartStore);
   readonly message = signal('');
+  readonly failed = signal(false);
   readonly packs = signal(1);
   readonly accountSelection = computed(() => {
     const o = this.offer(),
@@ -49,7 +50,10 @@ export class AddToCart {
       this.packs() * o.unitsPerPack > this.available()
     )
       return;
+    this.message.set('');
+    this.failed.set(false);
     await this.cart.set({ productSlug: this.slug(), offerId: o.id, packs: this.packs() });
+    this.failed.set(!!this.cart.error());
     this.message.set(this.cart.error() || 'Cantitatea este în coș.');
   }
 }

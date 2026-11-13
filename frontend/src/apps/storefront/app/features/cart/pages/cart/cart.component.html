@@ -1,6 +1,10 @@
-<section>
+<section class="cart-page">
   <a routerLink="/">← Continuă cumpărăturile</a>
-  <h1>Coșul tău</h1>
+  <header>
+    <span class="eyebrow">SELECȚIA TA</span>
+    <h1>Coșul tău</h1>
+    <p>Verifică ambalajele și cantitățile înainte de pregătirea comenzii demonstrative.</p>
+  </header>
   <p class="notice">
     Coș demonstrativ. Produsele și prețurile sunt ilustrative.
     {{
@@ -28,48 +32,57 @@
   } @else if (cart.stale()) {
     <p>Conținutul coșului trebuie reconfirmat de server.</p>
   } @else if (!cart.count()) {
-    <p>Coșul este gol. Alege un ambalaj din pagina unui produs.</p>
+    <div class="empty">
+      <h2>Coșul este gol.</h2>
+      <p>Alege produsele și ambalajele potrivite proiectului tău.</p>
+      <a class="browse" routerLink="/">Explorează produsele</a>
+    </div>
   } @else {
-    @for (line of cart.items(); track line.offerId) {
-      <sd-cart-line
-        [selection]="line"
-        [disabled]="cart.locked()"
-        [detail]="detail(line.offerId)"
-        (changed)="cart.set($event)"
-        (removed)="cart.remove($event)"
-      />
-    }
-    @if (pricing.busy()) {
-      <p role="status">Verificăm prețurile și stocul…</p>
-    }
-    @if (pricing.error()) {
-      <p role="alert">{{ pricing.error() }}</p>
-    }
-    <button (click)="pricing.load(cart.items())" [disabled]="pricing.busy() || cart.locked()">
-      Recalculează coșul
-    </button>
-    @if (pricing.quote(); as quote) {
-      <aside>
-        @if (quote.grossTotal !== null) {
-          <p>Total fără TVA: {{ quote.netTotal | number: '1.2-2' }} {{ quote.currency }}</p>
-          <h2>Total cu TVA: {{ quote.grossTotal | number: '1.2-2' }} {{ quote.currency }}</h2>
-          <p>Transportul nu este inclus.</p>
-        } @else {
-          <p>Rezolvă problemele articolelor pentru a calcula totalul.</p>
+    <ol class="steps" aria-label="Pașii coșului demonstrativ">
+      <li>
+        <a routerLink="/cos" fragment="cart-items"><span>1</span> Produse</a>
+      </li>
+      <li>
+        <a routerLink="/cos" fragment="cart-customer"><span>2</span> Date de livrare</a>
+      </li>
+      <li>
+        <a routerLink="/cos" fragment="cart-preparation"><span>3</span> Pregătire și confirmare</a>
+      </li>
+    </ol>
+    <div class="cart-layout">
+      <div id="cart-items" class="items">
+        <h2>Produsele selectate</h2>
+        @for (line of cart.items(); track line.offerId) {
+          <sd-cart-line
+            [selection]="line"
+            [disabled]="cart.locked()"
+            [detail]="detail(line.offerId)"
+            (changed)="cart.set($event)"
+            (removed)="cart.remove($event)"
+          />
         }
-        <small
-          >Verificat la {{ quote.checkedAt | date: 'HH:mm:ss' }}. Prețurile și disponibilitatea se
-          pot modifica.</small
-        >
-      </aside>
-    }
-    <sd-customer-form
-      [customer]="cart.customer()"
-      [locked]="cart.locked()"
-      [error]="cart.customerError()"
-      [persist]="saveCustomer"
-    />
-    <sd-preparation />
+      </div>
+      <sd-cart-summary
+        [quote]="pricing.quote()"
+        [busy]="pricing.busy()"
+        [error]="pricing.error()"
+        [locked]="cart.locked()"
+        (refreshed)="pricing.load(cart.items())"
+      />
+    </div>
+    <div id="cart-customer" class="step-panel">
+      <span class="eyebrow">PASUL 2 · DATE DE LIVRARE</span>
+      <sd-customer-form
+        [customer]="cart.customer()"
+        [locked]="cart.locked()"
+        [error]="cart.customerError()"
+        [persist]="saveCustomer"
+      />
+    </div>
+    <div id="cart-preparation" class="step-panel">
+      <span class="eyebrow">PASUL 3 · PREGĂTIRE ȘI CONFIRMARE</span>
+      <sd-preparation />
+    </div>
     <p>Comenzile comerciale vor fi disponibile după finalizarea magazinului.</p>
   }
   <sd-demo-orders />

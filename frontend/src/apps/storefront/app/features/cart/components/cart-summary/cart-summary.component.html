@@ -1,0 +1,36 @@
+<aside aria-label="Rezumatul coșului" [attr.aria-busy]="busy()">
+  <h2>Rezumatul coșului</h2>
+  @if (busy()) {
+    <p role="status">Verificăm prețurile și stocul…</p>
+    <div class="placeholder" aria-hidden="true"></div>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else if (quote(); as current) {
+    @if (current.grossTotal !== null) {
+      <p class="subtotal">
+        Total fără TVA: {{ current.netTotal | number: '1.2-2' }} {{ current.currency }}
+      </p>
+      <h3 class="total">
+        Total cu TVA: {{ current.grossTotal | number: '1.2-2' }} {{ current.currency }}
+      </h3>
+      <p>Transportul nu este inclus.</p>
+    } @else {
+      <p>Rezolvă problemele articolelor pentru a calcula totalul.</p>
+    }
+    <small
+      >Verificat la {{ current.checkedAt | date: 'HH:mm:ss' }}. Prețurile și disponibilitatea se pot
+      modifica.</small
+    >
+  } @else if (locked()) {
+    <p>
+      Coșul nu poate fi modificat momentan. Dacă ai o rezervare, consultă totalul confirmat în
+      secțiunea de pregătire.
+    </p>
+  } @else {
+    <p>Totalul va apărea după verificarea produselor.</p>
+  }
+  <button type="button" (click)="refreshed.emit()" [disabled]="busy() || locked()">
+    Recalculează coșul
+  </button>
+  <p class="hint">Verifică produsele, apoi completează datele de livrare de mai jos.</p>
+</aside>
