@@ -6,13 +6,18 @@
   @if (result(); as result) {
     @for (order of result.items; track order.id) {
       <article>
-        <h4>{{ order.number }}</h4>
-        <p>{{ labels[order.status] }} · {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
-        <p>{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} cu TVA</p>
+        <header class="order-header">
+          <div>
+            <h4>{{ order.number }}</h4>
+            <p class="date">{{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+          </div>
+          <span class="order-status">{{ labels[order.status] }}</span>
+          <p class="total">{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} cu TVA</p>
+        </header>
         <sd-return-summary [data]="order.return" />
-          <sd-shipment-summary [data]="order.shipment" />
-          <sd-payment-summary [data]="order.paymentSummary" />
-          <details>
+        <sd-shipment-summary [data]="order.shipment" />
+        <sd-payment-summary [data]="order.paymentSummary" />
+        <details>
           <summary>Detalii {{ order.number }}</summary>
           <p>{{ order.customer.fullName }} · {{ order.customer.email }}</p>
           @if (order.customer.companyName) {
@@ -32,11 +37,22 @@
           }
           <sd-delivery-summary [delivery]="order.delivery" />
         </details>
-        @if (allowReturn() && order.status === 'Confirmed' && order.shipment?.status === 'Delivered' && order.return?.status === 'NotRequested') {
-          <button type="button" [disabled]="busy()" (click)="returnRequested.emit(order)">Solicită retur pentru {{ order.number }}</button>
+        @if (
+          allowReturn() &&
+          order.status === 'Confirmed' &&
+          order.shipment?.status === 'Delivered' &&
+          order.return?.status === 'NotRequested'
+        ) {
+          <button type="button" [disabled]="busy()" (click)="returnRequested.emit(order)">
+            Solicită retur pentru {{ order.number }}
+          </button>
         }
-        @if (allowReturn() && order.status === 'Confirmed' && order.shipment?.status === 'Delivered') {
-          <button type="button" [disabled]="busy()" (click)="partialRequested.emit(order)">Retururi parțiale pentru {{ order.number }}</button>
+        @if (
+          allowReturn() && order.status === 'Confirmed' && order.shipment?.status === 'Delivered'
+        ) {
+          <button type="button" [disabled]="busy()" (click)="partialRequested.emit(order)">
+            Retururi parțiale pentru {{ order.number }}
+          </button>
         }
         @if (allowClaim() && (order.status === 'Confirmed' || order.status === 'Cancelled')) {
           <button type="button" [disabled]="busy()" (click)="claim.emit(order)">
@@ -45,7 +61,7 @@
         }
       </article>
     } @empty {
-      <p>Nu există comenzi în această pagină.</p>
+      <p class="empty">Nu există comenzi în această pagină.</p>
     }
     @if (result.total > result.pageSize || result.page > 1) {
       <nav aria-label="Paginare comenzi">

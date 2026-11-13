@@ -1,4 +1,9 @@
-<section class="account" aria-labelledby="account-title" [attr.aria-busy]="store.busy()">
+<section
+  class="account"
+  [class.authenticated]="store.status() === 'authenticated'"
+  aria-labelledby="account-title"
+  [attr.aria-busy]="store.busy()"
+>
   <span class="eyebrow">ȘURUB DIRECT</span>
   <h1 id="account-title">Contul meu</h1>
   <p class="intro">Cont demonstrativ. Livrarea mesajelor prin e-mail nu este încă activă.</p>
@@ -17,7 +22,12 @@
     </button>
   }
   @if (store.status() === 'authenticated') {
-    <div class="panel">
+    <nav class="account-nav" aria-label="Secțiunile contului">
+      <a routerLink="/cont" fragment="account-session">Profil și sesiune</a>
+      <a routerLink="/cont" fragment="account-cart">Coșul contului</a>
+      <a routerLink="/cont" fragment="account-orders">Comenzile tale</a>
+    </nav>
+    <div class="panel" id="account-session">
       <h2>Ești autentificat</h2>
       <p class="email">{{ store.session()?.email }}</p>
       @if (store.session()?.isAdmin) {
@@ -33,9 +43,9 @@
     </div>
   }
   @if (store.status() === 'authenticated' && store.session(); as session) {
-    <sd-account-cart [session]="session" />
+    <div id="account-cart"><sd-account-cart [session]="session" /></div>
     @for (accountId of [session.id]; track accountId) {
-      <sd-account-orders [session]="session" />
+      <div id="account-orders"><sd-account-orders [session]="session" /></div>
     }
   }
   @if (store.status() === 'guest') {

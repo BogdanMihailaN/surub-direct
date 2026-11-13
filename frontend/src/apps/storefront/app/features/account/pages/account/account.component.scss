@@ -74,3 +74,46 @@ button:focus-visible {
     padding: 18px;
   }
 }
+
+.account.authenticated {
+  max-width: 1120px;
+}
+.account-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px 0 20px;
+}
+.account-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 12px 18px;
+  background: #f0f4eb;
+  border: 1px solid #dce4d4;
+  border-radius: 8px;
+  color: #28422d;
+  text-decoration: none;
+}
+.account-nav a:hover {
+  background: #e2e8db;
+}
+a:focus-visible {
+  outline: 3px solid #748b56;
+  outline-offset: 3px;
+}
+#account-session,
+#account-cart,
+#account-orders {
+  scroll-margin-top: 24px;
+}
+.panel button {
+  margin: 4px 8px 4px 0;
+  min-height: 44px;
+}
+@media (max-width: 480px) {
+  .account-nav {
+    flex-direction: column;
+  }
+}

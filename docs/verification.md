@@ -652,3 +652,9 @@ Nu s-a modificat backendul; suita .NET nu a fost reluată local pentru această 
 Au trecut buildurile de producție pentru magazin și administrare și nouă scenarii Playwright din cart-customer.spec.ts, account-customer.spec.ts și cart.spec.ts (12,2 secunde). Verificările includ coloanele pe desktop, așezarea verticală pe mobil, lipsa derulării orizontale, PF/PJ, facturarea distinctă, ștergerea datelor, autorizare/CSRF și recuperarea conflictelor sau răspunsurilor pierdute. Scenariile contului folosesc răspunsuri controlate; cele ale coșului anonim folosesc serviciile locale. Capturile desktop și mobil au fost inspectate.
 
 Compilarea a folosit sursele și configurația proiectului copiate în directorul temporar cu dependențe din același lockfile, pentru a evita blocajele dependențelor din Desktop. Backendul nu a fost modificat și suita .NET nu a fost reluată local.
+
+## Organizarea contului și istoricului — 13 noiembrie 2026
+
+Buildurile Angular pentru magazin și administrare au trecut. Zece scenarii Playwright din account-order-history.spec.ts, account-cart-browser.spec.ts și account-customer.spec.ts au trecut în 14,4 secunde. Acoperă navigarea la istoricul comenzilor, lipsa derulării laterale la 390 px, deschiderea detaliilor, paginarea independentă, recuperarea erorilor, conflictele de sesiune și formularul clientului. Testul coșului folosește serviciile locale reale; testele istoricului și clientului folosesc răspunsuri controlate. Capturile desktop și mobil au fost inspectate; captura istoricului folosește o sesiune simulată, astfel că secțiunea coșului real afișează lipsa autentificării.
+
+Verificarea a folosit copia temporară a surselor/configurației cu dependențele aceluiași lockfile pentru evitarea blocajelor de citire din Desktop. Backendul nu s-a modificat; suita .NET nu a fost reluată local.

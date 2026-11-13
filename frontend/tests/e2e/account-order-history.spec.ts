@@ -29,7 +29,7 @@ const order = (number: number) => ({
       offerLabel: 'Cutie',
       packs: 1,
       grossTotal: 12.1,
-  paymentSummary: { status: 'Paid', amount: 12.1, currency: 'RON' },
+      paymentSummary: { status: 'Paid', amount: 12.1, currency: 'RON' },
     },
   ],
 });
@@ -67,6 +67,24 @@ test('history failures stay separate and can be retried without false empty resu
   await page.getByRole('button', { name: 'Actualizează istoricul', exact: true }).click();
   await expect(account.getByText('Nu există comenzi în această pagină.')).toBeVisible();
   await expect(browser.getByRole('button', { name: 'Asociază DEMO-1' })).toBeVisible();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page
+    .getByRole('navigation', { name: 'Secțiunile contului' })
+    .getByRole('link', { name: 'Comenzile tale' })
+    .click();
+  await expect(page).toHaveURL(/\/cont#account-orders$/);
+  await expect
+    .poll(() =>
+      page.locator('#account-orders').evaluate((el) => Math.abs(el.getBoundingClientRect().top)),
+    )
+    .toBeLessThan(80);
+  await expect(browser.getByRole('heading', { name: 'DEMO-1', exact: true })).toBeVisible();
+  await page.screenshot({ path: '../work/account-polish-desktop.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await browser.getByText('Detalii DEMO-1', { exact: true }).click();
+  await expect(browser.getByText(/Șurub test/)).toBeVisible();
+  await browser.screenshot({ path: '../work/account-polish-mobile.png' });
 });
 
 test('account and browser histories preserve independent pagination', async ({ page }) => {
@@ -150,9 +168,11 @@ test('missing payment summary is unavailable rather than an invented status', as
   await session(page);
   const item = { ...order(1), paymentSummary: undefined };
   for (const kind of ['account/orders', 'demo-orders']) {
-    await page.route(`**/api/v1/ordering/${kind}?**`, route => route.fulfill({
-      json: { items: [item], page: 1, total: 1, pageSize: 25 },
-    }));
+    await page.route(`**/api/v1/ordering/${kind}?**`, (route) =>
+      route.fulfill({
+        json: { items: [item], page: 1, total: 1, pageSize: 25 },
+      }),
+    );
   }
   await page.goto('/cont');
   const summaries = page.getByRole('region', { name: 'Starea plății simulate', exact: true });
@@ -161,16 +181,28 @@ test('missing payment summary is unavailable rather than an invented status', as
   await expect(summaries.first()).not.toContainText('Neinițiată');
 });
 
-test('return request is bound to the displayed account and removes stale actions after a session conflict', async ({ page }) => {
+test('return request is bound to the displayed account and removes stale actions after a session conflict', async ({
+  page,
+}) => {
   await session(page);
-  const item = { ...order(1), shipment: { status: 'Delivered', reference: 'DEMO-TEST' }, return: { status: 'NotRequested', restoredAt: null } };
+  const item = {
+    ...order(1),
+    shipment: { status: 'Delivered', reference: 'DEMO-TEST' },
+    return: { status: 'NotRequested', restoredAt: null },
+  };
   let changed = false;
   let writes = 0;
-  await page.route('**/api/v1/ordering/account/orders?**', route => route.fulfill(changed
-    ? { status: 409, json: { detail: 'Contul autentificat s-a schimbat.' } }
-    : { json: { items: [item], page: 1, total: 1, pageSize: 25 } }));
-  await page.route('**/api/v1/ordering/demo-orders?**', route => route.fulfill({ json: { items: [], page: 1, total: 0, pageSize: 25 } }));
-  await page.route('**/api/v1/ordering/account/orders/*/return', route => {
+  await page.route('**/api/v1/ordering/account/orders?**', (route) =>
+    route.fulfill(
+      changed
+        ? { status: 409, json: { detail: 'Contul autentificat s-a schimbat.' } }
+        : { json: { items: [item], page: 1, total: 1, pageSize: 25 } },
+    ),
+  );
+  await page.route('**/api/v1/ordering/demo-orders?**', (route) =>
+    route.fulfill({ json: { items: [], page: 1, total: 0, pageSize: 25 } }),
+  );
+  await page.route('**/api/v1/ordering/account/orders/*/return', (route) => {
     expect(route.request().postDataJSON().expectedAccountId).toBe('account-A');
     writes++;
     changed = true;
@@ -183,8 +215,12 @@ test('return request is bound to the displayed account and removes stale actions
   await form.getByLabel('Motivul returului integral').fill('Retur integral solicitat');
   await form.getByLabel('Confirm comanda, contul și solicitarea de retur integral').check();
   await form.getByRole('button', { name: 'Trimite solicitarea de retur' }).click();
-  await expect(page.getByRole('region', { name: 'Comenzile contului', exact: true }).getByRole('alert')).toContainText('s-a schimbat');
+  await expect(
+    page.getByRole('region', { name: 'Comenzile contului', exact: true }).getByRole('alert'),
+  ).toContainText('s-a schimbat');
   await expect(form).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Solicită retur pentru DEMO-1', exact: true })).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Solicită retur pentru DEMO-1', exact: true }),
+  ).toHaveCount(0);
   expect(writes).toBe(1);
 });

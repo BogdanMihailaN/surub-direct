@@ -232,3 +232,7 @@ Coșul anonim are articole prezentate pe carduri, rezumat separat pe desktop și
 ## Finisarea formularelor de livrare — 13 noiembrie 2026
 
 Formularul reutilizat în coșul anonim și în cont afișează datele de contact și adresele pe două coloane pe desktop și pe o coloană pe mobil. Câmpurile și butoanele au minimum 44 px înălțime, textul câmpurilor are 16 px, focusul tastaturii este vizibil, iar câmpurile invalide atinse au contur distinct. Salvarea și ștergerea datelor au stiluri diferite. Datele salvate și mesajele de validare au panouri lizibile. Regulile de validare, persistență și pregătire demonstrativă sunt păstrate.
+
+## Organizarea contului și istoricului — 13 noiembrie 2026
+
+Pagina autentificată folosește lățimea de până la 1120 px și include navigare către profil, coș și comenzi prin RouterLink cu fragment. Formularul de acces păstrează lățimea compactă. Istoricul prezintă fiecare comandă într-un card cu număr, dată, stare și total distincte; pe mobil totalul ocupă un rând separat. Detaliile rămân pliabile, paginarea este adaptată pentru atingere, iar listele goale au o prezentare distinctă. Asocierea, retururile și separarea istoricului contului de cel al browserului păstrează comportamentul existent.
