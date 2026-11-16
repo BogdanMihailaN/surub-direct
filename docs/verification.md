@@ -670,3 +670,9 @@ S-au folosit sursele/configurațiile copiate în directorul temporar cu dependen
 Ambele builduri Angular de producție au trecut. Cele trei scenarii admin.spec.ts au trecut în 7,9 secunde, iar scenariul variant-offer-edit.spec.ts în 3,8 secunde. Sunt verificate fluxul complet al produsului, păstrarea stocului/prețului la editare, republicarea necesară după modificarea ambalajului, autentificarea/CSRF și validarea numerică. Testul administrativ verifică afișarea acțiunii de editare a ambalajului și lipsa derulării orizontale la 390 px. Capturile tabelului pe desktop/mobil și formularului de ambalaj pe mobil au fost inspectate.
 
 S-au utilizat serviciile locale și buildurile din copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat; suita .NET nu a fost reluată local.
+
+## Reducerea cererilor repetate în catalog — 16 noiembrie 2026
+
+Ambele builduri Angular de producție au trecut. Două scenarii noi din catalog-taxonomy-cache.spec.ts au trecut în 5,6 secunde cu răspunsuri controlate: o singură încărcare a taxonomiei pentru căutări succesive, reîncărcarea la refresh și recuperarea erorilor cu invalidare la Reîncearcă. Alte opt scenarii din catalog.spec.ts și cart.spec.ts au trecut în 18 secunde cu serviciile locale, inclusiv filtre dimensionale, produs, coș, stări de încărcare și mobil.
+
+Docker era oprit și a fost pornit înaintea regresiei cu servicii reale. Compilarea a folosit o copie temporară a surselor/configurației, cu npm ci din lockfile-ul proiectului, pentru a evita blocajele de citire din Desktop. Nu s-au modificat backendul sau aspectul paginilor; suita .NET nu a fost reluată local. CI-ul etapei anterioare, commit 359917c, a fost verificat și a trecut.

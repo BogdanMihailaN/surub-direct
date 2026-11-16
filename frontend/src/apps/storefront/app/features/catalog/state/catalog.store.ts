@@ -12,6 +12,7 @@ export class CatalogStore {
   private readonly api = inject(CatalogApiService);
   private readonly router = inject(Router);
   private readonly refresh = new Subject<void>();
+  private cachedTaxonomy: Taxonomy | null = null;
   readonly data = signal<StorePage | null>(null);
   readonly taxonomy = signal<Taxonomy>({ categories: [], attributes: [] });
   readonly loading = signal(true);
@@ -38,7 +39,7 @@ export class CatalogStore {
           this.error.set('');
         }),
         switchMap(([params]) =>
-          this.api.taxonomy().pipe(
+          this.loadTaxonomy().pipe(
             switchMap((taxonomy) => {
               this.taxonomy.set(taxonomy);
               this.search = params.get('q') ?? '';
@@ -75,7 +76,13 @@ export class CatalogStore {
         this.loading.set(false);
       });
   }
+  private loadTaxonomy() {
+    return this.cachedTaxonomy
+      ? of(this.cachedTaxonomy)
+      : this.api.taxonomy().pipe(tap((taxonomy) => (this.cachedTaxonomy = taxonomy)));
+  }
   retry() {
+    this.cachedTaxonomy = null;
     this.refresh.next();
   }
   apply(page = 1) {

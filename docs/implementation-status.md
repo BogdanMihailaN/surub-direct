@@ -244,3 +244,7 @@ Navigarea principală are un rând propriu, secțiune activă cu contrast și ar
 ## Tabelul variantelor și formularele catalogului — 13 noiembrie 2026
 
 Tabelul administrativ are texte de 14 px, metadate de 12 px și antete cu contrast mai bun. Sub 1000 px, rândurile sunt prezentate ca fișe cu etichete pentru SKU, ambalaj, preț și stoc; sub 480 px au o singură coloană. Antetele tabelului au scope și tabelul are nume accesibil. Formularele catalogului folosesc panouri rotunjite, titluri mai mari, câmpuri de 16 px și butoane de minimum 44 px. Nu s-au modificat regulile de stoc, preț sau publicare.
+
+## Reducerea cererilor repetate în catalog — 16 noiembrie 2026
+
+CatalogStore păstrează taxonomia încărcată cu succes pe durata instanței paginii. Schimbarea filtrelor, căutării sau paginii solicită produsele fără o cerere prealabilă repetată pentru categorii și atribute. Reîncărcarea/reintrarea în catalog creează o instanță nouă; acțiunea Reîncearcă invalidează explicit copia. Erorile nu sunt memorate. Produsele, prețurile și stocurile continuă să fie solicitate de la API la schimbarea filtrelor.
