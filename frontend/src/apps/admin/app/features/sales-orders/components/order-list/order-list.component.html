@@ -1,23 +1,30 @@
-<p>{{ data().total }} comenzi · Pagina {{ data().page }}</p>
+<p class="count">{{ data().total }} comenzi · Pagina {{ data().page }}</p>
 <div class="list" aria-label="Lista comenzilor">
   @for (order of data().items; track order.id) {
     <button [attr.aria-pressed]="selected() === order.id" (click)="chosen.emit(order.id)">
-      <strong>{{ order.number }}</strong
-      ><span>{{ labels[order.status] }}</span
+      <strong class="number">{{ order.number }}</strong
+      ><span class="status">{{ labels[order.status] }}</span
       ><span>Retur: {{ returnLabels[order.returnStatus] ?? 'Stare indisponibilă' }}</span
       ><span>Plată simulată: {{ paymentLabels[order.paymentStatus] ?? 'Stare indisponibilă' }}</span
-      ><span>{{ order.customerName }}</span
-      ><span
+      ><span class="customer">{{ order.customerName }}</span
+      ><span class="total"
         >{{ order.grossTotal | number: '1.2-2' }} {{ order.currency }} ·
         {{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span
       >
       @for (receipt of order.pendingReceipts; track receipt.requestId) {
-        @if (receipt.needsAttention) { <span>Necesită verificare · Retur {{ receipt.requestId }}</span> }
-        <span>Retur {{ receipt.requestId }} · În așteptare din {{ receipt.requestedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Încercări: {{ receipt.attempts }} · Următoarea verificare: {{ receipt.nextAttemptAt | date: 'HH:mm:ss, dd.MM.yyyy' }}</span>
+        @if (receipt.needsAttention) {
+          <span class="attention">Necesită verificare · Retur {{ receipt.requestId }}</span>
+        }
+        <span
+          >Retur {{ receipt.requestId }} · În așteptare din
+          {{ receipt.requestedAt | date: 'dd.MM.yyyy HH:mm:ss' }} · Încercări:
+          {{ receipt.attempts }} · Următoarea verificare:
+          {{ receipt.nextAttemptAt | date: 'HH:mm:ss, dd.MM.yyyy' }}</span
+        >
       }
     </button>
   } @empty {
-    <p>Nu există comenzi pentru filtrele alese.</p>
+    <p class="empty">Nu există comenzi pentru filtrele alese.</p>
   }
 </div>
 <div class="pages">

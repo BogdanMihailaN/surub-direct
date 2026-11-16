@@ -252,3 +252,7 @@ CatalogStore păstrează taxonomia încărcată cu succes pe durata instanței p
 ## Încărcarea și reîncercarea paginii produsului — 16 noiembrie 2026
 
 Pagina produsului delegă accesul API și starea către ProductStore, furnizat la nivelul paginii. Componenta ProductLoading rezervă spațiu pentru imagine, descriere și oferte, inclusiv pe mobil. Erorile au buton Reîncearcă fără schimbarea URL-ului; la încărcare ofertele vechi sunt eliminate și aria-busy reflectă starea. Titlul și descrierea produsului precedent sunt eliminate la o cerere nouă. Pagina rămâne demonstrativă.
+
+## Finisarea listei administrative de comenzi — 16 noiembrie 2026
+
+Filtrele comenzilor sunt grupate într-un panou cu trei coloane pe desktop, două pe tabletă și una pe mobil. Câmpurile au text de 16 px, iar butoanele au minimum 44 px. Cardurile separă numărul, starea, clientul și totalul/datele; selecția păstrează aceeași grosime a bordurii pentru a evita deplasarea conținutului. Recepțiile de retur care necesită intervenție au marcaj distinct. Paginarea, mesajele de eroare și stările goale au stiluri uniforme. Operațiile asupra comenzilor și filtrele existente nu au fost modificate.

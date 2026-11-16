@@ -1,28 +1,87 @@
+.count {
+  font-size: 14px;
+  color: #526148;
+  margin: 0 0 16px;
+}
 .list {
   display: grid;
-  gap: 0.6rem;
+  gap: 12px;
 }
 .list button {
   display: grid;
-  gap: 0.35rem;
+  gap: 8px;
   text-align: left;
-  padding: 1rem;
-  border: 1px solid #cbd5c9;
+  padding: 20px;
+  border: 2px solid #dce4d4;
   background: white;
-  border-radius: 0.5rem;
+  border-radius: 12px;
   cursor: pointer;
   overflow-wrap: anywhere;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #28422d;
 }
 .list button[aria-pressed='true'] {
-  border: 2px solid #315738;
+  border-color: #315738;
   background: #f0f5ee;
+}
+.list button:hover {
+  border-color: #748b56;
+}
+.number {
+  font-size: 18px;
+}
+.status {
+  justify-self: start;
+  padding: 4px 10px;
+  background: #edf2e7;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.customer {
+  border-top: 1px solid #dce4d4;
+  padding-top: 12px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.total {
+  color: #526148;
+}
+.attention {
+  background: #fff1df;
+  color: #784009;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.empty {
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed #cbd5c9;
+  border-radius: 12px;
+  background: #f6f7f3;
+  line-height: 1.6;
 }
 .pages {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 8px;
+  margin-top: 16px;
 }
 .pages button {
-  padding: 0.6rem;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #9da994;
+  border-radius: 8px;
+  background: white;
+  color: #28422d;
+  cursor: pointer;
+}
+button:focus-visible {
+  outline: 3px solid #547745;
+  outline-offset: 3px;
+}
+.pages button:disabled {
+  cursor: default;
 }

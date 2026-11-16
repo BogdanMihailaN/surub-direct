@@ -682,3 +682,9 @@ Docker era oprit și a fost pornit înaintea regresiei cu servicii reale. Compil
 Ambele builduri Angular de producție au trecut. Nouă scenarii Playwright din product-loading.spec.ts, catalog.spec.ts și cart.spec.ts au trecut în 12,8 secunde. Scenariul nou întârzie răspunsul, verifică spațiul rezervat și aria-busy la 390 px, injectează o eroare 503 și reîncearcă folosind API-ul local real, fără schimbarea URL-ului. Verifică și mesajul 404, titlul neutru și absența acțiunilor de adăugare pentru un produs inexistent. Captura mobilă a stării de încărcare a fost inspectată.
 
 Buildurile au utilizat copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat; suita .NET nu a fost reluată local.
+
+## Finisarea listei administrative de comenzi — 16 noiembrie 2026
+
+Ambele builduri Angular au trecut. Cinci scenarii din admin-order-pagination.spec.ts și admin-sales-orders.spec.ts au trecut în 31,7 secunde. Sunt acoperite recuperarea paginii dispărute, rezultatele goale și indisponibile, filtrarea, citirea detaliilor și autentificarea prin gateway/direct la Ordering. Scenariile de paginare folosesc răspunsuri controlate, iar fluxul comenzilor folosește serviciile locale. Testul verifică lipsa derulării orizontale la 390 px; capturile desktop și mobil au fost inspectate.
+
+Buildurile au utilizat copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat și suita .NET nu a fost reluată local.

@@ -1,21 +1,58 @@
 form {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: end;
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: 20px;
+  margin: 24px 0 16px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #dce4d4;
+  border-radius: 12px;
 }
 label {
   display: grid;
-  gap: 0.4rem;
+  gap: 8px;
+  font-size: 14px;
+  min-width: 0;
+  color: #526148;
 }
 input,
 select,
 button {
-  padding: 0.65rem;
-  max-width: 100%;
+  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
   box-sizing: border-box;
+  border: 1px solid #9da994;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #28422d;
+  background: white;
 }
-input {
-  width: 16rem;
+button {
+  background: #28422d;
+  color: white;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 3px solid #547745;
+  outline-offset: 3px;
+}
+@media (max-width: 1000px) {
+  form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  form {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+    gap: 16px;
+  }
 }

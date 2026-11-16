@@ -7,27 +7,54 @@ for (const outcome of ['remaining', 'empty', 'unavailable'] as const) {
     let removed = false;
     let failRecovery = outcome === 'unavailable';
     const reads: number[] = [];
-    await page.route('**/api/v1/admin/sales-orders?**', async route => {
+    await page.route('**/api/v1/admin/sales-orders?**', async (route) => {
       const query = new URL(route.request().url()).searchParams;
       const current = Number(query.get('page'));
       const filtered = query.get('returnStatus') === 'Requested';
       if (filtered) reads.push(current);
       if (removed && current === 1 && failRecovery) {
         failRecovery = false;
-        await route.fulfill({ status: 503, json: { detail: 'Coada este temporar indisponibilă.' } });
+        await route.fulfill({
+          status: 503,
+          json: { detail: 'Coada este temporar indisponibilă.' },
+        });
         return;
       }
       const empty = removed && (current === 2 || outcome === 'empty');
-      await route.fulfill({ json: {
-        page: current, pageSize: 25, total: removed ? (outcome === 'empty' ? 0 : 25) : 26,
-        items: empty ? [] : [{
-          id: 'queue-order-' + current, number: 'DEMO-' + current, status: 'Confirmed',
-          customerName: 'Client demonstrativ', grossTotal: 10, currency: 'RON',
-          createdAt: '2026-11-04T10:00:00Z', returnStatus: 'Requested',
-        }],
-      } });
+      await route.fulfill({
+        json: {
+          page: current,
+          pageSize: 25,
+          total: removed ? (outcome === 'empty' ? 0 : 25) : 26,
+          items: empty
+            ? []
+            : [
+                {
+                  id: 'queue-order-' + current,
+                  number: 'DEMO-' + current,
+                  status: 'Confirmed',
+                  customerName: 'Client demonstrativ',
+                  grossTotal: 10,
+                  currency: 'RON',
+                  createdAt: '2026-11-04T10:00:00Z',
+                  returnStatus: 'Requested',
+                },
+              ],
+        },
+      });
     });
     await page.goto('http://localhost:4201/comenzi');
+    if (outcome === 'remaining') {
+      await expect(page.getByLabel('Lista comenzilor')).toContainText('DEMO-1');
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.screenshot({ path: '../work/admin-orders-polish-desktop.png', fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      await page.screenshot({ path: '../work/admin-orders-polish-mobile.png', fullPage: true });
+    }
+
     await page.getByLabel('Stare retur', { exact: true }).selectOption('Requested');
     await page.getByRole('button', { name: 'Aplică filtrele' }).click();
     await expect(page.getByText('26 comenzi · Pagina 1', { exact: true })).toBeVisible();
@@ -41,10 +68,15 @@ for (const outcome of ['remaining', 'empty', 'unavailable'] as const) {
       await expect(list).toHaveCount(0);
       await page.getByRole('button', { name: 'Actualizează lista', exact: true }).click();
     }
-    await expect(page.getByText(`${outcome === 'empty' ? 0 : 25} comenzi · Pagina 1`, { exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Pagina anterioară', exact: true })).toBeDisabled();
+    await expect(
+      page.getByText(`${outcome === 'empty' ? 0 : 25} comenzi · Pagina 1`, { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Pagina anterioară', exact: true }),
+    ).toBeDisabled();
     await expect(page.getByLabel('Stare retur', { exact: true })).toHaveValue('Requested');
-    if (outcome === 'empty') await expect(list).toContainText('Nu există comenzi pentru filtrele alese.');
+    if (outcome === 'empty')
+      await expect(list).toContainText('Nu există comenzi pentru filtrele alese.');
     else await expect(list).toContainText('DEMO-1');
     expect(reads).toEqual(outcome === 'unavailable' ? [1, 2, 2, 1, 1] : [1, 2, 2, 1]);
   });

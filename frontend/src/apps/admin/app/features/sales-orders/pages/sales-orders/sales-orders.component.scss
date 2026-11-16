@@ -14,7 +14,13 @@ aside,
   min-width: 0;
 }
 button {
-  padding: 0.65rem 1rem;
+  padding: 12px 18px;
+  min-height: 44px;
+  border: 1px solid #9da994;
+  border-radius: 8px;
+  background: white;
+  color: #28422d;
+  cursor: pointer;
   margin-bottom: 0.75rem;
 }
 @media (max-width: 850px) {
@@ -24,4 +30,30 @@ button {
   main {
     padding: 1rem;
   }
+}
+
+h1 {
+  font-size: 32px;
+  margin: 12px 0;
+}
+main > p {
+  color: #526148;
+  line-height: 1.6;
+}
+[role='alert'] {
+  padding: 16px;
+  background: #fff0ea;
+  border-left: 3px solid #a33122;
+  border-radius: 8px;
+  color: #8c2e20;
+  overflow-wrap: anywhere;
+}
+[role='status'] {
+  padding: 16px;
+  border-radius: 8px;
+  background: #f0f4eb;
+}
+button:focus-visible {
+  outline: 3px solid #547745;
+  outline-offset: 3px;
 }
