@@ -31,7 +31,9 @@ const person = {
   },
 };
 test('admin filters orders, reads immutable customer details and recovers read failures', async ({
-  page, browser, playwright,
+  page,
+  browser,
+  playwright,
 }) => {
   test.setTimeout(90000);
   await loginAdmin(page.request, admin);
@@ -151,21 +153,36 @@ test('admin filters orders, reads immutable customer details and recovers read f
     await expect(detail).toContainText('Livrare standard demonstrativă');
     const processing = page.getByRole('region', { name: 'Pregătirea comenzii', exact: true });
     await expect(processing).toContainText('În așteptare');
-    await processing.getByLabel('Motivul schimbării etapei').fill('Verificare produse pentru ambalare');
+    await processing
+      .getByLabel('Motivul schimbării etapei')
+      .fill('Verificare produse pentru ambalare');
     await processing.getByLabel('Confirm schimbarea etapei acestei comenzi').check();
     let processingWrites = 0;
-    await page.route('**/api/v1/admin/sales-orders/' + prepared.id + '/processing', async route => {
-      processingWrites++;
-      const response = await route.fetch();
-      expect(response.status()).toBe(204);
-      await route.abort('failed');
-    }, { times: 1 });
+    await page.route(
+      '**/api/v1/admin/sales-orders/' + prepared.id + '/processing',
+      async (route) => {
+        processingWrites++;
+        const response = await route.fetch();
+        expect(response.status()).toBe(204);
+        await route.abort('failed');
+      },
+      { times: 1 },
+    );
     await processing.getByRole('button', { name: 'Începe pregătirea' }).click();
     await expect(processing.getByRole('button', { name: 'Marchează pregătită' })).toBeVisible();
     await expect(processing.locator('article')).toHaveCount(1);
     expect(processingWrites).toBe(1);
     const processingPath = '/api/v1/admin/sales-orders/' + prepared.id + '/processing';
-    expect((await write(processingPath, { operationId: crypto.randomUUID(), expectedVersion: 0, target: 'Ready', reason: 'Versiune veche' })).status()).toBe(409);
+    expect(
+      (
+        await write(processingPath, {
+          operationId: crypto.randomUUID(),
+          expectedVersion: 0,
+          target: 'Ready',
+          reason: 'Versiune veche',
+        })
+      ).status(),
+    ).toBe(409);
     await processing.getByLabel('Motivul schimbării etapei').fill('Ambalarea a fost verificată');
     await processing.getByLabel('Confirm schimbarea etapei acestei comenzi').check();
     await processing.getByRole('button', { name: 'Marchează pregătită' }).click();
@@ -192,7 +209,9 @@ test('admin filters orders, reads immutable customer details and recovers read f
       { times: 1 },
     );
     await page.getByRole('button', { name: 'Actualizează detaliile' }).click();
-    await expect(page.getByRole('alert').filter({ hasText: 'Detaliile sunt indisponibile temporar.' })).toBeVisible();
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Detaliile sunt indisponibile temporar.' }),
+    ).toBeVisible();
     await expect(detail).toHaveCount(0);
     await page.getByRole('button', { name: 'Actualizează detaliile' }).click();
     await expect(detail).toContainText(number);
@@ -207,7 +226,9 @@ test('admin filters orders, reads immutable customer details and recovers read f
       { times: 1 },
     );
     await page.getByRole('button', { name: 'Actualizează lista' }).click();
-    await expect(page.getByRole('alert').filter({ hasText: 'Lista este indisponibilă temporar.' })).toBeVisible();
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Lista este indisponibilă temporar.' }),
+    ).toBeVisible();
     await expect(list).toHaveCount(0);
     await page.getByRole('button', { name: 'Actualizează lista' }).click();
     await expect(list.getByRole('button')).toHaveCount(1);
@@ -217,6 +238,9 @@ test('admin filters orders, reads immutable customer details and recovers read f
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
+    const products = detail.getByRole('region', { name: 'Produsele comenzii' });
+    expect(await products.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await detail.screenshot({ path: '../work/admin-order-detail-mobile.png' });
     await page.screenshot({ path: '../work/admin-orders-mobile.png', fullPage: true });
     const result = await page.request.get(
       'http://localhost:5104/api/v1/admin/sales-orders/' + prepared.id,
@@ -232,11 +256,18 @@ test('admin filters orders, reads immutable customer details and recovers read f
     });
     const customerPage = await page.context().newPage();
     await customerPage.goto(shop + '/cos');
-    const summary = customerPage.getByRole('region', { name: 'Starea plății simulate', exact: true });
+    const summary = customerPage.getByRole('region', {
+      name: 'Starea plății simulate',
+      exact: true,
+    });
     await expect(summary).toContainText('Rambursată integral');
     await expect(summary).toContainText('62,35 RON');
-    await expect(customerPage.getByRole('region', { name: 'Starea returului demo' })).toContainText('Stoc restituit');
-    await expect(customerPage.getByRole('region', { name: 'Starea expedierii demo' })).toContainText('Livrată');
+    await expect(customerPage.getByRole('region', { name: 'Starea returului demo' })).toContainText(
+      'Stoc restituit',
+    );
+    await expect(
+      customerPage.getByRole('region', { name: 'Starea expedierii demo' }),
+    ).toContainText('Livrată');
     await customerPage.close();
     await assertAccountOrderOwnership(playwright, page.request, prepared.id, browser, 'Refunded');
   } finally {
@@ -252,17 +283,33 @@ test('administrative order reads require session through gateway and direct serv
   for (const origin of ['http://127.0.0.1:5099', 'http://127.0.0.1:5104']) {
     expect((await request.get(origin + path)).status()).toBe(401);
     expect((await request.get(origin + path + '/' + id)).status()).toBe(401);
-    expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(401);
-    expect((await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status()).toBe(401);
-    expect((await request.post(origin + path + '/' + id + '/shipment', { data: {} })).status()).toBe(401);
-    expect((await request.post(origin + path + '/' + id + '/return', { data: {} })).status()).toBe(401);
+    expect(
+      (await request.post(origin + path + '/' + id + '/processing', { data: {} })).status(),
+    ).toBe(401);
+    expect(
+      (await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status(),
+    ).toBe(401);
+    expect(
+      (await request.post(origin + path + '/' + id + '/shipment', { data: {} })).status(),
+    ).toBe(401);
+    expect((await request.post(origin + path + '/' + id + '/return', { data: {} })).status()).toBe(
+      401,
+    );
   }
   await loginAdmin(request, 'http://127.0.0.1:5099');
   for (const origin of ['http://127.0.0.1:5099', 'http://127.0.0.1:5104']) {
-    expect((await request.post(origin + path + '/' + id + '/processing', { data: {} })).status()).toBe(400);
-    expect((await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status()).toBe(400);
-    expect((await request.post(origin + path + '/' + id + '/shipment', { data: {} })).status()).toBe(400);
-    expect((await request.post(origin + path + '/' + id + '/return', { data: {} })).status()).toBe(400);
+    expect(
+      (await request.post(origin + path + '/' + id + '/processing', { data: {} })).status(),
+    ).toBe(400);
+    expect(
+      (await request.post(origin + path + '/' + id + '/payment-simulation', { data: {} })).status(),
+    ).toBe(400);
+    expect(
+      (await request.post(origin + path + '/' + id + '/shipment', { data: {} })).status(),
+    ).toBe(400);
+    expect((await request.post(origin + path + '/' + id + '/return', { data: {} })).status()).toBe(
+      400,
+    );
     const response = await request.get(origin + path + '?status=Confirmed&page=1');
     expect(response.status()).toBe(200);
     expect(response.headers()['cache-control']).toBe('no-store');

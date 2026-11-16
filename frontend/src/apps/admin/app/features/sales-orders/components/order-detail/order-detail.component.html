@@ -1,6 +1,8 @@
 <section aria-label="Detalii comandă">
-  <h2>{{ data().order.number }}</h2>
-  <p role="status">{{ labels[data().order.status] }}</p>
+  <header>
+    <h2>{{ data().order.number }}</h2>
+    <p class="status" role="status">{{ labels[data().order.status] }}</p>
+  </header>
   <p>Creată: {{ data().order.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
   @if (data().order.finalizedAt) {
     <p>Rezultat confirmat: {{ data().order.finalizedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
@@ -31,22 +33,26 @@
     <p role="status">Comandă anulată. Stocul a fost restituit integral.</p>
     <p>Anulată la {{ data().cancelledAt | date: 'dd.MM.yyyy HH:mm:ss' }}</p>
   }
-  <h3>
-    Client
-    {{ data().order.customer.customerType === 'company' ? 'persoană juridică' : 'persoană fizică' }}
-  </h3>
-  <p>
-    {{ data().order.customer.fullName }}<br />{{ data().order.customer.email }}<br />{{
-      data().order.customer.phone
-    }}
-  </p>
-  @if (data().order.customer.companyName) {
+  <div class="customer">
+    <h3>
+      Client
+      {{
+        data().order.customer.customerType === 'company' ? 'persoană juridică' : 'persoană fizică'
+      }}
+    </h3>
     <p>
-      {{ data().order.customer.companyName }} · CUI {{ data().order.customer.taxId }}<br />{{
-        data().order.customer.registrationNumber
+      {{ data().order.customer.fullName }}<br />{{ data().order.customer.email }}<br />{{
+        data().order.customer.phone
       }}
     </p>
-  }
+    @if (data().order.customer.companyName) {
+      <p>
+        {{ data().order.customer.companyName }} · CUI {{ data().order.customer.taxId }}<br />{{
+          data().order.customer.registrationNumber
+        }}
+      </p>
+    }
+  </div>
   <div class="addresses">
     <sd-order-address label="Livrare" [address]="data().order.customer.shippingAddress" />
     @if (data().order.customer.billingAddress; as billing) {
@@ -60,35 +66,41 @@
     <table>
       <thead>
         <tr>
-          <th>Produs / SKU</th>
-          <th>Ambalaj</th>
-          <th>Cantitate</th>
-          <th>Preț cu TVA</th>
-          <th>Total cu TVA</th>
+          <th scope="col">Produs / SKU</th>
+          <th scope="col">Ambalaj</th>
+          <th scope="col">Cantitate</th>
+          <th scope="col">Preț cu TVA</th>
+          <th scope="col">Total cu TVA</th>
         </tr>
       </thead>
       <tbody>
         @for (line of data().order.lines; track line.offerId) {
           <tr>
-            <td>
+            <td data-label="Produs / SKU">
               {{ line.productName }}<small>{{ line.sku }}</small>
             </td>
-            <td>{{ line.offerLabel }}</td>
-            <td>{{ line.packs }}</td>
-            <td>{{ line.unitGross | number: '1.2-2' }} {{ data().order.currency }}</td>
-            <td>{{ line.grossTotal | number: '1.2-2' }} {{ data().order.currency }}</td>
+            <td data-label="Ambalaj">{{ line.offerLabel }}</td>
+            <td data-label="Cantitate">{{ line.packs }}</td>
+            <td data-label="Preț cu TVA">
+              {{ line.unitGross | number: '1.2-2' }} {{ data().order.currency }}
+            </td>
+            <td data-label="Total cu TVA">
+              {{ line.grossTotal | number: '1.2-2' }} {{ data().order.currency }}
+            </td>
           </tr>
         }
       </tbody>
     </table>
   </div>
-  <p>Total fără TVA: {{ data().order.netTotal | number: '1.2-2' }} {{ data().order.currency }}</p>
-  <strong
-    >Total cu TVA: {{ data().order.grossTotal | number: '1.2-2' }}
-    {{ data().order.currency }}</strong
-  >
-  <sd-delivery-summary [delivery]="data().order.delivery" />
-  <p>Nicio plată, livrare sau factură nu a fost inițiată.</p>
+  <div class="totals">
+    <p>Total fără TVA: {{ data().order.netTotal | number: '1.2-2' }} {{ data().order.currency }}</p>
+    <strong
+      >Total cu TVA: {{ data().order.grossTotal | number: '1.2-2' }}
+      {{ data().order.currency }}</strong
+    >
+    <sd-delivery-summary [delivery]="data().order.delivery" />
+    <p>Nicio plată, livrare sau factură nu a fost inițiată.</p>
+  </div>
   <details>
     <summary>Detalii procesare</summary>
     <p>Stare rezervare: {{ data().reservation.status }}</p>

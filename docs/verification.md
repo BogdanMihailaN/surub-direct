@@ -688,3 +688,9 @@ Buildurile au utilizat copia temporară a surselor/configurației cu dependențe
 Ambele builduri Angular au trecut. Cinci scenarii din admin-order-pagination.spec.ts și admin-sales-orders.spec.ts au trecut în 31,7 secunde. Sunt acoperite recuperarea paginii dispărute, rezultatele goale și indisponibile, filtrarea, citirea detaliilor și autentificarea prin gateway/direct la Ordering. Scenariile de paginare folosesc răspunsuri controlate, iar fluxul comenzilor folosește serviciile locale. Testul verifică lipsa derulării orizontale la 390 px; capturile desktop și mobil au fost inspectate.
 
 Buildurile au utilizat copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat și suita .NET nu a fost reluată local.
+
+## Detaliile administrative ale comenzii — 16 noiembrie 2026
+
+Ambele builduri Angular de producție au trecut. Cele două scenarii din admin-sales-orders.spec.ts au trecut în 39,7 secunde, acoperind detaliile și fluxul demonstrativ, recuperarea erorilor și autorizarea prin gateway/direct la serviciu. Testul verifică suplimentar că produsele din detalii nu necesită derulare orizontală pe mobil; captura componentei a fost inspectată.
+
+Directorul temporar anterior fusese eliminat; a fost recreat cu npm ci din lockfile-ul proiectului și sursele/configurațiile curente. Docker și serviciile locale au fost pornite pentru verificări. Backendul nu s-a modificat și suita .NET nu a fost reluată local.

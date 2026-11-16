@@ -1,4 +1,18 @@
 :host {
   display: block;
+  min-width: 0;
   overflow-wrap: anywhere;
+  border: 1px solid #dce4d4;
+  border-radius: 12px;
+  padding: 20px;
+}
+h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #526148;
 }

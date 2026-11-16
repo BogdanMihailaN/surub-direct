@@ -256,3 +256,7 @@ Pagina produsului delegă accesul API și starea către ProductStore, furnizat l
 ## Finisarea listei administrative de comenzi — 16 noiembrie 2026
 
 Filtrele comenzilor sunt grupate într-un panou cu trei coloane pe desktop, două pe tabletă și una pe mobil. Câmpurile au text de 16 px, iar butoanele au minimum 44 px. Cardurile separă numărul, starea, clientul și totalul/datele; selecția păstrează aceeași grosime a bordurii pentru a evita deplasarea conținutului. Recepțiile de retur care necesită intervenție au marcaj distinct. Paginarea, mesajele de eroare și stările goale au stiluri uniforme. Operațiile asupra comenzilor și filtrele existente nu au fost modificate.
+
+## Detaliile administrative ale comenzii — 16 noiembrie 2026
+
+Detaliile comenzii grupează numărul și starea în antet, clientul și adresele în panouri separate, iar totalurile și transportul într-un rezumat distinct. Tabelul produselor are antete scope și devine fișe etichetate pe ecrane de până la 1100 px. Adresele trec pe o singură coloană la 600 px. Detaliile tehnice rămân pliabile, cu focus vizibil și țintă de minimum 44 px. Datele și operațiile comenzii nu au fost modificate.
