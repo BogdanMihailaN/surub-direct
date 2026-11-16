@@ -676,3 +676,9 @@ S-au utilizat serviciile locale și buildurile din copia temporară a surselor/c
 Ambele builduri Angular de producție au trecut. Două scenarii noi din catalog-taxonomy-cache.spec.ts au trecut în 5,6 secunde cu răspunsuri controlate: o singură încărcare a taxonomiei pentru căutări succesive, reîncărcarea la refresh și recuperarea erorilor cu invalidare la Reîncearcă. Alte opt scenarii din catalog.spec.ts și cart.spec.ts au trecut în 18 secunde cu serviciile locale, inclusiv filtre dimensionale, produs, coș, stări de încărcare și mobil.
 
 Docker era oprit și a fost pornit înaintea regresiei cu servicii reale. Compilarea a folosit o copie temporară a surselor/configurației, cu npm ci din lockfile-ul proiectului, pentru a evita blocajele de citire din Desktop. Nu s-au modificat backendul sau aspectul paginilor; suita .NET nu a fost reluată local. CI-ul etapei anterioare, commit 359917c, a fost verificat și a trecut.
+
+## Încărcarea și reîncercarea paginii produsului — 16 noiembrie 2026
+
+Ambele builduri Angular de producție au trecut. Nouă scenarii Playwright din product-loading.spec.ts, catalog.spec.ts și cart.spec.ts au trecut în 12,8 secunde. Scenariul nou întârzie răspunsul, verifică spațiul rezervat și aria-busy la 390 px, injectează o eroare 503 și reîncearcă folosind API-ul local real, fără schimbarea URL-ului. Verifică și mesajul 404, titlul neutru și absența acțiunilor de adăugare pentru un produs inexistent. Captura mobilă a stării de încărcare a fost inspectată.
+
+Buildurile au utilizat copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat; suita .NET nu a fost reluată local.

@@ -248,3 +248,7 @@ Tabelul administrativ are texte de 14 px, metadate de 12 px și antete cu contra
 ## Reducerea cererilor repetate în catalog — 16 noiembrie 2026
 
 CatalogStore păstrează taxonomia încărcată cu succes pe durata instanței paginii. Schimbarea filtrelor, căutării sau paginii solicită produsele fără o cerere prealabilă repetată pentru categorii și atribute. Reîncărcarea/reintrarea în catalog creează o instanță nouă; acțiunea Reîncearcă invalidează explicit copia. Erorile nu sunt memorate. Produsele, prețurile și stocurile continuă să fie solicitate de la API la schimbarea filtrelor.
+
+## Încărcarea și reîncercarea paginii produsului — 16 noiembrie 2026
+
+Pagina produsului delegă accesul API și starea către ProductStore, furnizat la nivelul paginii. Componenta ProductLoading rezervă spațiu pentru imagine, descriere și oferte, inclusiv pe mobil. Erorile au buton Reîncearcă fără schimbarea URL-ului; la încărcare ofertele vechi sunt eliminate și aria-busy reflectă starea. Titlul și descrierea produsului precedent sunt eliminate la o cerere nouă. Pagina rămâne demonstrativă.

@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+p {
+  color: #526148;
+  font-size: 14px;
+}
+.overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+  margin: 24px 0 40px;
+}
+.placeholder {
+  background: #e9eee3;
+  border-radius: 12px;
+}
+.photo {
+  min-height: 300px;
+  aspect-ratio: 4 / 3;
+}
+.line {
+  height: 16px;
+  margin: 16px 0;
+}
+.short {
+  width: 35%;
+}
+.title {
+  height: 80px;
+}
+.offers {
+  height: 200px;
+}
+@media (max-width: 700px) {
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .photo {
+    min-height: 220px;
+  }
+}
