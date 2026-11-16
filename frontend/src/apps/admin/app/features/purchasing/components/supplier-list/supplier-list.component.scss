@@ -36,3 +36,31 @@ small {
   gap: 8px;
   font-size: 12px;
 }
+
+li button {
+  padding: 16px;
+  border: 2px solid transparent;
+  overflow-wrap: anywhere;
+}
+li button.selected {
+  border-color: #748b56;
+  background: white;
+}
+small {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.pagination {
+  flex-wrap: wrap;
+}
+@media (max-width: 850px) {
+  :host {
+    height: auto;
+    padding: 20px 16px;
+  }
+  ul {
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 4px;
+  }
+}

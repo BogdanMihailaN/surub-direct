@@ -5,28 +5,30 @@
       <table>
         <thead>
           <tr>
-            <th>SKU</th>
-            <th>Cod furnizor</th>
-            <th>Ambalaj achiziție</th>
-            <th>Cost net / ambalaj</th>
-            <th>Stare</th>
-            <th>Acțiune</th>
+            <th scope="col">SKU</th>
+            <th scope="col">Cod furnizor</th>
+            <th scope="col">Ambalaj achiziție</th>
+            <th scope="col">Cost net / ambalaj</th>
+            <th scope="col">Stare</th>
+            <th scope="col">Acțiune</th>
           </tr>
         </thead>
         <tbody>
           @for (item of items(); track item.id) {
             <tr>
-              <td>
+              <td data-label="SKU">
                 <strong>{{ item.sku }}</strong
                 ><small>{{ item.variantLabel }}</small>
               </td>
-              <td>{{ item.supplierCode }}</td>
-              <td>
+              <td data-label="Cod furnizor">{{ item.supplierCode }}</td>
+              <td data-label="Ambalaj achiziție">
                 {{ item.packLabel }}<small>{{ item.unitsPerPack }} bucăți</small>
               </td>
-              <td>{{ item.netCostPerPack | number: '1.2-6' }} {{ item.currency }}</td>
-              <td>{{ item.isActive ? 'Activă' : 'Inactivă' }}</td>
-              <td>
+              <td data-label="Cost net / ambalaj">
+                {{ item.netCostPerPack | number: '1.2-6' }} {{ item.currency }}
+              </td>
+              <td data-label="Stare">{{ item.isActive ? 'Activă' : 'Inactivă' }}</td>
+              <td data-label="Acțiune">
                 <button
                   [disabled]="disabled()"
                   (click)="edited.emit(item)"

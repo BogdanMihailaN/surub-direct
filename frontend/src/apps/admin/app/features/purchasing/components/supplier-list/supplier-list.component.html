@@ -21,6 +21,7 @@
         type="button"
         [disabled]="busy()"
         [class.selected]="supplier.id === selectedId()"
+        [attr.aria-pressed]="supplier.id === selectedId()"
         (click)="selected.emit(supplier.id)"
       >
         <strong>{{ supplier.name }}</strong

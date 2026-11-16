@@ -59,7 +59,7 @@
         sau stocul. SKU-ul unei asocieri existente rămâne stabil.
       </p>
       <div class="actions">
-        <button [disabled]="form.invalid || busy()">Salvează asocierea</button
+        <button type="submit" [disabled]="form.invalid || busy()">Salvează asocierea</button
         ><button type="button" [disabled]="busy()" (click)="cancelled.emit()">Renunță</button>
       </div>
     </fieldset>

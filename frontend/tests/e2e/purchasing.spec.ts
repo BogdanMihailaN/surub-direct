@@ -143,6 +143,9 @@ test('suppliers and SKU purchasing terms can be managed without changing selling
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
     ).toBeTruthy();
+    const articles = items.getByRole('region', { name: 'Articole furnizor' });
+    expect(await articles.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await items.screenshot({ path: '../work/supplier-items-mobile.png' });
     await page.screenshot({ path: '../work/purchasing-mobile.png', fullPage: true });
     supplier = await (await page.request.get(origin + root + '/suppliers/' + id)).json();
     expect(supplier.items[0]).toMatchObject({

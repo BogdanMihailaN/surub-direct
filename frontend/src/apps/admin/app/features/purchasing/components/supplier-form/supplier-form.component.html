@@ -60,7 +60,7 @@
           Dezactivarea păstrează asocierile și blochează modificarea lor până la reactivare.
         </p>
       }
-      <button [disabled]="form.invalid || busy()">Salvează furnizorul</button>
+      <button type="submit" [disabled]="form.invalid || busy()">Salvează furnizorul</button>
     </fieldset>
   </form>
 </section>

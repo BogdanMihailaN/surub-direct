@@ -260,3 +260,7 @@ Filtrele comenzilor sunt grupate într-un panou cu trei coloane pe desktop, dou�
 ## Detaliile administrative ale comenzii — 16 noiembrie 2026
 
 Detaliile comenzii grupează numărul și starea în antet, clientul și adresele în panouri separate, iar totalurile și transportul într-un rezumat distinct. Tabelul produselor are antete scope și devine fișe etichetate pe ecrane de până la 1100 px. Adresele trec pe o singură coloană la 600 px. Detaliile tehnice rămân pliabile, cu focus vizibil și țintă de minimum 44 px. Datele și operațiile comenzii nu au fost modificate.
+
+## Finisarea furnizorilor și articolelor de achiziție — 16 noiembrie 2026
+
+Formularele Purchasing au câmpuri de 16 px, controale de minimum 44 px, focus vizibil, acțiuni care se pot împărți pe rânduri și salvare evidențiată. Lista furnizorilor are selecție accesibilă prin aria-pressed și, pe mobil, o zonă de derulare limitată la 260 px. Articolele asociate devin fișe etichetate sub 1100 px și trec pe o coloană sub 480 px. Stilurile comune sunt reutilizate de formularele de aprovizionare; regulile comerciale și API-urile nu au fost modificate.

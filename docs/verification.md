@@ -694,3 +694,9 @@ Buildurile au utilizat copia temporară a surselor/configurației cu dependențe
 Ambele builduri Angular de producție au trecut. Cele două scenarii din admin-sales-orders.spec.ts au trecut în 39,7 secunde, acoperind detaliile și fluxul demonstrativ, recuperarea erorilor și autorizarea prin gateway/direct la serviciu. Testul verifică suplimentar că produsele din detalii nu necesită derulare orizontală pe mobil; captura componentei a fost inspectată.
 
 Directorul temporar anterior fusese eliminat; a fost recreat cu npm ci din lockfile-ul proiectului și sursele/configurațiile curente. Docker și serviciile locale au fost pornite pentru verificări. Backendul nu s-a modificat și suita .NET nu a fost reluată local.
+
+## Finisarea furnizorilor și articolelor de achiziție — 16 noiembrie 2026
+
+Ambele builduri Angular au trecut; buildul admin a fost reluat după marcarea explicită a butoanelor de salvare. Rularea finală a celor șase scenarii purchasing.spec.ts, purchase-orders.spec.ts și purchase-receipts.spec.ts a trecut în 11 secunde. Acoperă furnizori și asocieri SKU fără modificarea prețurilor de vânzare/stocului, comenzile de aprovizionare, conflictele de versiune, recepții parțiale, răspuns pierdut și protecțiile de autentificare/CSRF. Testul verifică lipsa derulării orizontale inclusiv în zona articolelor la 390 px. Capturile mobile ale paginii și articolelor au fost inspectate.
+
+Buildurile au utilizat copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat și suita .NET nu a fost reluată local.
