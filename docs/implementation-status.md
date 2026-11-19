@@ -264,3 +264,7 @@ Detaliile comenzii grupează numărul și starea în antet, clientul și adresel
 ## Finisarea furnizorilor și articolelor de achiziție — 16 noiembrie 2026
 
 Formularele Purchasing au câmpuri de 16 px, controale de minimum 44 px, focus vizibil, acțiuni care se pot împărți pe rânduri și salvare evidențiată. Lista furnizorilor are selecție accesibilă prin aria-pressed și, pe mobil, o zonă de derulare limitată la 260 px. Articolele asociate devin fișe etichetate sub 1100 px și trec pe o coloană sub 480 px. Stilurile comune sunt reutilizate de formularele de aprovizionare; regulile comerciale și API-urile nu au fost modificate.
+
+## Articolele comenzilor de aprovizionare pe mobil — 17 noiembrie 2026
+
+Lista comenzilor de aprovizionare evidențiază selecția și o expune prin aria-pressed. Pe ecrane de până la 1200 px, articolele apar ca fișe etichetate în locul tabelului cu lățime minimă fixă. Sub 480 px fișele au o singură coloană. Editorul și confirmarea eliminării ocupă lățimea fișei. Totalul net este evidențiat separat.

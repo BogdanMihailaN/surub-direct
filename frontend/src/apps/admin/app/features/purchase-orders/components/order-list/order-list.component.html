@@ -22,6 +22,7 @@
     <li>
       <button
         [class.selected]="o.id === selectedId()"
+        [attr.aria-pressed]="o.id === selectedId()"
         [disabled]="busy()"
         (click)="selected.emit(o.id)"
       >

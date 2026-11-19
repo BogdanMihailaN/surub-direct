@@ -700,3 +700,7 @@ Directorul temporar anterior fusese eliminat; a fost recreat cu npm ci din lockf
 Ambele builduri Angular au trecut; buildul admin a fost reluat după marcarea explicită a butoanelor de salvare. Rularea finală a celor șase scenarii purchasing.spec.ts, purchase-orders.spec.ts și purchase-receipts.spec.ts a trecut în 11 secunde. Acoperă furnizori și asocieri SKU fără modificarea prețurilor de vânzare/stocului, comenzile de aprovizionare, conflictele de versiune, recepții parțiale, răspuns pierdut și protecțiile de autentificare/CSRF. Testul verifică lipsa derulării orizontale inclusiv în zona articolelor la 390 px. Capturile mobile ale paginii și articolelor au fost inspectate.
 
 Buildurile au utilizat copia temporară a surselor/configurației cu dependențele aceluiași lockfile. Backendul nu s-a modificat și suita .NET nu a fost reluată local.
+
+## Articolele comenzilor de aprovizionare pe mobil — 17 noiembrie 2026
+
+Ambele builduri Angular de producție au trecut. Patru scenarii Playwright din purchase-orders.spec.ts și purchase-receipts.spec.ts au trecut în 18,8 secunde cu serviciile locale. La 390 px, testul verifică editarea costului și lipsa derulării orizontale în lista articolelor în timpul editării și după trimitere. Scenariile acoperă și condițiile negociate, conflictele de versiune, recepția parțială, recuperarea după pierderea răspunsului și verificările de autentificare și CSRF. Capturile mobile ale articolelor și editorului au fost inspectate.

@@ -67,8 +67,12 @@ test('purchase orders preserve negotiated terms, reject stale edits and lock sen
     await add.getByLabel('Număr de ambalaje').fill('2');
     await add.getByRole('button', { name: 'Adaugă în comandă' }).click();
     await expect(page.getByRole('status')).toContainText('Articolul a fost adăugat');
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.getByRole('button', { name: 'Editează linia ORDER-' + key }).click();
     const editor = page.locator('sd-order-line-editor');
+    const lines = page.getByRole('region', { name: 'Linii comandă' });
+    expect(await lines.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await editor.screenshot({ path: '../work/purchase-line-editor-mobile.png' });
     await editor.getByLabel('Cost net negociat per ambalaj').fill('11.25');
     await editor.getByRole('button', { name: 'Salvează linia' }).click();
     await expect(page.getByRole('status')).toContainText('Linia a fost actualizată');
@@ -130,6 +134,8 @@ test('purchase orders preserve negotiated terms, reject stale edits and lock sen
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
     ).toBeTruthy();
+    expect(await lines.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await page.locator('sd-order-lines').screenshot({ path: '../work/purchase-lines-mobile.png' });
     await page.screenshot({ path: '../work/orders-mobile.png', fullPage: true });
     await page.getByRole('button', { name: 'Înregistrează anularea' }).click();
     await page.getByLabel('Motivul anulării').fill('Test încheiat');

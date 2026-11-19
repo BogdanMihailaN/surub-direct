@@ -7,30 +7,34 @@
       <table>
         <thead>
           <tr>
-            <th>SKU / cod furnizor</th>
-            <th>Ambalaj păstrat</th>
-            <th>Cantitate</th>
-            <th>Cost net / ambalaj</th>
-            <th>Total net</th>
-            <th>Acțiuni</th>
+            <th scope="col">SKU / cod furnizor</th>
+            <th scope="col">Ambalaj păstrat</th>
+            <th scope="col">Cantitate</th>
+            <th scope="col">Cost net / ambalaj</th>
+            <th scope="col">Total net</th>
+            <th scope="col">Acțiuni</th>
           </tr>
         </thead>
         <tbody>
           @for (l of order().lines; track l.id) {
             <tr>
-              <td>
+              <td data-label="SKU / cod furnizor">
                 <strong>{{ l.sku }}</strong
                 ><small>{{ l.label }} · {{ l.supplierCode }}</small>
               </td>
-              <td>
+              <td data-label="Ambalaj păstrat">
                 {{ l.packLabel }}<small>{{ l.unitsPerPack }} buc./ambalaj</small>
               </td>
-              <td>
+              <td data-label="Cantitate">
                 {{ l.packs }} ambalaje<small>{{ l.baseUnits }} bucăți</small>
               </td>
-              <td>{{ l.netCostPerPack | number: '1.2-6' }} {{ order().currency }}</td>
-              <td>{{ l.netTotal | number: '1.2-2' }} {{ order().currency }}</td>
-              <td>
+              <td data-label="Cost net / ambalaj">
+                {{ l.netCostPerPack | number: '1.2-6' }} {{ order().currency }}
+              </td>
+              <td data-label="Total net">
+                {{ l.netTotal | number: '1.2-2' }} {{ order().currency }}
+              </td>
+              <td data-label="Acțiuni">
                 @if (order().status === 'Draft') {
                   <div class="actions">
                     <button
