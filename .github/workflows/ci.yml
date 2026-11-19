@@ -19,3 +19,60 @@ jobs:
         working-directory: frontend
       - run: npx ng build storefront && npx ng build admin
         working-directory: frontend
+  browser:
+    name: Browser smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: dotnet build backend/SurubDirect.sln --nologo
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps --only-shell chromium
+        working-directory: frontend
+      - name: Initialize isolated demo services
+        run: |
+          python3 scripts/dev.py db
+          python3 scripts/dev.py broker
+          python3 scripts/dev.py seed-demo
+      - name: Verify catalog, cart and administration in Chromium
+        shell: bash
+        run: |
+          log_dir="$(mktemp -d)"
+          env --default-signal=INT python3 scripts/dev.py up > "$log_dir/backend.log" 2>&1 &
+          backend_pid=$!
+          (cd frontend && exec node node_modules/@angular/cli/bin/ng.js serve storefront) > "$log_dir/storefront.log" 2>&1 &
+          storefront_pid=$!
+          (cd frontend && exec node node_modules/@angular/cli/bin/ng.js serve admin) > "$log_dir/admin.log" 2>&1 &
+          admin_pid=$!
+          trap 'kill "$admin_pid" "$storefront_pid" 2>/dev/null || true; kill -INT "$backend_pid" 2>/dev/null || true' EXIT
+
+          wait_for_http() {
+            local url="$1" pid="$2" log="$3"
+            for attempt in {1..60}; do
+              if curl -fs --max-time 2 "$url" > /dev/null; then
+                return 0
+              fi
+              kill -0 "$pid" 2>/dev/null || break
+              sleep 2
+            done
+            echo "::error::Service did not become ready at $url. See $log."
+            tail -n 60 "$log"
+            return 1
+          }
+
+          wait_for_http http://127.0.0.1:5099/api/v1/products "$backend_pid" "$log_dir/backend.log"
+          wait_for_http http://127.0.0.1:5099/api/auth/csrf "$backend_pid" "$log_dir/backend.log"
+          wait_for_http http://127.0.0.1:5099/api/v1/ordering/capabilities "$backend_pid" "$log_dir/backend.log"
+          wait_for_http http://127.0.0.1:4200/ "$storefront_pid" "$log_dir/storefront.log"
+          wait_for_http http://127.0.0.1:4201/ "$admin_pid" "$log_dir/admin.log"
+          cd frontend
+          npx playwright test '/catalog-taxonomy-cache.spec.ts$' '/cart.spec.ts$' '/admin.spec.ts$'

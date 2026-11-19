@@ -67,6 +67,8 @@ Automatizarea din acest chat este **oprită (PAUSED)** la cererea utilizatorului
 
 ## Etape restante
 
+Decizie pentru etapa curentă: integrările comerciale reale sunt amânate până după înființarea firmei. Prioritatea este validarea fluxurilor demonstrative, a testelor automate și a operării locale.
+
 - [x] Ajustări de stoc și jurnal al mișcărilor — implementate și verificate.
 - [x] Corecții legate de recepțiile originale, coerente între Purchasing și Inventory.
 - [x] Închiderea comenzilor de aprovizionare, inclusiv cantitatea rămasă nelivrată.
