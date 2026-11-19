@@ -1,0 +1,14 @@
+<main>
+  @if (forbidden) {
+    <h1>Acces administrativ necesar</h1>
+    <p>Contul curent nu are acces la administrare.</p>
+    <button type="button" [disabled]="busy()" (click)="changeAccount()">Schimbă contul</button>
+  } @else {
+    <h1>Autentificarea este temporar indisponibilă</h1>
+    <p>Nu putem verifica sesiunea momentan. Reîncearcă în câteva secunde.</p>
+    <button type="button" [disabled]="busy()" (click)="retry()">Reîncearcă</button>
+  }
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+</main>

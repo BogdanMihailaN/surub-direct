@@ -20,7 +20,7 @@ Validările includ:
 - cumularea bucăților cerute de **toate ambalajele aceluiași SKU**, pentru a nu verifica separat același sold;
 - aceeași monedă pentru totalul coșului și limită de 1.000.000.000 pentru valoarea brută a unei linii.
 
-Prețul brut per ambalaj este cel rotunjit furnizat de Catalog, înmulțit cu numărul de ambalaje. Netul liniei este rotunjit la două zecimale, AwayFromZero. Totalurile însumează liniile; transportul nu este inclus. Aceste valori sunt estimări demonstrative, nu facturi sau oferte cu preț blocat.
+Netul și brutul se calculează pe cantitatea totală a liniei din prețul net și cota TVA furnizate de Catalog, apoi se rotunjesc la două zecimale, AwayFromZero. Prețul afișat per ambalaj este orientativ. Rambursările parțiale alocă proporțional suma brută salvată a liniei, cu rotunjire cumulată. Totalurile însumează liniile; transportul nu este inclus. Aceste valori sunt estimări demonstrative, nu facturi sau oferte cu preț blocat.
 
 Un produs arhivat, un preț lipsă, stocul insuficient sau cantitatea neconformă produce explicații pe linii și elimină totalul valid. O dependență indisponibilă sau un răspuns nevalid produce 503, fără a inventa stoc zero. Interfața elimină totalul anterior când începe recalcularea și ignoră răspunsurile vechi dacă selecția s-a schimbat între timp.
 

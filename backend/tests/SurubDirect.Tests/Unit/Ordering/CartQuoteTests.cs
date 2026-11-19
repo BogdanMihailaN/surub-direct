@@ -6,9 +6,9 @@ namespace SurubDirect.Tests;
 
 public sealed class CartQuoteTests
 {
-    private static CartOfferSnapshot Offer() => new(Guid.NewGuid(), Guid.NewGuid(), "Screw", "SKU", "Box", 10, 2, 3, 100, 10m, 12.1m, "RON");
+    private static CartOfferSnapshot Offer() => new(Guid.NewGuid(), Guid.NewGuid(), "Screw", "SKU", "Box", 10, 2, 3, 100, 10m, 12.1m, "RON", 0.21m);
     [Fact]
-    public async Task Current_server_prices_are_multiplied_per_pack_and_checkout_stays_disabled()
+    public async Task Current_server_prices_are_used_and_checkout_stays_disabled()
     {
         var o = Offer(); var result = await new QuoteCartHandler(new CartCatalogStub([o])).Handle(new([new("screw", o.OfferId, 5)]), default);
         Assert.Equal(50m, result.NetTotal); Assert.Equal(60.5m, result.GrossTotal); Assert.False(result.CheckoutEnabled); Assert.Equal(50, Assert.Single(result.Lines).BaseUnits);
@@ -44,5 +44,15 @@ public sealed class CartQuoteTests
         await Assert.ThrowsAsync<BusinessException>(() => handler.Handle(new([selection with { ProductSlug = "../internal" }]), default));
         await Assert.ThrowsAsync<BusinessException>(() => handler.Handle(new([selection with { Packs = 0 }]), default));
         await Assert.ThrowsAsync<BusinessException>(() => handler.Handle(new(Enumerable.Range(0, 51).Select(_ => selection with { OfferId = Guid.NewGuid() }).ToArray()), default)); Assert.Equal(0, catalog.Calls);
+    }
+    [Fact]
+    public async Task Quote_rounds_net_and_gross_at_line_level()
+    {
+        var offer = Offer() with { Net = 0.012m, Gross = 0.01m, TaxRate = 0.21m, Available = 1000, MinPacks = 1, PackStep = 1 };
+        var quote = await new QuoteCartHandler(new CartCatalogStub([offer]))
+            .Handle(new([new("screw", offer.OfferId, 100)]), default);
+
+        Assert.Equal(1.20m, quote.NetTotal);
+        Assert.Equal(1.45m, quote.GrossTotal);
     }
 }

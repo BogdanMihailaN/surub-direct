@@ -41,7 +41,12 @@ internal sealed class PaymentSimulations(OrderingDbContext db) : IPaymentSimulat
                 ?? throw new BusinessException("Returul nu există pentru această comandă.", 404);
             if (await db.PaymentSimulationEvents.AnyAsync(x => x.OrderId == id && x.PartialReturnId == returnId, ct))
                 throw new BusinessException("Rambursarea acestui retur a fost deja înregistrată.", 409);
-            entry = payment.RefundReturn(order, request, operationId, expectedVersion, reason, actor, DateTimeOffset.UtcNow);
+            var previousReturns = db.PaymentSimulationEvents.Where(x => x.OrderId == id && x.PartialReturnId != null)
+                .Select(x => x.PartialReturnId!.Value);
+            var refundedLines = await db.PartialReturns.AsNoTracking().Where(x => previousReturns.Contains(x.Id))
+                .SelectMany(x => x.Lines).ToListAsync(ct);
+            var refundedPacks = refundedLines.GroupBy(x => x.OfferId).ToDictionary(g => g.Key, g => g.Sum(x => x.Packs));
+            entry = payment.RefundReturn(order, request, operationId, expectedVersion, reason, actor, DateTimeOffset.UtcNow, refundedPacks);
         }
         else
         {

@@ -101,4 +101,30 @@ public class ProductAdministrationTests(DatabaseFixture fixture) : IClassFixture
         Assert.Equal(404, (await Assert.ThrowsAsync<BusinessException>(() => s.GetRequiredService<ArchiveProductHandler>().Handle(id, default))).Status);
         Assert.Equal(404, (await Assert.ThrowsAsync<BusinessException>(() => s.GetRequiredService<RestoreProductHandler>().Handle(id, default))).Status);
     }
+    [Fact]
+    public async Task Adding_an_offer_hides_the_product_until_republication_and_unreceived_stock_is_zero()
+    {
+        await using var scope = fixture.Services.CreateAsyncScope();
+        var s = scope.ServiceProvider;
+        var token = Guid.NewGuid().ToString("N");
+        var id = await s.GetRequiredService<CreateProductHandler>().Handle(new("Review " + token, "review-" + token, "Test", "Review"), default);
+        var variant = await s.GetRequiredService<AddVariantHandler>().Handle(id, new("FIRST-" + token, "M8", 8, 20, "Oțel", "Zincat"), default);
+        var addOffer = s.GetRequiredService<AddOfferHandler>();
+        var prices = s.GetRequiredService<SetOfferPriceHandler>();
+        var publish = s.GetRequiredService<PublishStoreProductHandler>();
+        var reader = s.GetRequiredService<ICatalogReader>();
+        var first = await addOffer.Handle(id, variant, new("FIRST-" + token, "Cutie", 10), default);
+        await prices.Handle(first, new(10, 0.21m), default);
+        await publish.Handle(id, default);
+
+        var stock = await s.GetRequiredService<IInventoryReader>().GetStock([variant], default);
+        Assert.Equal(0, Assert.Single(stock).Available);
+
+        var second = await addOffer.Handle(id, variant, new("SECOND-" + token, "Cutie", 20), default);
+        Assert.Null(await reader.Get(id, false, default));
+        await Assert.ThrowsAsync<BusinessException>(() => publish.Handle(id, default));
+        await prices.Handle(second, new(20, 0.21m), default);
+        await publish.Handle(id, default);
+        Assert.Equal(2, Assert.Single((await reader.Get(id, false, default))!.Variants).Offers.Count);
+    }
 }

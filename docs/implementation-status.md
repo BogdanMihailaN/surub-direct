@@ -268,3 +268,7 @@ Formularele Purchasing au câmpuri de 16 px, controale de minimum 44 px, focus v
 ## Articolele comenzilor de aprovizionare pe mobil — 17 noiembrie 2026
 
 Lista comenzilor de aprovizionare evidențiază selecția și o expune prin aria-pressed. Pe ecrane de până la 1200 px, articolele apar ca fișe etichetate în locul tabelului cu lățime minimă fixă. Sub 480 px fișele au o singură coloană. Editorul și confirmarea eliminării ocupă lățimea fișei. Totalul net este evidențiat separat.
+
+## Corecțiile după review — 19 noiembrie 2026
+
+Inventory întoarce un sold zero explicit pentru variantele fără recepții după o citire reușită. Catalog verifică răspunsurile și împarte stocul în loturi de maximum 5.000 de variante. Ordering rotunjește netul și brutul la nivelul liniei și împarte sumele rambursate folosind totalurile salvate. Adăugarea unei variante sau oferte cere republicare, iar mutațiile relevante și publicarea blochează același produs. Filtrele invalide au resetare, administrarea poate reîncerca verificarea sesiunii, iar seed-demo poate completa exemplele întrerupte. CI include testele Python, fluxuri suplimentare de comandă și retur și restaurarea pe baze temporare. Backupurile noi includ fișierele media.

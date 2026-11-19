@@ -17,6 +17,6 @@ public sealed class PreparationCatalog : ICartCatalog
             throw new SurubDirect.BuildingBlocks.BusinessException("Catalog unavailable", 503);
         if (Missing)
             return Task.FromResult<IReadOnlyList<CartOfferSnapshot>?>(null);
-        return Task.FromResult<IReadOnlyList<CartOfferSnapshot>?>([new(First, VariantId, "Surub demo", "SKU", "Cutie 10", 10, 1, 1, 100, 10m, 12.1m, "RON"), new(Second, VariantId, "Surub demo", "SKU", "Punga 5", 5, 1, 1, 100, 5m, 6.05m, "RON")]);
+        return Task.FromResult<IReadOnlyList<CartOfferSnapshot>?>([new(First, VariantId, "Surub demo", "SKU", "Cutie 10", 10, 1, 1, 100, 10m, 12.1m, "RON", 0.21m), new(Second, VariantId, "Surub demo", "SKU", "Punga 5", 5, 1, 1, 100, 5m, 6.05m, "RON", 0.21m)]);
     }
 }

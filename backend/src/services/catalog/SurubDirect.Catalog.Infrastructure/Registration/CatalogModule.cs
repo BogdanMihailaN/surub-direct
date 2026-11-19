@@ -29,7 +29,6 @@ public static class CatalogModule
         s.AddScoped<CreateProductHandler>();
         s.AddScoped<AddVariantHandler>();
         s.AddScoped<AddOfferHandler>();
-        s.AddScoped<PublishProductHandler>();
         s.AddScoped<ICatalogOutbox, CatalogOutbox>();
         return s;
     }

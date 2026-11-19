@@ -80,7 +80,7 @@ def main():
         print('Per-database snapshots; not a coordinated cross-service recovery point.')
     elif command == 'verify-backup':
         verify_backup(args.backup_path)
-        print('Five archive sizes, checksums and PostgreSQL archive indexes verified. No data restored.')
+        print('Archive sizes, checksums, PostgreSQL indexes and included media verified. No data restored.')
     elif command == 'operations':
         events = read_events(ROOT / 'work/operations', args.limit, args.service)
         for event in events:

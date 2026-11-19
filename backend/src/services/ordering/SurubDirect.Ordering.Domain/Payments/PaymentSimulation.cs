@@ -41,7 +41,7 @@ public sealed class PaymentSimulation
     }
 
     public PaymentSimulationEvent RefundReturn(DemoOrder order, PartialReturnRequest request, Guid operationId,
-        long expectedVersion, string reason, string actor, DateTimeOffset now)
+        long expectedVersion, string reason, string actor, DateTimeOffset now, IReadOnlyDictionary<Guid, int> alreadyRefunded)
     {
         ValidateOperation(order.Status, operationId, expectedVersion, reason, actor);
         if (order.Id != OrderId || request.OrderId != OrderId || request.Status != "Restored" || request.InventoryReceivedAt is null
@@ -52,17 +52,25 @@ public sealed class PaymentSimulation
         foreach (var line in request.Lines)
         {
             var original = order.Lines.Single(x => x.OfferId == line.OfferId);
-            amount += original.UnitGross * line.Packs;
+            var previous = alreadyRefunded.GetValueOrDefault(line.OfferId);
+            if (previous < 0 || line.Packs > original.Packs - previous)
+                throw new BusinessException("Cantitatea depășește linia achitată.", 409);
+            // Allocate the saved line total cumulatively so split refunds conserve every cent.
+            amount += Allocated(original, previous + line.Packs) - Allocated(original, previous);
         }
-        if (amount <= 0 || decimal.Round(amount, 2) != amount || amount > Amount - RefundedAmount)
+        if (amount < 0 || amount > Amount - RefundedAmount)
             throw new BusinessException("Valoarea produselor depășește soldul disponibil sau suma este nevalidă.", 409);
 
         var from = Status;
         PartialRefundTotal += amount;
-        Status = PartialRefundTotal == Amount ? "Refunded" : "PartiallyRefunded";
+        if (amount > 0)
+            Status = PartialRefundTotal == Amount ? "Refunded" : "PartiallyRefunded";
         return new PaymentSimulationEvent(OrderId, operationId, AttemptId!.Value, ++Version, "ReturnRefund",
             from, Status, reason, actor, now) { PartialReturnId = request.Id, RefundAmount = amount };
     }
+
+    private static decimal Allocated(PreparedCartLine line, int packs) =>
+        decimal.Round(line.GrossTotal * packs / line.Packs, 2, MidpointRounding.AwayFromZero);
 
     private void ValidateOperation(string orderStatus, Guid operationId, long expectedVersion, string reason, string actor)
     {

@@ -179,3 +179,20 @@ test('authenticated price writes reject malformed numeric data with 400', async 
   );
   expect(result.status()).toBe(400);
 });
+
+test('administration can retry a temporarily unavailable session without showing login', async ({
+  page,
+}) => {
+  await page.route('**/api/auth/me', (route) => route.fulfill({ json: { isAdmin: true } }));
+  await page.route('**/api/auth/me', (route) => route.fulfill({ status: 503, json: {} }), {
+    times: 1,
+  });
+  await page.goto('http://localhost:4201/comenzi');
+  await expect(
+    page.getByRole('heading', { name: 'Autentificarea este temporar indisponibilă' }),
+  ).toBeVisible();
+  await expect(page.getByLabel('Parolă', { exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Reîncearcă' }).click();
+  await expect(page).toHaveURL(/\/comenzi$/);
+  await expect(page.getByRole('heading', { name: 'Comenzi de vânzare' })).toBeVisible();
+});

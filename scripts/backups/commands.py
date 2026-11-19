@@ -7,6 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 from config import ROOT, environment
 from backups.manifest import DATABASES, digest, validate
+from backups.media import MEDIA_FILE, archive_media
 
 
 def postgres(args, **kwargs):
@@ -38,7 +39,7 @@ def create():
     name = 'services-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + uuid4().hex[:8]
     pending = parent / (name + '.partial')
     pending.mkdir(mode=0o700)
-    data = {'formatVersion': 1, 'createdAt': datetime.now(timezone.utc).isoformat(),
+    data = {'formatVersion': 2, 'createdAt': datetime.now(timezone.utc).isoformat(),
             'consistency': 'per-database', 'databases': []}
     # A failure leaves a private .partial directory, never a completed backup.
     for owner in DATABASES:
@@ -50,6 +51,12 @@ def create():
             os.fsync(output.fileno())
         data['databases'].append({'database': 'surub_' + owner, 'file': archive.name,
                                   'bytes': archive.stat().st_size, 'sha256': digest(archive)})
+    media = pending / MEDIA_FILE
+    with private_file(media) as output:
+        archive_media(ROOT / 'work/media/catalog', output)
+        output.flush()
+        os.fsync(output.fileno())
+    data['catalogMedia'] = {'file': media.name, 'bytes': media.stat().st_size, 'sha256': digest(media)}
     with private_file(pending / 'manifest.json') as output:
         output.write((json.dumps(data, indent=2) + '\n').encode())
         output.flush()

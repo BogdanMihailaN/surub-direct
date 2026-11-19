@@ -1,4 +1,5 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, combineLatest, of, startWith, Subject, switchMap, tap } from 'rxjs';
@@ -6,6 +7,7 @@ import { CatalogApiService } from '@shared/catalog/catalog-api.service';
 import { effectiveAttributes } from '@shared/catalog/taxonomy-helpers';
 import { errorMessage } from '@shared/http/error-message';
 import { AttributeFilter, StorePage, Taxonomy } from '@shared/models';
+import { parseCatalogAttributes } from './parse-catalog-attributes';
 import { CatalogFilterValues } from '../components/catalog-filters/catalog-filter-values';
 @Injectable()
 export class CatalogStore {
@@ -17,6 +19,7 @@ export class CatalogStore {
   readonly taxonomy = signal<Taxonomy>({ categories: [], attributes: [] });
   readonly loading = signal(true);
   readonly error = signal('');
+  readonly invalidFilters = signal(false);
   readonly activeCategoryId = signal('');
   readonly definitions = computed(() =>
     this.activeCategoryId()
@@ -37,6 +40,7 @@ export class CatalogStore {
         tap(() => {
           this.loading.set(true);
           this.error.set('');
+          this.invalidFilters.set(false);
         }),
         switchMap(([params]) =>
           this.loadTaxonomy().pipe(
@@ -52,8 +56,12 @@ export class CatalogStore {
                   taxonomy.categories.find((c) => c.name === legacy)?.id ||
                   '',
               );
-              this.attributes = JSON.parse(params.get('atribute') || '[]');
-              if (!Array.isArray(this.attributes)) throw new Error('Invalid filters');
+              const attributes = parseCatalogAttributes(params.get('atribute'));
+              this.attributes = attributes ?? [];
+              if (attributes === null) {
+                this.invalidFilters.set(true);
+                return of(null);
+              }
               const filters: Record<string, string | number> = { page: this.page, pageSize: 12 };
               if (this.search) filters['search'] = this.search;
               if (this.activeCategoryId()) filters['categoryId'] = this.activeCategoryId();
@@ -61,7 +69,15 @@ export class CatalogStore {
               if (this.diameter) filters['diameter'] = this.diameter;
               if (this.length) filters['length'] = this.length;
               if (this.attributes.length) filters['attributes'] = JSON.stringify(this.attributes);
-              return this.api.catalog(filters);
+              return this.api.catalog(filters).pipe(
+                catchError((error: unknown) => {
+                  if (error instanceof HttpErrorResponse && error.status === 400) {
+                    this.invalidFilters.set(true);
+                    return of(null);
+                  }
+                  throw error;
+                }),
+              );
             }),
             catchError((error) => {
               this.error.set(errorMessage(error));

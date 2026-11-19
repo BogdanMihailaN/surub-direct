@@ -1,7 +1,9 @@
 """Validate the fixed local backup format before handing archives to PostgreSQL."""
 import hashlib
 import json
+import tarfile
 from pathlib import Path
+from backups.media import MEDIA_FILE, read_media
 
 DATABASES = ('catalog', 'inventory', 'identity', 'ordering', 'purchasing')
 
@@ -22,7 +24,7 @@ def validate(directory):
     if manifest.stat().st_size > 16384:
         raise ValueError('Backup manifest is too large.')
     data = json.loads(manifest.read_text())
-    if not isinstance(data, dict) or data.get('formatVersion') != 1 or data.get('consistency') != 'per-database':
+    if not isinstance(data, dict) or data.get('formatVersion') not in (1, 2) or data.get('consistency') != 'per-database':
         raise ValueError('Unsupported backup manifest.')
     entries = data.get('databases')
     if not isinstance(entries, list) or len(entries) != len(DATABASES):
@@ -45,4 +47,16 @@ def validate(directory):
             raise ValueError('Archive size does not match the manifest.')
         if entry.get('sha256') != digest(path):
             raise ValueError('Archive checksum does not match the manifest.')
+    if data['formatVersion'] == 2:
+        media = data.get('catalogMedia')
+        path = directory / MEDIA_FILE
+        if not isinstance(media, dict) or media.get('file') != MEDIA_FILE or path.is_symlink() or not path.is_file():
+            raise ValueError('A regular Catalog media archive is required.')
+        if (type(media.get('bytes')) is not int or media['bytes'] != path.stat().st_size or
+                media.get('sha256') != digest(path)):
+            raise ValueError('Catalog media archive does not match the manifest.')
+        try:
+            read_media(path)
+        except tarfile.TarError as error:
+            raise ValueError('Catalog media archive is invalid.') from error
     return data

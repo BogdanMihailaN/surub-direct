@@ -15,6 +15,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: dotnet build backend/SurubDirect.sln --configuration Release
       - run: dotnet test backend/SurubDirect.sln --configuration Release --no-build
+      - run: python3 -m unittest discover -s backend/tests/SurubDirect.Tooling.Tests/Unit -v
       - run: npm ci
         working-directory: frontend
       - run: npx ng build storefront && npx ng build admin
@@ -22,7 +23,7 @@ jobs:
   browser:
     name: Browser smoke tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -53,7 +54,12 @@ jobs:
           storefront_pid=$!
           (cd frontend && exec node node_modules/@angular/cli/bin/ng.js serve admin) > "$log_dir/admin.log" 2>&1 &
           admin_pid=$!
-          trap 'kill "$admin_pid" "$storefront_pid" 2>/dev/null || true; kill -INT "$backend_pid" 2>/dev/null || true' EXIT
+          stop_services() {
+            kill "$admin_pid" "$storefront_pid" 2>/dev/null || true
+            kill -INT "$backend_pid" 2>/dev/null || true
+            wait "$admin_pid" "$storefront_pid" "$backend_pid" 2>/dev/null || true
+          }
+          trap stop_services EXIT
 
           wait_for_http() {
             local url="$1" pid="$2" log="$3"
@@ -75,4 +81,12 @@ jobs:
           wait_for_http http://127.0.0.1:4200/ "$storefront_pid" "$log_dir/storefront.log"
           wait_for_http http://127.0.0.1:4201/ "$admin_pid" "$log_dir/admin.log"
           cd frontend
-          npx playwright test '/catalog-taxonomy-cache.spec.ts$' '/cart.spec.ts$' '/admin.spec.ts$'
+          npx playwright test '/catalog-taxonomy-cache.spec.ts$' '/cart.spec.ts$' '/admin.spec.ts$' \
+            '/admin-sales-orders.spec.ts$' '/account-partial-return.spec.ts$' '/purchase-receipts.spec.ts$'
+      - name: Rehearse backup recovery on temporary databases
+        shell: bash
+        run: |
+          python3 scripts/dev.py backup
+          backup_dir="$(find work/backups -mindepth 1 -maxdepth 1 -type d ! -name '*.partial' -print -quit)"
+          test -n "$backup_dir"
+          LOCAL_BACKUP_DIR="$PWD/$backup_dir" python3 -m unittest discover -s backend/tests/SurubDirect.Tooling.Tests/Integration -v

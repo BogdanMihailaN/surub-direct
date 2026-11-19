@@ -32,4 +32,23 @@ public sealed class ServiceClientTests
         var error = await Assert.ThrowsAsync<BusinessException>(() => client.GetStock([Guid.NewGuid()], default));
         Assert.Equal(503, error.Status);
     }
+    [Fact]
+    public async Task Inventory_queries_are_split_at_the_contract_limit()
+    {
+        var ids = Enumerable.Range(0, 5001).Select(_ => Guid.NewGuid()).ToArray();
+        var sizes = new List<int>();
+        var client = new InventoryClient(new StubHttpClientFactory(request =>
+        {
+            using var body = System.Text.Json.JsonDocument.Parse(request.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            var batch = body.RootElement.GetProperty("variantIds").EnumerateArray().Select(x => x.GetGuid()).ToArray();
+            sizes.Add(batch.Length);
+            return new(HttpStatusCode.OK)
+            {
+                Content = System.Net.Http.Json.JsonContent.Create(batch.Select(id => new SurubDirect.Catalog.Application.StockSummary(id, 0, 0, 0)))
+            };
+        }));
+
+        Assert.Equal(ids, (await client.GetStock(ids, default)).Select(x => x.VariantId));
+        Assert.Equal(new[] { 5000, 1 }, sizes);
+    }
 }

@@ -26,5 +26,12 @@ internal sealed class InventoryRepository(InventoryDbContext db) : IInventoryRep
         return true;
     }
 
-    public async Task<IReadOnlyList<StockDto>> GetStock(IReadOnlyList<Guid> ids, CancellationToken ct) => await db.Balances.AsNoTracking().Where(x => ids.Contains(x.VariantId)).Select(x => new StockDto(x.VariantId, x.OnHand, x.Reserved, x.OnHand - x.Reserved)).ToListAsync(ct);
+    public async Task<IReadOnlyList<StockDto>> GetStock(IReadOnlyList<Guid> ids, CancellationToken ct)
+    {
+        var balances = await db.Balances.AsNoTracking().Where(x => ids.Contains(x.VariantId))
+            .Select(x => new StockDto(x.VariantId, x.OnHand, x.Reserved, x.OnHand - x.Reserved))
+            .ToDictionaryAsync(x => x.VariantId, ct);
+        // No receipt yet means a known variant has zero stock after a successful read.
+        return ids.Distinct().Select(id => balances.GetValueOrDefault(id) ?? new StockDto(id, 0, 0, 0)).ToArray();
+    }
 }

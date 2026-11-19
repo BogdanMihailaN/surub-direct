@@ -24,9 +24,15 @@ export class LoginComponent {
     this.busy.set(true);
     this.error.set('');
     try {
-      await this.session.login(this.email, this.password);
+      const status = await this.session.login(this.email, this.password);
       this.password = '';
-      await this.router.navigate(['/catalog']);
+      if (status === 'guest') {
+        this.error.set('Sesiunea de autentificare nu a putut fi confirmată.');
+      } else if (status === 'authenticated') {
+        await this.router.navigate(['/catalog']);
+      } else {
+        await this.router.navigate(['/stare-sesiune'], { state: { status } });
+      }
     } catch (e) {
       this.error.set(errorMessage(e));
     } finally {

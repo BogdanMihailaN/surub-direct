@@ -28,16 +28,20 @@ public sealed class QuoteCartHandler(ICartCatalog catalog)
                 continue;
             }
 
+            var netTotal = o.Net is decimal net ? RoundMoney(net * s.Packs) : (decimal?)null;
+            var grossTotal = o.Net is decimal unroundedNet && o.TaxRate is decimal tax
+                ? RoundMoney(unroundedNet * s.Packs * (1 + tax))
+                : (decimal?)null;
             string? issue = null;
             if (!CartQuantity.IsValid(s.Packs, o.UnitsPerPack, o.MinPacks, o.PackStep))
                 issue = $"Alege minimum {o.MinPacks} ambalaje, cu pas {o.PackStep}, în limita a 2.147.483.647 bucăți.";
-            else if (o.Net is null || o.Gross is null || o.Gross <= 0 || string.IsNullOrEmpty(o.Currency))
+            else if (o.Net is null || o.Gross is null || grossTotal is null or <= 0 || string.IsNullOrEmpty(o.Currency))
                 issue = "Preț indisponibil.";
-            else if (o.Gross * s.Packs > 1000000000m)
+            else if (grossTotal > 1000000000m)
                 issue = "Valoarea unei linii depășește limita de 1.000.000.000.";
             else if (requested[o.VariantId] > o.Available)
                 issue = "Stoc insuficient pentru toate ambalajele acestui SKU din coș.";
-            lines.Add(new(s.ProductSlug, s.OfferId, s.Packs, o.ProductName, o.Sku, o.Label, o.UnitsPerPack, o.MinPacks, o.PackStep, (long)s.Packs * o.UnitsPerPack, o.Gross, issue is null ? decimal.Round(o.Net!.Value * s.Packs, 2, MidpointRounding.AwayFromZero) : null, issue is null ? o.Gross * s.Packs : null, o.Currency, issue, o.VariantId, o.Net));
+            lines.Add(new(s.ProductSlug, s.OfferId, s.Packs, o.ProductName, o.Sku, o.Label, o.UnitsPerPack, o.MinPacks, o.PackStep, (long)s.Packs * o.UnitsPerPack, o.Gross, issue is null ? netTotal : null, issue is null ? grossTotal : null, o.Currency, issue, o.VariantId, o.Net));
         }
 
         var currencies = lines.Where(l => l.Currency is not null).Select(l => l.Currency).Distinct().ToArray();
@@ -46,4 +50,6 @@ public sealed class QuoteCartHandler(ICartCatalog catalog)
         var valid = lines.Count > 0 && lines.All(l => l.Issue is null);
         return new(lines, valid ? currencies[0] : null, valid ? lines.Sum(l => l.NetTotal) : null, valid ? lines.Sum(l => l.GrossTotal) : null, DateTimeOffset.UtcNow);
     }
+
+    private static decimal RoundMoney(decimal amount) => decimal.Round(amount, 2, MidpointRounding.AwayFromZero);
 }

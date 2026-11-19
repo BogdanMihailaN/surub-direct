@@ -65,7 +65,7 @@ API-urile interne sunt listate pentru depanare. Frontend-ul apelează gateway-ul
 
 Datele administratorului sunt în `.env`: `ADMIN_EMAIL`, `ADMIN_PASSWORD`. Nu publica fișierul și nu îl suprascrie pe acest calculator. `db` generează secrete doar dacă lipsesc; nu schimbă parolele unei baze existente. Un fișier `.env` nou este creat cu parole aleatoare și permisiuni restrictive. Nu folosi valorile exemplificative din `.env.example` ca parole reale.
 
-Pentru o bază Catalog goală, poți rula `python3 scripts/dev.py seed-demo` după build. Creează produse și prețuri demonstrative; stocul se înregistrează prin Inventory din administrare. Pe calculatorul acesta, datele existente, inclusiv stocul, au fost transferate din baza veche.
+După build, poți rula `python3 scripts/dev.py seed-demo` pentru a crea produsele demonstrative lipsă sau pentru a completa exemplele rămase ciorne după o întrerupere. Păstrează produsele publicate, cele arhivate și prețurile deja existente; stocul se înregistrează prin Inventory din administrare. Pe calculatorul acesta, datele existente, inclusiv stocul, au fost transferate din baza veche.
 
 ## Datele vechi
 
@@ -98,7 +98,7 @@ Pentru producție sunt necesare configurații dedicate: HTTPS și TLS intern, se
 
 ### Imagini locale
 
-Administrarea fiecărui produs include panoul „Imaginile produsului”. Sunt acceptate JPEG, PNG și WebP statice, maximum 8 MB, 6000 px/latură și 24 MP; maximum 12 imagini/produs. Textul alternativ este obligatoriu. Fișierele sunt convertite în WebP și miniaturi, în `work/media/catalog` (neversionat). La pornirea manuală a Catalog API configurează `Media__Root` cu un director privat persistent; scripturile locale îl configurează automat. Backup-ul bazei trebuie însoțit de backup-ul fișierelor.
+Administrarea fiecărui produs include panoul „Imaginile produsului”. Sunt acceptate JPEG, PNG și WebP statice, maximum 8 MB, 6000 px/latură și 24 MP; maximum 12 imagini/produs. Textul alternativ este obligatoriu. Fișierele sunt convertite în WebP și miniaturi, în `work/media/catalog` (neversionat). La pornirea manuală a Catalog API configurează `Media__Root` cu un director privat persistent; scripturile locale îl configurează automat. Comanda de backup local include fișierele din directorul media implicit.
 
 ## Import produse
 
@@ -130,4 +130,4 @@ Administrare: pagina **Mesagerie** oferă [monitorizare și reluare individuală
 
 Jurnalele operaționale Inventory/Ordering se colectează local când pornești serviciile cu `python3 scripts/dev.py up`. Consultare: `python3 scripts/dev.py operations --service ordering --limit 20`. [Format, filtrare și limite](docs/local-operational-logs.md).
 
-Backup local pentru cele cinci baze: `python3 scripts/dev.py backup`. Verificarea integrității, exercițiul de restaurare izolat și limitele sunt descrise în [Backup și recuperare](docs/backups-and-recovery.md).
+Backup local pentru cele cinci baze și imaginile Catalog: `python3 scripts/dev.py backup`. Verificarea integrității, exercițiul de restaurare izolat și limitele sunt descrise în [Backup și recuperare](docs/backups-and-recovery.md).

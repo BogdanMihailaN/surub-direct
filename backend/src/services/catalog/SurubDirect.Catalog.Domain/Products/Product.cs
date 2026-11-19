@@ -77,6 +77,7 @@ public sealed class Product
         if (Variants.Any(v => v.Sku == variant.Sku))
             throw new BusinessException("SKU duplicat.");
         Variants.Add(variant);
+        Status = ProductStatus.Draft;
         return variant;
     }
 
@@ -86,6 +87,16 @@ public sealed class Product
         var variant = Variants.SingleOrDefault(x => x.Id == variantId)
             ?? throw new BusinessException("Varianta nu există în acest produs.", 404);
         variant.UpdateDetails(label, diameter, length, material, finish);
+    }
+
+    public SalesOffer AddOffer(Guid variantId, string code, string label, int units, int min, int step)
+    {
+        EnsureEditable();
+        var variant = Variants.SingleOrDefault(x => x.Id == variantId)
+            ?? throw new BusinessException("Varianta nu există.", 404);
+        var offer = variant.AddOffer(code, label, units, min, step);
+        Status = ProductStatus.Draft;
+        return offer;
     }
 
     public bool UpdateOffer(Guid variantId, Guid offerId, string label, int units, int min, int step)

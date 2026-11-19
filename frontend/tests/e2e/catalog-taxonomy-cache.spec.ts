@@ -74,3 +74,11 @@ test('failed taxonomy is retried and explicit product retry refreshes taxonomy',
   await expect(page.getByText('Nu am găsit produse pentru aceste filtre.')).toBeVisible();
   expect(taxonomyRequests).toBe(3);
 });
+
+test('malformed filters from a shared URL can be reset', async ({ page }) => {
+  await page.goto('/?atribute=%5Bnull%5D');
+  await expect(page.getByRole('alert')).toContainText('Filtrele din adresă nu sunt valide');
+  await page.getByRole('button', { name: 'Resetează filtrele catalogului' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('.product-card').first()).toBeVisible();
+});

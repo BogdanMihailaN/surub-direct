@@ -10,9 +10,11 @@ namespace SurubDirect.Tests;
 
 public sealed class PartialReturnRefundTests(OrderingCartFixture fixture) : IClassFixture<OrderingCartFixture>
 {
-    private async Task<(Guid Order, Guid First, Guid Second)> Seed(bool restored = true)
+    private async Task<(Guid Order, Guid First, Guid Second)> Seed(bool restored = true, decimal? lineTotal = null)
     {
         var (order, plan) = ReturnSamples.Create();
+        if (lineTotal is decimal total)
+            order.Lines[0] = order.Lines[0] with { UnitNet = 0.012m, UnitGross = 0.01m, NetTotal = 0.02m, GrossTotal = total };
         var now = DateTimeOffset.UtcNow;
         await using var scope = fixture.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
@@ -111,5 +113,19 @@ public sealed class PartialReturnRefundTests(OrderingCartFixture fixture) : ICla
         Assert.NotNull(receipt.RequestedAt);
         Assert.NotNull(receipt.NextAttemptAt);
         Assert.Equal(0, (await admin.Find(order, default))!.PaymentSimulation.RefundedAmount);
+    }
+    [Fact]
+    public async Task Split_refunds_return_the_exact_saved_line_total()
+    {
+        var (order, first, second) = await Seed(lineTotal: 0.03m);
+        await Refund(order, first, Guid.NewGuid(), 2);
+        await Refund(order, second, Guid.NewGuid(), 3);
+
+        await using var scope = fixture.Services.CreateAsyncScope();
+        var detail = (await scope.ServiceProvider.GetRequiredService<IAdminDemoOrders>().Find(order, default))!;
+        var refunds = detail.PaymentSimulation.History.Where(x => x.Action == "ReturnRefund").OrderBy(x => x.Version).ToArray();
+        Assert.Equal(0.02m, refunds[0].RefundAmount);
+        Assert.Equal(0.01m, refunds[1].RefundAmount);
+        Assert.Equal(0.03m, detail.Order.PaymentSummary.RefundedAmount);
     }
 }

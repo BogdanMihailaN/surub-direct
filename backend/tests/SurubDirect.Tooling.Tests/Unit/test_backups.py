@@ -10,6 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / 'scripts'))
 from backups.commands import create, verify
 from backups.manifest import DATABASES, digest, validate
+from backups.media import MEDIA_FILE, read_media
 
 
 class BackupTests(unittest.TestCase):
@@ -112,3 +113,22 @@ class BackupTests(unittest.TestCase):
             (folder / 'manifest.json').write_text(text)
             with self.assertRaises(ValueError):
                 validate(folder)
+
+
+    def test_catalog_media_is_verified_restored_and_detects_corruption(self):
+        source = self.root / 'work/media/catalog'
+        source.mkdir(parents=True)
+        full = '1234567890abcdef1234567890abcdef.webp'
+        thumb = full.replace('.webp', '-thumb.webp')
+        (source / full).write_bytes(b'full image')
+        (source / thumb).write_bytes(b'thumbnail')
+        folder = self.create()
+        self.assertEqual(2, validate(folder)['formatVersion'])
+        destination = self.root / 'restored'
+        destination.mkdir()
+        self.assertEqual({full, thumb}, read_media(folder / MEDIA_FILE, destination))
+        self.assertEqual(b'thumbnail', (destination / thumb).read_bytes())
+        with (folder / MEDIA_FILE).open('ab') as archive:
+            archive.write(b'changed')
+        with self.assertRaises(ValueError):
+            validate(folder)

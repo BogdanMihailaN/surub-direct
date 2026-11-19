@@ -704,3 +704,9 @@ Buildurile au utilizat copia temporară a surselor/configurației cu dependențe
 ## Articolele comenzilor de aprovizionare pe mobil — 17 noiembrie 2026
 
 Ambele builduri Angular de producție au trecut. Patru scenarii Playwright din purchase-orders.spec.ts și purchase-receipts.spec.ts au trecut în 18,8 secunde cu serviciile locale. La 390 px, testul verifică editarea costului și lipsa derulării orizontale în lista articolelor în timpul editării și după trimitere. Scenariile acoperă și condițiile negociate, conflictele de versiune, recepția parțială, recuperarea după pierderea răspunsului și verificările de autentificare și CSRF. Capturile mobile ale articolelor și editorului au fost inspectate.
+
+## Corecțiile după review — 19 noiembrie 2026
+
+Au trecut 472 de teste .NET, 19 teste unitare Python, ambele builduri Angular și 21 de scenarii Playwright pentru catalog, administrare, coș, comenzi, retururi și recepții. Compilarea .NET a folosit o copie izolată cu compilare serială și fără serverul Roslyn partajat după blocarea citirii locale. Verificarea prin API pentru piulița nituibilă fără recepții a întors HTTP 200 cu stoc insuficient, față de HTTP 503 înainte.
+
+Exercițiul de restaurare a trecut pentru un backup local în formatul 2: cinci baze restaurate în baze temporare, Catalog și Inventory pornite pe copii și totalul publicat verificat prin HTTP. Baza locală nu conținea referințe la imagini. Testul unitar acoperă arhivarea, extragerea și detectarea coruperii fișierelor media.

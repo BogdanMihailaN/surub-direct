@@ -7,6 +7,13 @@ export const routes: Routes = [
       import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'stare-sesiune',
+    loadComponent: () =>
+      import('./features/auth/pages/session-status/session-status.component').then(
+        (m) => m.SessionStatusComponent,
+      ),
+  },
+  {
     path: 'catalog',
     canActivate: [adminGuard],
     loadComponent: () =>

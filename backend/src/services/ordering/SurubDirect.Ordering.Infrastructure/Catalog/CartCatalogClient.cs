@@ -26,8 +26,8 @@ public sealed class CartCatalogClient(IHttpClientFactory clients) : ICartCatalog
                 {
                     if (offer.Id == Guid.Empty || offer.UnitsPerPack < 1 || offer.MinPacks < 1 || offer.PackStep < 1 || string.IsNullOrWhiteSpace(offer.Label)) throw Unavailable();
                     var price = data.Prices.SingleOrDefault(p => p.OfferId == offer.Id);
-                    if (price is not null && (price.NetAmount <= 0 || price.NetAmount > 1000000 || price.GrossAmount < 0 || price.GrossAmount > 2000000 || string.IsNullOrWhiteSpace(price.Currency))) throw Unavailable();
-                    result.Add(new(offer.Id, variant.Id, data.Product.Name, variant.Sku, offer.Label, offer.UnitsPerPack, offer.MinPacks, offer.PackStep, stock.Available.Value, price?.NetAmount, price?.GrossAmount, price?.Currency));
+                    if (price is not null && (price.NetAmount <= 0 || price.NetAmount > 1000000 || price.GrossAmount < 0 || price.GrossAmount > 2000000 || string.IsNullOrWhiteSpace(price.Currency) || price.TaxRate is null or < 0 or > 1)) throw Unavailable();
+                    result.Add(new(offer.Id, variant.Id, data.Product.Name, variant.Sku, offer.Label, offer.UnitsPerPack, offer.MinPacks, offer.PackStep, stock.Available.Value, price?.NetAmount, price?.GrossAmount, price?.Currency, price?.TaxRate));
                 }
             }
             if (result.Select(o => o.OfferId).Distinct().Count() != result.Count) throw Unavailable();

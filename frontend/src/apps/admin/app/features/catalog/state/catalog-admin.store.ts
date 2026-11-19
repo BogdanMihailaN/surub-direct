@@ -221,18 +221,26 @@ export class CatalogAdminStore {
     }, 'Produs creat ca ciornă. Adaugă o variantă.');
   }
   addVariant(command: AddVariantRequest) {
+    const message =
+      this.selected()?.product.status === 'Published'
+        ? 'Variantă creată. Configurează ambalajul și publică din nou produsul.'
+        : 'Variantă creată. Configurează ambalajul.';
     return this.run(async () => {
       const result = await this.api.addVariant(this.selectedId(), command);
       await this.reload();
       this.preferredVariant.set(result.id);
-    }, 'Variantă creată. Configurează ambalajul.');
+    }, message);
   }
   addOffer(command: AddOfferRequest) {
+    const message =
+      this.selected()?.product.status === 'Published'
+        ? 'Ambalaj creat. Completează prețul și publică din nou produsul.'
+        : 'Ambalaj creat. Completează prețul.';
     return this.run(async () => {
       const result = await this.api.addOffer(this.selectedId(), command);
       await this.reload();
       this.preferredOffer.set(result.id);
-    }, 'Ambalaj creat. Completează prețul.');
+    }, message);
   }
   setPrice(command: SetPriceRequest) {
     return this.run(async () => {
