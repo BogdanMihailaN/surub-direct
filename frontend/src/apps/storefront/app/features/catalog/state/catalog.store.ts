@@ -85,15 +85,18 @@ export class CatalogStore {
     this.cachedTaxonomy = null;
     this.refresh.next();
   }
-  apply(page = 1) {
+  apply(page?: number) {
     void this.router.navigate([], {
+      ...(page === undefined
+        ? { scroll: 'manual', preserveFragment: true }
+        : { fragment: 'catalog' }),
       queryParams: {
         q: this.search || null,
         categorieId: this.activeCategoryId() || null,
         diametru: this.diameter || null,
         lungime: this.length || null,
         atribute: this.attributes.length ? JSON.stringify(this.attributes) : null,
-        pagina: page === 1 ? null : page,
+        pagina: page && page > 1 ? page : null,
       },
     });
   }

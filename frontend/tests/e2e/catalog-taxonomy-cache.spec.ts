@@ -1,5 +1,22 @@
 import { test, expect } from '@playwright/test';
 
+test('selecting a catalog category keeps the visitor in the catalog', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 650 });
+  await page.goto('/');
+  const filters = page.getByRole('complementary', { name: 'Filtre catalog' });
+  const category = filters.getByRole('button', { name: 'Ancore', exact: true });
+  await expect(category).toBeVisible();
+  await page
+    .locator('#catalog')
+    .evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
+  const before = await page.evaluate(() => scrollY);
+  expect(before).toBeGreaterThan(100);
+  await category.click();
+  await expect(page).toHaveURL(/categorieId=/);
+  await expect(page.locator('.result-summary')).toContainText('Ancore');
+  expect(await page.evaluate(() => scrollY)).toBeGreaterThan(before - 80);
+});
+
 test('filters reuse taxonomy within a catalog visit and re-entry refreshes it', async ({
   page,
 }) => {
